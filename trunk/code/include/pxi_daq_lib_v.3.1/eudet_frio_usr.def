@@ -1,0 +1,66 @@
+
+
+/*******************************************************************************
+File      : x:\lib\win\eudet_frio\eudet_frio_usr.def
+Goal      : Macros definition of USER PART of flex rio board library for EUDET Mimosa 26 DAQ
+Prj date  : 05/08/2010
+File date : 11/11/2010
+Doc date  : 11/11/2010
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef EUDET_FRIO_USR_DEF
+#define EUDET_FRIO_USR_DEF
+
+
+/* ======================= */
+/* Conditional compilation */
+/* ======================= */
+
+
+/* ================= */
+/* Macro             */
+/* ================= */
+
+
+
+
+/* ================= */
+/* Constants         */
+/* ================= */
+
+#define EFRIO__USR_CONST 0
+
+#define EFRIO__USR_RUN_CTRL_MSG_CODE_STR_MAX_SZ 50
+
+typedef enum EFRIO__USR_ENUM {
+  EFRIO__USR_ENUM_ITEM_0,
+  EFRIO__USR_ENUM_ITEM_1,
+  EFRIO__USR_ENUM_ITEM_2,
+  EFRIO__USR_ENUM_ITEM_NB
+  
+} EFRIO__USR_TUsrEnum;
+
+
+typedef enum {
+  
+  EFRIO__USR_RUN_CTRL_MSG_CONF,
+  EFRIO__USR_RUN_CTRL_MSG_START_RUN,
+  EFRIO__USR_RUN_CTRL_MSG_GET_RUN_STATUS_RQ,
+  EFRIO__USR_RUN_CTRL_MSG_GET_RUN_STATUS_ANS,
+  EFRIO__USR_RUN_CTRL_MSG_STOP_RUN
+  
+} EFRIO__USR_TMsgCode;
+
+
+
+#endif

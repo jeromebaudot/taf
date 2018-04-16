@@ -1,0 +1,80 @@
+/*******************************************************************************
+File      : x:\lib\com\maps\fsbb0\fsbb0_usr.def
+Goal      : Macros definition of Ultimate 1 library.
+          : It provides Ultimate 1 types definition and data handling functions.
+Prj date  : 28/02/2011
+File date : 28/02/2011
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+: as it stays in a public research context. You are not allowed to use it
+: for commercial purpose. You must put this header with laboratory and
+: authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef FSBB0_USR_TEST_ULT1_DEF
+#define FSBB0_USR_TEST_ULT1_DEF
+
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W16_SZ 1856 
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W8_SZ  3712 // 
+
+
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_MAX_DATA_PART_W16_SZ 1850 // Add on 11/05/2011 - value per link
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_MAX_DATA_PART_W8_SZ  3700 // Add on 11/05/2011 - value per link
+
+#define FSBB0__ZS_FFRAME_RAW_MAX_W8   7400 // Data part size ( sum of 2 links ) in W8  
+#define FSBB0__ZS_FFRAME_RAW_MAX_W16  3700 // Data part size ( sum of 2 links ) in W16 
+#define FSBB0__ZS_FFRAME_RAW_MAX_W32  1850 // Data part size ( sum of 2 links ) in W32 
+
+#define FSBB0__ZS_FFRAME_RAW_TOTAL_SZ_W32 1856 // Mi26 =  576
+
+
+#define FSBB0__ZS_FFRAME_MAX_STATES_NB_PER_STATES_REC   9 
+#define FSBB0__ZS_FFRAME_MAX_STATES_REC               828 
+
+// ======================================
+// For FSBB0 discri analysis tools
+// ======================================
+
+// Submatrices number
+
+#define FSBB0__SUB_MAT_NB          4
+
+// --------------------
+// Bias registers index
+// --------------------
+
+#define FSBB0__REG_BIAS_NB        19
+
+#define FSBB0__REG_BIAS_ICLPDISC   0
+#define FSBB0__REG_BIAS_IPWRSW     1
+#define FSBB0__REG_BIAS_IBUF       2
+#define FSBB0__REG_BIAS_ID1PWRS    3
+#define FSBB0__REG_BIAS_ID2PWRS    4
+#define FSBB0__REG_BIAS_ILVDSTX    5
+#define FSBB0__REG_BIAS_ILVDSRX    6
+#define FSBB0__REG_BIAS_IVTST1     7
+#define FSBB0__REG_BIAS_IVTST2     8
+#define FSBB0__REG_BIAS_IANABUF    9
+#define FSBB0__REG_BIAS_IVDREF1D  10
+#define FSBB0__REG_BIAS_IVDREF1C  11
+#define FSBB0__REG_BIAS_IVDREF1B  12
+#define FSBB0__REG_BIAS_IVDREF1A  13
+#define FSBB0__REG_BIAS_IVDREF2   14
+#define FSBB0__REG_BIAS_IDIS1     15
+#define FSBB0__REG_BIAS_IDIS2     16
+#define FSBB0__REG_BIAS_IPXI      17
+#define FSBB0__REG_BIAS_VPIXCLP   18
+
+
+#endif

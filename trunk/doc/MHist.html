@@ -1,0 +1,871 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:02 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>MHist</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class MHist','','MHist.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/MHist.h.html">header file</a>
+<a class="descrheadentry" href="src/MHist.cxx.html">source file</a>
+<a class="descrheadentry" href="MHist_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#MHist:description">class description</a> 
+<a class="descrheadentry" href="#MHist:Function_Members">function members</a>
+<a class="descrheadentry" href="#MHist:Data_Members">data members</a>
+<a class="descrheadentry" href="#MHist:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">MHist</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="MHist:description"></a>class MHist: public TObject</h1>
+<div class="classdescr">
+<pre>
+
+Contains all analysis  histograms and canvas
+(those which are filled by MimosaPro())
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="MHist:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#MHist:MHist">MHist</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#MHist:MHist%1">MHist</a>(<span class="keyword">const</span> <a href="./MHist.html">MHist</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#MHist:_MHist">~MHist</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#MHist:AutoZoom">AutoZoom</a>(TH1F* H, <a href="./ListOfTypes.html#Option_t">Option_t</a>* aType = <span class="string">"all"</span>, <a href="./ListOfTypes.html#Int_t">Int_t</a> EntryMin = 0)</td></tr>
+<tr class="func"><td class="funcret">TH2F*</td><td class="funcname"><a class="funcname" href="#MHist:AutoZoom%1">AutoZoom</a>(TH2F* H, <a href="./ListOfTypes.html#Option_t">Option_t</a>* aType = <span class="string">"all"</span>, <a href="./ListOfTypes.html#Int_t">Int_t</a> EntryMin = 0)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MHist:BookingHistograms">BookingHistograms</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> RunNumber, <a href="./ListOfTypes.html#Float_t">Float_t</a> PixelSizeU, <a href="./ListOfTypes.html#Float_t">Float_t</a> PixelSizeV, <a href="./ListOfTypes.html#Int_t">Int_t</a> NofPixelInRaw, <a href="./ListOfTypes.html#Int_t">Int_t</a> NofPixelInColumn, <a href="./ListOfTypes.html#Float_t">Float_t</a> TrackToHitDistanceLimit, <a href="./DSetup.html">DSetup</a>* aSetup, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifReferenceTrack = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifCalibration = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifLaserSpot = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifMiniVector = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifVertex = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifFake = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifImaging = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#MHist:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MHist:Clear">Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MHist:Dir">Dir</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#MHist:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./MHist.html">MHist</a>&amp;</td><td class="funcname"><a class="funcname" href="#MHist:operator_">operator=</a>(<span class="keyword">const</span> <a href="./MHist.html">MHist</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MHist:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MHist:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MHist:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%7">Zero</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* ptr)</td></tr>
+<tr class="func"><td class="funcret">TCanvas*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%8">Zero</a>(TCanvas* ptr)</td></tr>
+<tr class="func"><td class="funcret">TProfile*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%9">Zero</a>(TProfile* ptr)</td></tr>
+<tr class="func"><td class="funcret">TProfile2D*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%10">Zero</a>(TProfile2D* ptr)</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%11">Zero</a>(TH1F* ptr)</td></tr>
+<tr class="func"><td class="funcret">TH2F*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%12">Zero</a>(TH2F* ptr)</td></tr>
+<tr class="func"><td class="funcret">TH3F*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%13">Zero</a>(TH3F* ptr)</td></tr>
+<tr class="func"><td class="funcret">TGraphErrors*</td><td class="funcname"><a class="funcname" href="#MHist:Zero%14">Zero</a>(TGraphErrors* ptr)</td></tr>
+<tr class="func"><td class="funcret"><a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>**</td><td class="funcname"><a class="funcname" href="#MHist:Zero">Zero</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>** ptr, <span class="keyword">int</span> size = 0)</td></tr>
+<tr class="func"><td class="funcret">TCanvas**</td><td class="funcname"><a class="funcname" href="#MHist:Zero%1">Zero</a>(TCanvas** ptr, <span class="keyword">int</span> size = 0)</td></tr>
+<tr class="func"><td class="funcret">TProfile**</td><td class="funcname"><a class="funcname" href="#MHist:Zero%2">Zero</a>(TProfile** ptr, <span class="keyword">int</span> size = 0)</td></tr>
+<tr class="func"><td class="funcret">TProfile2D**</td><td class="funcname"><a class="funcname" href="#MHist:Zero%3">Zero</a>(TProfile2D** ptr, <span class="keyword">int</span> size = 0)</td></tr>
+<tr class="func"><td class="funcret">TH1F**</td><td class="funcname"><a class="funcname" href="#MHist:Zero%4">Zero</a>(TH1F** ptr, <span class="keyword">int</span> size = 0)</td></tr>
+<tr class="func"><td class="funcret">TH2F**</td><td class="funcname"><a class="funcname" href="#MHist:Zero%5">Zero</a>(TH2F** ptr, <span class="keyword">int</span> size = 0)</td></tr>
+<tr class="func"><td class="funcret">TH3F**</td><td class="funcname"><a class="funcname" href="#MHist:Zero%6">Zero</a>(TH3F** ptr, <span class="keyword">int</span> size = 0)</td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="MHist:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapubl"><b>public:</b>
+<table class="data" id="tabdatapubl" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./MHist.html">MHist</a>*</td><td class="dataname"><a name="MHist:theHist"></a>theHist</td><td></td></tr>
+
+</table></div>
+<div class="access" id="dataprot"><b>protected:</b>
+<table class="data" id="tabdataprot" cellspacing="0">
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:CDSVarvsTime"></a>CDSVarvsTime</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:Calib_distr1"></a>Calib_distr1</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:Calib_distr2"></a>Calib_distr2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:Calib_distr3"></a>Calib_distr3</td><td></td></tr>
+<tr class="data"><td class="datatype">TGraphErrors*</td><td class="dataname"><a name="MHist:ChargeSpread"></a>ChargeSpread</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:Cluster"></a>Cluster[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:DuvCG"></a>DuvCG</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:FalseHitMap"></a>FalseHitMap</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:MainCanvas"></a>MainCanvas</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MHist:MaxNofPixelsInCluster"></a>MaxNofPixelsInCluster</td><td></td></tr>
+<tr class="data"><td class="datatype">static <span class="keyword">const</span> <span class="keyword">int</span></td><td class="dataname"><a name="MHist:MaxNofPixelsInClusterMax"></a>MaxNofPixelsInClusterMax</td><td class="datadesc">a nodif </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MHist:MinNofPixelsInCluster"></a>MinNofPixelsInCluster</td><td class="datadesc">JB 2013/09/12</td></tr>
+<tr class="data"><td class="datatype">static <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MHist:NRefPlane"></a>NRefPlane</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:PixHom"></a>PixHom</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:PixHom2"></a>PixHom2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:PixHom3"></a>PixHom3</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:PixHom4"></a>PixHom4</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:PixHom5"></a>PixHom5</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:PixHom6"></a>PixHom6</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfACGn"></a>ProfACGn</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge25_diodedist"></a>ProfHOM_Charge25_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge2_diodedist"></a>ProfHOM_Charge2_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge4_diodedist"></a>ProfHOM_Charge4_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge9_diodedist"></a>ProfHOM_Charge9_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge_diodedist"></a>ProfHOM_Charge_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge_diodedist_alg"></a>ProfHOM_Charge_diodedist_alg</td><td class="datadesc">JB 2010/03/11</td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge_diodedist_alg_u"></a>ProfHOM_Charge_diodedist_alg_u</td><td class="datadesc">clm 2013/01/23</td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_Charge_diodedist_alg_v"></a>ProfHOM_Charge_diodedist_alg_v</td><td class="datadesc">clm 2013/01/23</td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_ResU_tu"></a>ProfHOM_ResU_tu</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_ResV_tv"></a>ProfHOM_ResV_tv</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfHOM_SNseed_diodedist"></a>ProfHOM_SNseed_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfUCG"></a>ProfUCG</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="MHist:ProfVCG"></a>ProfVCG</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition"></a>ProfhGOODCharge_Charge_DiodePosition</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePositionSeedQGT2000"></a>ProfhGOODCharge_Charge_DiodePositionSeedQGT2000</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePositionSeedQLT300"></a>ProfhGOODCharge_Charge_DiodePositionSeedQLT300</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePositionSimpDist"></a>ProfhGOODCharge_Charge_DiodePositionSimpDist</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_1stcrown"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_1stcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_2ndcrown"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_2ndcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_seed"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_seed</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_seed"></a>ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_seed</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_seed"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_seed</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile2D*</td><td class="dataname"><a name="MHist:ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_seed"></a>ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_seed</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:TrkInMimo"></a>TrkInMimo</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ang1"></a>ang1</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ang2"></a>ang2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ang3"></a>ang3</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ang4"></a>ang4</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ang5"></a>ang5</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ang6"></a>ang6</td><td class="datadesc">clm added back 1D clu mult. 2013.08.25</td></tr>
+<tr class="data"><td class="datatype">TControlBar*</td><td class="dataname"><a name="MHist:bar2"></a>bar2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:c2"></a>c2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:c3"></a>c3</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:c4"></a>c4</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:c4_2"></a>c4_2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:c5"></a>c5</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:c6"></a>c6</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:c7"></a>c7</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cCalibration"></a>cCalibration</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cClusterCharge"></a>cClusterCharge</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cClusterProperties2"></a>cClusterProperties2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cClusterProperties3"></a>cClusterProperties3</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cHitMap"></a>cHitMap</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cM8"></a>cM8</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cMiniVec"></a>cMiniVec</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cMiniVec1"></a>cMiniVec1</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cOptimize"></a>cOptimize[1]</td><td class="datadesc">!</td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cPosStudy1"></a>cPosStudy1</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cPosStudy2"></a>cPosStudy2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cRef"></a>cRef[4]</td><td class="datadesc">!   </td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cSN"></a>cSN[6]</td><td class="datadesc">!</td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cUser"></a>cUser</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cVertexFinder"></a>cVertexFinder</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:casym"></a>casym</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ccomp"></a>ccomp</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ccomp2"></a>ccomp2</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ccomp3"></a>ccomp3</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:ceffi"></a>ceffi</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cfake"></a>cfake</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:cres"></a>cres</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas**</td><td class="dataname"><a name="MHist:cresfit"></a>cresfit</td><td class="datadesc">JB 2009/09/14</td></tr>
+<tr class="data"><td class="datatype">TDirectory*</td><td class="dataname"><a name="MHist:dir"></a>dir</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:dtime"></a>dtime</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:duvall"></a>duvall</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:effimap"></a>effimap</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:etal"></a>etal[2]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:etal1"></a>etal1[2]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="MHist:geomUmax"></a>geomUmax</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="MHist:geomUmin"></a>geomUmin</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="MHist:geomVmax"></a>geomVmax</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="MHist:geomVmin"></a>geomVmin</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:goodtracks"></a>goodtracks</td><td></td></tr>
+<tr class="data"><td class="datatype">TGraphErrors*</td><td class="dataname"><a name="MHist:greff"></a>greff</td><td></td></tr>
+<tr class="data"><td class="datatype">TGraphErrors*</td><td class="dataname"><a name="MHist:grevt"></a>grevt</td><td></td></tr>
+<tr class="data"><td class="datatype">TGraphErrors*</td><td class="dataname"><a name="MHist:grnum"></a>grnum</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1NumberOfHitsMult"></a>h1NumberOfHitsMult</td><td class="datadesc">JH 2014/06/25</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1ProjectionOnX"></a>h1ProjectionOnX</td><td class="datadesc">JH 2014/06/17</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1ProjectionOnXMult"></a>h1ProjectionOnXMult[4]</td><td class="datadesc">JH 2014/06/19</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1ProjectionOnY"></a>h1ProjectionOnY</td><td class="datadesc">JH 2014/06/19</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1ProjectionOnYMult"></a>h1ProjectionOnYMult[4]</td><td class="datadesc">JH 2014/06/19</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1RmsOnTheta"></a>h1RmsOnTheta</td><td class="datadesc">JH 2014/06/16</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1Sigma"></a>h1Sigma</td><td class="datadesc">JH 2014/06/19</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1SigmaSlices"></a>h1SigmaSlices</td><td class="datadesc">JH 2014/07/29</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h1SigmaSlices_Pull"></a>h1SigmaSlices_Pull</td><td class="datadesc">JH 2014/07/29</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2DgoodSeedPixel"></a>h2DgoodSeedPixel</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2DpictureMatched"></a>h2DpictureMatched</td><td class="datadesc">JB 2014/01/10</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2GoodHitsMult"></a>h2GoodHitsMult[4]</td><td class="datadesc">JH 2014/06/25</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2RmsOnThetaScanVsThetaCut"></a>h2RmsOnThetaScanVsThetaCut</td><td class="datadesc">JH 2014/07/30</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2dCharge_Charge_DiodePosition_CluSize"></a>h2dCharge_Charge_DiodePosition_CluSize</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2dCharge_Charge_DiodePosition_Track"></a>h2dCharge_Charge_DiodePosition_Track</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2dallhits"></a>h2dallhits</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2dgoodhits"></a>h2dgoodhits</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:h2dmatchedhits"></a>h2dmatchedhits</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAHTURes"></a>hAHTURes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAHTVRes"></a>hAHTVRes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAlignHuTu"></a>hAlignHuTu</td><td class="datadesc">JB 2010/03/12</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAlignHuTuvsHv"></a>hAlignHuTuvsHv</td><td class="datadesc">JB 2010/03/12</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAlignHuTuvsTu"></a>hAlignHuTuvsTu</td><td class="datadesc">JB 2013/07/16</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAlignHuTuvsTv"></a>hAlignHuTuvsTv</td><td class="datadesc">JB 2010/03/12</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAlignHvTv"></a>hAlignHvTv</td><td class="datadesc">JB 2010/03/12</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAlignHvTvvsHu"></a>hAlignHvTvvsHu</td><td class="datadesc">JB 2010/03/12</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAlignHvTvvsTu"></a>hAlignHvTvvsTu</td><td class="datadesc">JB 2010/03/12</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAlignHvTvvsTv"></a>hAlignHvTvvsTv</td><td class="datadesc">JB 2013/07/16</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAllHitsInPixel"></a>hAllHitsInPixel</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAllHuvsAllTu"></a>hAllHuvsAllTu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllHuvsAllTu1"></a>hAllHuvsAllTu1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllHuvsAllTu2"></a>hAllHuvsAllTu2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAllHuvsAllTv"></a>hAllHuvsAllTv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAllHvvsAllTu"></a>hAllHvvsAllTu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAllHvvsAllTv"></a>hAllHvvsAllTv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllHvvsAllTv1"></a>hAllHvvsAllTv1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllHvvsAllTv2"></a>hAllHvvsAllTv2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllHvvsAllTv3"></a>hAllHvvsAllTv3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllS2N"></a>hAllS2N</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllTu"></a>hAllTu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hAllTv"></a>hAllTv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hAllTvTu"></a>hAllTvTu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hBinary_NhitRateperpixel_submatrix"></a>hBinary_NhitRateperpixel_submatrix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hBinary_Nhitperpixel_submatrix"></a>hBinary_Nhitperpixel_submatrix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hBinary_NumberOf_1_ALL"></a>hBinary_NumberOf_1_ALL</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hBinary_NumberOf_1_goodhit"></a>hBinary_NumberOf_1_goodhit</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hBinary_NumberOf_1_submatrix"></a>hBinary_NumberOf_1_submatrix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hBinary_test"></a>hBinary_test</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCDSvar"></a>hCDSvar</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCG2x2tu1"></a>hCG2x2tu1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCG2x2tu1L"></a>hCG2x2tu1L</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCG2x2tv1"></a>hCG2x2tv1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCG2x2tv1L"></a>hCG2x2tv1L</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCG5URes"></a>hCG5URes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCG5VRes"></a>hCG5VRes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeCoG_Correl"></a>hChargeCoG_Correl</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeCoG_Correl2"></a>hChargeCoG_Correl2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeCor_1_2"></a>hChargeCor_1_2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeCor_1_3"></a>hChargeCor_1_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeCor_1_4"></a>hChargeCor_1_4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeCor_2_3"></a>hChargeCor_2_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrIn1stLeftNeigh"></a>hChargeDistrIn1stLeftNeigh</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrIn1stRightNeigh"></a>hChargeDistrIn1stRightNeigh</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrIn2ndLeftNeigh"></a>hChargeDistrIn2ndLeftNeigh</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrIn2ndRightNeigh"></a>hChargeDistrIn2ndRightNeigh</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrIn3rdLeftNeigh"></a>hChargeDistrIn3rdLeftNeigh</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrIn3rdRightNeigh"></a>hChargeDistrIn3rdRightNeigh</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrInLine"></a>hChargeDistrInLine</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeDistrInSeed"></a>hChargeDistrInSeed</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeInCluster"></a>hChargeInCluster</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeInCross"></a>hChargeInCross</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeInCrown1"></a>hChargeInCrown1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeInCrown2"></a>hChargeInCrown2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeInSeed"></a>hChargeInSeed</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeInSeedInGroup"></a>hChargeInSeedInGroup[64]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeInX"></a>hChargeInX</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeIntSmoothed"></a>hChargeIntSmoothed</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeIntegral"></a>hChargeIntegral</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeIntegral1"></a>hChargeIntegral1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeIntegral2"></a>hChargeIntegral2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeIntegral3"></a>hChargeIntegral3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeIntegral4"></a>hChargeIntegral4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeNorm1"></a>hChargeNorm1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeNorm2"></a>hChargeNorm2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeNorm3"></a>hChargeNorm3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeNorm4"></a>hChargeNorm4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder1"></a>hChargeOrder1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder2"></a>hChargeOrder2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder3"></a>hChargeOrder3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder4"></a>hChargeOrder4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder5"></a>hChargeOrder5</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder6"></a>hChargeOrder6</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder7"></a>hChargeOrder7</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder8"></a>hChargeOrder8</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeOrder9"></a>hChargeOrder9</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeRap_1_over_2"></a>hChargeRap_1_over_2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeRap_1_over_3"></a>hChargeRap_1_over_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeRap_1_over_4"></a>hChargeRap_1_over_4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeRap_2_over_3"></a>hChargeRap_2_over_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeSum_4"></a>hChargeSum_4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hChargeVsDistance"></a>hChargeVsDistance</td><td class="datadesc">clm 2013/07/16 </td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hChargeVsPosition"></a>hChargeVsPosition</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hClusterChargeNorm"></a>hClusterChargeNorm</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hClusterChargeProfile"></a>hClusterChargeProfile</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hClusterMeanForm"></a>hClusterMeanForm</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hClusterSizeInColumns"></a>hClusterSizeInColumns</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hClusterSizeInLines"></a>hClusterSizeInLines</td><td class="datadesc">JB 2014/03/31</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hClusterTest1"></a>hClusterTest1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hClusterTest2"></a>hClusterTest2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hClusterTypes"></a>hClusterTypes</td><td class="datadesc">JB 2014/03/31</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hCountPixels"></a>hCountPixels[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDifCorU"></a>hDifCorU</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDifCorV"></a>hDifCorV</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleX"></a>hDiffAngleX</td><td class="datadesc">NCS 210110</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleX11"></a>hDiffAngleX11</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleX12"></a>hDiffAngleX12</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleX21"></a>hDiffAngleX21</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleX22"></a>hDiffAngleX22</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleXg1g1"></a>hDiffAngleXg1g1</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleY"></a>hDiffAngleY</td><td class="datadesc">NCS 210110</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleY11"></a>hDiffAngleY11</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleY12"></a>hDiffAngleY12</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleY21"></a>hDiffAngleY21</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleY22"></a>hDiffAngleY22</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffAngleYg1g1"></a>hDiffAngleYg1g1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffPosX"></a>hDiffPosX</td><td class="datadesc">NCS 210110</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hDiffPosY"></a>hDiffPosY</td><td class="datadesc">NCS 210110</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hDistVSeedOtherNewCalc"></a>hDistVSeedOtherNewCalc</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hDistVSeedOtherOldCalc"></a>hDistVSeedOtherOldCalc</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2"></a>hEta2x2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2U"></a>hEta2x2U</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2UL"></a>hEta2x2UL</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2V"></a>hEta2x2V</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2VL"></a>hEta2x2VL</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2m"></a>hEta2x2m</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2tu1"></a>hEta2x2tu1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2tu1L"></a>hEta2x2tu1L</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hEta2x2tu2"></a>hEta2x2tu2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hEta2x2tu2L"></a>hEta2x2tu2L</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2tv1"></a>hEta2x2tv1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta2x2tv1L"></a>hEta2x2tv1L</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hEta2x2tv2"></a>hEta2x2tv2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hEta2x2tv2L"></a>hEta2x2tv2L</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hEta2x2vsInd"></a>hEta2x2vsInd</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta3DigU"></a>hEta3DigU</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta3DigV"></a>hEta3DigV</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta3URes"></a>hEta3URes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEta3VRes"></a>hEta3VRes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEtaURes"></a>hEtaURes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEtaU_2x2Res"></a>hEtaU_2x2Res</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEtaU_5x5Res"></a>hEtaU_5x5Res</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEtaVRes"></a>hEtaVRes</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEtaV_2x2Res"></a>hEtaV_2x2Res</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hEtaV_5x5Res"></a>hEtaV_5x5Res</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hGOODChargeCor_1_2"></a>hGOODChargeCor_1_2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hGOODChargeCor_1_3"></a>hGOODChargeCor_1_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hGOODChargeCor_1_4"></a>hGOODChargeCor_1_4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hGOODChargeCor_2_3"></a>hGOODChargeCor_2_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder1"></a>hGOODChargeOrder1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder2"></a>hGOODChargeOrder2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder3"></a>hGOODChargeOrder3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder4"></a>hGOODChargeOrder4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder5"></a>hGOODChargeOrder5</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder6"></a>hGOODChargeOrder6</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder7"></a>hGOODChargeOrder7</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder8"></a>hGOODChargeOrder8</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeOrder9"></a>hGOODChargeOrder9</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeRap_1_over_2"></a>hGOODChargeRap_1_over_2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeRap_1_over_3"></a>hGOODChargeRap_1_over_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeRap_1_over_4"></a>hGOODChargeRap_1_over_4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeRap_2_over_3"></a>hGOODChargeRap_2_over_3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODChargeSum_4"></a>hGOODChargeSum_4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGOODqcel"></a>hGOODqcel</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGoodChi2AngleXZ"></a>hGoodChi2AngleXZ</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGoodChi2AngleYZ"></a>hGoodChi2AngleYZ</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGoodChi2Tu"></a>hGoodChi2Tu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGoodChi2Tv"></a>hGoodChi2Tv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hGoodChi2TvTu"></a>hGoodChi2TvTu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGoodChi2Tx"></a>hGoodChi2Tx</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hGoodChi2Ty"></a>hGoodChi2Ty</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge25_diodedist"></a>hHOM_Charge25_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH3F*</td><td class="dataname"><a name="MHist:hHOM_Charge25_diodedist3D"></a>hHOM_Charge25_diodedist3D</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge2_diodedist"></a>hHOM_Charge2_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH3F*</td><td class="dataname"><a name="MHist:hHOM_Charge2_diodedist3D"></a>hHOM_Charge2_diodedist3D</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge4_diodedist"></a>hHOM_Charge4_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH3F*</td><td class="dataname"><a name="MHist:hHOM_Charge4_diodedist3D"></a>hHOM_Charge4_diodedist3D</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge9_diodedist"></a>hHOM_Charge9_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH3F*</td><td class="dataname"><a name="MHist:hHOM_Charge9_diodedist3D"></a>hHOM_Charge9_diodedist3D</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist"></a>hHOM_Charge_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH3F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist3D"></a>hHOM_Charge_diodedist3D</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_00_10"></a>hHOM_Charge_diodedist_00_10</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_10_20"></a>hHOM_Charge_diodedist_10_20</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_20_30"></a>hHOM_Charge_diodedist_20_30</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_30_40"></a>hHOM_Charge_diodedist_30_40</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_40_50"></a>hHOM_Charge_diodedist_40_50</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_50_60"></a>hHOM_Charge_diodedist_50_60</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_60_70"></a>hHOM_Charge_diodedist_60_70</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_70_80"></a>hHOM_Charge_diodedist_70_80</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_80_90"></a>hHOM_Charge_diodedist_80_90</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_90_inf"></a>hHOM_Charge_diodedist_90_inf</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_alg"></a>hHOM_Charge_diodedist_alg</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_alg_u"></a>hHOM_Charge_diodedist_alg_u</td><td class="datadesc">clm</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Charge_diodedist_alg_v"></a>hHOM_Charge_diodedist_alg_v</td><td class="datadesc">clm</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_DU_Nevent"></a>hHOM_DU_Nevent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_DV_Nevent"></a>hHOM_DV_Nevent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_Noise_diodedist"></a>hHOM_Noise_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_ResEta25_U"></a>hHOM_ResEta25_U</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hHOM_ResEta25_V"></a>hHOM_ResEta25_V</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_ResU_tu"></a>hHOM_ResU_tu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_ResV_tv"></a>hHOM_ResV_tv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_SNseed_diodedist"></a>hHOM_SNseed_diodedist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUCG2x2_modVCG2x2"></a>hHOM_modUCG2x2_modVCG2x2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUCG5x5_modVCG5x5"></a>hHOM_modUCG5x5_modVCG5x5</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUCG_Nevent"></a>hHOM_modUCG_Nevent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUCG_modVCG"></a>hHOM_modUCG_modVCG</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUCG_modtu"></a>hHOM_modUCG_modtu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUCG_realtu"></a>hHOM_modUCG_realtu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUeta2x2_modVeta2x2"></a>hHOM_modUeta2x2_modVeta2x2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUeta3_Eta3U"></a>hHOM_modUeta3_Eta3U</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUeta3_modUCG"></a>hHOM_modUeta3_modUCG</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUeta3_modVeta3"></a>hHOM_modUeta3_modVeta3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUeta3_modtu"></a>hHOM_modUeta3_modtu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUeta3_realtu"></a>hHOM_modUeta3_realtu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modUeta5x5_modVeta5x5"></a>hHOM_modUeta5x5_modVeta5x5</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modVCG_Nevent"></a>hHOM_modVCG_Nevent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modVCG_modtv"></a>hHOM_modVCG_modtv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modVCG_realtv"></a>hHOM_modVCG_realtv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modVeta3_Eta3V"></a>hHOM_modVeta3_Eta3V</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modVeta3_modVCG"></a>hHOM_modVeta3_modVCG</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modVeta3_modtv"></a>hHOM_modVeta3_modtv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modVeta3_realtv"></a>hHOM_modVeta3_realtv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modtu_Nevent"></a>hHOM_modtu_Nevent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_modtv_Nevent"></a>hHOM_modtv_Nevent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hHOM_tu_tv_modulo"></a>hHOM_tu_tv_modulo</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hIndex2x2"></a>hIndex2x2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hMultVsFormFactor"></a>hMultVsFormFactor[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hMultVsFormFactor1D"></a>hMultVsFormFactor1D[10]</td><td class="datadesc">clm added back 1D clu mult. 2013.08.25</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNGoodGeomTracksPerEvent"></a>hNGoodGeomTracksPerEvent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNTracksPerEvent"></a>hNTracksPerEvent</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNTracksPerEventievt"></a>hNTracksPerEventievt</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNhitRateperpixel"></a>hNhitRateperpixel</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNhitperpixel"></a>hNhitperpixel</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNhitsPerTrack_all"></a>hNhitsPerTrack_all</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNhitsPerTrack_good"></a>hNhitsPerTrack_good</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNhitsPerTrack_matched"></a>hNhitsPerTrack_matched</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hNorm"></a>hNorm</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hNpixInClu"></a>hNpixInClu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hPedestal"></a>hPedestal</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hPixelsOverCharge"></a>hPixelsOverCharge[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hPixelsOverSNR"></a>hPixelsOverSNR[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hPixelsPerFakeRate"></a>hPixelsPerFakeRate</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQ3x327"></a>hQ3x327</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQ3x327r"></a>hQ3x327r</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQ3x34"></a>hQ3x34</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQ3x345"></a>hQ3x345</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQ3x345r"></a>hQ3x345r</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQ3x35"></a>hQ3x35</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQofPix3x3"></a>hQofPix3x3</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQpixInClu"></a>hQpixInClu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hQseedAll"></a>hQseedAll</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hQseedvsQcluster"></a>hQseedvsQcluster</td><td class="datadesc">JB 2014/05/22</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hQseedvsQneighbour"></a>hQseedvsQneighbour</td><td class="datadesc">JB 2013/11/08</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hRealTrackNoise"></a>hRealTrackNoise</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRealTrackNoise_time"></a>hRealTrackNoise_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRef_Tud_vs_Chi2"></a>hRef_Tud_vs_Chi2[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRef_Tud_vs_TDOX"></a>hRef_Tud_vs_TDOX[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRef_Tud_vs_TDOY"></a>hRef_Tud_vs_TDOY[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRef_Tud_vs_Tk1"></a>hRef_Tud_vs_Tk1[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRef_Tud_vs_Tu"></a>hRef_Tud_vs_Tu[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRef_Tud_vs_Tu1"></a>hRef_Tud_vs_Tu1[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hRef_Tud_vs_Tv"></a>hRef_Tud_vs_Tv[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hS2N2All"></a>hS2N2All</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hS2N2RH"></a>hS2N2RH</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hS2N2nd"></a>hS2N2nd</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hS2N2ndRH"></a>hS2N2ndRH</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hSNNReal"></a>hSNNReal</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hSNReal"></a>hSNReal</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hSN_vs_SNNReal"></a>hSN_vs_SNNReal</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hSNneighbour"></a>hSNneighbour</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hSNseedvsQcluster"></a>hSNseedvsQcluster</td><td class="datadesc">JB 2014/05/22</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hSNseedvsSNneighbour"></a>hSNseedvsSNneighbour</td><td class="datadesc">JB 2013/11/07</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hSeedBetweenDist"></a>hSeedBetweenDist</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hTHCorr2"></a>hTHCorr2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hTrackToClusterMinDistance"></a>hTrackToClusterMinDistance</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hTuHuCorr"></a>hTuHuCorr</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hTvHvCorr"></a>hTvHvCorr</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hUcorTuInPix"></a>hUcorTuInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hUeta3TuInPix"></a>hUeta3TuInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hUserHitCorrelationCol"></a>hUserHitCorrelationCol</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hUserHitCorrelationLine"></a>hUserHitCorrelationLine</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hVcorTvInPix"></a>hVcorTvInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hVertexPosX"></a>hVertexPosX</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hVertexPosXY"></a>hVertexPosXY</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hVertexPosY"></a>hVertexPosY</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hVertexPosZ"></a>hVertexPosZ</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hVertexTrackChi2"></a>hVertexTrackChi2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hVertexTrackDistance"></a>hVertexTrackDistance</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hVeta3TvInPix"></a>hVeta3TvInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:h_SNRratioL"></a>h_SNRratioL</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hallSN_minus_hgoodSN_vs_SNN"></a>hallSN_minus_hgoodSN_vs_SNN</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hallSN_vs_SNN"></a>hallSN_vs_SNN</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hallSNneighbour"></a>hallSNneighbour</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hallhitSN"></a>hallhitSN</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hchi2"></a>hchi2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hchi2_c"></a>hchi2_c</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hchi2_nc"></a>hchi2_nc</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hdCGDigU"></a>hdCGDigU</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdCGDigUV"></a>hdCGDigUV</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdCGDigUVMult"></a>hdCGDigUVMult[6]</td><td class="datadesc">JH 2014/07/22</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hdCGDigV"></a>hdCGDigV</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hdCGEtaU"></a>hdCGEtaU</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hdCGEtaV"></a>hdCGEtaV</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdiffydiffx"></a>hdiffydiffx</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdiffydiffx11"></a>hdiffydiffx11</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdiffydiffx12"></a>hdiffydiffx12</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdiffydiffx21"></a>hdiffydiffx21</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdiffydiffx22"></a>hdiffydiffx22</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdiffydiffxg1g1"></a>hdiffydiffxg1g1</td><td class="datadesc">JB 2011/11/01</td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hdistchi2"></a>hdistchi2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hdummy"></a>hdummy</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hgoodSN_vs_SNN"></a>hgoodSN_vs_SNN</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hgoodSNneighbour"></a>hgoodSNneighbour</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hgoodSeedPixel"></a>hgoodSeedPixel</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hhu"></a>hhu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hhuS"></a>hhuS</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hhv"></a>hhv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hhvS"></a>hhvS</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hhx"></a>hhx</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hhy"></a>hhy</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hind"></a>hind</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hindivq"></a>hindivq[361]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnGOODhit"></a>hnGOODhit</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnGOODhitwhentrack"></a>hnGOODhitwhentrack</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hnahitievt"></a>hnahitievt</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnhit"></a>hnhit</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnhitievt"></a>hnhitievt</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnpix"></a>hnpix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnpixCumul_c"></a>hnpixCumul_c</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnpix_c"></a>hnpix_c</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hnpix_nc"></a>hnpix_nc</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hoptimalsize"></a>hoptimalsize</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1D*</td><td class="dataname"><a name="MHist:hprojC"></a>hprojC[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1D*</td><td class="dataname"><a name="MHist:hprojCForm"></a>hprojCForm</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1D*</td><td class="dataname"><a name="MHist:hprojL"></a>hprojL[10]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1D*</td><td class="dataname"><a name="MHist:hprojLForm"></a>hprojLForm</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqNeighbourCalibration"></a>hqNeighbourCalibration</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqSeedCalibration"></a>hqSeedCalibration</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hqSeedVsNeighbourCalibration"></a>hqSeedVsNeighbourCalibration</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqc"></a>hqc</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqc_c"></a>hqc_c</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqc_nc"></a>hqc_nc</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqcel"></a>hqcel</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqcn"></a>hqcn[361]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hqcngeom"></a>hqcngeom[361]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1CDS"></a>hraw1CDS</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1CDS_time"></a>hraw1CDS_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1Noise"></a>hraw1Noise</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1NoiseBAD_time"></a>hraw1NoiseBAD_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1NoiseGOOD_time"></a>hraw1NoiseGOOD_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1Noise_time"></a>hraw1Noise_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1PFrfr1BAD"></a>hraw1PFrfr1BAD</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1PFrfr1BAD_time"></a>hraw1PFrfr1BAD_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1PFrfr1GOOD"></a>hraw1PFrfr1GOOD</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1PFrfr1GOOD_time"></a>hraw1PFrfr1GOOD_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1PFrfr2BAD"></a>hraw1PFrfr2BAD</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1PFrfr2BAD_time"></a>hraw1PFrfr2BAD_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1PFrfr2GOOD"></a>hraw1PFrfr2GOOD</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1PFrfr2GOOD_time"></a>hraw1PFrfr2GOOD_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1Pedestal"></a>hraw1Pedestal</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1Pedestal_time"></a>hraw1Pedestal_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1Signal"></a>hraw1Signal</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1Signal_time"></a>hraw1Signal_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1badone"></a>hraw1badone</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1badoneNoise_time"></a>hraw1badoneNoise_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1badone_time"></a>hraw1badone_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hraw1goodone"></a>hraw1goodone</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1goodoneNoise_time"></a>hraw1goodoneNoise_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hraw1goodone_time"></a>hraw1goodone_time</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hseedQvsS2NAll"></a>hseedQvsS2NAll</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hseedQvsS2NGood"></a>hseedQvsS2NGood</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hsn"></a>hsn</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hsnALL_seed_vs_pix_0"></a>hsnALL_seed_vs_pix_0[8]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hsnALL_seed_vs_pix_1"></a>hsnALL_seed_vs_pix_1[8]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hsn_pix_0"></a>hsn_pix_0[8]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hsn_pix_1"></a>hsn_pix_1[8]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hsn_seed_vs_pix_0"></a>hsn_seed_vs_pix_0[8]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hsn_seed_vs_pix_1"></a>hsn_seed_vs_pix_1[8]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hsnc"></a>hsnc</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hsnc1"></a>hsnc1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hsnn"></a>hsnn[361]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:htmp5"></a>htmp5</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:htu"></a>htu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:htuhtv"></a>htuhtv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:htuvInPix"></a>htuvInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:htv"></a>htv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huCG2x2tuInPix"></a>huCG2x2tuInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huCG5tu"></a>huCG5tu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huCGtu"></a>huCGtu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:huCGtu1"></a>huCGtu1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:huCGtu2"></a>huCGtu2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huCGtuInPix"></a>huCGtuInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huCGtuInPix4"></a>huCGtuInPix4</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huCGtuInPix5"></a>huCGtuInPix5</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hudv"></a>hudv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hutuPL3"></a>hutuPL3</td><td class="datadesc">NCS 260110 not CG position only Hu Hv</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hutuPL4"></a>hutuPL4</td><td class="datadesc">NCS 260110 </td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huv"></a>huv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:huvBad"></a>huvBad</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hvCG2x2tvInPix"></a>hvCG2x2tvInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hvCG5tv"></a>hvCG5tv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hvCGtv"></a>hvCGtv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hvCGtv1"></a>hvCGtv1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hvCGtv2"></a>hvCGtv2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hvCGtvInPix"></a>hvCGtvInPix</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hvCGtvInPix5"></a>hvCGtvInPix5</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hvdu"></a>hvdu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hvtvPL3"></a>hvtvPL3</td><td class="datadesc">NCS 260110 </td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hvtvPL4"></a>hvtvPL4</td><td class="datadesc">NCS 260110 </td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hxtxPL3"></a>hxtxPL3</td><td class="datadesc">NCS 260110 not CG position only Hu Hv</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hxtxPL4"></a>hxtxPL4</td><td class="datadesc">NCS 260110 </td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hxy"></a>hxy</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:hxyBad"></a>hxyBad</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hytyPL3"></a>hytyPL3</td><td class="datadesc">NCS 260110 </td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:hytyPL4"></a>hytyPL4</td><td class="datadesc">NCS 260110 </td></tr>
+<tr class="data"><td class="datatype">static <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MHist:jpixmax"></a>jpixmax</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a></td><td class="dataname"><a name="MHist:nom"></a>nom[50]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a></td><td class="dataname"><a name="MHist:nomRef"></a>nomRef[50]</td><td></td></tr>
+<tr class="data"><td class="datatype">static <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MHist:numcanvas"></a>numcanvas</td><td></td></tr>
+<tr class="data"><td class="datatype">static <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MHist:numcanvasOptimize"></a>numcanvasOptimize</td><td></td></tr>
+<tr class="data"><td class="datatype">static <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MHist:numcanvasSN"></a>numcanvasSN</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:projC"></a>projC</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:projL"></a>projL</td><td></td></tr>
+<tr class="data"><td class="datatype">TDirectory*</td><td class="dataname"><a name="MHist:saved"></a>saved</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:selection"></a>selection</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:shape"></a>shape</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MHist:solo"></a>solo</td><td></td></tr>
+<tr class="data"><td class="datatype">TText*</td><td class="dataname"><a name="MHist:textLabel"></a>textLabel[9]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a></td><td class="dataname"><a name="MHist:titre"></a>titre[150]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a></td><td class="dataname"><a name="MHist:titreref"></a>titreref[100]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tudv"></a>tudv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tuhu"></a>tuhu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:tuhu1"></a>tuhu1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tuhv"></a>tuhv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tuv"></a>tuv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tuv1"></a>tuv1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tvdu"></a>tvdu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tvhu"></a>tvhu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:tvhv"></a>tvhv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:tvhv1"></a>tvhv1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MHist:vec"></a>vec</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:vecu"></a>vecu[25]</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MHist:vecv"></a>vecv[25]</td><td></td></tr>
+
+</table></div>
+</div>
+<h2><a id="MHist:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="MHist" href="./MHist.html">MHist</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td>&larr;</td><td><table><tr>
+<td bgcolor="#f7f7f7"><table><tr><td>
+<center><tt><a name="MimosaAnalysis" href="./MimosaAnalysis.html">MimosaAnalysis</a></tt></center></td>
+<td></td>
+</tr></table></td>
+</tr></table></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="MHist:MHist" href="src/MHist.cxx.html#jlqFvD">MHist</a>()</span><br />
+<div class="funccomm"><pre> Create histogram manager object. Histograms will be created
+ in the <span class="string">"dir"</span> directory.
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="MHist:_MHist" href="src/MHist.cxx.html#rIoFp">~MHist</a>()</span><br />
+<div class="funccomm"><pre> Clean up all histograms.
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MHist:Dir" href="src/MHist.cxx.html#mkLIZ">Dir</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH1F* <a class="funcname" name="MHist:AutoZoom" href="src/MHist.cxx.html#aFmPUB">AutoZoom</a>(TH1F* H, <a href="./ListOfTypes.html#Option_t">Option_t</a>* aType = <span class="string">"all"</span>, <a href="./ListOfTypes.html#Int_t">Int_t</a> EntryMin = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH2F* <a class="funcname" name="MHist:AutoZoom%1" href="src/MHist.cxx.html#xQAkfB">AutoZoom</a>(TH2F* H, <a href="./ListOfTypes.html#Option_t">Option_t</a>* aType = <span class="string">"all"</span>, <a href="./ListOfTypes.html#Int_t">Int_t</a> EntryMin = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MHist:BookingHistograms" href="src/MHist.cxx.html#wgrzCE">BookingHistograms</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> RunNumber, <a href="./ListOfTypes.html#Float_t">Float_t</a> PixelSizeU, <a href="./ListOfTypes.html#Float_t">Float_t</a> PixelSizeV, <a href="./ListOfTypes.html#Int_t">Int_t</a> NofPixelInRaw, <a href="./ListOfTypes.html#Int_t">Int_t</a> NofPixelInColumn, <a href="./ListOfTypes.html#Float_t">Float_t</a> TrackToHitDistanceLimit, <a href="./DSetup.html">DSetup</a>* aSetup, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifReferenceTrack = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifCalibration = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifLaserSpot = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifMiniVector = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifVertex = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifFake = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifImaging = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</span><br />
+<div class="funccomm"><pre> Y.G.&amp;  A.B declaration of all the histograms filled in MAnalysis.
+
+ Note that ranges are defined by a number of global variables in the
+  section 'Chip specification setting'.
+
+ The same kind of Histogram could appear several times for various
+  hit status: ALL, GOOD, SELECTED or MATCHED.
+ Below, histograms are grouped by such hit status.
+
+ See modifications on top of this file
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MHist:Clear" href="src/MHist.cxx.html#RmhCxC">Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>*  = <span class="string">""</span>)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="MHist:MHist" href="src/MHist.h.html#O.J2pB">MHist</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>** <a class="funcname" name="MHist:Zero" href="src/MHist.h.html#A7W3HC">Zero</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>** ptr, <span class="keyword">int</span> size = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TCanvas** <a class="funcname" name="MHist:Zero%1" href="src/MHist.h.html#mC_.UD">Zero</a>(TCanvas** ptr, <span class="keyword">int</span> size = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TProfile** <a class="funcname" name="MHist:Zero%2" href="src/MHist.h.html#eeoMM">Zero</a>(TProfile** ptr, <span class="keyword">int</span> size = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TProfile2D** <a class="funcname" name="MHist:Zero%3" href="src/MHist.h.html#X6qYhE">Zero</a>(TProfile2D** ptr, <span class="keyword">int</span> size = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH1F** <a class="funcname" name="MHist:Zero%4" href="src/MHist.h.html#bNvl4">Zero</a>(TH1F** ptr, <span class="keyword">int</span> size = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH2F** <a class="funcname" name="MHist:Zero%5" href="src/MHist.h.html#jD5bk">Zero</a>(TH2F** ptr, <span class="keyword">int</span> size = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH3F** <a class="funcname" name="MHist:Zero%6" href="src/MHist.h.html#Lhb5Q">Zero</a>(TH3F** ptr, <span class="keyword">int</span> size = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* <a class="funcname" name="MHist:Zero%7" href="src/MHist.h.html#aOXum">Zero</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TCanvas* <a class="funcname" name="MHist:Zero%8" href="src/MHist.h.html#XsiNgB">Zero</a>(TCanvas* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TProfile* <a class="funcname" name="MHist:Zero%9" href="src/MHist.h.html#dxaTp">Zero</a>(TProfile* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TProfile2D* <a class="funcname" name="MHist:Zero%10" href="src/MHist.h.html#sX4sUE">Zero</a>(TProfile2D* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH1F* <a class="funcname" name="MHist:Zero%11" href="src/MHist.h.html#ip1dOD">Zero</a>(TH1F* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH2F* <a class="funcname" name="MHist:Zero%12" href="src/MHist.h.html#ssWXf">Zero</a>(TH2F* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH3F* <a class="funcname" name="MHist:Zero%13" href="src/MHist.h.html#l2MXf">Zero</a>(TH3F* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TGraphErrors* <a class="funcname" name="MHist:Zero%14" href="src/MHist.h.html#SE7U5B">Zero</a>(TGraphErrors* ptr)</span><br />
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/maf:$Name:  $:$Id: MHist.h,v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

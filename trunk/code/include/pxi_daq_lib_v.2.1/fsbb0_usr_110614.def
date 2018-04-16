@@ -1,0 +1,144 @@
+/*******************************************************************************
+File      : x:\lib\com\maps\fsbb0\fsbb0_usr.def
+Goal      : Macros definition of Ultimate 1 library.
+          : It provides Ultimate 1 types definition and data handling functions.
+Prj date  : 28/02/2011
+File date : 28/02/2011
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+: as it stays in a public research context. You are not allowed to use it
+: for commercial purpose. You must put this header with laboratory and
+: authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef FSBB0_USR_DEF
+#define FSBB0_USR_DEF
+
+#ifdef FSBB0__APP_DLL_TEST_ULT1
+  #include "fsbb0_usr_test_ult1.def"
+#else
+
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+// -----------------------------------------------------------------------------
+// Special constant for FSBB0 (Not needed on Mi26, Mi28)
+//
+// Due to FSBB0 integration time (41,6 us) and ro frequency (DDR @ 160 MHz)
+// the total number of bits sent on each link is NOT a multiple of the maximum
+// frame length in W30, there are 22 bits more.
+// This value is defined by the following constant
+// -----------------------------------------------------------------------------
+
+#define FSBB0__ZS_HW_FRAME_PADDING_BITS_AT_END  22 // Padding bits at end of frame  
+
+
+
+// 27/05/2014 - GC : Rename cst & update values
+//
+// #define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W16_SZ 892 //ult = 1856 // Mi26 = 576
+// #define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W8_SZ  1784  //ult=3712 //
+//
+// #define FSBB0__ZS_FFRAME_MODE_2X160MHZ_MAX_DATA_PART_W16_SZ 886 // Add on 11/05/2011 - value per link
+// #define FSBB0__ZS_FFRAME_MODE_2X160MHZ_MAX_DATA_PART_W8_SZ  1772 // Add on 11/05/2011 - value per link
+
+// -----------------------------------------------------------------------------
+// Frame total size & data part size (per link) FSBB0 in mode 1 link @ 160 MHz
+// -----------------------------------------------------------------------------
+
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_W32_SZ  443 // FSBB0 =  443 = Total number of W30 / frame / link including Header, Trigger, FrCntDataLength, Trailer
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_W16_SZ  886 // FSBB0 =  886 W16 / frame / link including ...
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_W8_SZ  1772 // FSBB0 = 1772  W8 / frame / link including ...
+
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_MAX_DATA_PART_W32_SZ  436 // FSBB0 =   439 = Number of W30 in data part / frame / link
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_MAX_DATA_PART_W16_SZ  878 // FSBB0 =   878 = Number of W16 in data part / frame / link
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_MAX_DATA_PART_W8_SZ  1756 // FSBB0 =  1756 = Number of W8 in data part / frame / link
+
+// -----------------------------------------------------------------------------
+// Frame total size & data part size (per link) FSBB0 in mode 2 links @ 160 MHz
+// -----------------------------------------------------------------------------
+// The value are the same as for 1 link mode ... if there is no erros in doc
+// that's why I prefer to keep two sets of constants
+// -----------------------------------------------------------------------------
+
+
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W32_SZ  443 // FSBB0 =  443 = Total number of W30 / frame / link including Header, Trigger, FrCntDataLength, Trailer
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W16_SZ  886 // FSBB0 =  886 W16 / frame / link including ...
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W8_SZ  1772 // FSBB0 = 1772  W8 / frame / link including ...
+
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_MAX_DATA_PART_W32_SZ  436 // FSBB0 =   439 = Number of W30 in data part / frame / link
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_MAX_DATA_PART_W16_SZ  878 // FSBB0 =   878 = Number of W16 in data part / frame / link
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_MAX_DATA_PART_W8_SZ  1756 // FSBB0 =  1756 = Number of W8 in data part / frame / link
+
+
+
+// FSBB0 will be used with only one link for beam test
+// 22/05/2014 - GC : Redefine cst values
+// 27/05/2014 - GC : Cst removed in fsbb0_usr.def, they were in the two files before ... with different values ...
+
+#define FSBB0__ZS_FFRAME_RAW_MAX_W8      1756  // FSBB0 = 1756 = Maximum data part number of W8 / frame / link
+#define FSBB0__ZS_FFRAME_RAW_MAX_W16      878  // FSBB0 =  878 = Maximum data part number of W16 / frame / link
+#define FSBB0__ZS_FFRAME_RAW_MAX_W32      439  // FSBB0 =  439 = Maximum data part number of W30 / frame / link
+#define FSBB0__ZS_FFRAME_RAW_TOTAL_SZ_W32 443  // FSBB0 =  443 = Total number of W30 / frame / link including Header, Trigger, FrCntDataLength, Trailer
+
+
+#define FSBB0__ZS_FFRAME_MAX_STATES_NB_PER_STATES_REC    18  // 28/05/14 - GC : 9 on G + 9 on G1
+#define FSBB0__ZS_FFRAME_MAX_STATES_REC                 104  // 28/05/14 - GC : One per S-line => 416 lines / 4 = 104 S-lines
+
+
+
+// -----------------------------------------------------------------------------
+// Special constant for FSBB0 (Not needed on Mi26, Mi28)
+//
+// Due to FSBB0 integration time (41,6 us) and ro frequency (DDR @ 160 MHz)
+// the total number of bits sent on each link is NOT a multiple of the maximum
+// frame length in W30, there are 22 bits more.
+// This value is defined by the following constant
+// -----------------------------------------------------------------------------
+
+#define FSBB0__ZS_HW_FRAME_PADDING_BITS_AT_END  22 // Padding bits at end of frame
+
+
+
+// ======================================
+// For FSBB0 discri analysis tools
+// ======================================
+
+// Submatrices number
+
+#define FSBB0__SUB_MAT_NB          1
+
+// --------------------
+// Bias registers index
+// --------------------
+
+#define FSBB0__REG_BIAS_NB        15
+
+#define FSBB0__REG_BIAS_ILVDSTX    0
+#define FSBB0__REG_BIAS_IDISCLP    1
+#define FSBB0__REG_BIAS_IBUFREF    2
+#define FSBB0__REG_BIAS_IVTST1     3
+#define FSBB0__REG_BIAS_IVTST2B    4
+#define FSBB0__REG_BIAS_IVTST2A    5
+#define FSBB0__REG_BIAS_IANABUF    6
+#define FSBB0__REG_BIAS_IVDREF1B   7
+#define FSBB0__REG_BIAS_IVDREF2B   8
+#define FSBB0__REG_BIAS_IVDREF1A   9
+#define FSBB0__REG_BIAS_IVDREF2A  10
+#define FSBB0__REG_BIAS_IDIS1     11
+#define FSBB0__REG_BIAS_IDIS2     12
+#define FSBB0__REG_BIAS_IPIX      13
+#define FSBB0__REG_BIAS_IPIXCLP   14
+
+
+#endif
+
+#endif

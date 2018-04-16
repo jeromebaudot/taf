@@ -1,0 +1,458 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:01 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DLadder</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DLadder','','DLadder.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DLadder.h.html">header file</a>
+<a class="descrheadentry" href="src/DLadder.cxx.html">source file</a>
+<a class="descrheadentry" href="DLadder_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DLadder:description">class description</a> 
+<a class="descrheadentry" href="#DLadder:Function_Members">function members</a>
+<a class="descrheadentry" href="#DLadder:Data_Members">data members</a>
+<a class="descrheadentry" href="#DLadder:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DLadder</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DLadder:description"></a>class DLadder: public TObject</h1>
+<div class="classdescr">
+<pre>
+
+  <a href="./DLadder.html#DLadder:Class" title="TClass* DLadder::Class()">Class</a> that handles a group of planes (or sensors).
+
+  The Ladder class supersedes only the positions/tilts
+    of its associated planes.
+
+  There are some predefined ladder types:
+    - Simple : ?
+    - Plume  : 6 MIMOSA-26 sensors in a raw,
+               with same orientation
+    - Salat  : 4 MIMOSA-28 sensors arranged in a specific way
+               see ...
+
+  For predefined types, the inter
+
+  You may define your own geometry with the <span class="string">"Custom"</span> type
+
+  The class was created by Loic Cousin.
+
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DLadder:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DLadder:DLadder">DLadder</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DLadder:DLadder%2">DLadder</a>(<span class="keyword">const</span> <a href="./DLadder.html">DLadder</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DLadder:DLadder%1">DLadder</a>(<a href="./DTracker.html">DTracker</a>&amp; aTracker, TString ladderName, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderID, <a href="./ListOfTypes.html#Int_t">Int_t</a> aStatus, <a href="./ListOfTypes.html#Float_t">Float_t</a> sensorLengthX, <a href="./ListOfTypes.html#Float_t">Float_t</a> sensorSeparator, <a href="./ListOfTypes.html#Float_t">Float_t</a> distanceFromFoam, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationX, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationY, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationZ)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DLadder:_DLadder">~DLadder</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:AddPlane">AddPlane</a>(<a href="./DPlane.html">DPlane</a>* aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a> planeID)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:AlignLadder">AlignLadder</a>(vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; DataTemp, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> ladderNumber, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DLadder:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:Display">Display</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:Display%1">Display</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> runNumber)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:FillResidus%1">FillResidus</a>(vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; Data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:FillResidus">FillResidus</a>(vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; Data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber, <a href="./DR3.html">DR3</a>&amp; dxdydz)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">vector&lt;<a href="./DR3.html">DR3</a>&gt;&amp;</td><td class="funcname"><a class="funcname" href="#DLadder:GetCenterLadderPosition">GetCenterLadderPosition</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<a href="./DR3.html">DR3</a>&gt;&amp;</td><td class="funcname"><a class="funcname" href="#DLadder:GetDxDyDz">GetDxDyDz</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DLadder:GetLadderPosition">GetLadderPosition</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DLadder:GetLadderRotation">GetLadderRotation</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DLadder:GetLadderType">GetLadderType</a>()</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<a href="./DTrack.html">DTrack</a>*&gt;&amp;</td><td class="funcname"><a class="funcname" href="#DLadder:GetMiniVectors">GetMiniVectors</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DLadder:GetNumberOfPlanes">GetNumberOfPlanes</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DPlane.html">DPlane</a>*</td><td class="funcname"><a class="funcname" href="#DLadder:GetPlane">GetPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> sensorID)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DLadder:GetPlanePosition">GetPlanePosition</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> sensorID)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DLadder:GetPlaneRotation">GetPlaneRotation</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> sensorID)</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DLadder:GetPlaneType">GetPlaneType</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="funcname"><a class="funcname" href="#DLadder:GetPrecAlign">GetPrecAlign</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:GetRelativePosition">GetRelativePosition</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <a href="./DR3.html">DR3</a>* aTilt, <a href="./DR3.html">DR3</a>* aShift)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DLadder:GetStatus">GetStatus</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DTracker.html">DTracker</a>*</td><td class="funcname"><a class="funcname" href="#DLadder:GetTracker">GetTracker</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPlane.html">DPlane</a>*</td><td class="funcname"><a class="funcname" href="#DLadder:GetTrackerPlane">GetTrackerPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> planeID)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DLadder:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:MakeMiniVectors">MakeMiniVectors</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:MakeTrack">MakeTrack</a>(<a href="./DR3.html">DR3</a>&amp; positionLeft, <a href="./DR3.html">DR3</a>&amp; positionRight, <a href="./DTrack.html">DTrack</a>* myTrack)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:MakeTrack2">MakeTrack2</a>(<a href="./DHit.html">DHit</a>* myHitLeft, <a href="./DHit.html">DHit</a>* myHitRight, <a href="./DTrack.html">DTrack</a>* myTrack, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; number)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:MakeTrack4">MakeTrack4</a>(<a href="./DHit.html">DHit</a>* myHitLeft, <a href="./DHit.html">DHit</a>* myHitRight, <a href="./DHit.html">DHit</a>* myHitLeft2, <a href="./DHit.html">DHit</a>* myHitRight2, <a href="./DTrack.html">DTrack</a>* myTrack, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; number)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DLadder.html">DLadder</a>&amp;</td><td class="funcname"><a class="funcname" href="#DLadder:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DLadder.html">DLadder</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DLadder:PlaneToLadder">PlaneToLadder</a>(<a href="./DR3.html">DR3</a>&amp; aPlaneCoordinate, <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:PrepareDisplay">PrepareDisplay</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DLadder:RotationCoordX">RotationCoordX</a>(<span class="keyword">double</span> x, <span class="keyword">double</span> y, <span class="keyword">double</span> z, <span class="keyword">double</span> angleX, <span class="keyword">double</span> angleY, <span class="keyword">double</span> angleZ)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DLadder:RotationCoordY">RotationCoordY</a>(<span class="keyword">double</span> x, <span class="keyword">double</span> y, <span class="keyword">double</span> z, <span class="keyword">double</span> angleX, <span class="keyword">double</span> angleY, <span class="keyword">double</span> angleZ)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DLadder:RotationCoordZ">RotationCoordZ</a>(<span class="keyword">double</span> x, <span class="keyword">double</span> y, <span class="keyword">double</span> z, <span class="keyword">double</span> angleX, <span class="keyword">double</span> angleY, <span class="keyword">double</span> angleZ)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:SetDistanceFromFoam">SetDistanceFromFoam</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> distanceFromFoam)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:SetLadderType">SetLadderType</a>(TString aType)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:SetRotation">SetRotation</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> rotationX, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationY, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationZ)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:SetSensorLengthX">SetSensorLengthX</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> sensorLengthX)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:SetSensorSeparator">SetSensorSeparator</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> sensorSeparator)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DLadder:UpdateAlignment">UpdateAlignment</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DLadder:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DLadder:Status"></a>Status</td><td></td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DR3.html">DR3</a>&gt;</td><td class="dataname"><a name="DLadder:centerLadderVector"></a>centerLadderVector</td><td></td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DR3.html">DR3</a>&gt;</td><td class="dataname"><a name="DLadder:centerVector"></a>centerVector</td><td></td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DR3.html">DR3</a>&gt;</td><td class="dataname"><a name="DLadder:dxdydzVector"></a>dxdydzVector</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DAcq.html">DAcq</a>*</td><td class="dataname"><a name="DLadder:fAcq"></a>fAcq</td><td class="datadesc">pointer to Data Acquisition</td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="DLadder:fCanvas"></a>fCanvas</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DLadder:fDebugLadder"></a>fDebugLadder</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DLadder:fDistanceFromFoam"></a>fDistanceFromFoam</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DLadder:fPosition"></a>fPosition</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="dataname"><a name="DLadder:fPrecAlign"></a>fPrecAlign</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DLadder:fSensorLengthX"></a>fSensorLengthX</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DLadder:fSensorSeparator"></a>fSensorSeparator</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSession.html">DSession</a>*</td><td class="dataname"><a name="DLadder:fSession"></a>fSession</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DLadder:fTilt"></a>fTilt</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DTracker.html">DTracker</a>*</td><td class="dataname"><a name="DLadder:fTracker"></a>fTracker</td><td class="datadesc">pointer to the Tracker</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>*</td><td class="dataname"><a name="DLadder:fc"></a>fc</td><td class="datadesc">pointer to Configuration</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DLadder:fhDU"></a>fhDU</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="DLadder:fhDU_U"></a>fhDU_U</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="DLadder:fhDU_V"></a>fhDU_V</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DLadder:fhDV"></a>fhDV</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="DLadder:fhDV_U"></a>fhDV_U</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="DLadder:fhDV_V"></a>fhDV_V</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DLadder:fhDW"></a>fhDW</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DLadder:fhDiffSlopeX"></a>fhDiffSlopeX</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DLadder:fhSlopeX"></a>fhSlopeX</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DLadder:fhSlopeY"></a>fhSlopeY</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DLadder:ladderID"></a>ladderID</td><td class="datadesc">ID of the ladder; </td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a></td><td class="dataname"><a name="DLadder:ladderInitialRotations"></a>ladderInitialRotations</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a></td><td class="dataname"><a name="DLadder:ladderPosition"></a>ladderPosition</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a></td><td class="dataname"><a name="DLadder:ladderRotation"></a>ladderRotation</td><td></td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DLadder:ladderType"></a>ladderType</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="DLadder:myProfileX"></a>myProfileX</td><td></td></tr>
+<tr class="data"><td class="datatype">TProfile*</td><td class="dataname"><a name="DLadder:myProfileY"></a>myProfileY</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DLadder:numberOfSensors"></a>numberOfSensors</td><td class="datadesc">Number of sensors in the ladder;</td></tr>
+<tr class="data"><td class="datatype">map&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>,<a href="./DPlane.html">DPlane</a>*&gt;</td><td class="dataname"><a name="DLadder:planeList"></a>planeList</td><td class="datadesc">map of the DPlane in the Ladder.</td></tr>
+<tr class="data"><td class="datatype">map&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>,<a href="./DR3.html">DR3</a>&gt;</td><td class="dataname"><a name="DLadder:planePosition"></a>planePosition</td><td></td></tr>
+<tr class="data"><td class="datatype">map&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>,<a href="./DR3.html">DR3</a>&gt;</td><td class="dataname"><a name="DLadder:planeRelativePosition"></a>planeRelativePosition</td><td class="datadesc">relative shift wrt ladder</td></tr>
+<tr class="data"><td class="datatype">map&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>,<a href="./DPrecAlign.html">DPrecAlign</a>&gt;</td><td class="dataname"><a name="DLadder:planeRelativePrecAlign"></a>planeRelativePrecAlign</td><td class="datadesc">relative alignment wrt ladder</td></tr>
+<tr class="data"><td class="datatype">map&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>,<a href="./DR3.html">DR3</a>&gt;</td><td class="dataname"><a name="DLadder:planeRelativeRotation"></a>planeRelativeRotation</td><td class="datadesc">relative rotation wrt ladder</td></tr>
+<tr class="data"><td class="datatype">map&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>,<a href="./DR3.html">DR3</a>&gt;</td><td class="dataname"><a name="DLadder:planeRotation"></a>planeRotation</td><td class="datadesc">/!\ For Salat : rotation of planes are different /!</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DTrack.html">DTrack</a>*&gt;</td><td class="dataname"><a name="DLadder:trackVector"></a>trackVector</td><td></td></tr>
+<tr class="data"><td class="datatype">map&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>,<a href="./DPlane.html">DPlane</a>*&gt;</td><td class="dataname"><a name="DLadder:trackerPlaneList"></a>trackerPlaneList</td><td class="datadesc">map of the DPlane in the tracker for this Ladder, JB 2014/02/10</td></tr>
+
+</table></div>
+</div>
+<h2><a id="DLadder:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DLadder" href="./DLadder.html">DLadder</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DLadder:DLadder" href="src/DLadder.cxx.html#T7yuXD">DLadder</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DLadder:DLadder%1" href="src/DLadder.cxx.html#rcYRjC">DLadder</a>(<a href="./DTracker.html">DTracker</a>&amp; aTracker, TString ladderName, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderID, <a href="./ListOfTypes.html#Int_t">Int_t</a> aStatus, <a href="./ListOfTypes.html#Float_t">Float_t</a> sensorLengthX, <a href="./ListOfTypes.html#Float_t">Float_t</a> sensorSeparator, <a href="./ListOfTypes.html#Float_t">Float_t</a> distanceFromFoam, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationX, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationY, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationZ)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DLadder:_DLadder" href="src/DLadder.cxx.html#FZVUHC">~DLadder</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:UpdateAlignment" href="src/DLadder.cxx.html#TEosL">UpdateAlignment</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:GetRelativePosition" href="src/DLadder.cxx.html#f472fC">GetRelativePosition</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <a href="./DR3.html">DR3</a>* aTilt, <a href="./DR3.html">DR3</a>* aShift)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:SetRotation" href="src/DLadder.cxx.html#aQ72rB">SetRotation</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> rotationX, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationY, <a href="./ListOfTypes.html#Float_t">Float_t</a> rotationZ)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DLadder:PlaneToLadder" href="src/DLadder.cxx.html#hOq5ME">PlaneToLadder</a>(<a href="./DR3.html">DR3</a>&amp; aPlaneCoordinate, <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:AddPlane" href="src/DLadder.cxx.html#eDYdVC">AddPlane</a>(<a href="./DPlane.html">DPlane</a>* aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a> planeID)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:MakeMiniVectors" href="src/DLadder.cxx.html#G_S0tE">MakeMiniVectors</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:MakeTrack" href="src/DLadder.cxx.html#oV9vtE">MakeTrack</a>(<a href="./DR3.html">DR3</a>&amp; positionLeft, <a href="./DR3.html">DR3</a>&amp; positionRight, <a href="./DTrack.html">DTrack</a>* myTrack)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:MakeTrack2" href="src/DLadder.cxx.html#qbkMGC">MakeTrack2</a>(<a href="./DHit.html">DHit</a>* myHitLeft, <a href="./DHit.html">DHit</a>* myHitRight, <a href="./DTrack.html">DTrack</a>* myTrack, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; number)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:MakeTrack4" href="src/DLadder.cxx.html#MhMCmC">MakeTrack4</a>(<a href="./DHit.html">DHit</a>* myHitLeft, <a href="./DHit.html">DHit</a>* myHitRight, <a href="./DHit.html">DHit</a>* myHitLeft2, <a href="./DHit.html">DHit</a>* myHitRight2, <a href="./DTrack.html">DTrack</a>* myTrack, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; number)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:AlignLadder" href="src/DLadder.cxx.html#Hfq13C">AlignLadder</a>(vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; DataTemp, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> ladderNumber, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:FillResidus" href="src/DLadder.cxx.html#kyGEpD">FillResidus</a>(vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; Data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber, <a href="./DR3.html">DR3</a>&amp; dxdydz)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:FillResidus%1" href="src/DLadder.cxx.html#hTyjoC">FillResidus</a>(vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; Data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:PrepareDisplay" href="src/DLadder.cxx.html#nlyy3B">PrepareDisplay</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:Display%1" href="src/DLadder.cxx.html#l0mE.">Display</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> runNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DLadder:RotationCoordX" href="src/DLadder.cxx.html#Lm23rE">RotationCoordX</a>(<span class="keyword">double</span> x, <span class="keyword">double</span> y, <span class="keyword">double</span> z, <span class="keyword">double</span> angleX, <span class="keyword">double</span> angleY, <span class="keyword">double</span> angleZ)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DLadder:RotationCoordY" href="src/DLadder.cxx.html#nj23rE">RotationCoordY</a>(<span class="keyword">double</span> x, <span class="keyword">double</span> y, <span class="keyword">double</span> z, <span class="keyword">double</span> angleX, <span class="keyword">double</span> angleY, <span class="keyword">double</span> angleZ)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DLadder:RotationCoordZ" href="src/DLadder.cxx.html#Ph23rE">RotationCoordZ</a>(<span class="keyword">double</span> x, <span class="keyword">double</span> y, <span class="keyword">double</span> z, <span class="keyword">double</span> angleX, <span class="keyword">double</span> angleY, <span class="keyword">double</span> angleZ)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DLadder:DLadder" href="src/DLadder.h.html#TjBqrC">DLadder</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DLadder:GetPlanePosition" href="src/DLadder.h.html#qgln9D">GetPlanePosition</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> sensorID)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:planePosition" title="map&lt;Int_t,DR3&gt; DLadder::planePosition">planePosition</a>[sensorID]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DLadder:GetPlaneRotation" href="src/DLadder.h.html#GC__RE">GetPlaneRotation</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> sensorID)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:planeRotation" title="map&lt;Int_t,DR3&gt; DLadder::planeRotation">planeRotation</a>[sensorID]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPlane.html">DPlane</a>* <a class="funcname" name="DLadder:GetPlane" href="src/DLadder.h.html#PVlyYE">GetPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> sensorID)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:planeList" title="map&lt;Int_t,DPlane*&gt; DLadder::planeList">planeList</a>[sensorID]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPlane.html">DPlane</a>* <a class="funcname" name="DLadder:GetTrackerPlane" href="src/DLadder.h.html#DG7cwC">GetTrackerPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> planeID)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:trackerPlaneList" title="map&lt;Int_t,DPlane*&gt; DLadder::trackerPlaneList">trackerPlaneList</a>[planeID]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DLadder:GetNumberOfPlanes" href="src/DLadder.h.html#yOyKeB">GetNumberOfPlanes</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:planeList" title="map&lt;Int_t,DPlane*&gt; DLadder::planeList">planeList</a>.size(); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DLadder:GetLadderPosition" href="src/DLadder.h.html#veUVvB">GetLadderPosition</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:ladderPosition" title="DR3 DLadder::ladderPosition">ladderPosition</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DLadder:GetLadderRotation" href="src/DLadder.h.html#jZelbC">GetLadderRotation</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:ladderRotation" title="DR3 DLadder::ladderRotation">ladderRotation</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DLadder:GetStatus" href="src/DLadder.h.html#FBo9CB">GetStatus</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:Status" title="Int_t DLadder::Status">Status</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:SetSensorLengthX" href="src/DLadder.h.html#weUVM">SetSensorLengthX</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> sensorLengthX)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DLadder.html#DLadder:fSensorLengthX" title="Float_t DLadder::fSensorLengthX">fSensorLengthX</a> = sensorLengthX; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:SetSensorSeparator" href="src/DLadder.h.html#BqkjiB">SetSensorSeparator</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> sensorSeparator)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DLadder.html#DLadder:fSensorSeparator" title="Float_t DLadder::fSensorSeparator">fSensorSeparator</a> = sensorSeparator; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:SetDistanceFromFoam" href="src/DLadder.h.html#ubGwAB">SetDistanceFromFoam</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> distanceFromFoam)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DLadder.html#DLadder:fDistanceFromFoam" title="Float_t DLadder::fDistanceFromFoam">fDistanceFromFoam</a> = distanceFromFoam; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">std::vector&lt;<a href="./DTrack.html">DTrack</a>*&gt;&amp; <a class="funcname" name="DLadder:GetMiniVectors" href="src/DLadder.h.html#yOn2aE">GetMiniVectors</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:trackVector" title="vector&lt;DTrack*&gt; DLadder::trackVector">trackVector</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">std::vector&lt;<a href="./DR3.html">DR3</a>&gt;&amp; <a class="funcname" name="DLadder:GetDxDyDz" href="src/DLadder.h.html#HvrYzC">GetDxDyDz</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:dxdydzVector" title="vector&lt;DR3&gt; DLadder::dxdydzVector">dxdydzVector</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">std::vector&lt;<a href="./DR3.html">DR3</a>&gt;&amp; <a class="funcname" name="DLadder:GetCenterLadderPosition" href="src/DLadder.h.html#IB7q3C">GetCenterLadderPosition</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:centerLadderVector" title="vector&lt;DR3&gt; DLadder::centerLadderVector">centerLadderVector</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:SetLadderType" href="src/DLadder.h.html#vJn0TB">SetLadderType</a>(TString aType)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DLadder.html#DLadder:ladderType" title="TString DLadder::ladderType">ladderType</a> = aType;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DLadder:GetPlaneType" href="src/DLadder.h.html#RW.I_D">GetPlaneType</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:ladderType" title="TString DLadder::ladderType">ladderType</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DLadder:GetLadderType" href="src/DLadder.h.html#EHtpVC">GetLadderType</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:ladderType" title="TString DLadder::ladderType">ladderType</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DTracker.html">DTracker</a>      * <a class="funcname" name="DLadder:GetTracker" href="src/DLadder.h.html#KUbo3B">GetTracker</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:fTracker" title="DTracker* DLadder::fTracker">fTracker</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPrecAlign.html">DPrecAlign</a>* <a class="funcname" name="DLadder:GetPrecAlign" href="src/DLadder.h.html#PsFy6D">GetPrecAlign</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DLadder.html#DLadder:fPrecAlign" title="DPrecAlign* DLadder::fPrecAlign">fPrecAlign</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DLadder:Display" href="src/DLadder.h.html#LYm84D">Display</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber)</span><br />
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: Mon Sep  1 10:01:01 2014 </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

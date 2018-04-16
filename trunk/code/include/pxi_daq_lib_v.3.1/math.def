@@ -1,0 +1,27 @@
+
+/* 03/05/2004 */
+
+#ifndef MATH_DEF
+#define MATH_DEF
+
+
+#define MATH_HISTO_MAX_ID_NB           10
+#define MATH_HISTO_MAX_BIN_NB        4096
+
+
+typedef enum {
+  
+  DAM_DATA_TYPE_NOT_SET,
+  DAM_DATA_TYPE_UINT8,
+  DAM_DATA_TYPE_UINT16,
+  DAM_DATA_TYPE_UINT32,
+  DAM_DATA_TYPE_SINT8,
+  DAM_DATA_TYPE_SINT16,
+  DAM_DATA_TYPE_SINT32,
+  DAM_DATA_TYPE_FLOAT,
+  
+} DAM_EDataTypes;
+
+
+
+#endif

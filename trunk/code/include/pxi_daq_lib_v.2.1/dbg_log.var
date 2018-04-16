@@ -1,0 +1,31 @@
+/*******************************************************************************
+File      : x:\lib\win\dbg_log\dbg_log.var
+Goal      : Variables definition of Windows GUI user messages logging library
+Prj date  : 2000 - 2002
+File date : 20/02/2005
+Doc date  :
+Remark    : Library exists since 15/01/2004, but split in files
+          : .def, .typ, .var, .h, .c was done on 20/02/2005.
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : LEPSI */
+/*******************************************************************************/
+
+
+#ifndef DBG_LOG_VAR
+#define DBG_LOG_VAR
+
+#ifdef CC_APP_WINDOWS
+  EXTERN VAR_STATIC TMemo* DBGL_VGPtMemoOut[DBGL_MAX_CHAN_NB] VAR_INIT_A5(NULL,NULL,NULL,NULL,NULL);
+#endif
+  
+EXTERN VAR_STATIC char DBGL_VOutStr[DBGL_MSG_SZ];
+  
+
+#endif

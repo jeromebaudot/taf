@@ -1,0 +1,665 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:02 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>MRaw</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class MRaw','','MRaw.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/MRaw.h.html">header file</a>
+<a class="descrheadentry" href="src/MRaw.cxx.html">source file</a>
+<a class="descrheadentry" href="MRaw_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#MRaw:description">class description</a> 
+<a class="descrheadentry" href="#MRaw:Function_Members">function members</a>
+<a class="descrheadentry" href="#MRaw:Data_Members">data members</a>
+<a class="descrheadentry" href="#MRaw:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">MRaw</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="MRaw:description"></a>class MRaw: public TObject</h1>
+<div class="classdescr">
+<pre>
+
+Describes all Raw data analysis methods
+
+ Provides event by event analysis
+  and various display methods (raw data, hits, track).
+
+ Usage: call gTAF-&gt;GetRaw() and use the pop-up menu.
+	or directyl gTAF-&gt;GetRaw()-&gt;MethodName(...)
+
+ See method <a href="./MRaw.html#MRaw:PrepareRaw" title="void MRaw::PrepareRaw()">PrepareRaw</a>() for the list of available methods
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="MRaw:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#MRaw:MRaw">MRaw</a>(<a href="./DSession.html">DSession</a>* aSession)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#MRaw:MRaw%1">MRaw</a>(<span class="keyword">const</span> <a href="./MRaw.html">MRaw</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#MRaw:_MRaw">~MRaw</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#MRaw:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:Clear">Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayCumulatedClusters">DisplayCumulatedClusters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber, <a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayCumulatedHits2D">DisplayCumulatedHits2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifDrawTrack = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> Define_Range = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <span class="keyword">int</span> bins = 100, <span class="keyword">double</span> Xmin = -1.0e10, <span class="keyword">double</span> Xmax = -1.0e10, <span class="keyword">double</span> Ymin = -1.0e10, <span class="keyword">double</span> Ymax = -1.0e10)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayCumulatedMonteCarlo2D">DisplayCumulatedMonteCarlo2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifDrawTrack = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayCumulatedOverflow">DisplayCumulatedOverflow</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 500)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayCumulatedRawData2D">DisplayCumulatedRawData2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 500, <a href="./ListOfTypes.html#Float_t">Float_t</a> minSN = -65536., <a href="./ListOfTypes.html#Float_t">Float_t</a> occurence_min = .001, <a href="./ListOfTypes.html#Float_t">Float_t</a> occurence_max = 1., <a href="./ListOfTypes.html#Int_t">Int_t</a> nOccurences = 20, <a href="./ListOfTypes.html#Float_t">Float_t</a> minOccurence = 0., <a href="./ListOfTypes.html#Bool_t">Bool_t</a> storeOccurence = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayCumulatedTracks">DisplayCumulatedTracks</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayGeometry">DisplayGeometry</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayHistory">DisplayHistory</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 50000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nCumul = 500)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayHits2D">DisplayHits2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> ifIndex = 2, <a href="./ListOfTypes.html#Int_t">Int_t</a> ifTrack = 1, <a href="./ListOfTypes.html#Int_t">Int_t</a> geomatrix = 0)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayImage">DisplayImage</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1, <a href="./ListOfTypes.html#Char_t">Char_t</a>* data = <span class="string">"raw"</span>, <a href="./ListOfTypes.html#Char_t">Char_t</a>* format = <span class="string">"gif"</span>, <a href="./ListOfTypes.html#Float_t">Float_t</a> minValue = -65536.)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayNoise">DisplayNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> thePlaneNumber = -1, <a href="./ListOfTypes.html#Float_t">Float_t</a> calibFactor = -1., <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifPixelHistory = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayRawData">DisplayRawData</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> nChanToDisplay = .5)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayRawData2D">DisplayRawData2D</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> minSN = -65536., <a href="./ListOfTypes.html#Bool_t">Bool_t</a> withHits = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> withTracks = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>, <a href="./ListOfTypes.html#Int_t">Int_t</a> triggerNb = -1, <a href="./ListOfTypes.html#Int_t">Int_t</a> clusterMultiplicity = -1, <span class="keyword">double</span> Rminu = -1.0e10, <span class="keyword">double</span> Rmaxu = -1.0e10, <span class="keyword">double</span> Rminv = -1.0e10, <span class="keyword">double</span> Rmaxv = -1.0e10)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplaySpectrum">DisplaySpectrum</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents, <a href="./ListOfTypes.html#Int_t">Int_t</a> minSN = 3, <a href="./ListOfTypes.html#Int_t">Int_t</a> minValue = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> maxValue = 4096)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DisplayTracks">DisplayTracks</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:DumpEventHeader">DumpEventHeader</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:FakeRateBinaryFromRawData">FakeRateBinaryFromRawData</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents, <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <a href="./ListOfTypes.html#Int_t">Int_t</a> maxPixPerEvent = 100, <a href="./ListOfTypes.html#Double_t">Double_t</a> maxRateForTruncation = 0.01, <a href="./ListOfTypes.html#Int_t">Int_t</a> lowestCol = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> highestCol = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> lowestRow = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> highestRow = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:InitScan">InitScan</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> Events2Scan = 400, <a href="./ListOfTypes.html#Float_t">Float_t</a> SignalOverNoiseCut = 5)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:Inspectfake">Inspectfake</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:InspectRawChannels">InspectRawChannels</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Int_t">Int_t</a> thePlaneNumber = 1, <a href="./ListOfTypes.html#Int_t">Int_t</a> firstChannel = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> nChannels = 1, <a href="./ListOfTypes.html#Int_t">Int_t</a> maxAutoCorr = 20)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:InspectScan">InspectScan</a>()</td></tr>
+<tr class="func"><td class="funcret">static <a href="./MRaw.html">MRaw</a>*&amp;</td><td class="funcname"><a class="funcname" href="#MRaw:InstanceRaw">InstanceRaw</a>(<a href="./DSession.html">DSession</a>* aSession)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#MRaw:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:LaserStudy">LaserStudy</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> Xpixel = 125, <a href="./ListOfTypes.html#Int_t">Int_t</a> Ypixel = 125, <a href="./ListOfTypes.html#Int_t">Int_t</a> nPixels = 50, <a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Int_t">Int_t</a> cycleLength = 20, <a href="./ListOfTypes.html#Int_t">Int_t</a> nSpots = 10)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:MakeLadderGeometry">MakeLadderGeometry</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>* planeList, <a href="./ListOfTypes.html#Int_t">Int_t</a> numberOfPlanes, <a href="./ListOfTypes.html#Int_t">Int_t</a> aRefPlaneNumber)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:MimosaDisplay">MimosaDisplay</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> NEVENT = 1)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:MimosaJump">MimosaJump</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> Njump = 10)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./MRaw.html">MRaw</a>&amp;</td><td class="funcname"><a class="funcname" href="#MRaw:operator_">operator=</a>(<span class="keyword">const</span> <a href="./MRaw.html">MRaw</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:PrepareRaw">PrepareRaw</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:RSDisplay">RSDisplay</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:SetDebugLevel">SetDebugLevel</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLevel)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:SetMultiFrame">SetMultiFrame</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a> nFrames)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:SkipEvent">SkipEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEventsToSkip)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:ToggleVerbosity">ToggleVerbosity</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:UserPlot">UserPlot</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MRaw:VertexStudy">VertexStudy</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Double_t">Double_t</a> beamX = 0., <a href="./ListOfTypes.html#Double_t">Double_t</a> beamY = 0., <a href="./ListOfTypes.html#Double_t">Double_t</a> beamTilt = 0.)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#MRaw:CheckIfDone">CheckIfDone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* Option)</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#MRaw:Zero">Zero</a>(TH1F* ptr)</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="MRaw:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MRaw:MultiFrameNFrames"></a>MultiFrameNFrames</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MRaw:MultiFramePlane"></a>MultiFramePlane</td><td class="datadesc">JB 2013/07/18</td></tr>
+<tr class="data"><td class="datatype">TControlBar*</td><td class="dataname"><a name="MRaw:bar3"></a>bar3</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MRaw:cnv"></a>cnv</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MRaw:fDebugRaw"></a>fDebugRaw</td><td class="datadesc">JB 2014/05/29</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="MRaw:fInitDone"></a>fInitDone</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="MRaw:fMDisplayDone"></a>fMDisplayDone</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSession.html">DSession</a>*</td><td class="dataname"><a name="MRaw:fSession"></a>fSession</td><td class="datadesc">JB 2011/07/21 to get rid of global var tSession</td></tr>
+<tr class="data"><td class="datatype"><a href="./DGlobalTools.html">DGlobalTools</a></td><td class="dataname"><a name="MRaw:fTool"></a>fTool</td><td class="datadesc">JB 2011/07/18 to use global tools</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="MRaw:fVerbose"></a>fVerbose</td><td></td></tr>
+<tr class="data"><td class="datatype">static <a href="./MRaw.html">MRaw</a>*</td><td class="dataname"><a name="MRaw:fgInstanceRaw"></a>fgInstanceRaw</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:hNoisyChannels"></a>hNoisyChannels</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:hhitmap"></a>hhitmap</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:hit"></a>hit</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:hit0"></a>hit0</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:hnnois"></a>hnnois</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hnnois1"></a>hnnois1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hnoisd"></a>hnoisd</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hped"></a>hped</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hpedd"></a>hpedd</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hpu"></a>hpu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hpu1"></a>hpu1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hraw1"></a>hraw1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson"></a>hson</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson1"></a>hson1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson_iterated"></a>hson_iterated</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson_iterated2"></a>hson_iterated2</td><td class="datadesc">ADAPTED FOR MI5</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson_iterated3"></a>hson_iterated3</td><td class="datadesc">ADAPTED FOR MI5 </td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson_iterated4"></a>hson_iterated4</td><td class="datadesc">ADAPTED FOR MI5 </td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson_substract2_3"></a>hson_substract2_3</td><td class="datadesc">ADAPTED FOR MI5 </td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:hson_substract3_4"></a>hson_substract3_4</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MRaw:iterated_bin_number"></a>iterated_bin_number</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="MRaw:iterated_xmax_number"></a>iterated_xmax_number</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="MRaw:iterated_xmin_number"></a>iterated_xmin_number</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MRaw:nh"></a>nh</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:raw1"></a>raw1</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:raw2"></a>raw2</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="MRaw:raww"></a>raww</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MRaw:raww1"></a>raww1</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="MRaw:showit"></a>showit</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="MRaw:startMIMOSA"></a>startMIMOSA</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="MRaw:startRS"></a>startRS</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DTracker.html">DTracker</a>*</td><td class="dataname"><a name="MRaw:tTracker"></a>tTracker</td><td></td></tr>
+
+</table></div>
+</div>
+<h2><a id="MRaw:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="MRaw" href="./MRaw.html">MRaw</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:PrepareRaw" href="src/MRaw.cxx.html#dg3xt">PrepareRaw</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:ToggleVerbosity" href="src/MRaw.cxx.html#z5780B">ToggleVerbosity</a>()</span><br />
+<div class="funccomm"><pre> Toggle between the verbose or quiet mode
+ JB 2011/02/09
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:Clear" href="src/MRaw.cxx.html#DFRpnC">Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>*  = <span class="string">""</span>)</span><br />
+<div class="funccomm"><pre> Clean up
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="MRaw:CheckIfDone" href="src/MRaw.cxx.html#zLkHG">CheckIfDone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* Option)</span><br />
+<div class="funccomm"><pre> Checks if the requiered methods have been called before processing
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="MRaw:MRaw" href="src/MRaw.cxx.html#kb8m1D">MRaw</a>(<a href="./DSession.html">DSession</a>* aSession)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:InitScan" href="src/MRaw.cxx.html#BSDAcD">InitScan</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> Events2Scan = 400, <a href="./ListOfTypes.html#Float_t">Float_t</a> SignalOverNoiseCut = 5)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:RSDisplay" href="src/MRaw.cxx.html#FFUq0">RSDisplay</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:MimosaDisplay" href="src/MRaw.cxx.html#MIeIu">MimosaDisplay</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> NEVENT = 1)</span><br />
+<div class="funccomm"><pre>raw events display
+
+ Modified: JB 2009/09/01, to get rid of call to GetParameters()
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:InspectScan" href="src/MRaw.cxx.html#FxrwGD">InspectScan</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:Inspectfake" href="src/MRaw.cxx.html#n.DYdE">Inspectfake</a>()</span><br />
+<div class="funccomm"><pre>inspect fakes
+abesson 05 jannuary 2005
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:MimosaJump" href="src/MRaw.cxx.html#gKqavC">MimosaJump</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> Njump = 10)</span><br />
+<div class="funccomm"><pre> Jumps a given number of events (10 by default) while scanning raw events.
+ A.Besson, August 2004.
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:SetMultiFrame" href="src/MRaw.cxx.html#Q8hlSD">SetMultiFrame</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a> nFrames)</span><br />
+<div class="funccomm"><pre> Set the plane concerns by multi-frame,
+  meaning one event contains  frames of this plane.
+
+ Note there can be only one such plane currently (July 2013).
+
+ JB 2013/07/18
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:InspectRawChannels" href="src/MRaw.cxx.html#MOVv0E">InspectRawChannels</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Int_t">Int_t</a> thePlaneNumber = 1, <a href="./ListOfTypes.html#Int_t">Int_t</a> firstChannel = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> nChannels = 1, <a href="./ListOfTypes.html#Int_t">Int_t</a> maxAutoCorr = 20)</span><br />
+<div class="funccomm"><pre> Display the raw data for each plane cumulated over the requested number of events.
+ minSN indicates the lowest value of the pixel S/N to display the pixel.
+ occurences_min/_max are occurence limits used in the noisy pixel study.
+ If <span class="string">"storeOccurence"</span> is used, a text file will be created with the position
+  (column and row) of all pixels above the specified <span class="string">"minOccurence*nEvents"</span>.
+
+ JB 2012/09/20
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayRawData" href="src/MRaw.cxx.html#UFiFKD">DisplayRawData</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> nChanToDisplay = .5)</span><br />
+<div class="funccomm"><pre> Simply display the raw data (after CDS) for each plane event by event
+ nChanToDisplay is the proportion of channels to display
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayRawData" title="void MRaw::DisplayRawData(Float_t nChanToDisplay=.5)">DisplayRawData</a>()
+ JB, June 2007,
+ modified 2008/10/15
+ modified JB, August 2012, add <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> and track display
+ modified JB, 2013/08/21
+ modified JB, 2013/08/27 stripIndex shifted by +1 for display, since starts at 0
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayRawData2D" href="src/MRaw.cxx.html#h7lFGB">DisplayRawData2D</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> minSN = -65536., <a href="./ListOfTypes.html#Bool_t">Bool_t</a> withHits = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> withTracks = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>, <a href="./ListOfTypes.html#Int_t">Int_t</a> triggerNb = -1, <a href="./ListOfTypes.html#Int_t">Int_t</a> clusterMultiplicity = -1, <span class="keyword">double</span> Rminu = -1.0e10, <span class="keyword">double</span> Rmaxu = -1.0e10, <span class="keyword">double</span> Rminv = -1.0e10, <span class="keyword">double</span> Rmaxv = -1.0e10)</span><br />
+<div class="funccomm"><pre> Simply display the raw data (after CDS) for each plane event by event
+  pixel values below minSN are not displayed.
+
+ If a trigger number is specified, the event corresponding to it
+  will be displayed.
+
+ If withHits&gt;0 (default):
+   pixels belonging to a reconstructed cluster(<a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a>) are marked with a <span class="string">"X"</span>
+   the cluster reconstructed position is indicated by a <span class="string">"O"</span>
+
+ If withTracks&gt;0 (default):
+   the track extrapolated position is indicated by a cross marker
+
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayRawData2D" title="void MRaw::DisplayRawData2D(Float_t minSN=-65536.,Bool_t withHits=kTRUE,Bool_t withTracks=kTRUE,Int_t triggerNb=-1,Int_t clusterMultiplicity=-1,double Rminu=-1.0e10,double Rmaxu=-1.0e10,double Rminv=-1.0e10,double Rmaxv=-1.0e10)">DisplayRawData2D</a>()
+
+ ATTENTION results can be very different if you choose to display:
+  o Signal (variable PulseHeight)
+  o Signal/Noise (variable PulseHeightToNoise)
+-&gt; check SetBinContent method of hRawData histograms!
+
+ JB, Jan 2008
+ Modified 2008/10/15, 2009/05/06
+ Last Modified RDM 2009/05/21
+ Last Modified JB 2009/08/31 binning of histos and bin index in filling
+ Last Modified JB 2009/09/18 directory name of outputfile
+ Last Modified JB 2010/10/25 display reconstructed hits on top of raw data
+ Last Modified JB 2013/05/26 test readout not 0
+ Last Modified AP 2014/07/   more accurate cluster representation
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayHits2D" href="src/MRaw.cxx.html#sMnLeE">DisplayHits2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> ifIndex = 2, <a href="./ListOfTypes.html#Int_t">Int_t</a> ifTrack = 1, <a href="./ListOfTypes.html#Int_t">Int_t</a> geomatrix = 0)</span><br />
+<div class="funccomm"><pre> Display the <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> position for each plane event by event
+ ifIndex=0 -&gt; position in microns (plane frame), =1 -&gt; position in index, =2 -&gt; pos in microns (telescope frame)
+ ifTrack=0 -&gt; don't display tracks on top, =1(default) tracks displayed as numbers, =2 -&gt; tracks displayes as circles
+ geomatrix indicates which limits from the config file
+   will be used to display a rectangle with dotted line
+   (usefull to point DUT postion)
+
+
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayHits2D" title="void MRaw::DisplayHits2D(Int_t ifIndex=2,Int_t ifTrack=1,Int_t geomatrix=0)">DisplayHits2D</a>()
+
+ JB, 2008/10/23
+ Last modified: RDM 2009/05/21
+ Last Modified JB 2009/08/31 binning of histos and bin index in filling
+ Last Modified JB 2009/09/09 display each tracks only once
+ last Modified JB 2010/06/16 display geomatrix and trigger info, and complete bin index
+ last Modified JB+VR 2012/04/02 new options to display track number and in telescope frame
+ Last Modified JB 2012/08/20 improved geomatrix in different frame
+ Last Modified JB 2014/03/18 display additional Ladder
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayTracks" href="src/MRaw.cxx.html#SceFYC">DisplayTracks</a>()</span><br />
+<div class="funccomm"><pre> Display the tracks event by event
+ in several views
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayTracks" title="void MRaw::DisplayTracks()">DisplayTracks</a>()
+
+ JB, 2011/07/26
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayCumulatedTracks" href="src/MRaw.cxx.html#fKwGlE">DisplayCumulatedTracks</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000)</span><br />
+<div class="funccomm"><pre> Display the tracks cumulated over nEvents events
+ in several views
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayCumulatedTracks" title="void MRaw::DisplayCumulatedTracks(Int_t nEvents=1000)">DisplayCumulatedTracks</a>( nEvents)
+
+ JB, 2011/07/26
+ Modified JB+VR, 2012/04/02 add slopes display
+ Modified JB, 2012/05/07 add chi2 and residuals display
+ Modified JB, 2014/08/29 add histo with #tracks per plane
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayCumulatedHits2D" href="src/MRaw.cxx.html#U77HhC">DisplayCumulatedHits2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifDrawTrack = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> Define_Range = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>, <span class="keyword">int</span> bins = 100, <span class="keyword">double</span> Xmin = -1.0e10, <span class="keyword">double</span> Xmax = -1.0e10, <span class="keyword">double</span> Ymin = -1.0e10, <span class="keyword">double</span> Ymax = -1.0e10)</span><br />
+<div class="funccomm"><pre> Display the <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> position for each plane cumulated over the requested number of events
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayCumulatedHits2D" title="void MRaw::DisplayCumulatedHits2D(Int_t nEvents=1000,Bool_t ifDrawTrack=kTRUE,Bool_t Define_Range=kFALSE,int bins=100,double Xmin=-1.0e10,double Xmax=-1.0e10,double Ymin=-1.0e10,double Ymax=-1.0e10)">DisplayCumulatedHits2D</a>()
+ JB, 2009/05/12
+ Last Modified JB 2009/08/31 binning of histos and bin index in filling
+ Last Modified JB 2010/10/25 counter of reconstructed hits
+ Last Modified JB 2010/11/02 superpose display of track impacts
+ Last Modified JB 2012/08/17 add plots for <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> properties (analog output)
+ Last Modified JB 2013/10/08 additional analog <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> plots
+ Last Modified JB 2013/10/30 additional analog <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> plots and #hits/event
+ Last Modified JB 2013/11/11 protection against empty histograms
+ Last Modified JB 2013/11/08 use of GetSNseed()
+ Last Modified JB 2014/05/14 plot #hits/event on independant canvas
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayCumulatedRawData2D" href="src/MRaw.cxx.html#DkRFwB">DisplayCumulatedRawData2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 500, <a href="./ListOfTypes.html#Float_t">Float_t</a> minSN = -65536., <a href="./ListOfTypes.html#Float_t">Float_t</a> occurence_min = .001, <a href="./ListOfTypes.html#Float_t">Float_t</a> occurence_max = 1., <a href="./ListOfTypes.html#Int_t">Int_t</a> nOccurences = 20, <a href="./ListOfTypes.html#Float_t">Float_t</a> minOccurence = 0., <a href="./ListOfTypes.html#Bool_t">Bool_t</a> storeOccurence = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>)</span><br />
+<div class="funccomm"><pre> Display two sets of plots fr each plane in the tracker:
+  - the raw data cumulated over the requested number of events,
+  - the distribution of the pixel occupancy.
+
+ Additional information for <span class="string">"hot"</span> pixels can be also retrieve see below.
+
+ Parameters:
+  - minSN = indicates the lowest value of the pixel S/N to display the pixel,
+  - nOccurences, occurence_min, occurence_max =
+                      nb of bins, min, max for the occupancy plot.
+
+ Hot or noisy pixels study:
+  - set storeOccurence=<a href="./ListOfTypes.html#bool">true</a>  to get the outputs,
+  - Output 1 = a text file is created with the position
+  (column and row) of all pixels above the specified <span class="string">"minOccurence*nEvents"</span>,
+  - Output 2 = a root file with cumulated raw data normalized by nEvents.
+
+ RDM280509
+ Last Modified JB 2009/08/31 binning of histos and bin index in filling
+ Last Modified JB 2011/03/14 use threshold for pixel S/N and occurence
+ Last Modified JB 2011/07/08 condition to stop event loop
+ Last Modified VR 2012/04/02 complete noisy pixel studies based on firing occurence
+ Last Modified JB 2012/05/10 lowest minOccurence allowed set to 0.005
+ Last Modified JB 2013/05/26 test readout not 0
+ Last Modified JB 2014/03/11 store histos for HotPixelMap in MCommands
+ Last Modified VR 2014/07/10 log scale for pixel occurence
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayCumulatedOverflow" href="src/MRaw.cxx.html#t2P2GB">DisplayCumulatedOverflow</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 500)</span><br />
+<div class="funccomm"><pre> Display the line overflow for each plane cumulated over the requested number of events
+ Originally used for PLUME
+ MG 2012/03/14
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayNoise" href="src/MRaw.cxx.html#Uv8UzE">DisplayNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> thePlaneNumber = -1, <a href="./ListOfTypes.html#Float_t">Float_t</a> calibFactor = -1., <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifPixelHistory = <a href="./ListOfTypes.html#Bool_t">kFALSE</a>)</span><br />
+<div class="funccomm"><pre> Display the noise (and pedestal) per strip or pixel for each plane
+ after it has been computed for the required amount of events.
+
+ If a plane number is specified (-1 means no plane),
+  only this plane will be displayed
+  and its autocorrelation between 2 consecutive frames is computed.
+  A plane number is required for the <span class="string">"ifPixelHistory"</span> option described below.
+
+ If a calibFactor is specified (-1 means no factor),
+  the noise value are scaled by this factor
+  and the units are e- instead of ADCu.
+
+ If ifPixelHistory is <a href="./ListOfTypes.html#bool">true</a> (<a href="./ListOfTypes.html#bool">false</a> by default),
+  a histogram for the signal distribution of EACH pixel is filled.
+  This options requires that thePlaneNumber is set.
+
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayNoise" title="void MRaw::DisplayNoise(Int_t thePlaneNumber=-1,Float_t calibFactor=-1.,Bool_t ifPixelHistory=kFALSE)">DisplayNoise</a>()
+
+ JB, September 2007
+ Modified: JB 2012/09/22 autocorrelation and reshaping
+ Modified: JB 2013/08/29 manage digitize data whith non-sparsified readout
+ Modified: JB 2013/09/16 introduction of calibration factor
+ Modified: JB 2013/12/03 histos for individual pixel distribution
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayCumulatedClusters" href="src/MRaw.cxx.html#M1kxG">DisplayCumulatedClusters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> planeNumber, <a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents)</span><br />
+<div class="funccomm"><pre> Display the cluster characteristics for a given plane cumulated over the requested number of events
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayCumulatedClusters" title="void MRaw::DisplayCumulatedClusters(Int_t planeNumber,Int_t nEvents)">DisplayCumulatedClusters</a>()
+
+ JB, 2011/02/09
+ Modified: JB, 2013/11/08 use of GetSNseed()
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:SkipEvent" href="src/MRaw.cxx.html#ww6NK">SkipEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEventsToSkip)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplaySpectrum" href="src/MRaw.cxx.html#qP.guB">DisplaySpectrum</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents, <a href="./ListOfTypes.html#Int_t">Int_t</a> minSN = 3, <a href="./ListOfTypes.html#Int_t">Int_t</a> minValue = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> maxValue = 4096)</span><br />
+<div class="funccomm"><pre> Display the signal distribution of fired pixels
+ minSN could be used to select pixels, need to be uncommented in code
+ histogram range = minValue, maxValue
+
+ 25/05/2009 YV
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:LaserStudy" href="src/MRaw.cxx.html#CtQeV">LaserStudy</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> Xpixel = 125, <a href="./ListOfTypes.html#Int_t">Int_t</a> Ypixel = 125, <a href="./ListOfTypes.html#Int_t">Int_t</a> nPixels = 50, <a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Int_t">Int_t</a> cycleLength = 20, <a href="./ListOfTypes.html#Int_t">Int_t</a> nSpots = 10)</span><br />
+<div class="funccomm"><pre> Study efficiency of pixel when illuminated by laser,
+ Xpixel and Ypixel define the pixel to look at.
+ nPixels define the area for the laser plot drawing.
+
+ Look in a given area of 3x3 pixels centered on Xpixel, Ypixel,
+  if more than minNbFiredPix pixels are fired the spot is detected.
+
+ cycleLength is the laser cycle duration expressed in number of frames
+ nSpots is the expected number of laser spots within a single cycle
+
+ Some parameters are hard coded:
+  plane investigated (only one), histos binning
+
+ JB+MaxBarbier 2011/02/25
+ Modified: JB 2011/07/25 some bug fix (row-col swap)
+ Modified: JB 2011/09/16 expected cycleLenght added as input &amp; protection against nbspot&gt;10
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayGeometry" href="src/MRaw.cxx.html#F8Lb6E">DisplayGeometry</a>()</span><br />
+<div class="funccomm"><pre> Display the geometry defined in the config file with alignment.
+
+ JB 2011/11/01
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:MakeLadderGeometry" href="src/MRaw.cxx.html#h8VrZ">MakeLadderGeometry</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>* planeList, <a href="./ListOfTypes.html#Int_t">Int_t</a> numberOfPlanes, <a href="./ListOfTypes.html#Int_t">Int_t</a> aRefPlaneNumber)</span><br />
+<div class="funccomm"><pre> Generate the geometry of a ladder relative to a reference plane,
+   made of numberOfPlanes provided in planeList.
+ The center of the ladder is fixed by the center of the reference plane.
+ The relative (wrt the previous center) positions of each ladder is then computed.
+
+ JB 2014/02/18
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:VertexStudy" href="src/MRaw.cxx.html#fXr_dC">VertexStudy</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Double_t">Double_t</a> beamX = 0., <a href="./ListOfTypes.html#Double_t">Double_t</a> beamY = 0., <a href="./ListOfTypes.html#Double_t">Double_t</a> beamTilt = 0.)</span><br />
+<div class="funccomm"><pre> Display the vertex positions computed for each track reconstructed.
+ The vertex is actually the point of closest approach between the track
+  and the horizontal beam with origin (beamX, beamY) and tilt beamTilt.
+ Distances are in microns and angle in degrees.
+
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:VertexStudy" title="void MRaw::VertexStudy(Int_t nEvents=1000,Double_t beamX=0.,Double_t beamY=0.,Double_t beamTilt=0.)">VertexStudy</a>( nEvents)
+
+ JB, 2011/07/26
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:FakeRateBinaryFromRawData" href="src/MRaw.cxx.html#STIhMC">FakeRateBinaryFromRawData</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents, <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <a href="./ListOfTypes.html#Int_t">Int_t</a> maxPixPerEvent = 100, <a href="./ListOfTypes.html#Double_t">Double_t</a> maxRateForTruncation = 0.01, <a href="./ListOfTypes.html#Int_t">Int_t</a> lowestCol = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> highestCol = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> lowestRow = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> highestRow = 0)</span><br />
+<div class="funccomm"><pre> Compute the fake <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> rate from the cumul of the raw data
+  for a given plane ().
+ The method only work for a sensor with binary outputs.
+
+ INPUTS:
+  - nEvents = number of events to read
+  - aPlaneNumber = plane to be studied
+  - maxPixPerEvent = scale of the histogram distributing the # fired pixels per event
+  - maxRateForTruncation = maximum fake <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> rate to include pixels in the computation of the truncated average fake <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> rate
+  - lowestCol, highestCol, lowestRow, highestRow = limits in pixel indexes of the interested zone, set to 0 if no limit
+
+ JB 2011/11/22
+ Modified: JB 2011/11/25 corrected count of fired pixels in the case of a restricted geometric range
+ Modified: JB 2011/11/28 remove non-fired pixels from the distribution per pixel
+ Modified: JB 2011/12/29 change in bin for distribution per pixel and count of fired pixels
+ Modified: MG 2012/03/14 results store in a file
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DumpEventHeader" href="src/MRaw.cxx.html#FBnSLE">DumpEventHeader</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents)</span><br />
+<div class="funccomm"><pre> <a href="./#TObject:Dump" title="void TObject::Dump()">Dump</a> the header of the required # events into a file.
+ The header contains the event number, trigger and frame information.
+
+ Currently print noly the first trigger/frame/stamp of the list.
+
+ JB 2012/05/03
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:UserPlot" href="src/MRaw.cxx.html#JRXJ.D">UserPlot</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000)</span><br />
+<div class="funccomm"><pre> Do whatever you want there
+
+ JB 2009/09/08
+ Last Modified JB 2013/05/26 test readout not 0
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayCumulatedMonteCarlo2D" href="src/MRaw.cxx.html#oaGPs">DisplayCumulatedMonteCarlo2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1000, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifDrawTrack = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</span><br />
+<div class="funccomm"><pre> Display the monte carlo position for each plane cumulated over the requested number of events
+ Call by gTAF-&gt;GetRaw()-&gt;<a href="./MRaw.html#MRaw:DisplayCumulatedHits2D" title="void MRaw::DisplayCumulatedHits2D(Int_t nEvents=1000,Bool_t ifDrawTrack=kTRUE,Bool_t Define_Range=kFALSE,int bins=100,double Xmin=-1.0e10,double Xmax=-1.0e10,double Ymin=-1.0e10,double Ymax=-1.0e10)">DisplayCumulatedHits2D</a>()
+ JB, 2009/05/12
+ Last Modified JB 2009/08/31 binning of histos and bin index in filling
+ Last Modified JB 2010/10/25 counter of reconstructed hits
+ Last Modified JB 2010/11/02 superpose display of track impacts
+ Last Modified JB 2012/08/17 add plots for <a href="./MRaw.html#MRaw:hit" title="TH2F* MRaw::hit">hit</a> properties (analog output)
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayHistory" href="src/MRaw.cxx.html#P9EGzD">DisplayHistory</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 50000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nCumul = 500)</span><br />
+<div class="funccomm"><pre> Display event-wise information per event number
+  History is done over nEvents events
+  with averages computed every nCumul(&lt;&lt;nEvents) events
+
+ JB 2014/06/02
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:DisplayImage" href="src/MRaw.cxx.html#wJXdmC">DisplayImage</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = 1, <a href="./ListOfTypes.html#Char_t">Char_t</a>* data = <span class="string">"raw"</span>, <a href="./ListOfTypes.html#Char_t">Char_t</a>* format = <span class="string">"gif"</span>, <a href="./ListOfTypes.html#Float_t">Float_t</a> minValue = -65536.)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH1F* <a class="funcname" name="MRaw:Zero" href="src/MRaw.h.html#Qo6fU">Zero</a>(TH1F* ptr)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="MRaw:MRaw" href="src/MRaw.h.html#zvfToB">MRaw</a>(<a href="./DSession.html">DSession</a>* aSession)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">virtual</span> <a class="funcname" name="MRaw:_MRaw" href="src/MRaw.h.html#nYuXYD">~MRaw</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MRaw:SetDebugLevel" href="src/MRaw.h.html#IuatBD">SetDebugLevel</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLevel)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./MRaw.html#MRaw:fDebugRaw" title="Int_t MRaw::fDebugRaw">fDebugRaw</a> = aLevel; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./MRaw.html">MRaw</a>*&amp; <a class="funcname" name="MRaw:InstanceRaw" href="src/MRaw.h.html#ID_er">InstanceRaw</a>(<a href="./DSession.html">DSession</a>* aSession)</span><br />
+<div class="funccomm"><pre> Modified: JB 2011/07/21 to pass session pointer
+</pre></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/maf:$Name:  $:$Id: MRaw.h,v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

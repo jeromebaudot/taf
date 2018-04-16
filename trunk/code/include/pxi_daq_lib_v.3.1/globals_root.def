@@ -1,0 +1,44 @@
+/*************************************************************
+File      : /dd/sdev_src/c/work/common/include/globals.def
+Goal      : Globals things : constants, conditional compilation,
+          : variables, functions.
+Remark    : It should be splitted in separate files, but ...
+Prj date  : 2000 - 2002
+File date :
+Doc date  : 23/11/2002
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*************************************************************/
+
+
+#ifndef GLOBALS_ROOT_DEF
+#define GLOBALS_ROOT_DEF
+
+/* CONDITIONNAL COMPILATION */
+
+#define GLB_GC_CASCADE
+#define GLB_FIRST_REC_FORMAT
+
+/* MACROS */
+
+#define GLB_FILE_PATH_SZ 256
+#define GLB_CMT_SZ 256
+#define GLB_HOST_NAME_SZ 50
+
+#define GLB_SEQ 0
+
+#define GLB_RMP_FILE_PATH  "/common/rmp/RMP"
+#define GLB_RMPS_FILE_PATH "/common/rmp/RUN"
+
+
+#define GLB_DEF_BYTE_SEX 0x3615ABCD
+
+
+// #define GLB_DESY_VME_A32_BASE 0xd0000000 /* By default it's LEPSI config base address 0xd0000000*/ 
+
+
+
+
+
+#endif

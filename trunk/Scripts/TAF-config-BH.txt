@@ -1,0 +1,226 @@
+#!/bin/echo error: only source 
+# sh -xf
+# This script sets the machine dependent env variable 
+# to compile, link and  run the Mimosa Analysis Framework
+# Alexandre SHABETAI 2005
+# v 1.2
+# Modified: JB 2009/08/17
+# Modified: RDM 2009/08/24 (nodebug unecessary)
+# Modified: JB 2009/08/17 (simplified)
+# Modified: BH 2013/08/22 (compiler chosen as ROOT one)
+
+unalias clean  > /dev/null  2>&1
+unset echo
+alias echo='echo -e' 
+alias which='which' 
+ulimit -c 0 
+unset SCRIPT_DIR 
+SCRIPT_DIR=
+dropit_ok=
+PATH_tmp=$PATH
+LD_LIBRARY_PATH_tmp=$LD_LIBRARY_PATH
+GCC_OLD=
+
+# tmp
+ unset_ld=
+
+
+function clean_globals
+{
+
+unset CMD SCRIPT_DIR dropit_ok PATH_tmp LD_LIBRARY_PATH_tmp
+
+if [ "$GCC_OLD" = "" ]
+then
+unset  GCC_OLD
+fi
+}
+
+
+function clean {
+#cleening env
+unset DEBUG NODEBUG
+
+test `which dropit` > /dev/null  2>&1
+if [ "$?" -eq "0" ] 
+then
+dropit_ok=1
+
+
+if  [ "${ROOTSYS+set}" ]
+  then 
+ PATH_tmp=`dropit root -p ${PATH_tmp}`
+fi
+
+ if [ "${BUILD_DIR+set}" ]
+  then 
+PATH_tmp=`dropit  ${BUILD_DIR} -p ${PATH_tmp}`
+  fi
+
+ 
+if  [ " ${SCRIPT_DIR+set}" ]
+  then
+  PATH_tmp=`dropit ${SCRIPT_DIR} -p ${PATH_tmp}`
+fi
+ 
+
+
+  if  [ "${LD_LIBRARY_PATH+set}" ]
+    then   
+     
+     if [ "${ROOTSYS+set}" ]
+     then
+      if [ "$LD_LIBRARY_PATH" != "$ROOTSYS/lib" ] 
+       then
+       LD_LIBRARY_PATH_tmp=`dropit -p $LD_LIBRARY_PATH_tmp root`
+      	else
+       unset_ld=1
+       fi
+   fi
+
+
+     if [ "${BUILD_DIR+set}"  ]
+      then
+      if  [ "$LD_LIBRARY_PATH_tmp" != "${BUILD_DIR}" ]
+      then
+      LD_LIBRARY_PATH_tmp=`dropit -p $LD_LIBRARY_PATH_tmp TAF`
+      fi 
+ if [ "$LD_LIBRARY_PATH_tmp" = `dropit -p $LD_LIBRARY_PATH_tmp TAF` ] 
+ then 
+ unset_ld=1
+ fi    
+    fi						      
+  fi
+else
+#if no dropit it is safer to reset $LD_LIBRARY_PATH
+unset_ld=1
+fi
+
+}
+
+################################################################################
+################################################################################
+# EDIT YOUR SETUP HERE
+################################
+
+echo '\n configure the environement for MAF Analysis Framework...\n'
+
+	# main TAF directory
+     	DTDIR=`pwd`
+	# ROOT install directory
+        #ROOTSYS=/Users/jeromeb/Library/Root/root
+        #ROOTSYS=/cern/2011/root.5.28.00.gcc.4.1.2
+	# compiler should be same as the ROOT one (see line 142)
+	# obj exec amd lib paths
+        BUILD_PATH=$DTDIR/bin
+      
+echo "\n"
+################################################################################
+################################################################################
+
+
+function Do_it {
+
+if [ "$DEBUG" = 1 ] 
+then
+BUILD_DIR=$BUILD_PATH/TAF/bin
+LIB_DIR=$BUILD_PATH/TAF/lib
+else
+BUILD_DIR=$BUILD_PATH/TAF/BIN
+LIB_DIR=$BUILD_PATH/TAF/LIB
+export NODEBUG=1
+fi
+
+if [ "$unset_ld" != "" ]
+then
+LD_LIBRARY_PATH=$ROOTSYS/lib:$LIB_DIR
+else
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH_tmp:$ROOTSYS/lib:$LIB_DIR
+fi
+
+#exporting
+export DTDIR ROOTSYS CERNLIB BUILD_PATH RZDIR  TAF_DATA_URL
+export LD_LIBRARY_PATH
+export PATH=$BUILD_DIR:$SCRIPT_DIR:$ROOTSYS/bin:$PATH_tmp
+export GCC=`root-config --cxx`
+
+echo "Setup for "`hostname`
+
+# package path 
+echo " "
+echo "DTDIR           : $DTDIR"
+# root setup
+echo "ROOTSYS         : $ROOTSYS"
+echo "LD_LIBRARY_PATH : $LD_LIBRARY_PATH"
+# compiler
+echo " "
+echo "using compiler: $GCC "`$GCC -dumpversion`
+echo "Appending to PATH"
+echo "\nSetup done! \n"
+
+echo "Documentation sits in $DTDIR/doc, consult index.hmtl, taf_shortDoc.pdf and maf_doc.pdf\n"
+echo "Run make in $DTDIR/code to compile\n or TAF in $DTDIR to start working\n"
+
+
+return 0
+}
+
+#RDM 290809 eliminate mandatory "--nodebug"
+if [ "$1" = "" ]
+then
+ if [ -d $DTDIR ] ; then cd  $DTDIR ; SCRIPT_DIR=$DTDIR/Scripts; else echo "WARNING DTDIR: $DTDIR  doesn't exist.."; return ;fi
+ clean
+ Do_it
+ clean_globals
+ shift
+fi
+#RDM 290809
+
+while test $# -gt 0; do
+ case  "$1" in
+  --debug)
+	 if [ -d $DTDIR ] ; then cd  $DTDIR ; SCRIPT_DIR=$DTDIR/Scripts; else echo "WARNING DTDIR: $DTDIR doesn't exist.."; return; fi
+	 clean
+	 DEBUG=1 
+	 Do_it
+	 clean_globals
+	shift
+        ;;
+  --nodebug)
+	 if [ -d $DTDIR ] ; then cd  $DTDIR ; SCRIPT_DIR=$DTDIR/Scripts; else echo "WARNING DTDIR: $DTDIR  doesn't exist.."; return ;fi
+	 clean
+	 Do_it
+         clean_globals
+	 shift
+	;;
+  --compile)
+         if [ -d $DTDIR/code ] ; then cd $DTDIR/code ; fi
+	 shift
+         ;;
+  --clean)
+	unset  DTDIR CERNLIB BUILD_PATH DEBUG NODEBUG GCC_OLD 
+	clean
+	if [ "$unset_ld" != "" ] 
+	then 
+	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH_tmp}
+        else
+	unset  LD_LIBRARY_PATH
+	fi
+	export PATH=${PATH_tmp}
+	 clean_globals
+	shift
+	;;
+  *)
+	echo "invalid option : $1 \n"
+	echo "usage : TAF-config [--(no)debug] [--compile} [--clean]"
+	echo "--debug   : setup for compilation or usage of unoptimized lib versions"
+	echo "--nodebug : setup for compilation or usage of optimized (-O2 ..) lib versions" 
+        echo "--compile : cd to the source dir at the end of the setup process."
+	echo "--clean   : remove all specific variables from the environment"
+	echo "\nex : typical command : source Mimosa-config --nodebug --compile"
+	echo "     after this command you will be ready to run make"
+	shift
+	;;
+ esac
+done
+

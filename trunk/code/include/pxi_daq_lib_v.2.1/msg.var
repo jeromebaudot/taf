@@ -1,0 +1,59 @@
+/*******************************************************************************
+File      : x:\lib\com\msg\msg.var
+Goal      : Variables definition of user messages logging library
+Prj date  : 2000 - 2002
+File date : 20/02/2005
+Doc date  :
+Remark    : Library exists since 2000, but split in files .def, .typ, .var, .h, .c
+          : was done on 20/02/2005.
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef MSG_VAR
+#define MSG_VAR
+
+/*
+
+EXTERN VAR_STATIC FILE*        MSG_VGALogFile[MSG_CHAN_NB]                   VAR_INIT_A2(NULL,NULL);
+EXTERN VAR_STATIC SInt8        MSG_VGALogClosed[MSG_CHAN_NB]                 VAR_INIT_A2(1,1);
+EXTERN VAR_STATIC SInt8        MSG_VGALogEnabled[MSG_CHAN_NB]                VAR_INIT_A2(0,0);
+EXTERN VAR_STATIC SInt8        MSG_VGADontLog[MSG_CHAN_NB]                   VAR_INIT_A2(0,0);
+EXTERN VAR_STATIC SInt32       MSG_VGAMsgCnt[MSG_CHAN_NB]                    VAR_INIT_A2(0,0);
+EXTERN VAR_STATIC char         MSG_VGALogPath[MSG_CHAN_NB][GLB_FILE_PATH_SZ] VAR_INIT_A2("/dd/tmp/pc/msg.txt","/dev/rmsg");
+EXTERN VAR_STATIC char         MSG_VGAStrMsg[MSG_CHAN_NB][MSG_CMT_SZ];
+EXTERN VAR_STATIC SInt8        MSG_VGFileLogLevel                            VAR_INIT (0);
+EXTERN VAR_STATIC SInt8        MSG_VGUserLogLevel                            VAR_INIT (0);
+EXTERN VAR_STATIC TUserMsgFunc MSG_VGUserMsgFunc                             VAR_INIT (NULL);
+
+*/
+
+VAR_DCL_INIT_A2 ( EXTERN, VAR_STATIC, FILE*        MSG_VGALogFile[MSG_CHAN_NB]                  , NULL, NULL );
+VAR_DCL_INIT_A2 ( EXTERN, VAR_STATIC, SInt8        MSG_VGALogClosed[MSG_CHAN_NB]                , 1, 1);
+VAR_DCL_INIT_A2 ( EXTERN, VAR_STATIC, SInt8        MSG_VGALogEnabled[MSG_CHAN_NB]               , 0, 0);
+VAR_DCL_INIT_A2 ( EXTERN, VAR_STATIC, SInt8        MSG_VGADontLog[MSG_CHAN_NB]                  , 0, 0);
+VAR_DCL_INIT_A2 ( EXTERN, VAR_STATIC, SInt32       MSG_VGAMsgCnt[MSG_CHAN_NB]                   , 0, 0);
+VAR_DCL_INIT_A2 ( EXTERN, VAR_STATIC, char         MSG_VGALogPath[MSG_CHAN_NB][GLB_FILE_PATH_SZ], "/dd/tmp/pc/msg.txt","/dev/rmsg" );
+
+
+VAR_DCL         ( EXTERN, VAR_STATIC, char         MSG_VGAStrMsg[MSG_CHAN_NB][MSG_CMT_SZ] );
+
+/* 07/04/2007 Replace macro MSG_OUT by a variable which points to MSG_VGAStrMsg[MSG_CHAN_MSG] because of ROOT CINT macros limitations */
+
+
+VAR_DCL_INIT    ( EXTERN, VAR_STATIC, char*        MSG_OUT                                      , MSG_VGAStrMsg[MSG_CHAN_MSG] );    
+VAR_DCL_INIT    ( EXTERN, VAR_STATIC, SInt8        MSG_VGFileLogLevel                           , 0);
+VAR_DCL_INIT    ( EXTERN, VAR_STATIC, SInt8        MSG_VGUserLogLevel                           , 0);
+VAR_DCL_INIT    ( EXTERN, VAR_STATIC, TUserMsgFunc MSG_VGUserMsgFunc                            , NULL);
+
+
+#endif
+
+

@@ -1,0 +1,455 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:04 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>MimosaAlignAnalysis</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class MimosaAlignAnalysis','','MAlign.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/MimosaAlignAnalysis.h.html">header file</a>
+<a class="descrheadentry" href="src/MimosaAlignAnalysis.cxx.html">source file</a>
+<a class="descrheadentry" href="MimosaAlignAnalysis_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#MimosaAlignAnalysis:description">class description</a> 
+<a class="descrheadentry" href="#MimosaAlignAnalysis:Function_Members">function members</a>
+<a class="descrheadentry" href="#MimosaAlignAnalysis:Data_Members">data members</a>
+<a class="descrheadentry" href="#MimosaAlignAnalysis:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">MimosaAlignAnalysis</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="MimosaAlignAnalysis:description"></a>class MimosaAlignAnalysis: public TObject</h1>
+<div class="classdescr">
+<pre>
+
+Mimosa chip and ref. system alignement class
+This class performs the alignement of the tested
+Mimosa chip and of the associated test telescope.
+
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="MimosaAlignAnalysis:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:MimosaAlignAnalysis">MimosaAlignAnalysis</a>(<a href="./DSession.html">DSession</a>* aSession)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:MimosaAlignAnalysis%1">MimosaAlignAnalysis</a>(<span class="keyword">const</span> <a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:_MimosaAlignAnalysis">~MimosaAlignAnalysis</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignLadder">AlignLadder</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignHitsInPlane = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Int_t">Int_t</a> ladderFace = 1, <a href="./ListOfTypes.html#Double_t">Double_t</a> chi2Limit = 0.)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignLadderMV">AlignLadderMV</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit = 40)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignLadderMV2">AlignLadderMV2</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit = 40)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignMimosa">AlignMimosa</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, TFile* aCorFile, <span class="keyword">const</span> <span class="keyword">char</span>* MimosaResultDir, <a href="./ListOfTypes.html#Double_t">Double_t</a> aDistance)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignMimosaMV">AlignMimosaMV</a>(<a href="./DLadder.html">DLadder</a>* myLadderToAlign, <a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, <a href="./DPrecAlign.html">DPrecAlign</a>* fAlignmentLadder0, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignMimosaMV2">AlignMimosaMV2</a>(<a href="./DLadder.html">DLadder</a>* myLadder0, <a href="./DLadder.html">DLadder</a>* myLadderToAlign, <a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, <a href="./DPrecAlign.html">DPrecAlign</a>* fAlignmentLadder0, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignPrecMimosa">AlignPrecMimosa</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Double_t">Double_t</a> aDistance = 150.)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignPrecMimosaLadder">AlignPrecMimosaLadder</a>(<a href="./DLadder.html">DLadder</a>* myLadder, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Double_t">Double_t</a> aDistance = 150.)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignTracker%1">AlignTracker</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 1000., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignTracker">AlignTracker</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBoundU, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBoundV, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignTrackerMillepede">AlignTrackerMillepede</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignTrackerMinuit">AlignTrackerMinuit</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignHitsInPlane = 800, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Double_t">Double_t</a> chi2Limit = 0)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:AlignTrackerMinuitLadder">AlignTrackerMinuitLadder</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignHitsInPlane = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Double_t">Double_t</a> chi2Limit = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:CheckTrackInGeoLimits">CheckTrackInGeoLimits</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:fcn">fcn</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:fcnLadder">fcnLadder</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:fcnMiniVectors">fcnMiniVectors</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:fcnMiniVectors2">fcnMiniVectors2</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:Gener">Gener</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a>* xp, <a href="./ListOfTypes.html#Double_t">Double_t</a>* yp, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; aX, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; bX, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; aY, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; bY, <a href="./ListOfTypes.html#Double_t">Double_t</a>* sigX, <a href="./ListOfTypes.html#Double_t">Double_t</a>* disX, <a href="./ListOfTypes.html#Double_t">Double_t</a>* sigY, <a href="./ListOfTypes.html#Double_t">Double_t</a>* disY, <a href="./ListOfTypes.html#Double_t">Double_t</a>* z, <a href="./ListOfTypes.html#Double_t">Double_t</a>* phi)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret">static <a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>*&amp;</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:Instance%1">Instance</a>()</td></tr>
+<tr class="func"><td class="funcret">static <a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>*&amp;</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:Instance">Instance</a>(<a href="./DSession.html">DSession</a>* aSession)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>&amp;</td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:operator_">operator=</a>(<span class="keyword">const</span> <a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:SetTrackChi2Limit">SetTrackChi2Limit</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> <a href="./MimosaAlignAnalysis.html#MimosaAlignAnalysis:aChi2Limit" title="Int_t MimosaAlignAnalysis::aChi2Limit">aChi2Limit</a>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:SetTrackGeoLimits">SetTrackGeoLimits</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> xmin, <a href="./ListOfTypes.html#Double_t">Double_t</a> xmax, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymin, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymax)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:UpdateConfAlign2D">UpdateConfAlign2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nSecPlanes, <a href="./DPlane.html">DPlane</a>** SecPlane)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#MimosaAlignAnalysis:UpdateConfAlignUVW">UpdateConfAlignUVW</a>(<a href="./ListOfTypes.html#fstream">fstream</a>&amp; fileIn, <a href="./ListOfTypes.html#fstream">fstream</a>&amp; fileOut, <a href="./DPlane.html">DPlane</a>* SecPlane)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="MimosaAlignAnalysis:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MimosaAlignAnalysis:AlignDebug"></a>AlignDebug</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="MimosaAlignAnalysis:aChi2Limit"></a>aChi2Limit</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:fAlignement"></a>fAlignement</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:fAlignement0"></a>fAlignement0</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./MAlignment.html">MAlignment</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:fAlignment"></a>fAlignment</td><td></td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MimosaAlignAnalysis:fCcr"></a>fCcr</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="MimosaAlignAnalysis:fChi2Limit"></a>fChi2Limit</td><td class="datadesc">JB 2013/07/14</td></tr>
+<tr class="data"><td class="datatype">TCanvas*</td><td class="dataname"><a name="MimosaAlignAnalysis:fCnv"></a>fCnv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MimosaAlignAnalysis:fDdu"></a>fDdu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MimosaAlignAnalysis:fDdv"></a>fDdv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MimosaAlignAnalysis:fDdw"></a>fDdw</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MimosaAlignAnalysis:fDu"></a>fDu</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MimosaAlignAnalysis:fDv"></a>fDv</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="MimosaAlignAnalysis:fDw"></a>fDw</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:fGeom"></a>fGeom</td><td></td></tr>
+<tr class="data"><td class="datatype">TGraph</td><td class="dataname"><a name="MimosaAlignAnalysis:fGraph"></a>fGraph[6]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="MimosaAlignAnalysis:fLimitsX"></a>fLimitsX[2]</td><td class="datadesc">min-max in X for tracks, JB 2013/06/10</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="MimosaAlignAnalysis:fLimitsY"></a>fLimitsY[2]</td><td class="datadesc">min-max in Y for tracks, JB 2013/06/10</td></tr>
+<tr class="data"><td class="datatype">TF1*</td><td class="dataname"><a name="MimosaAlignAnalysis:fMyfit"></a>fMyfit</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSession.html">DSession</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:fSession"></a>fSession</td><td class="datadesc">JB 2011/07/21 to get rid of global var</td></tr>
+<tr class="data"><td class="datatype">static <a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:fgInstance"></a>fgInstance</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DLadder.html">DLadder</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:ladder0"></a>ladder0</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DLadder.html">DLadder</a>*</td><td class="dataname"><a name="MimosaAlignAnalysis:ladderToAlign"></a>ladderToAlign</td><td></td></tr>
+
+</table></div>
+</div>
+<h2><a id="MimosaAlignAnalysis:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="MimosaAlignAnalysis" href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="MimosaAlignAnalysis:MimosaAlignAnalysis" href="src/MimosaAlignAnalysis.cxx.html#gnwPjE">MimosaAlignAnalysis</a>(<a href="./DSession.html">DSession</a>* aSession)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:SetTrackChi2Limit" href="src/MimosaAlignAnalysis.cxx.html#wdEsZD">SetTrackChi2Limit</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> <a href="./MimosaAlignAnalysis.html#MimosaAlignAnalysis:aChi2Limit" title="Int_t MimosaAlignAnalysis::aChi2Limit">aChi2Limit</a>)</span><br />
+<div class="funccomm"><pre> Define the upper limit for the chi2 of tracks to be considered for alignment.
+
+ JB 2013/07/14
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:SetTrackGeoLimits" href="src/MimosaAlignAnalysis.cxx.html#QfBzfE">SetTrackGeoLimits</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> xmin, <a href="./ListOfTypes.html#Double_t">Double_t</a> xmax, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymin, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymax)</span><br />
+<div class="funccomm"><pre> Define geometrical limits of tracks to be considered for alignment.
+ Those limits are given in the tracker frame AND FOR Z=0.
+
+ JB 2013/06/10
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="MimosaAlignAnalysis:CheckTrackInGeoLimits" href="src/MimosaAlignAnalysis.cxx.html#PoMsYD">CheckTrackInGeoLimits</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignTracker" href="src/MimosaAlignAnalysis.cxx.html#P19ZC">AlignTracker</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBoundU, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBoundV, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000)</span><br />
+<div class="funccomm"><pre> Macro performs an alignement of the telescope in the coordinate system of
+ primary reference planes. Secondary planes are align relative to them.
+
+ This method fits only 2 shifts (vertical and horizontal) and 1 rotation angle
+  (axis perpendicular to plane).
+
+ Note that the types of plane alignes depends on the tracker alignement status:
+  0: align fixed ref. (planeStatus=1) and secondary ref. (planeStatus=2) and DUT (planeStaus=3)
+  1: align secondary ref. (planeStatus=2) and DUT (planeStaus=3)
+  2: align DUT (planeStaus=3)
+
+ ==&gt; Calling gTAF-&gt;SetAlignStatus(aStatus) before this method changes which planes are aligned
+ ==&gt; Use gTAF-&gt;SetTrackChi2LimitForAlign( aLimit) to set chi2 upper limit to usable tracks
+ ==&gt; Use gTAF-&gt;SetTrackGeoLimitsForAlign( xmin, xmax, ymin, ymax) to set geometrical limits to usable tracks
+
+ tracks built from primary reference planes are used to accumulate
+ residues with hits (if hits are at a distance smaller than tBound)
+ from secondary reference planes. A given number
+ (~200, hard coded in <a href="./DAlign.html">DAlign</a>) of events is used for this and then the alignement
+ parameters (translation and rotation coeff.) are fit (done in <a href="./DPlane.html">DPlane</a> and <a href="./DAlign.html">DAlign</a> methods).
+ Do this until the shift in translation parameters is below a limit around .5 microns,
+ see parameter limit hard coded in this function. At each iteration the tBound distance
+ to associate track and hits is automatically decreased (in Dplane and <a href="./DAlign.html">DAlign</a>).
+
+ Then a second number of events (the rest) is used to obtain the residu distribution
+ which is fit again (in this function) to check the result.
+
+ Methods revised by JB to allow variable numbers of secondary reference planes, 2007 June
+ modified 2008/10/19 for additional # events, JB
+ modified 2009/05/13 for display of additional events, JB
+ modified JB 2009/08/26 start track counter at 1
+ modified JB 2009/09/08 multi-tracks in accumulation step
+ modified JB 2009/09/18 force fRequiredHits for tracks when alignStatus==1 (suppressed 2011/06/21)
+ modified JB 2010/08/25 add limit on tilt to decide to stop alignment
+ modified JB 2010/11/25 replace notation tiltZ -&gt; tiltW
+ modified JB 2010/12/14 convert into degrees before updating the cfg file
+ modified JB 2011/03/14 refine number of hits required for tracks
+ modified JB 2011/04/05 update method and info for cfg file
+ modified JB 2011/06/21 new management of tracker alignment status to take planeStatus=0 into account
+ modified JB 2011/07/25 condition to display new params changed
+ modified JB 2013/06/13 different bounds in U and V directions introduced
+ modified JB 2013/06/13 Geometrical limits to consider tracks for alignment
+ modified JB 2013/07/11 chi2 limit to consider tracks for alignment
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignTrackerMinuit" href="src/MimosaAlignAnalysis.cxx.html#h63AcB">AlignTrackerMinuit</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignHitsInPlane = 800, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Double_t">Double_t</a> chi2Limit = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignTrackerMinuitLadder" href="src/MimosaAlignAnalysis.cxx.html#FaFr_">AlignTrackerMinuitLadder</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignHitsInPlane = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Double_t">Double_t</a> chi2Limit = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignLadder" href="src/MimosaAlignAnalysis.cxx.html#Gmfub">AlignLadder</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignHitsInPlane = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Int_t">Int_t</a> ladderFace = 1, <a href="./ListOfTypes.html#Double_t">Double_t</a> chi2Limit = 0.)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignLadderMV" href="src/MimosaAlignAnalysis.cxx.html#yaAmUC">AlignLadderMV</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480., <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit = 40)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignLadderMV2" href="src/MimosaAlignAnalysis.cxx.html#oBJaEC">AlignLadderMV2</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto = 1, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound = 480, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 5000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit = 40)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:UpdateConfAlign2D" href="src/MimosaAlignAnalysis.cxx.html#IXQSN">UpdateConfAlign2D</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nSecPlanes, <a href="./DPlane.html">DPlane</a>** SecPlane)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:UpdateConfAlignUVW" href="src/MimosaAlignAnalysis.cxx.html#mPk40C">UpdateConfAlignUVW</a>(<a href="./ListOfTypes.html#fstream">fstream</a>&amp; fileIn, <a href="./ListOfTypes.html#fstream">fstream</a>&amp; fileOut, <a href="./DPlane.html">DPlane</a>* SecPlane)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:Gener" href="src/MimosaAlignAnalysis.cxx.html#HD3qq">Gener</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a>* xp, <a href="./ListOfTypes.html#Double_t">Double_t</a>* yp, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; aX, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; bX, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; aY, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; bY, <a href="./ListOfTypes.html#Double_t">Double_t</a>* sigX, <a href="./ListOfTypes.html#Double_t">Double_t</a>* disX, <a href="./ListOfTypes.html#Double_t">Double_t</a>* sigY, <a href="./ListOfTypes.html#Double_t">Double_t</a>* disY, <a href="./ListOfTypes.html#Double_t">Double_t</a>* z, <a href="./ListOfTypes.html#Double_t">Double_t</a>* phi)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignTrackerMillepede" href="src/MimosaAlignAnalysis.cxx.html#xk.3ZC">AlignTrackerMillepede</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents)</span><br />
+<div class="funccomm"><pre> Macro performs an alignement of the telescope in the coordinate system of
+ tracker using the Millipede package
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:fcn" href="src/MimosaAlignAnalysis.cxx.html#FDL06B">fcn</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</span><br />
+<div class="funccomm"><pre> <a href="./MimosaAlignAnalysis.html#MimosaAlignAnalysis:fcn" title="void MimosaAlignAnalysis::fcn(Int_t&amp; n,Double_t* gin,Double_t&amp; f,Double_t* par,Int_t iflag)">fcn</a> function used by the MINUIT Fitter
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:fcnLadder" href="src/MimosaAlignAnalysis.cxx.html#Iar2yC">fcnLadder</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</span><br />
+<div class="funccomm"><pre> <a href="./MimosaAlignAnalysis.html#MimosaAlignAnalysis:fcn" title="void MimosaAlignAnalysis::fcn(Int_t&amp; n,Double_t* gin,Double_t&amp; f,Double_t* par,Int_t iflag)">fcn</a> function used by the MINUIT Fitter
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:fcnMiniVectors" href="src/MimosaAlignAnalysis.cxx.html#SyJesB">fcnMiniVectors</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</span><br />
+<div class="funccomm"><pre> <a href="./MimosaAlignAnalysis.html#MimosaAlignAnalysis:fcn" title="void MimosaAlignAnalysis::fcn(Int_t&amp; n,Double_t* gin,Double_t&amp; f,Double_t* par,Int_t iflag)">fcn</a> function used by the MINUIT Fitter
+std::<a href="./ListOfTypes.html#ostream">cout</a>&lt;&lt;<span class="string">"fcn function used by the MINUIT Fitter"</span>&lt;&lt;std::endl;
+<a href="./DR3.html">DR3</a> Correction;
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:fcnMiniVectors2" href="src/MimosaAlignAnalysis.cxx.html#HFKrMD">fcnMiniVectors2</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; n, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; f, <a href="./ListOfTypes.html#Double_t">Double_t</a>* par, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</span><br />
+<div class="funccomm"><pre> <a href="./MimosaAlignAnalysis.html#MimosaAlignAnalysis:fcn" title="void MimosaAlignAnalysis::fcn(Int_t&amp; n,Double_t* gin,Double_t&amp; f,Double_t* par,Int_t iflag)">fcn</a> function used by the MINUIT Fitter
+std::<a href="./ListOfTypes.html#ostream">cout</a>&lt;&lt;<span class="string">"fcn function used by the MINUIT Fitter"</span>&lt;&lt;std::endl;
+<a href="./DR3.html">DR3</a> Correction;
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPrecAlign.html">DPrecAlign</a>* <a class="funcname" name="MimosaAlignAnalysis:AlignMimosa" href="src/MimosaAlignAnalysis.cxx.html#o.geNE">AlignMimosa</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, TFile* aCorFile, <span class="keyword">const</span> <span class="keyword">char</span>* MimosaResultDir, <a href="./ListOfTypes.html#Double_t">Double_t</a> aDistance)</span><br />
+<div class="funccomm"><pre> Mimosa alignement method:
+ Take an input aligment (initAlignement) and fit its data to determine
+  the best plane alignment (3 shifts and 3 angles).
+ The fit is actually done within an interactive MINUIT session.
+
+ The original version was considering z=0 as fixed,
+  the present version allows for z!=0 and fit it.
+
+ After the fit, the user can choose between saving or not the
+  fitted parameters in the given CorParFile.
+
+ Modified JB 2010/09/08
+ Modified JB 2011/06/18, some reshape + new arguments
+ Modified JB 2012/05/12, use new arg aDistance for plot range
+ Modified SS 2012/09/05, datapoints cleaning before storing and SET STRATEGY
+ Modified JB 2013/06/22, correct z parameter fixed in fit
+ Modified JB 2013/07/14 name of angles changed from th0/1/2 to tiltx/y/z
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPrecAlign.html">DPrecAlign</a>* <a class="funcname" name="MimosaAlignAnalysis:AlignPrecMimosaLadder" href="src/MimosaAlignAnalysis.cxx.html#SnxDFC">AlignPrecMimosaLadder</a>(<a href="./DLadder.html">DLadder</a>* myLadder, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Double_t">Double_t</a> aDistance = 150.)</span><br />
+<div class="funccomm"><pre> Mimosa alignement method
+ Take an input aligment and fit its data to
+ The present version allows for z!=0 and fit it
+
+ LC 2012/09/06.
+ Modified: JB, 2013/07/14 name of angles changed from th0/1/2 to tiltx/y/z
+ Modified: JB, 2013/08/22 aDistance parameter to manage histo range
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPrecAlign.html">DPrecAlign</a>* <a class="funcname" name="MimosaAlignAnalysis:AlignMimosaMV" href="src/MimosaAlignAnalysis.cxx.html#opX65">AlignMimosaMV</a>(<a href="./DLadder.html">DLadder</a>* myLadderToAlign, <a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, <a href="./DPrecAlign.html">DPrecAlign</a>* fAlignmentLadder0, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit)</span><br />
+<div class="funccomm"><pre> Mimosa alignement method
+ Take an input aligment and fit its data to
+ The present version allows for z!=0 and fit it
+
+ LC 2012/09/06.
+ Modified: JB, 2013/07/14 name of angles changed from th0/1/2 to tiltx/y/z
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPrecAlign.html">DPrecAlign</a>* <a class="funcname" name="MimosaAlignAnalysis:AlignMimosaMV2" href="src/MimosaAlignAnalysis.cxx.html#Pof0zD">AlignMimosaMV2</a>(<a href="./DLadder.html">DLadder</a>* myLadder0, <a href="./DLadder.html">DLadder</a>* myLadderToAlign, <a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, <a href="./DPrecAlign.html">DPrecAlign</a>* fAlignmentLadder0, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Int_t">Int_t</a> chi2Limit)</span><br />
+<div class="funccomm"><pre> Mimosa alignement method
+ Take an input aligment and fit its data to
+ The present version allows for z!=0 and fit it
+
+ LC 2012/09/06.
+ Modified: JB, 2013/07/14 name of angles changed from th0/1/2 to tiltx/y/z
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPrecAlign.html">DPrecAlign</a>* <a class="funcname" name="MimosaAlignAnalysis:AlignPrecMimosa" href="src/MimosaAlignAnalysis.cxx.html#g2YWtE">AlignPrecMimosa</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* initAlignment, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> modeAuto, <a href="./ListOfTypes.html#Double_t">Double_t</a> aDistance = 150.)</span><br />
+<div class="funccomm"><pre> Mimosa alignement method
+ Take an input aligment and fit its data to
+ The present version allows for z!=0 and fit it
+
+ LC 2012/09/06.
+ Modified: JB, 2013/07/14 name of angles changed from th0/1/2 to tiltx/y/z
+ Modified: JB, 2013/08/22 aDistance parameter to manage histo range
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="MimosaAlignAnalysis:MimosaAlignAnalysis" href="src/MimosaAlignAnalysis.h.html#KAIFQC">MimosaAlignAnalysis</a>(<a href="./DSession.html">DSession</a>* aSession)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">virtual</span> <a class="funcname" name="MimosaAlignAnalysis:_MimosaAlignAnalysis" href="src/MimosaAlignAnalysis.h.html#e5_opB">~MimosaAlignAnalysis</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">delete</span> <a href="./MimosaAlignAnalysis.html#MimosaAlignAnalysis:fAlignment" title="MAlignment* MimosaAlignAnalysis::fAlignment">fAlignment</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:SetDebug" href="src/MimosaAlignAnalysis.h.html#aciwKE">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="MimosaAlignAnalysis:AlignTracker" href="src/MimosaAlignAnalysis.h.html#qzmA6B">AlignTracker</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBoundU, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBoundV, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAlignEvents = 4000, <a href="./ListOfTypes.html#Int_t">Int_t</a> nAdditionalEvents = 2000)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>*&amp; <a class="funcname" name="MimosaAlignAnalysis:Instance" href="src/MimosaAlignAnalysis.h.html#R.DdJ">Instance</a>(<a href="./DSession.html">DSession</a>* aSession)</span><br />
+<div class="funccomm"><pre> Modified: JB 2011/07/21 to pass session pointer
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./MimosaAlignAnalysis.html">MimosaAlignAnalysis</a>*&amp; <a class="funcname" name="MimosaAlignAnalysis:Instance%1" href="src/MimosaAlignAnalysis.h.html#YwCMjE">Instance</a>()</span><br />
+<div class="funccomm"><pre> Modified: JB 2011/07/21 to pass session pointer
+</pre></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/maf:$Name:  $:$Id: MAlign.h v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

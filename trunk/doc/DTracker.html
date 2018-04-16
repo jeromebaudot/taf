@@ -1,0 +1,544 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:00 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DTracker</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DTracker','','DTracker.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DTracker.h.html">header file</a>
+<a class="descrheadentry" href="src/DTracker.cxx.html">source file</a>
+<a class="descrheadentry" href="DTracker_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DTracker:description">class description</a> 
+<a class="descrheadentry" href="#DTracker:Function_Members">function members</a>
+<a class="descrheadentry" href="#DTracker:Data_Members">data members</a>
+<a class="descrheadentry" href="#DTracker:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DTracker</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DTracker:description"></a>class DTracker: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./DTracker.html#DTracker:Class" title="TClass* DTracker::Class()">Class</a> Description of <a href="./DTracker.html">DTracker</a>
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DTracker:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DTracker:DTracker">DTracker</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DTracker:DTracker%2">DTracker</a>(<span class="keyword">const</span> <a href="./DTracker.html">DTracker</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DTracker:DTracker%1">DTracker</a>(<a href="./DSetup.html">DSetup</a>&amp; c, <a href="./DAcq.html">DAcq</a>&amp; aAcq)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DTracker:_DTracker">~DTracker</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:Align">Align</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DTracker:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:fcn">fcn</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; npar, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; fValue, <a href="./ListOfTypes.html#Double_t">Double_t</a>* x, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DAcq.html">DAcq</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetAcq">GetAcq</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetAlignmentStatus">GetAlignmentStatus</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetDebug">GetDebug</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DLadder.html">DLadder</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetLadder">GetLadder</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderNumber)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetListDUT">GetListDUT</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetListFixRef">GetListFixRef</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetListTrackSeed">GetListTrackSeed</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetListVarRef">GetListVarRef</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetNDUT">GetNDUT</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetNFixRef">GetNFixRef</a>()</td></tr>
+<tr class="func"><td class="funcret">TNode*</td><td class="funcname"><a class="funcname" href="#DTracker:GetNode">GetNode</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetNTrackSeed">GetNTrackSeed</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetNumberOfLadders">GetNumberOfLadders</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetNVarRef">GetNVarRef</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DPlane.html">DPlane</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetPlane">GetPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetPlanesN">GetPlanesN</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetPlanesStatus">GetPlanesStatus</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DTrack.html">DTrack</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetPrincipalTrack">GetPrincipalTrack</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetRequiredHits">GetRequiredHits</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetSetup">GetSetup</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DTrack.html">DTrack</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:GetTrack">GetTrack</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aTN)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetTrackCount">GetTrackCount</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> i)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetTrackCountPerPlane">GetTrackCountPerPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> iPlane)</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DTracker:GetTrackerName">GetTrackerName</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetTracksMaximum">GetTracksMaximum</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:GetTracksN">GetTracksN</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret">static <a href="./DTracker.html">DTracker</a>*&amp;</td><td class="funcname"><a class="funcname" href="#DTracker:Instance">Instance</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DTracker:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DHit.html">DHit</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:nearest_hit">nearest_hit</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <a href="./ListOfTypes.html#Bool_t">Bool_t</a>&amp; hitAssociated)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DTrack.html">DTrack</a>*</td><td class="funcname"><a class="funcname" href="#DTracker:nearest_track">nearest_track</a>(<a href="./DHit.html">DHit</a>* aHit)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DTracker.html">DTracker</a>&amp;</td><td class="funcname"><a class="funcname" href="#DTracker:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DTracker.html">DTracker</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:PrintStatistics">PrintStatistics</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; stream = <a href="./ListOfTypes.html#ostream">cout</a>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:SetAlignmentStatus">SetAlignmentStatus</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aStatusValue)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:SetRequiredHits">SetRequiredHits</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNumber)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DTracker:Update">Update</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:find_tracks">find_tracks</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:find_tracks_1_opt">find_tracks_1_opt</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:find_tracks_2_ivi">find_tracks_2_ivi</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:find_tracks_and_vertex">find_tracks_and_vertex</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:find_tracks_withStrips">find_tracks_withStrips</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DTracker:find_vertex">find_vertex</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DTracker:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./DAcq.html">DAcq</a>*</td><td class="dataname"><a name="DTracker:fAcq"></a>fAcq</td><td class="datadesc">pointer to acquisition</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fAlignmentStatus"></a>fAlignmentStatus</td><td class="datadesc">status of the alignement</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fDebugTracker"></a>fDebugTracker</td><td class="datadesc">debug flag</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fFixRefDevs"></a>fFixRefDevs</td><td class="datadesc">amount of fixed reference planes (e.g. 4 Silicon planes)</td></tr>
+<tr class="data"><td class="datatype"><a href="./DHit.html">DHit</a>**</td><td class="dataname"><a name="DTracker:fHitList"></a>fHitList</td><td class="datadesc">! pointer to hit list</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fHits"></a>fHits</td><td class="datadesc">number of hits found</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fHitsMaximum"></a>fHitsMaximum</td><td class="datadesc">maximum number of hits allowed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fKeepUnTrackedHitsBetw2evts"></a>fKeepUnTrackedHitsBetw2evts</td><td class="datadesc">explicit // VR 2014.08.28</td></tr>
+<tr class="data"><td class="datatype">TObjArray*</td><td class="dataname"><a name="DTracker:fLadderArray"></a>fLadderArray</td><td class="datadesc">pointer to array of Ladders</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DTracker:fListFixRefDevs"></a>fListFixRefDevs</td><td class="datadesc">! list with numbers of fixed reference planes</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DTracker:fListTestDevs"></a>fListTestDevs</td><td class="datadesc">! list with numbers of det. under test</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DTracker:fListTrackSeedDevs"></a>fListTrackSeedDevs</td><td class="datadesc">! list with numbers of fixed reference planes</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DTracker:fListVarRefDevs"></a>fListVarRefDevs</td><td class="datadesc">! list with numbers of variable reference planes</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fNumberOfLadders"></a>fNumberOfLadders</td><td class="datadesc">LC 2013/01/15.</td></tr>
+<tr class="data"><td class="datatype">TObjArray*</td><td class="dataname"><a name="DTracker:fPlaneArray"></a>fPlaneArray</td><td class="datadesc">pointer to array of planes			    </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fPlanesN"></a>fPlanesN</td><td class="datadesc">number of planes </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fPlanesStatus"></a>fPlanesStatus</td><td class="datadesc">init status of the planes					    </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fRequiredHits"></a>fRequiredHits</td><td class="datadesc">! number of hits required to make a track, Jb 2009/05/21</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DTracker:fSearchHitDistance"></a>fSearchHitDistance</td><td class="datadesc">! Max distance to associate a track and a hit, JB 2009/05/21</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DTracker:fSearchMoreHitDistance"></a>fSearchMoreHitDistance</td><td class="datadesc">Max distance to associate a hit to a pre-track, VR 2014/06/29</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fTestDevs"></a>fTestDevs</td><td class="datadesc">amount of DUT planes</td></tr>
+<tr class="data"><td class="datatype"><a href="./DTrack.html">DTrack</a>**</td><td class="dataname"><a name="DTracker:fTrack"></a>fTrack</td><td class="datadesc">! pointer to track list</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DTracker:fTrackCount"></a>fTrackCount</td><td class="datadesc">Counter of tracks with # hits per track, JB 2009/09/08</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DTracker:fTrackCountPerPlane"></a>fTrackCountPerPlane</td><td class="datadesc">Counter of tracks per plane, JB 2014/08/29</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fTrackSeedDevs"></a>fTrackSeedDevs</td><td class="datadesc">amount of track seed planes (e.g. 2 Silicon planes)</td></tr>
+<tr class="data"><td class="datatype"><a href="./DTrack.html">DTrack</a>*</td><td class="dataname"><a name="DTracker:fTrackVoid"></a>fTrackVoid</td><td class="datadesc">this is an "empty" track</td></tr>
+<tr class="data"><td class="datatype">TBRIK*</td><td class="dataname"><a name="DTracker:fTrackerGeometry"></a>fTrackerGeometry</td><td class="datadesc">pointer to the geometry</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DTracker:fTrackerName"></a>fTrackerName</td><td class="datadesc">name of this tracker</td></tr>
+<tr class="data"><td class="datatype">TNode*</td><td class="dataname"><a name="DTracker:fTrackerNode"></a>fTrackerNode</td><td class="datadesc">pointer to the node of the tracker</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>**</td><td class="dataname"><a name="DTracker:fTrackingOrderFulTrack"></a>fTrackingOrderFulTrack</td><td class="datadesc">Planes'order to build full-tracks</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fTrackingOrderLines"></a>fTrackingOrderLines</td><td class="datadesc">Number of Lines to define planes tracking order</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>**</td><td class="dataname"><a name="DTracker:fTrackingOrderPreTrack"></a>fTrackingOrderPreTrack</td><td class="datadesc">Planes'order to build pre-tracks</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fTrackingPlaneOrderType"></a>fTrackingPlaneOrderType</td><td class="datadesc">the planes ordering type for finding tracks VR 2014/07/14</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fTracksFinder"></a>fTracksFinder</td><td class="datadesc">select track finding method</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fTracksMaximum"></a>fTracksMaximum</td><td class="datadesc">maximum number of tracks allowed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fTracksN"></a>fTracksN</td><td class="datadesc">number of tracks found</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fUseSlopeInExtrapolation"></a>fUseSlopeInExtrapolation</td><td class="datadesc">JB 2013/06/21</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fUseVertexConstraint"></a>fUseVertexConstraint</td><td class="datadesc">JB 2013/06/21</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fVarRefDevs"></a>fVarRefDevs</td><td class="datadesc">amount of variable reference planes (e.g. 4 other Silicon planes)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DTracker:fVertexMaximum"></a>fVertexMaximum</td><td class="datadesc">maximum number of vertex allowed, JB 2013/06/11</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>*</td><td class="dataname"><a name="DTracker:fc"></a>fc</td><td class="datadesc">pointer to the configuration</td></tr>
+<tr class="data"><td class="datatype">static <a href="./DTracker.html">DTracker</a>*</td><td class="dataname"><a name="DTracker:fgInstance"></a>fgInstance</td><td></td></tr>
+
+</table></div>
+</div>
+<h2><a id="DTracker:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DTracker" href="./DTracker.html">DTracker</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DTracker:DTracker" href="src/DTracker.cxx.html#mauvsC">DTracker</a>()</span><br />
+<div class="funccomm"><pre> <a href="./DTracker.html">DTracker</a> default constructor
+  if (<a href="./DTracker.html#DTracker:fgInstance" title="DTracker* DTracker::fgInstance">fgInstance</a>) <a href="./#TObject:Warning" title="void TObject::Warning(const char* method,const char* msgfmt)">Warning</a>(<span class="string">"MimosaAlignAnalysis"</span>, <span class="string">"object already instantiated"</span>);
+  else <a href="./DTracker.html#DTracker:fgInstance" title="DTracker* DTracker::fgInstance">fgInstance</a> = this;
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DTracker:DTracker%1" href="src/DTracker.cxx.html#yFHZvD">DTracker</a>(<a href="./DSetup.html">DSetup</a>&amp; c, <a href="./DAcq.html">DAcq</a>&amp; aAcq)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DTracker:_DTracker" href="src/DTracker.cxx.html#xJCEeE">~DTracker</a>()</span><br />
+<div class="funccomm"><pre> <a href="./DTracker.html">DTracker</a> default destructor
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPlane.html">DPlane</a>* <a class="funcname" name="DTracker:GetPlane" href="src/DTracker.cxx.html#AmbMLE">GetPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DLadder.html">DLadder</a>* <a class="funcname" name="DTracker:GetLadder" href="src/DTracker.cxx.html#g69FtE">GetLadder</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:Align" href="src/DTracker.cxx.html#VtRqKB">Align</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DTrack.html">DTrack</a>* <a class="funcname" name="DTracker:GetTrack" href="src/DTracker.cxx.html#t5chH">GetTrack</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aTN)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:SetAlignmentStatus" href="src/DTracker.cxx.html#CJYiO">SetAlignmentStatus</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aStatusValue)</span><br />
+<div class="funccomm"><pre> Set the alignment status of the tracker which drives
+ the types of planes used to build tracks
+ and the planes which is aligned in the AlignTracker procedure.
+ The minimal number of hits to make a track is set accordingly.
+
+ Modified JB 2009/07/20
+ Modified JB 2009/09/01
+ Modified JB 2011/06/21
+ Modified JB 2012/08/28 add condition for strip-telescope
+ Modified JB 2013/08/19 correctly set required hits for status=0
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:SetDebug" href="src/DTracker.cxx.html#BOP_I">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+<div class="funccomm"><pre> Initialize or update the debug level
+ update also the level for planes
+ JB 2009/05/12
+ Modified: JB 2012/08/20 to set <a href="./DTrack.html">DTrack</a> object debug level
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:SetRequiredHits" href="src/DTracker.cxx.html#jLDuBC">SetRequiredHits</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNumber)</span><br />
+<div class="funccomm"><pre> JB 2009/09/18
+ Modified JB 2012/08/28 add condition for strip-telescope
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:Update" href="src/DTracker.cxx.html#VFlm3D">Update</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:find_tracks" href="src/DTracker.cxx.html#vEVP9D">find_tracks</a>()</span><br />
+<div class="funccomm"><pre> Original method to find tracks
+
+ Try to make a track with all hits of the <span class="string">"seed"</span> reference planes (status=0).
+ For each of such hits, a track is extrapolated to the other planes and
+  the nearest hit within a search window is added to the track. If no hit
+  lies within the search window, the plane is skipped.
+ When all planes have been searched, the track is fitted with all its associated hits.
+
+ Note that there are two options for the track extrapolation:
+  <a href="./DTracker.html#DTracker:fUseSlopeInExtrapolation" title="Int_t DTracker::fUseSlopeInExtrapolation">fUseSlopeInExtrapolation</a>==0 =&gt; done with no slope,
+    that means perpendicularly with respect to the seed plane.
+  <a href="./DTracker.html#DTracker:fUseSlopeInExtrapolation" title="Int_t DTracker::fUseSlopeInExtrapolation">fUseSlopeInExtrapolation</a> &gt;0 =&gt; done with the current track slope.
+
+ Planes are used in the tracking depending on their status
+  and the value of the Tracker <a href="./DTracker.html#DTracker:Align" title="void DTracker::Align(DTrack* aTrack)">Align</a> Status. The rule is that the plane
+  is included if PlaneStatus&lt;=TrackerAlignStatus.
+
+ This method has been completely reshaped to allow for multi-track event
+  and best hit selection.
+
+
+ JB 2009/05/22
+ Modified: JB 2009/08/25, track numbering
+ Modified: JB 2009/09/01, no more update of <a href="./DTracker.html#DTracker:fRequiredHits" title="Int_t DTracker::fRequiredHits">fRequiredHits</a>
+ Modified: JB 2011/03/14, use several sensors for track seed
+ Modified: JB 2011/07/25, search the next hit along the temporary track path
+ Modified: SS 2011/10/26, rollback of the calculation of the hit-track distance
+ Modified: JB 2012/04/02, fix in condition to include planes depending on alignment
+ Modified: JB 2012/09/07, new condition on firstHit
+ Modified: JB 2013/06/21, new parameter <a href="./DTracker.html#DTracker:fUseSlopeInExtrapolation" title="Int_t DTracker::fUseSlopeInExtrapolation">fUseSlopeInExtrapolation</a>
+ Modified: VR 2014/06/29, bug fixed : hits not associated to a track a cleared even if <a href="./DTracker.html#DTracker:fRequiredHits" title="Int_t DTracker::fRequiredHits">fRequiredHits</a> is not reached
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:find_tracks_1_opt" href="src/DTracker.cxx.html#btyOgE">find_tracks_1_opt</a>()</span><br />
+<div class="funccomm"><pre> Method to find tracks like <a href="./DTracker.html#DTracker:find_tracks" title="void DTracker::find_tracks()">find_tracks</a>() but with more options
+
+
+ Created : VR 2014/07/14, adapted from <a href="./DTracker.html#DTracker:find_tracks" title="void DTracker::find_tracks()">find_tracks</a>()
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:find_tracks_2_ivi" href="src/DTracker.cxx.html#YeBPcB">find_tracks_2_ivi</a>()</span><br />
+<div class="funccomm"><pre> Method to find tracks adapted for Interaction Vertex Imaging
+
+
+ Created : VR 2014/07/14, adapted from <a href="./DTracker.html#DTracker:find_tracks" title="void DTracker::find_tracks()">find_tracks</a>()
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:find_tracks_and_vertex" href="src/DTracker.cxx.html#hY5o6">find_tracks_and_vertex</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:find_tracks_withStrips" href="src/DTracker.cxx.html#YNxyiB">find_tracks_withStrips</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DHit.html">DHit</a>* <a class="funcname" name="DTracker:nearest_hit" href="src/DTracker.cxx.html#gWVYh">nearest_hit</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <a href="./ListOfTypes.html#Bool_t">Bool_t</a>&amp; hitAssociated)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DTrack.html">DTrack</a>* <a class="funcname" name="DTracker:nearest_track" href="src/DTracker.cxx.html#gIY.ZC">nearest_track</a>(<a href="./DHit.html">DHit</a>* aHit)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:PrintStatistics" href="src/DTracker.cxx.html#D8GsiB">PrintStatistics</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; stream = <a href="./ListOfTypes.html#ostream">cout</a>)</span><br />
+<div class="funccomm"><pre> SS 2011/12/14 - Save statistics to the chosen output stream
+ Modified JB 2014/08/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:fcn" href="src/DTracker.cxx.html#A6tJeB">fcn</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; npar, <a href="./ListOfTypes.html#Double_t">Double_t</a>* gin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; fValue, <a href="./ListOfTypes.html#Double_t">Double_t</a>* x, <a href="./ListOfTypes.html#Int_t">Int_t</a> iflag)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DTracker:find_vertex" href="src/DTracker.cxx.html#kNvSxD">find_vertex</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DTracker:DTracker" href="src/DTracker.h.html#Qw3skC">DTracker</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetAlignmentStatus" href="src/DTracker.h.html#EW7myC">GetAlignmentStatus</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DTracker.html#DTracker:fAlignmentStatus" title="Int_t DTracker::fAlignmentStatus">fAlignmentStatus</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetRequiredHits" href="src/DTracker.h.html#hCZ4lD">GetRequiredHits</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DTracker.html#DTracker:fRequiredHits" title="Int_t DTracker::fRequiredHits">fRequiredHits</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DAcq.html">DAcq</a>            * <a class="funcname" name="DTracker:GetAcq" href="src/DTracker.h.html#hFZar">GetAcq</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fAcq" title="DAcq* DTracker::fAcq">fAcq</a>;          }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSetup.html">DSetup</a>          * <a class="funcname" name="DTracker:GetSetup" href="src/DTracker.h.html#LHJI4D">GetSetup</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fc" title="DSetup* DTracker::fc">fc</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DTrack.html">DTrack</a>          * <a class="funcname" name="DTracker:GetPrincipalTrack" href="src/DTracker.h.html#EHday">GetPrincipalTrack</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTrack" title="DTrack** DTracker::fTrack">fTrack</a>[0];     }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetNumberOfLadders" href="src/DTracker.h.html#j5P4cD">GetNumberOfLadders</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fNumberOfLadders" title="Int_t DTracker::fNumberOfLadders">fNumberOfLadders</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DTracker:GetTrackerName" href="src/DTracker.h.html#YMFUx">GetTrackerName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTrackerName" title="TString DTracker::fTrackerName">fTrackerName</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetPlanesN" href="src/DTracker.h.html#MRAs2C">GetPlanesN</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fPlanesN" title="Int_t DTracker::fPlanesN">fPlanesN</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetTracksN" href="src/DTracker.h.html#i9hyM">GetTracksN</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTracksN" title="Int_t DTracker::fTracksN">fTracksN</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetTracksMaximum" href="src/DTracker.h.html#JQt2hC">GetTracksMaximum</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTracksMaximum" title="Int_t DTracker::fTracksMaximum">fTracksMaximum</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetNTrackSeed" href="src/DTracker.h.html#E4sT3C">GetNTrackSeed</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTrackSeedDevs" title="Int_t DTracker::fTrackSeedDevs">fTrackSeedDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetNFixRef" href="src/DTracker.h.html#abF8tD">GetNFixRef</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fFixRefDevs" title="Int_t DTracker::fFixRefDevs">fFixRefDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetNVarRef" href="src/DTracker.h.html#qDm_fC">GetNVarRef</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fVarRefDevs" title="Int_t DTracker::fVarRefDevs">fVarRefDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a>           * <a class="funcname" name="DTracker:GetListTrackSeed" href="src/DTracker.h.html#MPFx5B">GetListTrackSeed</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fListTrackSeedDevs" title="Int_t* DTracker::fListTrackSeedDevs">fListTrackSeedDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a>           * <a class="funcname" name="DTracker:GetListFixRef" href="src/DTracker.h.html#ZFd9WC">GetListFixRef</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fListFixRefDevs" title="Int_t* DTracker::fListFixRefDevs">fListFixRefDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a>           * <a class="funcname" name="DTracker:GetListVarRef" href="src/DTracker.h.html#JZBs0">GetListVarRef</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fListVarRefDevs" title="Int_t* DTracker::fListVarRefDevs">fListVarRefDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetNDUT" href="src/DTracker.h.html#sumlSC">GetNDUT</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTestDevs" title="Int_t DTracker::fTestDevs">fTestDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a>           * <a class="funcname" name="DTracker:GetListDUT" href="src/DTracker.h.html#NoQsl">GetListDUT</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fListTestDevs" title="Int_t* DTracker::fListTestDevs">fListTestDevs</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetTrackCount" href="src/DTracker.h.html#K1PE5">GetTrackCount</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> i)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTrackCount" title="Int_t* DTracker::fTrackCount">fTrackCount</a>[i]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetTrackCountPerPlane" href="src/DTracker.h.html#LzOuZ">GetTrackCountPerPlane</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> iPlane)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">if</span>( iPlane&lt;<a href="./DTracker.html#DTracker:fPlanesN" title="Int_t DTracker::fPlanesN">fPlanesN</a> ) <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTrackCountPerPlane" title="Int_t* DTracker::fTrackCountPerPlane">fTrackCountPerPlane</a>[iPlane]; <span class="keyword">else</span> <span class="keyword">return</span> -1; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TNode           * <a class="funcname" name="DTracker:GetNode" href="src/DTracker.h.html#jGm8jC">GetNode</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DTracker.html#DTracker:fTrackerNode" title="TNode* DTracker::fTrackerNode">fTrackerNode</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetPlanesStatus" href="src/DTracker.h.html#Kbi5UC">GetPlanesStatus</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DTracker.html#DTracker:fPlanesStatus" title="Int_t DTracker::fPlanesStatus">fPlanesStatus</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DTracker:GetDebug" href="src/DTracker.h.html#ei3WLC">GetDebug</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DTracker.html#DTracker:fDebugTracker" title="Int_t DTracker::fDebugTracker">fDebugTracker</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DTracker.html">DTracker</a>*&amp; <a class="funcname" name="DTracker:Instance" href="src/DTracker.h.html#OLDddC">Instance</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DTracker.html#DTracker:fgInstance" title="DTracker* DTracker::fgInstance">fgInstance</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id:DTracker.h  v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

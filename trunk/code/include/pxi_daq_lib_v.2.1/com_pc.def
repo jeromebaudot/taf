@@ -1,0 +1,31 @@
+
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/com_pc/
+Goal      : Constants ( Macros ) definitions of com_pc unit.
+Prj date  : 26/03/2003
+File date : 26/03/2003
+Doc date  : 26/03/2003
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef COM_PC_DEF
+#define COM_PC_DEF
+
+#define CPC_OBJ_NB 4
+#define CPC_OBJ_0  0
+
+#define CPC_CMD_REC_NB 10
+
+#define CPC_CHK_OBJ_ID(ObjId) { \
+  if ( ObjId >= CPC_OBJ_NB ) { \
+    err_retfail ( -1, (ERR_OUT,"ObjId=%d >= CPC_OBJ_NB=%d", ObjId, CPC_OBJ_NB ) ); \
+  } \
+}
+
+
+#define CPC_OBJ_CMD_BLK_SZ 			 512
+#define CPC_OBJ_CMD_RES_BLK_SZ 512
+
+#endif

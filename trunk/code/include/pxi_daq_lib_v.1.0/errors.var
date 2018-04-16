@@ -1,0 +1,79 @@
+/*******************************************************************************
+File      : x:\lib\com\errors\errors.var
+Goal      : Variables definition of error messages logging library
+Prj date  : 2000 - 2002
+File date : 20/02/2005
+Doc date  :
+Remark    : Library exists since 2000, but split in files .def, .typ, .var, .h, .c
+          : was done on 20/02/2005.
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : LEPSI */
+/*******************************************************************************/
+
+
+#ifndef ERRORS_VAR
+#define ERRORS_VAR
+
+
+/*
+
+EXTERN VAR_STATIC SInt8              ERR_VGLogClosed                      VAR_INIT (0); // Set to 1 to allow error loggin
+EXTERN VAR_STATIC SInt8              ERR_VGFileDontLog                    VAR_INIT (0);
+EXTERN VAR_STATIC SInt8              ERR_VGUserDontLog                    VAR_INIT (0);
+EXTERN VAR_STATIC SInt8              ERR_VGFileLogEnable                  VAR_INIT (0);
+EXTERN VAR_STATIC SInt8              ERR_VGUserLogEnable                  VAR_INIT (0);
+EXTERN VAR_STATIC SInt8              ERR_VGFileLogLevel                   VAR_INIT (ERR_LOG_LVL_ALL);
+EXTERN VAR_STATIC SInt8              ERR_VGUserLogLevel                   VAR_INIT (ERR_LOG_LVL_ALL);
+
+EXTERN VAR_STATIC char               ERR_VGLogPath[GLB_FILE_PATH_SZ]      VAR_INIT ("/dd/tmp/pc/errors.txt");
+EXTERN VAR_STATIC FILE               *ERR_VGLogFile                       VAR_INIT (NULL);
+EXTERN VAR_STATIC FILE               *ERR_VGTmpLogFile                    VAR_INIT (NULL);
+EXTERN VAR_STATIC SInt32             ERR_VGMsgCnt                         VAR_INIT (0);
+EXTERN VAR_STATIC ERR_TUserErrorFunc ERR_VGUserErrorFunc                  VAR_INIT (NULL);
+EXTERN VAR_STATIC char               ERR_VGStrLocationMsg[ERR_TOT_MSG_SZ];
+EXTERN VAR_STATIC char               ERR_VGStrUserMsg[ERR_TOT_MSG_SZ];
+
+EXTERN VAR_STATIC char   VGOut[255];
+
+*/
+
+/* 07/04/2007 - New macros VAR_DCL and VAR_DCL_INIT for variable declaration to solve a ROOT CINT limitation on macros               */
+/* CINT doesn't handle macros like #define EMPTY_MACRO ... EMPTY_MACRO IS NOT replaced by empty space BUT LET as si = not replaced   */
+
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGLogClosed                      , 0);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGFileDontLog                    , 0);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGUserDontLog                    , 0);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGFileLogEnable                  , 0);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGUserLogEnable                  , 0);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGFileLogLevel                   , ERR_LOG_LVL_ALL);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGUserLogLevel                   , ERR_LOG_LVL_ALL);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, char               ERR_VGLogPath[GLB_FILE_PATH_SZ]      , "/dd/tmp/pc/errors.txt");
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, FILE               *ERR_VGLogFile                       , NULL);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, FILE               *ERR_VGTmpLogFile                    , NULL);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt32             ERR_VGMsgCnt                         , 0);
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, ERR_TUserErrorFunc ERR_VGUserErrorFunc                  , NULL);
+VAR_DCL      ( EXTERN, VAR_STATIC, char               ERR_VGStrLocationMsg[ERR_TOT_MSG_SZ] );
+
+/* 07/04/2007 - ERR_VGStrUserMsg identifier replaced by ERR_OUT because of ROOT CINT macros limitations */
+
+VAR_DCL      ( EXTERN, VAR_STATIC, char               ERR_OUT[ERR_TOT_MSG_SZ]     );
+
+VAR_DCL      ( EXTERN, VAR_STATIC, char   VGOut[255] );
+
+// 21/12/2010
+
+VAR_DCL_INIT ( EXTERN, VAR_STATIC, char *ERR_VGLastErrMsg, "NULL");
+
+
+
+#endif
+
+
+

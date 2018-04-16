@@ -1,0 +1,57 @@
+/***************************************************************************//**
+ * SVN File:    $Id$
+ *
+ * Project:     
+ *
+ * @brief:      README
+ *
+ * Description: Tracking studies with LeastChiSquare class
+ *
+ *
+ * @createdby:  LIU Qingyuan <liuqingyuan678@gmail.com> at 2016-06-01 14:08:51
+ * @copyright:  (c)2016 HEPG - Shandong University. All Rights Reserved.
+ *
+ * @lastchange: $Revision$
+ *              $Author$
+ *              $Date$
+ *
+ *******************************************************************************/
+
+Contents
+========
+
+Files in directory TrackingEstimate/:
+
+README              - this file
+MLeastChiSquare.h   - head file of class MLeastChiSquare, a GLS implementation
+MLeastChiSquare.cxx - source codes of class MLeastChiSquare
+MTools.C	    - Useful functions
+MInputs.C           - Particle/sensor/layer info
+cal4BeamTestSim.cxx - Calculations for beam test simulation. The main macro to estimate tracking performances
+
+Usage
+========
+
+// Pointing resolution VS Momentum
+root -l cal4BeamTestSim.cxx
+root [1] doEnergyScan(); // all the other functions below will call this function!
+
+// Pseudo-efficiency vs momentum
+root -l cal4BeamTestSim.cxx
+root [1] doEnergyScan(Gmass, 0.2, 2.2, 100, 2, kTRUE)
+
+// Material Scan
+root -l cal4BeamTestSim.cxx
+root [1] doMaterialScan()
+
+// Radius Scan of the middle layer
+root -l cal4BeamTestSim.cxx
+root [1] doRadiusScan()
+
+// Noise density scan
+root [1] doNoiseScan()
+
+Known issues
+============
+One cannot check the efficiency and the pointing resolution at the same root session. You have to quit root.
+The reason is that the first graph will be drawn with option "AC" to draw the axes. When you call doEnergyScan() again, it will change the draw option to "Csame" which will not redraw the axes for efficiency/pointing resolution.

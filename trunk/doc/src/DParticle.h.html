@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Wed Jul 20 15:08:01 2011            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DParticle - source file</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="../ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="../ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();">
+<pre class="code">
+<span class="comment">// @(#)maf/dtools:$Name:  $:$Id: <a href="../DParticle.html">DParticle</a>.h,v.1 2005/10/02 18:03:46 sha Exp $</span>
+<span class="comment">// Author   :  Dirk Meier   98/02/19</span>
+
+<span class="cpp">#ifndef _DParticle_included_</span>
+<span class="cpp">#define _DParticle_included_</span>
+
+  <span class="comment">/////////////////////////////////////////////////////////////</span>
+  <span class="comment">//                                                         //</span>
+  <span class="comment">// <a href="../DParticle.html#DParticle:Class" title="TClass* DParticle::Class()">Class</a> Description of Particle                           //</span>
+  <span class="comment">//                                                         //</span>
+  <span class="comment">//                                                         //</span>
+  <span class="comment">/////////////////////////////////////////////////////////////</span>
+
+<span class="cpp">#include &lt;math.h&gt;</span>
+<span class="cpp">#include "Riostream.h"</span>
+
+<span class="comment">// ROOT classes</span>
+<span class="cpp">#include "TObject.h"</span>
+<span class="cpp">#include "TClonesArray.h"</span>
+
+<span class="keyword">class</span> <a href="../DHit.html">DHit</a>;
+<span class="keyword">class</span> <a href="../DLine.html">DLine</a>;
+<span class="keyword">class</span> <a href="../DR3.html">DR3</a>;
+<span class="keyword">class</span> <a href="../DPlane.html">DPlane</a>;
+<span class="keyword">class</span> <a href="../DTrack.html">DTrack</a>;
+
+<span class="keyword">class</span> <a href="../DParticle.html">DParticle</a> : <span class="keyword">public</span> <a href="../#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a> {
+ <span class="keyword">private</span>:
+  <a href="../DR3.html">DR3</a>             *<a href="../DParticle.html#DParticle:fMomentum" title="DR3* DParticle::fMomentum">fMomentum</a>;    <span class="comment">// this should become four-momentum vector....</span>
+  <a href="../DR3.html">DR3</a>             *<a href="../DParticle.html#DParticle:fPosition" title="DR3* DParticle::fPosition">fPosition</a>;
+  <a href="../ListOfTypes.html#Float_t">Float_t</a>          <a href="../DParticle.html#DParticle:fCharge" title="Float_t DParticle::fCharge">fCharge</a>;
+
+<span class="keyword">public</span>:
+<a name="NZaj9"></a>  <a href="../DParticle.html">DParticle</a>();                                 
+  <span class="keyword">virtual</span>         <a href="../DParticle.html#DParticle:_DParticle" title="void DParticle::~DParticle()">~DParticle</a>();
+  <span class="keyword">void</span>             <a href="../DParticle.html#DParticle:Vacuum" title="void DParticle::Vacuum()">Vacuum</a>();
+<a name="CXYxyB"></a>  <a href="../DR3.html">DR3</a>&amp;             <a href="../DParticle.html#DParticle:GetMomentum" title="DR3&amp; DParticle::GetMomentum()">GetMomentum</a>(){ <span class="keyword">return</span> *<a href="../DParticle.html#DParticle:fMomentum" title="DR3* DParticle::fMomentum">fMomentum</a>; }
+<a name="UdJZ5E"></a>  <a href="../DR3.html">DR3</a>&amp;             <a href="../DParticle.html#DParticle:GetPosition" title="DR3&amp; DParticle::GetPosition()">GetPosition</a>(){ <span class="keyword">return</span> *<a href="../DParticle.html#DParticle:fPosition" title="DR3* DParticle::fPosition">fPosition</a>; }
+<a name="buvBOD"></a>  <a href="../ListOfTypes.html#Float_t">Float_t</a>          <a href="../DParticle.html#DParticle:GetCharge" title="Float_t DParticle::GetCharge()">GetCharge</a>(){ <span class="keyword">return</span> <a href="../DParticle.html#DParticle:fCharge" title="Float_t DParticle::fCharge">fCharge</a>; }
+
+  ClassDef(<a href="../DParticle.html">DParticle</a>,1)   <span class="comment">// Describes Particle</span>
+
+};
+
+<span class="cpp">#endif</span>
+
+
+
+
+
+
+
+
+
+
+</pre>
+
+<br />
+<!--SIGNATURE-->
+
+<em>Last change: Wed Jul 20 15:08:01 2011</em><br />
+<em>Last generated: 2011-07-20 15:08</em><br />
+
+<hr />
+<em>
+This page has been automatically generated. If you have any comments or suggestions about the page layout send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>, or contact <a href="mailto:rootdev@root.cern.ch">the developers</a> with any questions or problems regarding ROOT.
+</em>
+</body>
+</html>

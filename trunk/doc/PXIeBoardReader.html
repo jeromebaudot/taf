@@ -1,0 +1,523 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:00:56 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>PXIeBoardReader</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class PXIeBoardReader','','PXIeBoardReader.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/PXIeBoardReader.h.html">header file</a>
+<a class="descrheadentry" href="src/PXIeBoardReader.cxx.html">source file</a>
+<a class="descrheadentry" href="PXIeBoardReader_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#PXIeBoardReader:description">class description</a> 
+<a class="descrheadentry" href="#PXIeBoardReader:Function_Members">function members</a>
+<a class="descrheadentry" href="#PXIeBoardReader:Data_Members">data members</a>
+<a class="descrheadentry" href="#PXIeBoardReader:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">PXIeBoardReader</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="PXIeBoardReader:description"></a>class PXIeBoardReader: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./PXIeBoardReader.html#PXIeBoardReader:Class" title="TClass* PXIeBoardReader::Class()">Class</a> Description of <a href="./PXIeBoardReader.html">PXIeBoardReader</a>
+
+ <a href="./#TObject:Read" title="Int_t TObject::Read(const char* name)">Read</a> PXIexpress digital raw data files
+originally for MIMOSA 26
+and produce an event for getting the results
+ This version compatible with pxi_daq library
+  V1.0 - 07/03/2011
+  V1.1
+  V1.2 - 08/01/2014
+
+ Important parameters driving readout behavior:
+    <a href="./PXIeBoardReader.html#PXIeBoardReader:TriggerMode" title="int PXIeBoardReader::TriggerMode">TriggerMode</a>
+    <a href="./PXIeBoardReader.html#PXIeBoardReader:EventBuildingMode" title="int PXIeBoardReader::EventBuildingMode">EventBuildingMode</a>
+    <a href="./PXIeBoardReader.html#PXIeBoardReader:FramesToSkipAtEndOfAcqForTrig" title="int PXIeBoardReader::FramesToSkipAtEndOfAcqForTrig">FramesToSkipAtEndOfAcqForTrig</a>
+    <a href="./PXIeBoardReader.html#PXIeBoardReader:TriggerLineOffset" title="int PXIeBoardReader::TriggerLineOffset">TriggerLineOffset</a>
+    <a href="./PXIeBoardReader.html#PXIeBoardReader:FramesPostTrigger" title="int PXIeBoardReader::FramesPostTrigger">FramesPostTrigger</a>
+
+
+
+ Terminology:
+  Frame = data for one sensor from first to last line
+  DaqEvent = set of frames, one for each sensors
+  Event = data relevant to a given trigger,
+	which may encompass several frames of the same sensor (hence DAQEvent),
+	this is the unit relevant for physics analysis
+
+ Notice the current version assumes the data are contained
+ only in one file
+
+
+
+ created JB, 2009/08/20
+ Last Modified JB, 2009/08/30
+ Last Modified JB, 2009/09/01 message level, file index
+ Last Modified JB, 2009/09/09 overflow management, statistics printout, <a href="./ListOfTypes.html#double">double</a> reading
+ Last Modified JB, 2009/09/14 Statistics
+ Last Modified JB, 2009/09/16 Abort some specific events
+ Last Modified JB, 2010/06/16 Allow several triggers in an event
+ Last Modified JB, 2010/07/06 <a href="./PXIeBoardReader.html#PXIeBoardReader:Overflow" title="bool PXIeBoardReader::Overflow">Overflow</a> &amp; event building management
+ Last Modified JB, 2011/03/14 <a href="./PXIeBoardReader.html#PXIeBoardReader:Class" title="TClass* PXIeBoardReader::Class()">Class</a> reshaped to use DAQ library from GC
+ Last Modified JB, 2011/06/18 to add trigger counter
+ Last Modified JB, 2011/06/28 improved trigger readtout, better MSG &amp; ERR files management and automatic #rows
+ Last Modified JB, 2011/06/30 <a href="./PXIeBoardReader.html#PXIeBoardReader:ReadTriggersFromFrame" title="bool PXIeBoardReader::ReadTriggersFromFrame()">ReadTriggersFromFrame</a>
+ Last modified JB, 2011/07/07 to localize path names
+ Last modified JB, 2011/07/18 correct multi-triggers storage
+ Last modified JB, 2011/10/30 <a href="./PXIeBoardReader.html#PXIeBoardReader:PrintStatistics" title="void PXIeBoardReader::PrintStatistics(ostream&amp; stream=cout)">PrintStatistics</a>
+ Last modified JB, 2011/10/31 <a href="./PXIeBoardReader.html#PXIeBoardReader:ReadPixelsFromFrame" title="bool PXIeBoardReader::ReadPixelsFromFrame()">ReadPixelsFromFrame</a> &amp; <a href="./PXIeBoardReader.html#PXIeBoardReader:DefineEventEnd" title="void PXIeBoardReader::DefineEventEnd()">DefineEventEnd</a>
+ Last modified JB, 2011/11/02 count overflow per sensor with <a href="./PXIeBoardReader.html#PXIeBoardReader:overflowSensor" title="int* PXIeBoardReader::overflowSensor">overflowSensor</a>
+ Last modified SS, 2011/11/04 many correction in the event start and end
+ Last modified JB, 2012/02/23 introduce new trigger mode=2 for power pulsing
+ Last modified JB, 2012/03/11 kill pixel in <a href="./PXIeBoardReader.html#PXIeBoardReader:ReadPixelsFromFrame" title="bool PXIeBoardReader::ReadPixelsFromFrame()">ReadPixelsFromFrame</a> with gen. meth.
+ Last modified MG, 2012/03/14 line overflow vector.
+ Last modified JB, 2012/05/03 added method <a href="./PXIeBoardReader.html#PXIeBoardReader:DumpEventHeaders" title="void PXIeBoardReader::DumpEventHeaders(int nFrames)">DumpEventHeaders</a>
+ Last modified JB, 2012/05/04 added timestamps
+ Last modified JB, 1012/07/10 new methods <a href="./PXIeBoardReader.html#PXIeBoardReader:CheckTriggerValidity" title="bool PXIeBoardReader::CheckTriggerValidity()">CheckTriggerValidity</a> &amp; <a href="./PXIeBoardReader.html#PXIeBoardReader:ResetDaqEvent" title="bool PXIeBoardReader::ResetDaqEvent(int newAcqNo,int newFrNo)">ResetDaqEvent</a>
+ Last modified JB, 1012/07/10 methods to read selected trigger nb or frame
+ Last modified SS, 2012/08/01 handle new AMapsTrigInfo format
+ Last modified JB, 2012/09/04 management of required frames not found
+ Last modified JB, 2012/09/25 <a href="./PXIeBoardReader.html#PXIeBoardReader:ReadTriggersFromFrame" title="bool PXIeBoardReader::ReadTriggersFromFrame()">ReadTriggersFromFrame</a>, <a href="./PXIeBoardReader.html#PXIeBoardReader:GetTriggerList" title="bool PXIeBoardReader::GetTriggerList()">GetTriggerList</a>
+ Last modified JB, 2013/06/22 <a href="./PXIeBoardReader.html#PXIeBoardReader:ReadTriggersFromFrame" title="bool PXIeBoardReader::ReadTriggersFromFrame()">ReadTriggersFromFrame</a>
+ Last modified JB, 2013/07/20 introducing trigger mode 3 in <a href="./PXIeBoardReader.html#PXIeBoardReader:ReadTriggersFromFrame" title="bool PXIeBoardReader::ReadTriggersFromFrame()">ReadTriggersFromFrame</a>, <a href="./PXIeBoardReader.html#PXIeBoardReader:StartEventReading" title="void PXIeBoardReader::StartEventReading()">StartEventReading</a>, DefineEventend and <a href="./PXIeBoardReader.html#PXIeBoardReader:HasData" title="bool PXIeBoardReader::HasData() or overloads">HasData</a>
+ Last Modified: BH 2013/08/20, warning corrections from clang
+ Last Modified: JB, 2014/02/12 <a href="./PXIeBoardReader.html#PXIeBoardReader:CheckPixelToAdd" title="bool PXIeBoardReader::CheckPixelToAdd(Int_t aSensorId,Int_t aFrame,Int_t aLine,Int_t aColumn)">CheckPixelToAdd</a>, <a href="./PXIeBoardReader.html#PXIeBoardReader:AddDUTSensor" title="void PXIeBoardReader::AddDUTSensor(int aSensorId)">AddDUTSensor</a>, <a href="./PXIeBoardReader.html#PXIeBoardReader:IsDUTSensor" title="bool PXIeBoardReader::IsDUTSensor(int aSensorId)">IsDUTSensor</a>, <a href="./PXIeBoardReader.html#PXIeBoardReader:PrintStatistics" title="void PXIeBoardReader::PrintStatistics(ostream&amp; stream=cout)">PrintStatistics</a>
+ Last Modified: VR, 2014/03/20 New warning message when loading run failed, for the pxi_daq_lib_ versions 1.1 and 1.2
+ Last Modified: VR, 2014/03/20 configuration of PXI DAQ LIB VERSION centralized in file pxi_daq_lib_config.h
+ Last Modified: VR, 2014/06/30 Quit if ERROR occured during loading data Run
+ Last Modified: JB, 2014/07/07 <a href="./PXIeBoardReader.html#PXIeBoardReader:ResetDaqEvent" title="bool PXIeBoardReader::ResetDaqEvent(int newAcqNo,int newFrNo)">ResetDaqEvent</a>, <a href="./PXIeBoardReader.html#PXIeBoardReader:ReadTriggersFromFrame" title="bool PXIeBoardReader::ReadTriggersFromFrame()">ReadTriggersFromFrame</a>
+ Last Modified: VR, 2014/07/13 correct a bug in acqNo and frNo calculation in <a href="./PXIeBoardReader.html#PXIeBoardReader:HasData" title="bool PXIeBoardReader::HasData() or overloads">HasData</a>( <a href="./ListOfTypes.html#int">int</a> aTriggerNb) and change the return value
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="PXIeBoardReader:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:PXIeBoardReader">PXIeBoardReader</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:PXIeBoardReader%1">PXIeBoardReader</a>(<span class="keyword">int</span> boardNumber, <span class="keyword">char</span>* configFileName, <span class="keyword">int</span> runNumber, <span class="keyword">int</span> triggerMode, <span class="keyword">int</span> eventBuildingMode = 0, <span class="keyword">bool</span> vetoOverflow = <span class="keyword">true</span>, <span class="keyword">int</span> endian = 0, <span class="keyword">int</span> numberOfRows = 576)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:_PXIeBoardReader">~PXIeBoardReader</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:AddDUTSensor">AddDUTSensor</a>(<span class="keyword">int</span> aSensorId)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:AddFileList">AddFileList</a>(<span class="keyword">char</span>* prefixFileName, <span class="keyword">int</span> firstIndex, <span class="keyword">int</span> endIndex, <span class="keyword">char</span>* suffixFileName)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:CheckPixelToAdd">CheckPixelToAdd</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSensorId, <a href="./ListOfTypes.html#Int_t">Int_t</a> aFrame, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLine, <a href="./ListOfTypes.html#Int_t">Int_t</a> aColumn)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:CheckSecondReading">CheckSecondReading</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:CheckTriggerValidity">CheckTriggerValidity</a>()</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:Close">Close</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:DefineEventEnd">DefineEventEnd</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:DumpEventHeaders">DumpEventHeaders</a>(<span class="keyword">int</span> nFrames)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetBoardNumber">GetBoardNumber</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetConfigFileName">GetConfigFileName</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./PXIeEvent.html">PXIeEvent</a>*</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetEvent">GetEvent</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetEventNumber">GetEventNumber</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetInputFileName">GetInputFileName</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetNextDaqEvent">GetNextDaqEvent</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetNSensors">GetNSensors</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetPrefixFileName">GetPrefixFileName</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetRunNumber">GetRunNumber</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetSuffixFileName">GetSuffixFileName</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetTriggerList">GetTriggerList</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:GetTriggerMode">GetTriggerMode</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:HasData">HasData</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:HasData%2">HasData</a>(<span class="keyword">int</span> aTriggerNb)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:HasData%1">HasData</a>(<span class="keyword">int</span> acqNo, <span class="keyword">int</span> frNo)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:IsDUTSensor">IsDUTSensor</a>(<span class="keyword">int</span> aSensorId)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp;</td><td class="funcname"><a class="funcname" href="#TObject:operator_"><span class="baseclass">TObject::</span>operator=</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; rhs)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:PrintStatistics">PrintStatistics</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; stream = <a href="./ListOfTypes.html#ostream">cout</a>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:ReadConfiguration">ReadConfiguration</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:ReadPixelsFromFrame">ReadPixelsFromFrame</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:ReadTriggersFromFrame">ReadTriggersFromFrame</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:ResetDaqEvent">ResetDaqEvent</a>(<span class="keyword">int</span> newAcqNo, <span class="keyword">int</span> newFrNo)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:SetDebugLevel">SetDebugLevel</a>(<span class="keyword">int</span> level)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:SetEndiannes">SetEndiannes</a>(<span class="keyword">int</span> endian)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:SetVetoPixel">SetVetoPixel</a>(<span class="keyword">int</span> noiseRun)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:SkipNextEvent">SkipNextEvent</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:StartEventReading">StartEventReading</a>()</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">unsigned</span> <span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:SwapEndian">SwapEndian</a>(<span class="keyword">unsigned</span> <span class="keyword">int</span> data)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:test">test</a>(<span class="keyword">char</span>* path, <span class="keyword">int</span> runNumber)</td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:AddPixel">AddPixel</a>(<span class="keyword">int</span> input, <span class="keyword">int</span> value, <span class="keyword">int</span> aLine, <span class="keyword">int</span> aColumn)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">int</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:ComputeTimestamp">ComputeTimestamp</a>(<span class="keyword">int</span> aAcqId, <span class="keyword">int</span> aFrameId, <span class="keyword">int</span> aLineNumber)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">bool</span></td><td class="funcname"><a class="funcname" href="#PXIeBoardReader:OpenFileHeaders">OpenFileHeaders</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="PXIeBoardReader:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:AcqsReadFromFile"></a>AcqsReadFromFile</td><td class="datadesc">JB 2011/03/14</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:BoardNumber"></a>BoardNumber</td><td></td></tr>
+<tr class="data"><td class="datatype">FILE*</td><td class="dataname"><a name="PXIeBoardReader:ConfigFile"></a>ConfigFile</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">char</span></td><td class="dataname"><a name="PXIeBoardReader:ConfigFileName"></a>ConfigFileName[300]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./PXIeEvent.html">PXIeEvent</a>*</td><td class="dataname"><a name="PXIeBoardReader:CurrentEvent"></a>CurrentEvent</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:CurrentEventNumber"></a>CurrentEventNumber</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:CurrentFileNumber"></a>CurrentFileNumber</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">unsigned</span> <span class="keyword">int</span>*</td><td class="dataname"><a name="PXIeBoardReader:Data"></a>Data</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:DebugLevel"></a>DebugLevel</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:Endianness"></a>Endianness</td><td class="datadesc">0= do not swap bytes, 1= swap bytes</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:EventBuildingMode"></a>EventBuildingMode</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:EventReady"></a>EventReady</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:EventsAborted"></a>EventsAborted</td><td class="datadesc">JB 2009/09/16</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:EventsCount"></a>EventsCount</td><td class="datadesc">JB 2009/09/09</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:EventsMissed"></a>EventsMissed</td><td class="datadesc">JB 2012/09/04</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:EventsOverflow"></a>EventsOverflow</td><td class="datadesc">JB 2009/09/09</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:EventsPerFile"></a>EventsPerFile</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:EventsWithBadTrigger"></a>EventsWithBadTrigger</td><td class="datadesc">JB 2012/09/05</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:FirstFrame"></a>FirstFrame</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:FirstLineToKeep"></a>FirstLineToKeep</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:FramesPostTrigger"></a>FramesPostTrigger</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:FramesReadFromFile"></a>FramesReadFromFile</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:FramesReadTwice"></a>FramesReadTwice</td><td class="datadesc">JB 2009/10/14</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:FramesToSkipAtEndOfAcqForTrig"></a>FramesToSkipAtEndOfAcqForTrig</td><td class="datadesc">JB 2011/06/30</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">char</span>*</td><td class="dataname"><a name="PXIeBoardReader:InputFileName"></a>InputFileName</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:LastFrame"></a>LastFrame</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:LastLineToKeep"></a>LastLineToKeep</td><td></td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;</td><td class="dataname"><a name="PXIeBoardReader:ListOfDUTSensors"></a>ListOfDUTSensors</td><td class="datadesc">JB 2014/02/12</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;</td><td class="dataname"><a name="PXIeBoardReader:ListOfFrames"></a>ListOfFrames</td><td class="datadesc">JB 2010/06/16</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="dataname"><a name="PXIeBoardReader:ListOfLineOverflow"></a>ListOfLineOverflow</td><td class="datadesc">MG 2012/02/15</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;</td><td class="dataname"><a name="PXIeBoardReader:ListOfNextTimestamps"></a>ListOfNextTimestamps</td><td class="datadesc">JB 2012/05/04</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;</td><td class="dataname"><a name="PXIeBoardReader:ListOfNextTriggerPos"></a>ListOfNextTriggerPos</td><td class="datadesc">JB 2011/07/18</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./PXIePixel.html">PXIePixel</a>&gt;</td><td class="dataname"><a name="PXIeBoardReader:ListOfPixels"></a>ListOfPixels</td><td></td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;</td><td class="dataname"><a name="PXIeBoardReader:ListOfTimestamps"></a>ListOfTimestamps</td><td class="datadesc">JB 2012/05/04</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;</td><td class="dataname"><a name="PXIeBoardReader:ListOfTriggerPos"></a>ListOfTriggerPos</td><td class="datadesc">JB 2010/06/16</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NFramesPerAcq"></a>NFramesPerAcq</td><td class="datadesc">JB 2011/03/14</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NSensors"></a>NSensors</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NStatesInBlock"></a>NStatesInBlock[100]</td><td class="datadesc">up to 100 blocks</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NStatesInLine"></a>NStatesInLine</td><td class="datadesc">up to 100 blocks</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:Nacquisitions"></a>Nacquisitions</td><td class="datadesc">JB 2011/03/14</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NextFirstFrame"></a>NextFirstFrame</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NextFirstLineToKeep"></a>NextFirstLineToKeep</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NextLastLineToKeep"></a>NextLastLineToKeep</td><td class="datadesc">JB 2011/03/14</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:NoMoreData"></a>NoMoreData</td><td class="datadesc">JB 2012/09/04</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NumberOfFiles"></a>NumberOfFiles</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:NumberOfLines"></a>NumberOfLines</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:OriginAcq"></a>OriginAcq</td><td class="datadesc">JB 2012/05/04</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:Overflow"></a>Overflow</td><td class="datadesc">JB 2009/09/08</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:PeriodsVetoOff"></a>PeriodsVetoOff</td><td class="datadesc">JB 2012/02/23</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">char</span>*</td><td class="dataname"><a name="PXIeBoardReader:PrefixFileName"></a>PrefixFileName</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#ifstream">ifstream</a></td><td class="dataname"><a name="PXIeBoardReader:RawFileStream"></a>RawFileStream</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:ReadTwice"></a>ReadTwice</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:ReadingEvent"></a>ReadingEvent</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:RunNumber"></a>RunNumber</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:RunTimeInSec"></a>RunTimeInSec</td><td class="datadesc">JB 2012/05/12</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#size_t">size_t</a></td><td class="dataname"><a name="PXIeBoardReader:SizeOfDaqEvent"></a>SizeOfDaqEvent</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:StopIfRequiredFrameNotFound"></a>StopIfRequiredFrameNotFound</td><td class="datadesc">JB 2012/09/04</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">char</span>*</td><td class="dataname"><a name="PXIeBoardReader:SuffixFileName"></a>SuffixFileName</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:TriggerCount"></a>TriggerCount</td><td class="datadesc">JB 2011/06/18</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:TriggerInvalidCount"></a>TriggerInvalidCount</td><td class="datadesc">JB 2012/09/25</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:TriggerLineOffset"></a>TriggerLineOffset</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="PXIeBoardReader:TriggerMode"></a>TriggerMode</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:VetoEvent"></a>VetoEvent</td><td class="datadesc">JB 2012/02/23</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">bool</span></td><td class="dataname"><a name="PXIeBoardReader:VetoOverflow"></a>VetoOverflow</td><td class="datadesc">JB 2010/07/06</td></tr>
+<tr class="data"><td class="datatype"><a href="./DGlobalTools.html">DGlobalTools</a></td><td class="dataname"><a name="PXIeBoardReader:fTool"></a>fTool</td><td class="datadesc">JB 2011/07/18</td></tr>
+<tr class="data"><td class="datatype">TFile*</td><td class="dataname"><a name="PXIeBoardReader:fileHeaders"></a>fileHeaders</td><td></td></tr>
+<tr class="data"><td class="datatype">TH1S*</td><td class="dataname"><a name="PXIeBoardReader:h1BlockOccupancy"></a>h1BlockOccupancy</td><td class="datadesc">JB 2009/09/10</td></tr>
+<tr class="data"><td class="datatype">TH1S*</td><td class="dataname"><a name="PXIeBoardReader:h1LineOccupancy"></a>h1LineOccupancy</td><td class="datadesc">JB 2009/09/10</td></tr>
+<tr class="data"><td class="datatype">TH1F**</td><td class="dataname"><a name="PXIeBoardReader:hLineOverFlowDist"></a>hLineOverFlowDist</td><td class="datadesc">AP 2014/06/03</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span>*</td><td class="dataname"><a name="PXIeBoardReader:overflowSensor"></a>overflowSensor</td><td class="datadesc">JB 2011/11/02</td></tr>
+<tr class="data"><td class="datatype">TTree*</td><td class="dataname"><a name="PXIeBoardReader:treeHeaders"></a>treeHeaders</td><td></td></tr>
+
+</table></div>
+</div>
+<h2><a id="PXIeBoardReader:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="PXIeBoardReader" href="./PXIeBoardReader.html">PXIeBoardReader</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"><span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:test" href="src/PXIeBoardReader.cxx.html#ruxedB">test</a>(<span class="keyword">char</span>* path, <span class="keyword">int</span> runNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="PXIeBoardReader:PXIeBoardReader%1" href="src/PXIeBoardReader.cxx.html#igrQqD">PXIeBoardReader</a>(<span class="keyword">int</span> boardNumber, <span class="keyword">char</span>* configFileName, <span class="keyword">int</span> runNumber, <span class="keyword">int</span> triggerMode, <span class="keyword">int</span> eventBuildingMode = 0, <span class="keyword">bool</span> vetoOverflow = <span class="keyword">true</span>, <span class="keyword">int</span> endian = 0, <span class="keyword">int</span> numberOfRows = 576)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="PXIeBoardReader:_PXIeBoardReader" href="src/PXIeBoardReader.cxx.html#HTb7vD">~PXIeBoardReader</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:ReadConfiguration" href="src/PXIeBoardReader.cxx.html#VsftbD">ReadConfiguration</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:AddFileList" href="src/PXIeBoardReader.cxx.html#GT1X4B">AddFileList</a>(<span class="keyword">char</span>* prefixFileName, <span class="keyword">int</span> firstIndex, <span class="keyword">int</span> endIndex, <span class="keyword">char</span>* suffixFileName)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:Close" href="src/PXIeBoardReader.cxx.html#M2HCS">Close</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:SetVetoPixel" href="src/PXIeBoardReader.cxx.html#dW7yt">SetVetoPixel</a>(<span class="keyword">int</span> noiseRun)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:AddDUTSensor" href="src/PXIeBoardReader.cxx.html#HJRFb">AddDUTSensor</a>(<span class="keyword">int</span> aSensorId)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:IsDUTSensor" href="src/PXIeBoardReader.cxx.html#ze85SE">IsDUTSensor</a>(<span class="keyword">int</span> aSensorId)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">unsigned</span> <span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:SwapEndian" href="src/PXIeBoardReader.cxx.html#heltD">SwapEndian</a>(<span class="keyword">unsigned</span> <span class="keyword">int</span> data)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:ResetDaqEvent" href="src/PXIeBoardReader.cxx.html#mhhIVD">ResetDaqEvent</a>(<span class="keyword">int</span> newAcqNo, <span class="keyword">int</span> newFrNo)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:GetNextDaqEvent" href="src/PXIeBoardReader.cxx.html#zWIdJB">GetNextDaqEvent</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:SkipNextEvent" href="src/PXIeBoardReader.cxx.html#ASvJLD">SkipNextEvent</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:CheckTriggerValidity" href="src/PXIeBoardReader.cxx.html#NfoKNC">CheckTriggerValidity</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:GetTriggerList" href="src/PXIeBoardReader.cxx.html#ib3gP">GetTriggerList</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:ReadTriggersFromFrame" href="src/PXIeBoardReader.cxx.html#PFuly">ReadTriggersFromFrame</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:StartEventReading" href="src/PXIeBoardReader.cxx.html#b5R8kB">StartEventReading</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:DefineEventEnd" href="src/PXIeBoardReader.cxx.html#uNuYCE">DefineEventEnd</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:CheckSecondReading" href="src/PXIeBoardReader.cxx.html#EXQpYB">CheckSecondReading</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:ReadPixelsFromFrame" href="src/PXIeBoardReader.cxx.html#C6tqLB">ReadPixelsFromFrame</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:CheckPixelToAdd" href="src/PXIeBoardReader.cxx.html#NdJ6yE">CheckPixelToAdd</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSensorId, <a href="./ListOfTypes.html#Int_t">Int_t</a> aFrame, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLine, <a href="./ListOfTypes.html#Int_t">Int_t</a> aColumn)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:HasData%2" href="src/PXIeBoardReader.cxx.html#AZQ_M">HasData</a>(<span class="keyword">int</span> aTriggerNb)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:HasData%1" href="src/PXIeBoardReader.cxx.html#t4DvLD">HasData</a>(<span class="keyword">int</span> acqNo, <span class="keyword">int</span> frNo)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:HasData" href="src/PXIeBoardReader.cxx.html#io4B6B">HasData</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:AddPixel" href="src/PXIeBoardReader.cxx.html#PHXQ2B">AddPixel</a>(<span class="keyword">int</span> input, <span class="keyword">int</span> value, <span class="keyword">int</span> aLine, <span class="keyword">int</span> aColumn)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:PrintStatistics" href="src/PXIeBoardReader.cxx.html#qgoAH">PrintStatistics</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; stream = <a href="./ListOfTypes.html#ostream">cout</a>)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:ComputeTimestamp" href="src/PXIeBoardReader.cxx.html#AIsfKD">ComputeTimestamp</a>(<span class="keyword">int</span> aAcqId, <span class="keyword">int</span> aFrameId, <span class="keyword">int</span> aLineNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">bool</span> <a class="funcname" name="PXIeBoardReader:OpenFileHeaders" href="src/PXIeBoardReader.cxx.html#QPVArC">OpenFileHeaders</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:DumpEventHeaders" href="src/PXIeBoardReader.cxx.html#ZkLMbB">DumpEventHeaders</a>(<span class="keyword">int</span> nFrames)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:GetEventNumber" href="src/PXIeBoardReader.h.html#LYfaxB">GetEventNumber</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> EventNumber; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:GetBoardNumber" href="src/PXIeBoardReader.h.html#pwkVPE">GetBoardNumber</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:BoardNumber" title="int PXIeBoardReader::BoardNumber">BoardNumber</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:GetRunNumber" href="src/PXIeBoardReader.h.html#dEzSj">GetRunNumber</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:RunNumber" title="int PXIeBoardReader::RunNumber">RunNumber</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="PXIeBoardReader:PXIeBoardReader" href="src/PXIeBoardReader.h.html#Gd8ch">PXIeBoardReader</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:SetDebugLevel" href="src/PXIeBoardReader.h.html#XhQRcB">SetDebugLevel</a>(<span class="keyword">int</span> level)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./PXIeBoardReader.html#PXIeBoardReader:DebugLevel" title="int PXIeBoardReader::DebugLevel">DebugLevel</a> = level; <a href="./ListOfTypes.html#ostream">cout</a> &lt;&lt; <span class="string">"PXIeBoardReader "</span> &lt;&lt; <a href="./PXIeBoardReader.html#PXIeBoardReader:BoardNumber" title="int PXIeBoardReader::BoardNumber">BoardNumber</a> &lt;&lt; <span class="string">" debug updated to "</span> &lt;&lt; <a href="./PXIeBoardReader.html#PXIeBoardReader:DebugLevel" title="int PXIeBoardReader::DebugLevel">DebugLevel</a> &lt;&lt; endl;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="PXIeBoardReader:SetEndiannes" href="src/PXIeBoardReader.h.html#UpL3zE">SetEndiannes</a>(<span class="keyword">int</span> endian)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./PXIeBoardReader.html#PXIeBoardReader:Endianness" title="int PXIeBoardReader::Endianness">Endianness</a> = endian; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:GetNSensors" href="src/PXIeBoardReader.h.html#pi_cJ">GetNSensors</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:NSensors" title="int PXIeBoardReader::NSensors">NSensors</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">int</span> <a class="funcname" name="PXIeBoardReader:GetTriggerMode" href="src/PXIeBoardReader.h.html#ZObH1C">GetTriggerMode</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:TriggerMode" title="int PXIeBoardReader::TriggerMode">TriggerMode</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./PXIeEvent.html">PXIeEvent</a>* <a class="funcname" name="PXIeBoardReader:GetEvent" href="src/PXIeBoardReader.h.html#bemPdE">GetEvent</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:CurrentEvent" title="PXIeEvent* PXIeBoardReader::CurrentEvent">CurrentEvent</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">char</span>* <a class="funcname" name="PXIeBoardReader:GetConfigFileName" href="src/PXIeBoardReader.h.html#G783.C">GetConfigFileName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:ConfigFileName" title="char PXIeBoardReader::ConfigFileName">ConfigFileName</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">char</span>* <a class="funcname" name="PXIeBoardReader:GetInputFileName" href="src/PXIeBoardReader.h.html#izhSJ">GetInputFileName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:InputFileName" title="char* PXIeBoardReader::InputFileName">InputFileName</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">char</span>* <a class="funcname" name="PXIeBoardReader:GetSuffixFileName" href="src/PXIeBoardReader.h.html#olaPwB">GetSuffixFileName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:SuffixFileName" title="char* PXIeBoardReader::SuffixFileName">SuffixFileName</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">char</span>* <a class="funcname" name="PXIeBoardReader:GetPrefixFileName" href="src/PXIeBoardReader.h.html#ATmlNC">GetPrefixFileName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./PXIeBoardReader.html#PXIeBoardReader:PrefixFileName" title="char* PXIeBoardReader::PrefixFileName">PrefixFileName</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: Mon Sep  1 10:00:57 2014 </em><em>&raquo; Last generated: 2014-09-01 10:00</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+
+/*******************************************************************************
+File      : x:\lib\com\maps\fsbb0\fsbb0.var
+Goal      : Variables definition of fsbb library.
+          : It provides fsbb types definition and data handling functions.
+Prj date  : 28/02/2011
+File date : 28/02/2011
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef FSBB0_VAR
+#define FSBB0_VAR
+
+
+
+/* ============== */
+/*  */
+/* ============== */
+
+EXTERN VAR_STATIC  FSBB0__TMatDiscriBit FSBB0__VGMatDiscriBitRef;
+// 23/09/14 - MS
+EXTERN VAR_STATIC  FSBB0__TMatDiscriBit FSBB0__TESTBT_VGMatDiscriBitRef[6];
+
+
+
+#endif

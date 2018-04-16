@@ -1,0 +1,51 @@
+/* 24/02/05 */
+
+
+#ifndef FIL_DEF
+#define FIL_DEF
+
+#define FIL_DIR_FILES_LIST_MAX_CNT 100
+
+#define FIL__TCBinFile_MEAS_TIME
+#define FIL__TCStreamFile_MEAS_TIME
+
+#define FIL__TCBinFile_RWB_MODE_WRITE  0
+#define FIL__TCBinFile_RWB_MODE_READ   1
+#define FIL__TCBinFile_RWB_MODE_BOTH   2
+
+// 07/03/2009
+// Macro removed because they are not supported under ROOT ...
+// => Macro "calls" had been replaced by the macro code below in files.c
+// => For new implementations : a copy paste of the macro code below must be done for each "flag test" 
+//
+// #define FIL__TCBinFile_CHK_CONF_DONE {err_retfail ( ProConfDone    , (ERR_OUT,"Abort => Conf not done !") );}
+// #define FIL__TCBinFile_CHK_RDY_TO_WR {err_retfail ( ProReadyToWrite, (ERR_OUT,"Abort => File not open in WB !") );}
+// #define FIL__TCBinFile_CHK_RDY_TO_RD {err_retfail ( ProReadyToRead , (ERR_OUT,"Abort => File not open in RB !") );}
+
+
+#define FIL__TCStreamFile_MAX_BUFF_NB 4
+
+// #define FIL__TCStreamFile_MAX_BLOC_NB_IN_VAR_BLOC_SZ_MODE 50000 // Before 07/11/12 => 50 000 - Maximum number of blocs in variable bloc size mode
+
+// #define FIL__TCStreamFile_MAX_BLOC_NB_IN_VAR_BLOC_SZ_MODE 200000 // 200000 From 07/11/12 to 22/06/13
+
+#define FIL__TCStreamFile_MAX_BLOC_NB_IN_VAR_BLOC_SZ_MODE 400000 // 400000 since 22/06/13
+
+#define FIL__TCStreamFile_BLOC_INF_MAX_SPARE_W32_INFO_NB 20
+
+
+#define FIL__TCStreamFile_LOG_GENERAL_MSG  0
+#define FIL__TCStreamFile_LOG_ERR_TRACE    1
+#define FIL__TCStreamFile_LOG_ERR_WARNING  2
+#define FIL__TCStreamFile_LOG_ERR_ERROR    3
+
+
+// Copy of DU & Telescope index files used to get on-line run status
+
+#define FIL__DUT_INDEX_FILE_CPY_NAME "s:/data/cur_run_dut_index.bin"
+#define FIL__TEL_INDEX_FILE_CPY_NAME "s:/data/cur_run_tel_index.bin"
+
+
+  
+#endif
+

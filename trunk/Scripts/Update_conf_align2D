@@ -1,0 +1,165 @@
+#!/usr/bin/perl -w
+# $Id: Update_conf_align.pl ,v 1.0 2005/05/03 18:00:00 shabetai Exp $
+# Alexandre SHABETAI shabetai@in2p3.fr 
+# Modified version for PIXEL plane (2D), JB 2009/07/19
+# Modified version to avoid error messages, JB 2010/12/9
+# Modified version for new Parameters to update and any # planes, JB 2011/04/05
+# Modified version to set align parameters to 0., JB 2011/06/21
+# Modified version to correct bug when only 1 plane is udated
+# Modified version by VR on 2014.08.24 : add "or $line=~/\sPlane\s\d+/" to the test to find Plane xx
+
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+# This script updates the MIMOSA runXXX.cfg file with new new values comming from the Mimosa Align Tracker 
+# (akwa telescope) methode.
+
+#usage : see sub Usage code.
+
+use warnings;
+use strict;
+
+#------------------------------------------------------------------------------------------
+# Usage: prints this script usage info on stderr
+
+sub Usage {
+print STDERR "usage : ./Update_conf_align <config_filename>.cfg pl1 PositionsX PositionsY PositionsZ TiltZ TiltY TiltX [pl2 PositionsX PositionsY PositionsZ TiltZ TiltY TiltX...] [debug_flag]\n";
+print STDERR "ex : ./Update_conf_align run9581.cfg 1 0.1 1.11 2.11 2 .2 1.22 2.22 3 .3 1.33 2,33 4 0.4 1.44 2.44 5 .5 1.55 2.55 [-d]\n" ;        
+print STDERR "Will be called from the MIMOSA ROOT Framwork \n";
+die "Arguments provided were incorrect!\n";
+return -1
+
+} 
+
+#------------------------------------------------------------------------------------------
+# Modify(pl,posX,posY,posZ,tiltZ,tiltY,tiltX,debug)
+# Modify the runXXXX.cfg file with new values form the tracker alignement
+# and zero any existing alignment parameters
+# args : 
+# - 0 : plane number
+# - 1 :  the secondary plane number to  update
+# - 2 to 4 :  the positions PositionX,Y,Z
+# - 5 to 7 :  the tilts TiltZ,Y,X (! PAY ATTENTION TO ORDER)
+# returns the new value of the current line
+
+sub Modify  {
+
+  if ($_[7] eq '-d' && ( $_[8]=~/^PositionsX/ ||  $_[8]=~/^TiltZ/ || $_[8]=~/^AlignementTilt/ || $_[8]=~/^AlignementU/ || $_[8]=~/^AlignementV/ ) ) {
+    print "  Modifying plane ",$_[0]," : \n" ; 
+  }
+
+  if ($_[8]=~/^TiltZ/) {
+    print "    Old tilts :: ", $_[8] ; 
+    $_[8]="TiltZ:             ".$_[4]."  TiltY:        ".$_[5]."  TiltX:        ".$_[6]."\n";
+    print "    New tilts :: ", $_[8] ;
+  }
+  
+  if ($_[8]=~/^PositionsX/) {
+    print "    Old positions :: ", $_[8] ; 
+    $_[8]="PositionsX:        ".$_[1]."  PositionsY:   ".$_[2]."  PositionsZ:   ".$_[3]."\n";
+    print "    New positions :: ", $_[8] ;
+  }
+    
+  if ($_[8]=~/^AlignementTilt/) {
+    print "    Old align tilt :: ", $_[8] ; 
+    $_[8]="AlignementTilt:    0.0\n";
+    print "    New align tilt :: ", $_[8] ;
+  }
+
+  if ($_[8]=~/^AlignementU/) {
+    print "    Old align U :: ",$_[8] ;
+    $_[8]="AlignementU:       0.0\n";
+    print "    New align U :: ", $_[8] ;
+  }
+
+  if ($_[8]=~/^AlignementV/) {
+    print "    Old align V :: ",$_[8] ;
+    $_[8]="AlignementV:       0.0\n";
+    print "    New align V :: ", $_[8] ;
+  }
+
+return  $_[8];
+
+}
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+# main 
+
+#if incorrect number of args
+if ($#ARGV < 7) {&Usage();}
+
+my $debug='no';
+if (defined($ARGV[$#ARGV])) { $debug=$ARGV[$#ARGV];} else {$debug='no';}
+
+# Compute how many planes are to modified
+my $Nplanes=int $#ARGV/7;
+print "\n--> There are ", $Nplanes, " planes to modify.\n";
+
+if ($debug eq '-d'){
+ for ( my $i = 0; $i <= $#ARGV; ++$i ) {
+        print "ARGV[$i] = '$ARGV[$i]'\n";
+  }
+}
+
+
+#define and open files
+my $in=$ARGV[0];
+my $back=$in.'.back';
+my $out=$in.'.new';
+
+open(FIN,"$in") or die "Cannot open $in for read :$!";
+open(FOUT,">$out") or die "Cannot open $out for write :$!";
+#flock(FOUT,LOCK_EX) or die "flock bombed out in lockex, $!";
+
+#main loop on on all lines of $in and look for the plane number
+
+print "The config file ",$in," will be updated with new values from the tracker aligement... \n\n";
+
+#print "The config file ",$in," will be saved to ",$back," and updated with new values from the tracker aligement... \n\n";
+#system ("cp $in $back")  or die "Cannot backup $in into $back :$!";
+
+my $plane=0;
+my $index=0;
+
+while (my $line=<FIN>) { # loop on file sparsing
+
+  if ($line=~/-.Plane/ or $line=~/\sPlane\s\d+/ ) { # detect a new plane
+    $plane++;
+    if ($debug eq '-d'){ print "Checking plane ", $plane, ".\n"; }
+    $index=0;
+    for ( my $i = 1; $i <= $#ARGV; $i+=7 ) {
+      if( $plane eq $ARGV[$i] ) { 
+	$index=$i; 
+	print "Plane ", $plane, ":\n";
+      }
+    }
+  }
+
+  if( $index>0 ) {
+    $line=&Modify($plane,$ARGV[$index+1],$ARGV[$index+2],$ARGV[$index+3],$ARGV[$index+4],$ARGV[$index+5],$ARGV[$index+6],$debug,$line);
+  }
+  else {
+    $line=$line;
+  }
+
+  #create the new file $out              
+  print FOUT $line;
+
+} #End while loop
+
+#close and rename files
+close FOUT or die "Cannot close $out :$!";
+close FIN  or die "Cannot close $in :$!";
+
+if ($debug eq '-d') {
+  print "Proceed? [y/n] :";
+  my $key = getc(STDIN);
+  if($key ne 'y') { die "ok... NOTHING DONE! file $in not modified" ;}
+}
+
+rename($out,$in)  or die "Cannot rename $out to $in :$!";  
+print "\nThat's done!\n";
+
+exit 0;

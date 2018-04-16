@@ -1,0 +1,75 @@
+/*******************************************************************************
+File      : x:\lib\com\maps\mi26\mi26_usr.def
+Goal      : Macros definition of Mi26 library.
+          : It provides Mi26 types definition and data handling functions.
+Prj date  : 05/08/2010
+File date : 05/08/2010
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+: as it stays in a public research context. You are not allowed to use it
+: for commercial purpose. You must put this header with laboratory and
+: authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef MI26_USR_DEF
+#define MI26_USR_DEF
+
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+#define MI26__ZS_FFRAME_MODE_2X80MHZ_W16_SZ  576
+#define MI26__ZS_FFRAME_MODE_2X80MHZ_W8_SZ  1152
+
+#define MI26__ZS_FFRAME_RAW_MAX_W8       2280
+#define MI26__ZS_FFRAME_RAW_MAX_W16      1140 // 1142
+#define MI26__ZS_FFRAME_RAW_MAX_W32       570
+#define MI26__ZS_FFRAME_RAW_TOTAL_SZ_W32  576
+
+
+#define MI26__ZS_FFRAME_MAX_STATES_NB_PER_STATES_REC   9
+#define MI26__ZS_FFRAME_MAX_STATES_REC               576 // one per line
+
+// ======================================
+// For MI26 discri analysis tools
+// ======================================
+
+// Submatrices number
+
+#define MI26__SUB_MAT_NB          4
+
+// --------------------
+// Bias registers index
+// --------------------
+
+#define MI26__REG_BIAS_NB        19
+
+#define MI26__REG_BIAS_ICLPDISC   0
+#define MI26__REG_BIAS_IPWRSW     1
+#define MI26__REG_BIAS_IBUF       2
+#define MI26__REG_BIAS_ID1PWRS    3
+#define MI26__REG_BIAS_ID2PWRS    4
+#define MI26__REG_BIAS_ILVDSTX    5
+#define MI26__REG_BIAS_ILVDS      6
+#define MI26__REG_BIAS_IVTST1     7
+#define MI26__REG_BIAS_IVTST2     8
+#define MI26__REG_BIAS_IANABUF    9
+#define MI26__REG_BIAS_IVDREF1D  10
+#define MI26__REG_BIAS_IVDREF1C  11
+#define MI26__REG_BIAS_IVDREF1B  12
+#define MI26__REG_BIAS_IVDREF1A  13
+#define MI26__REG_BIAS_IVDREF2   14
+#define MI26__REG_BIAS_IDIS1     15
+#define MI26__REG_BIAS_IDIS2     16
+#define MI26__REG_BIAS_IPXI      17
+#define MI26__REG_BIAS_IKIMO     18
+
+
+#endif

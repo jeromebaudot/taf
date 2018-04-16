@@ -1,0 +1,81 @@
+#! /bin/sh
+#set -x #echo on
+#
+# This script compress the essential part of TAF
+# into a tar.gz archive which can then be used to 
+# install the software elsewhere
+#
+# Requires configuration first with TAF-config
+#
+# Usage: source tarTAF <myTAFname> 
+#
+# J.Baudot 2010/05/28
+# Modified JB 2011/04/15 to allow tafname as argument
+# Modified JB 2011/07/07 include compiltaf.C in tar archive
+# Modified JB 2011/07/18 include maf_doc.C and html doc in tar archive
+# Modified JB 2013/02/11 try to exclude .svn files
+# Modified JB 2014/02/07 copyConfig added and new config examples 
+# Modified JB 2014/05/14 thistaf.sh added
+# Modified JB 2014/06/02 rootlogon.C added
+# Modified AP 2016/xx/xx config_TEST added
+# v 1.1
+
+if [ $# -ne 1 ]
+
+then
+echo "Usage: source tarTAF <myTAFname>"
+
+else
+
+unset echo
+alias echo='echo -e' 
+
+# Check the configuration
+if [ -d $DTDIR ] ; then cd  $DTDIR;  
+else echo "WARNING DTDIR: $DTDIR  doesn't set.."; return ;
+fi
+
+tafname=$1;
+
+# create the structure
+echo "Creating the structure for $tafname...";
+cd $DTDIR
+mkdir $tafname;
+cd $tafname;
+mkdir code config config_TEST doc Scripts Results datDSF;
+
+
+# copy existing files
+echo "Copying existing files...";
+cp -p $DTDIR/README $DTDIR/rootlogon.C $DTDIR/$tafname/.;
+cp -p $DTDIR/doc/*oc.pdf $DTDIR/doc/*.html $DTDIR/$tafname/doc;
+cd $DTDIR/code;
+cp -pr src include macros $DTDIR/$tafname/code;
+cp -p Makefile Makefile.arch $DTDIR/$tafname/code;
+cd $DTDIR/config_TEST;
+cp -p run1040.cfg run18007.cfg run18400.cfg run20523.cfg run22704.cfg run22802.cfg run226031.cfg run26000.cfg run26519.cfg run26107.cfg run28510.cfg run28905.cfg run32003.cfg run32824.cfg run34539.cfg run286001.cfg $DTDIR/$tafname/config_TEST;
+cd $DTDIR/Scripts;
+cp -p batchTAFexemple.sh compiltaf.C copyConfig.sh dropit macroMRax.C makeHtmlDoc.C makeSynchroLink.sh maketaf renameRawData.sh TAF-config tarTAF thistaf.sh Update_conf_align Update_conf_align2D Update_conf_Ladders $DTDIR/$tafname/Scripts;
+
+
+# remove any .svn files
+cd $DTDIR;
+rm -rf $tafname/.svn
+rm -rf $tafname/*/.svn
+rm -rf $tafname/*/*/.svn
+rm -rf $tafname/*/*/*/.svn
+rm -rf $tafname/*/*/*/*/.svn
+
+# tar and gzip the new directory
+echo "Compressing the archive...";
+cd $DTDIR;
+tar -cf $tafname.tar $tafname;
+gzip $tafname.tar;
+
+# remove temporary directory
+echo "Removing temporary directory...";
+rm -fr $tafname;
+
+echo "\n ==> COPY OF taf DONE INTO $tafname.tar.gz\n";
+
+fi

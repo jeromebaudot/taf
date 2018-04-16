@@ -1,0 +1,63 @@
+/*******************************************************************************
+File      : x:\lib\com\msg\msg.def
+Goal      : Macros definition of user messages logging library
+Prj date  : 2000 - 2002
+File date : 20/02/2005
+Doc date  :
+Remark    : Library exists since 2000, but split in files .def, .typ, .var, .h, .c
+          : was done on 20/02/2005.
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef MSG_DEF
+#define MSG_DEF
+
+
+
+#define MSG_CMT_SZ  1024
+
+#define MSG_CHAN_NB   2
+#define MSG_CHAN_MSG  0
+#define MSG_CHAN_RMSG 1
+
+
+/* Must be after variables definition, instead CINT will be unable to handle these macros */
+
+#define MSG_VGLogFile     MSG_VGALogFile[MSG_CHAN_MSG]
+#define MSG_VGLogClosed   MSG_VGALogClosed[MSG_CHAN_MSG]
+#define MSG_VGDontLog     MSG_VGADontLog[MSG_CHAN_MSG]
+#define MSG_VGMsgCnt      MSG_VGAMsgCnt[MSG_CHAN_MSG]
+#define MSG_VGLogPath     MSG_VGALogPath[MSG_CHAN_MSG]
+
+#define RMSG_VGLogFile    MSG_VGALogFile[MSG_CHAN_RMSG]
+#define RMSG_VGLogClosed  MSG_VGALogClosed[MSG_CHAN_RMSG]
+#define RMSG_VGMsgCnt     MSG_VGAMsgCnt[MSG_CHAN_RMSG]
+#define RMSG_VGLogPath    MSG_VGALogPath[MSG_CHAN_RMSG]
+
+/* 07/04/2007 MSG_VGAStrMsg identifier replaced by MSG_OUT because of ROOT CINT macros limitations */
+/* #define MSG_OUT         MSG_VGAStrMsg[MSG_CHAN_MSG] */
+
+#define RMSG_OUT        MSG_VGAStrMsg[MSG_CHAN_RMSG]
+
+#define MSG_PRINTF(Msg) { sprintf Msg; MSG_FGenMsg (MSG_CHAN_MSG,127);}
+#define msg(Msg) MSG_PRINTF(Msg)
+
+#define MSG_PRINTF_LVL(Msg,Lvl) { sprintf Msg; MSG_FGenMsg (MSG_CHAN_MSG,Lvl); }
+#define msgl(Msg,Lvl) MSG_PRINTF_LVL(Msg,Lvl)
+
+
+#define RMSG_PRINTF(Msg) { sprintf Msg; MSG_FGenMsg (MSG_CHAN_RMSG,127); }
+#define msgr(Msg) RMSG_PRINTF(Msg)
+#define rmsg(Msg) RMSG_PRINTF(Msg)
+
+
+
+#endif

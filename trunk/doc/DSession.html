@@ -1,0 +1,595 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:00 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DSession</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DSession','','DSession.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DSession.h.html">header file</a>
+<a class="descrheadentry" href="src/DSession.cxx.html">source file</a>
+<a class="descrheadentry" href="DSession_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DSession:description">class description</a> 
+<a class="descrheadentry" href="#DSession:Function_Members">function members</a>
+<a class="descrheadentry" href="#DSession:Data_Members">data members</a>
+<a class="descrheadentry" href="#DSession:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DSession</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DSession:description"></a>class DSession: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./DSession.html#DSession:Class" title="TClass* DSession::Class()">Class</a> Description of <a href="./DSession.html">DSession</a>
+
++ frame for analysis of raw event data
++ dumps data on standard output
++ fills events for storing in .root file
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DSession:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSession:DSession">DSession</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSession:DSession%1">DSession</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aRunNumber)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSession:DSession%2">DSession</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>*)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSession:DSession%3">DSession</a>(<span class="keyword">const</span> <a href="./DSession.html">DSession</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSession:_DSession">~DSession</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DSession:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:FillTree">FillTree</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:Finish">Finish</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetConfigFileName">GetConfigFileName</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetConfigPath">GetConfigPath</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GetCurrentEventNumber">GetCurrentEventNumber</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DAcq.html">DAcq</a>*</td><td class="funcname"><a class="funcname" href="#DSession:GetDataAcquisition">GetDataAcquisition</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GetDebug">GetDebug</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DEvent.html">DEvent</a>*</td><td class="funcname"><a class="funcname" href="#DSession:GetEvent">GetEvent</a>()</td></tr>
+<tr class="func"><td class="funcret">TTree*</td><td class="funcname"><a class="funcname" href="#DSession:GetEventTree">GetEventTree</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetOutputFilesPrefix">GetOutputFilesPrefix</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetOutputFilesSuffix">GetOutputFilesSuffix</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GetPlaneNumber">GetPlaneNumber</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetRawSourcePath">GetRawSourcePath</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetResultDirName">GetResultDirName</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetResultsDirParent">GetResultsDirParent</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GetRunNumber">GetRunNumber</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>*</td><td class="funcname"><a class="funcname" href="#DSession:GetSetup">GetSetup</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GetStatus">GetStatus</a>()</td></tr>
+<tr class="func"><td class="funcret">TFile*</td><td class="funcname"><a class="funcname" href="#DSession:GetSummaryFile">GetSummaryFile</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetSummaryFileName">GetSummaryFileName</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetSummaryFilePath">GetSummaryFilePath</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetSummaryFileTitle">GetSummaryFileTitle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GetTrackChi2LimitForAlign">GetTrackChi2LimitForAlign</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DTracker.html">DTracker</a>*</td><td class="funcname"><a class="funcname" href="#DSession:GetTracker">GetTracker</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:GetTrackGeoLimitsForAlign">GetTrackGeoLimitsForAlign</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; xmin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; xmax, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; ymin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; ymax)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">TFile*</td><td class="funcname"><a class="funcname" href="#DSession:GetWeightFile">GetWeightFile</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSession:GetWeightFileName">GetWeightFileName</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GoToEvent">GoToEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> anEvent)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSession:GoToNextEvent">GoToNextEvent</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:InitSession">InitSession</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret">static <a href="./DSession.html">DSession</a>*&amp;</td><td class="funcname"><a class="funcname" href="#DSession:Instance">Instance</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DSession:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:Loop">Loop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:MakeTree">MakeTree</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DSession:NextRawEvent">NextRawEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aTrigger = -1)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSession.html">DSession</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSession:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DSession.html">DSession</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:Scan">Scan</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetConfigFileName">SetConfigFileName</a>(TString aConfigFileName)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetConfigPath">SetConfigPath</a>(TString aConfigPath)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetEventBuildingMode">SetEventBuildingMode</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aEventBuildingMode)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetEvents">SetEvents</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNumberOfEvents)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetEventsToDo">SetEventsToDo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNumberOfEventsToDo)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetFillLevel">SetFillLevel</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLevel)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetOutputFilesPrefix">SetOutputFilesPrefix</a>(TString aString)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetOutputFilesSuffix">SetOutputFilesSuffix</a>(TString aString)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetPlaneNumber">SetPlaneNumber</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetPlaneToScan">SetPlaneToScan</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlnb)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetRawSourcePath">SetRawSourcePath</a>(TString aRawSourcePath)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetResultsDir">SetResultsDir</a>(TString aPath)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetResultsDirParent">SetResultsDirParent</a>(TString aPath)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetRunNumber">SetRunNumber</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aRunNumber)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetStatus">SetStatus</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aStatus)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetSummaryFileName">SetSummaryFileName</a>(TString aSummaryFileName)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetSummaryFilePath">SetSummaryFilePath</a>(TString aSummaryFilePath)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetSummaryFilePathAndName">SetSummaryFilePathAndName</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetTrackChi2LimitForAlign">SetTrackChi2LimitForAlign</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> aLimit)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetTrackGeoLimitsForAlign">SetTrackGeoLimitsForAlign</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> xmin, <a href="./ListOfTypes.html#Double_t">Double_t</a> xmax, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymin, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymax)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:SetWeightFile">SetWeightFile</a>(TString aFileName)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSession:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DSession:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./DAcq.html">DAcq</a>*</td><td class="dataname"><a name="DSession:fAcq"></a>fAcq</td><td class="datadesc">pointer to Acquisition</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fBeamTime"></a>fBeamTime</td><td></td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fConfigFileName"></a>fConfigFileName</td><td class="datadesc">name of the configuration file</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fConfigPath"></a>fConfigPath</td><td class="datadesc">the path to the directory that contains telescope configuration files </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fCurrentEventNumber"></a>fCurrentEventNumber</td><td class="datadesc">actual event number // VR 2014/07/13 renamed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="DSession:fDaqAbleToGoToAspecificEvent"></a>fDaqAbleToGoToAspecificEvent</td><td class="datadesc">Is the DAQ able to go to a specific event ? // VR 2014/07/13</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fDebugSession"></a>fDebugSession</td><td class="datadesc">session debug flag</td></tr>
+<tr class="data"><td class="datatype"><a href="./DEvent.html">DEvent</a>*</td><td class="dataname"><a name="DSession:fEvent"></a>fEvent</td><td class="datadesc">pointer to an Event</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fEventBuildingMode"></a>fEventBuildingMode</td><td class="datadesc">To switch externally EventBuildingMode. SS 2011.11.14</td></tr>
+<tr class="data"><td class="datatype">TTree*</td><td class="dataname"><a name="DSession:fEventTree"></a>fEventTree</td><td class="datadesc">pointer to the Tree </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fEventsToDo"></a>fEventsToDo</td><td class="datadesc">number of events to read from tape/file</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fFillLevel"></a>fFillLevel</td><td class="datadesc">controls amount of info stored in Tree, JB 2011/07/21</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fOutputFilesPrefix"></a>fOutputFilesPrefix</td><td class="datadesc">Prefix for Output Files</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fOutputFilesSuffix"></a>fOutputFilesSuffix</td><td class="datadesc">Suffix for Output Files</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fPlaneNumber"></a>fPlaneNumber</td><td class="datadesc">... a specific planenumber to look at</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fPlaneToScan"></a>fPlaneToScan</td><td></td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fRawSourcePath"></a>fRawSourcePath</td><td class="datadesc">path to the raw data source  (input)</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fResultDir"></a>fResultDir</td><td class="datadesc">name of result dir</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fResultsDirParent"></a>fResultsDirParent</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fRunNumber"></a>fRunNumber</td><td class="datadesc">the run number</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSession:fStatus"></a>fStatus</td><td class="datadesc">Status, 0 = initalizing, &gt;= 1 aligning, running</td></tr>
+<tr class="data"><td class="datatype">TFile*</td><td class="dataname"><a name="DSession:fSummaryFile"></a>fSummaryFile</td><td class="datadesc">pointer to data summary file</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fSummaryFileName"></a>fSummaryFileName</td><td class="datadesc">name of the data summary file</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fSummaryFilePath"></a>fSummaryFilePath</td><td class="datadesc">path to the summary file (output)</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fSummaryFilePathAndName"></a>fSummaryFilePathAndName</td><td class="datadesc">name for the .root file (DSF)</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fSummaryFileTitle"></a>fSummaryFileTitle</td><td class="datadesc">title for  the .root file (DSF)</td></tr>
+<tr class="data"><td class="datatype"><a href="./DGlobalTools.html">DGlobalTools</a></td><td class="dataname"><a name="DSession:fTool"></a>fTool</td><td class="datadesc">JB 2011/07/18</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DSession:fTrackChi2LimitForAlign"></a>fTrackChi2LimitForAlign</td><td class="datadesc">upper chi2 limit in alignment procedure, JB 2013/07/14</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DSession:fTrackLimitsForAlignX"></a>fTrackLimitsForAlignX[2]</td><td class="datadesc">min-max in X for tracks used in alignment procedure, JB 2013/06/10</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DSession:fTrackLimitsForAlignY"></a>fTrackLimitsForAlignY[2]</td><td class="datadesc">min-max in Y for tracks used in alignment procedure, JB 2013/06/10</td></tr>
+<tr class="data"><td class="datatype"><a href="./DTracker.html">DTracker</a>*</td><td class="dataname"><a name="DSession:fTracker"></a>fTracker</td><td class="datadesc">pointer to the tracker</td></tr>
+<tr class="data"><td class="datatype">TStopwatch</td><td class="dataname"><a name="DSession:fWatch"></a>fWatch</td><td class="datadesc">to monitor event processing time JB, 2008/08/08</td></tr>
+<tr class="data"><td class="datatype">TFile*</td><td class="dataname"><a name="DSession:fWeightFile"></a>fWeightFile</td><td class="datadesc">pointer to .root file, contains weights for accurate hit measurements</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSession:fWeightFileName"></a>fWeightFileName</td><td class="datadesc">name of the file containings eta parameters, JB 2011/04/12</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>*</td><td class="dataname"><a name="DSession:fc"></a>fc</td><td class="datadesc">pointer to configuration</td></tr>
+<tr class="data"><td class="datatype">static <a href="./DSession.html">DSession</a>*</td><td class="dataname"><a name="DSession:fgInstance"></a>fgInstance</td><td></td></tr>
+
+</table></div>
+</div>
+<h2><a id="DSession:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DSession" href="./DSession.html">DSession</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DSession:DSession%2" href="src/DSession.cxx.html#hOjcRE">DSession</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* )</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DSession:DSession" href="src/DSession.cxx.html#xrqdrD">DSession</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DSession:DSession%1" href="src/DSession.cxx.html#f0pSB">DSession</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aRunNumber)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:InitSession" href="src/DSession.cxx.html#UjByt">InitSession</a>()</span><br />
+<div class="funccomm"><pre> Initialize any session
+ this is the very first method to be called
+
+ Modified: JB 2011/07/07 to localize path names
+ Modified: SS 2011/11/14 for EventBuildingMode
+ Modified: JB 2013/06/22 for EventBuildingBoardMode
+ Modified: VR 2014/06/30 simplification of <a href="./DSession.html#DSession:SetConfigPath" title="void DSession::SetConfigPath(TString aConfigPath)">SetConfigPath</a> and <a href="./DSession.html#DSession:SetConfigFileName" title="void DSession::SetConfigFileName(TString aConfigFileName)">SetConfigFileName</a>
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetDebug" href="src/DSession.cxx.html#p8d5iB">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+<div class="funccomm"><pre> Initialize or update the debugging level
+ updates also the level for Acquisition and tracker
+
+ Created by JB 2009/05/12
+ Last Modified: JB 2009/05/22 (cope with negative debug level)
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetTrackGeoLimitsForAlign" href="src/DSession.cxx.html#ZV8bZD">SetTrackGeoLimitsForAlign</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> xmin, <a href="./ListOfTypes.html#Double_t">Double_t</a> xmax, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymin, <a href="./ListOfTypes.html#Double_t">Double_t</a> ymax)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetTrackChi2LimitForAlign" href="src/DSession.cxx.html#ROf_YB">SetTrackChi2LimitForAlign</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> aLimit)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:GetTrackGeoLimitsForAlign" href="src/DSession.cxx.html#zAwaVC">GetTrackGeoLimitsForAlign</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; xmin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; xmax, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; ymin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; ymax)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetWeightFile" href="src/DSession.cxx.html#sYPM.D">SetWeightFile</a>(TString aFileName)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DSession:NextRawEvent" href="src/DSession.cxx.html#bKTSI">NextRawEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aTrigger = -1)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSession:GoToEvent" href="src/DSession.cxx.html#uLa0C">GoToEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> anEvent)</span><br />
+<div class="funccomm"><pre> Specific method to ask the DAQ for a given event
+
+ Created : VR 2014/07/13, from <a href="./DSession.html#DSession:NextRawEvent" title="Bool_t DSession::NextRawEvent(Int_t aTrigger=-1)">NextRawEvent</a>( <a href="./ListOfTypes.html#Int_t">Int_t</a> aTrigger)
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSession:GoToNextEvent" href="src/DSession.cxx.html#rRrkJE">GoToNextEvent</a>(<span class="keyword">void</span>)</span><br />
+<div class="funccomm"><pre> Specific method to ask the DAQ for a given event
+
+ Created : VR 2014/07/13, from <a href="./DSession.html#DSession:NextRawEvent" title="Bool_t DSession::NextRawEvent(Int_t aTrigger=-1)">NextRawEvent</a>( <a href="./ListOfTypes.html#Int_t">Int_t</a> aTrigger)
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:MakeTree" href="src/DSession.cxx.html#S_idDC">MakeTree</a>()</span><br />
+<div class="funccomm"><pre> Create a new ROOT file with Tree.
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:Loop" href="src/DSession.cxx.html#vWgjaD">Loop</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:Scan" href="src/DSession.cxx.html#LkWebD">Scan</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:Finish" href="src/DSession.cxx.html#Y3l_lB">Finish</a>()</span><br />
+<div class="funccomm"><pre> Modified JB 2009/09/08 to print statistics of tracking
+ Modified JB 2009/10/02 to print statistics of tree
+ Modified JB 2010/10/13 to print end time
+ Modified JB 2011/04/12 close weight file
+  Modified SS 2011/12/14 save statistics to the logfile
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:FillTree" href="src/DSession.cxx.html#u7z_gB">FillTree</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DSession:DSession" href="src/DSession.h.html#bgQ.sB">DSession</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetPlaneToScan" href="src/DSession.h.html#pDjxkD">SetPlaneToScan</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlnb)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DSession.html#DSession:fPlaneToScan" title="Int_t DSession::fPlaneToScan">fPlaneToScan</a> = aPlnb ;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSession:GetDebug" href="src/DSession.h.html#JrymGC">GetDebug</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSession.html#DSession:fDebugSession" title="Int_t DSession::fDebugSession">fDebugSession</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DEvent.html">DEvent</a>        * <a class="funcname" name="DSession:GetEvent" href="src/DSession.h.html#zrwU7B">GetEvent</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fEvent" title="DEvent* DSession::fEvent">fEvent</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TTree         * <a class="funcname" name="DSession:GetEventTree" href="src/DSession.h.html#JGkCGD">GetEventTree</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fEventTree" title="TTree* DSession::fEventTree">fEventTree</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TFile         * <a class="funcname" name="DSession:GetSummaryFile" href="src/DSession.h.html#PUHUTB">GetSummaryFile</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fSummaryFile" title="TFile* DSession::fSummaryFile">fSummaryFile</a>;                 }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DTracker.html">DTracker</a>      * <a class="funcname" name="DSession:GetTracker" href="src/DSession.h.html#G_6T6C">GetTracker</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fTracker" title="DTracker* DSession::fTracker">fTracker</a>;                     }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DAcq.html">DAcq</a>          * <a class="funcname" name="DSession:GetDataAcquisition" href="src/DSession.h.html#wPDOM">GetDataAcquisition</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fAcq" title="DAcq* DSession::fAcq">fAcq</a>;                         }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSetup.html">DSetup</a>        * <a class="funcname" name="DSession:GetSetup" href="src/DSession.h.html#cYcu5D">GetSetup</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fc" title="DSetup* DSession::fc">fc</a>;                           }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSession:GetStatus" href="src/DSession.h.html#zDJoeB">GetStatus</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fStatus" title="Int_t DSession::fStatus">fStatus</a>;                      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetSummaryFileName" href="src/DSession.h.html#KT0xk">GetSummaryFileName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fSummaryFileName" title="TString DSession::fSummaryFileName">fSummaryFileName</a>;             }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetSummaryFileTitle" href="src/DSession.h.html#ZdAnuC">GetSummaryFileTitle</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fSummaryFileTitle" title="TString DSession::fSummaryFileTitle">fSummaryFileTitle</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetSummaryFilePath" href="src/DSession.h.html#XSlwtC">GetSummaryFilePath</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fSummaryFilePath" title="TString DSession::fSummaryFilePath">fSummaryFilePath</a>;             }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetRawSourcePath" href="src/DSession.h.html#uh8.ZD">GetRawSourcePath</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fRawSourcePath" title="TString DSession::fRawSourcePath">fRawSourcePath</a>;               }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetConfigPath" href="src/DSession.h.html#dIVlP">GetConfigPath</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fConfigPath" title="TString DSession::fConfigPath">fConfigPath</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetConfigFileName" href="src/DSession.h.html#H9bgGC">GetConfigFileName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fConfigFileName" title="TString DSession::fConfigFileName">fConfigFileName</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetResultDirName" href="src/DSession.h.html#T3zYwD">GetResultDirName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fResultDir" title="TString DSession::fResultDir">fResultDir</a>;                   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetResultsDirParent" href="src/DSession.h.html#MhjnxD">GetResultsDirParent</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fResultsDirParent" title="TString DSession::fResultsDirParent">fResultsDirParent</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetOutputFilesPrefix" href="src/DSession.h.html#vq95UC">GetOutputFilesPrefix</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fOutputFilesPrefix" title="TString DSession::fOutputFilesPrefix">fOutputFilesPrefix</a>;           }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetOutputFilesSuffix" href="src/DSession.h.html#zbMjKC">GetOutputFilesSuffix</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fOutputFilesSuffix" title="TString DSession::fOutputFilesSuffix">fOutputFilesSuffix</a>;           }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TFile         * <a class="funcname" name="DSession:GetWeightFile" href="src/DSession.h.html#RtC9YD">GetWeightFile</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSession.html#DSession:fWeightFile" title="TFile* DSession::fWeightFile">fWeightFile</a>;		   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSession:GetWeightFileName" href="src/DSession.h.html#ZdKcID">GetWeightFileName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSession.html#DSession:fWeightFileName" title="TString DSession::fWeightFileName">fWeightFileName</a>;		   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSession:GetRunNumber" href="src/DSession.h.html#hFxxs">GetRunNumber</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fRunNumber" title="Int_t DSession::fRunNumber">fRunNumber</a>;                   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSession:GetPlaneNumber" href="src/DSession.h.html#IkWnYB">GetPlaneNumber</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fPlaneNumber" title="Int_t DSession::fPlaneNumber">fPlaneNumber</a>;                 }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSession:GetCurrentEventNumber" href="src/DSession.h.html#C8gstC">GetCurrentEventNumber</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DSession.html#DSession:fCurrentEventNumber" title="Int_t DSession::fCurrentEventNumber">fCurrentEventNumber</a>;          }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetRunNumber" href="src/DSession.h.html#uNRNiD">SetRunNumber</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aRunNumber)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fRunNumber" title="Int_t DSession::fRunNumber">fRunNumber</a>  = aRunNumber;             }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetEvents" href="src/DSession.h.html#Eb.b3">SetEvents</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNumberOfEvents)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fEventsToDo" title="Int_t DSession::fEventsToDo">fEventsToDo</a> += aNumberOfEvents;       }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetEventsToDo" href="src/DSession.h.html#EbZEMC">SetEventsToDo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNumberOfEventsToDo)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fEventsToDo" title="Int_t DSession::fEventsToDo">fEventsToDo</a> = aNumberOfEventsToDo;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetStatus" href="src/DSession.h.html#LtqGIC">SetStatus</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aStatus)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetFillLevel" href="src/DSession.h.html#qnJtiE">SetFillLevel</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLevel)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fFillLevel" title="Int_t DSession::fFillLevel">fFillLevel</a> = aLevel; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetEventBuildingMode" href="src/DSession.h.html#jBok2C">SetEventBuildingMode</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aEventBuildingMode)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DSession.html#DSession:fEventBuildingMode" title="Int_t DSession::fEventBuildingMode">fEventBuildingMode</a> = aEventBuildingMode; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetConfigPath" href="src/DSession.h.html#JVxmwD">SetConfigPath</a>(TString aConfigPath)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fConfigPath" title="TString DSession::fConfigPath">fConfigPath</a> = aConfigPath; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetConfigFileName" href="src/DSession.h.html#YEzA5">SetConfigFileName</a>(TString aConfigFileName)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fConfigFileName" title="TString DSession::fConfigFileName">fConfigFileName</a> = aConfigFileName; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetResultsDir" href="src/DSession.h.html#iaboTE">SetResultsDir</a>(TString aPath)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fResultDir" title="TString DSession::fResultDir">fResultDir</a> = aPath; gSystem-&gt;mkdir( <a href="./DSession.html#DSession:fResultDir" title="TString DSession::fResultDir">fResultDir</a>, 1);}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetResultsDirParent" href="src/DSession.h.html#jBvEyC">SetResultsDirParent</a>(TString aPath)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fResultsDirParent" title="TString DSession::fResultsDirParent">fResultsDirParent</a> = aPath; gSystem-&gt;mkdir( <a href="./DSession.html#DSession:fResultsDirParent" title="TString DSession::fResultsDirParent">fResultsDirParent</a>, 1);}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetOutputFilesPrefix" href="src/DSession.h.html#fdLi7C">SetOutputFilesPrefix</a>(TString aString)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DSession.html#DSession:fOutputFilesPrefix" title="TString DSession::fOutputFilesPrefix">fOutputFilesPrefix</a> = aString;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetOutputFilesSuffix" href="src/DSession.h.html#jUb2CD">SetOutputFilesSuffix</a>(TString aString)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DSession.html#DSession:fOutputFilesSuffix" title="TString DSession::fOutputFilesSuffix">fOutputFilesSuffix</a> = aString;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetRawSourcePath" href="src/DSession.h.html#algGND">SetRawSourcePath</a>(TString aRawSourcePath)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fRawSourcePath" title="TString DSession::fRawSourcePath">fRawSourcePath</a> = aRawSourcePath; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetSummaryFilePath" href="src/DSession.h.html#BX3lMC">SetSummaryFilePath</a>(TString aSummaryFilePath)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fSummaryFilePath" title="TString DSession::fSummaryFilePath">fSummaryFilePath</a> = aSummaryFilePath; gSystem-&gt;mkdir( <a href="./DSession.html#DSession:fSummaryFilePath" title="TString DSession::fSummaryFilePath">fSummaryFilePath</a>, 1); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetSummaryFileName" href="src/DSession.h.html#O2d5D">SetSummaryFileName</a>(TString aSummaryFileName)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fSummaryFileName" title="TString DSession::fSummaryFileName">fSummaryFileName</a> = aSummaryFileName; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetSummaryFilePathAndName" href="src/DSession.h.html#Sg.sL">SetSummaryFilePathAndName</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fSummaryFilePathAndName" title="TString DSession::fSummaryFilePathAndName">fSummaryFilePathAndName</a> = <a href="./DSession.html#DSession:fSummaryFilePath" title="TString DSession::fSummaryFilePath">fSummaryFilePath</a> + <span class="string">"/"</span> + <a href="./DSession.html#DSession:fSummaryFileName" title="TString DSession::fSummaryFileName">fSummaryFileName</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSession:SetPlaneNumber" href="src/DSession.h.html#QmYfYD">SetPlaneNumber</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSession.html#DSession:fPlaneNumber" title="Int_t DSession::fPlaneNumber">fPlaneNumber</a> = aPlaneNumber;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a> <a class="funcname" name="DSession:GetTrackChi2LimitForAlign" href="src/DSession.h.html#TKi6QE">GetTrackChi2LimitForAlign</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSession.html#DSession:fTrackChi2LimitForAlign" title="Double_t DSession::fTrackChi2LimitForAlign">fTrackChi2LimitForAlign</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSession.html">DSession</a>*&amp; <a class="funcname" name="DSession:Instance" href="src/DSession.h.html#GhaEIB">Instance</a>()</span><br />
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id:DSession.h  v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

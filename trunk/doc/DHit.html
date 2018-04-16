@@ -1,0 +1,656 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:00:58 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DHit</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DHit','','DHit.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DHit.h.html">header file</a>
+<a class="descrheadentry" href="src/DHit.cxx.html">source file</a>
+<a class="descrheadentry" href="DHit_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DHit:description">class description</a> 
+<a class="descrheadentry" href="#DHit:Function_Members">function members</a>
+<a class="descrheadentry" href="#DHit:Data_Members">data members</a>
+<a class="descrheadentry" href="#DHit:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DHit</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DHit:description"></a>class DHit: public TObject</h1>
+<div class="classdescr">
+<pre>
+
+<a href="./DHit.html#DHit:Class" title="TClass* DHit::Class()">Class</a> Description of <a href="./DHit.html">DHit</a>
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DHit:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DHit:DHit">DHit</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DHit:DHit%2">DHit</a>(<span class="keyword">const</span> <a href="./DHit.html">DHit</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DHit:DHit%1">DHit</a>(<a href="./DR3.html">DR3</a>&amp; aPosition, <a href="./DPlane.html">DPlane</a>&amp; aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a> aHitNumber)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DHit:_DHit">~DHit</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DHit:Analyse">Analyse</a>(<a href="./DStrip.html">DStrip</a>* aStrip)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DHit:Analyse%1">Analyse</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;* aListOfPixels)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DHit:Analyse_2_cgo">Analyse_2_cgo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;* aListOfPixels)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DHit:Analyse_Dynamic">Analyse_Dynamic</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;* aListOfPixels)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DHit:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:Clone">Clone</a>(<a href="./DHit.html">DHit</a>* original, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> fullCopy = 1)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:Distance">Distance</a>(<a href="./DHit.html">DHit</a>* aHit)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:Distance%1">Distance</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:Distance%2">Distance</a>(<a href="./DR3.html">DR3</a>* aPoint)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetClusterAreaPulseSum">GetClusterAreaPulseSum</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetClusterNoiseAverage">GetClusterNoiseAverage</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetClusterPulseSum">GetClusterPulseSum</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetClusterSignalToNoise">GetClusterSignalToNoise</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetDebug">GetDebug</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetFound">GetFound</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetIndex">GetIndex</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tSk) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetIndexLeft">GetIndexLeft</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetIndexRight">GetIndexRight</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetIndexSeed">GetIndexSeed</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetIsFromPreviousEvent">GetIsFromPreviousEvent</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DStrip.html">DStrip</a>*</td><td class="funcname"><a class="funcname" href="#DHit:GetMinor">GetMinor</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetNoise">GetNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tSk) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetNumber">GetNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DPlane.html">DPlane</a>*</td><td class="funcname"><a class="funcname" href="#DHit:GetPlane">GetPlane</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a>*</td><td class="funcname"><a class="funcname" href="#DHit:GetPosition">GetPosition</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionUhit">GetPositionUhit</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionUhitCG">GetPositionUhitCG</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionUhitCG22">GetPositionUhitCG22</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionUhitCG33">GetPositionUhitCG33</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionUhitEta">GetPositionUhitEta</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionUhitEta22">GetPositionUhitEta22</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionULeft">GetPositionULeft</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionVhit">GetPositionVhit</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionVhitCG">GetPositionVhitCG</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionVhitCG22">GetPositionVhitCG22</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionVhitCG33">GetPositionVhitCG33</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionVhitEta">GetPositionVhitEta</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionVhitEta22">GetPositionVhitEta22</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionWhit">GetPositionWhit</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPositionWhitCG">GetPositionWhitCG</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DPixel.html">DPixel</a>*</td><td class="funcname"><a class="funcname" href="#DHit:GetPSeed">GetPSeed</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPulseHeight">GetPulseHeight</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tSk) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPulseHeightLeft">GetPulseHeightLeft</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPulseHeightLeftOfSeed">GetPulseHeightLeftOfSeed</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPulseHeightRight">GetPulseHeightRight</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetPulseHeightRightOfSeed">GetPulseHeightRightOfSeed</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DStrip.html">DStrip</a>*</td><td class="funcname"><a class="funcname" href="#DHit:GetSeed">GetSeed</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetSeedNoise">GetSeedNoise</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetSeedPulseHeight">GetSeedPulseHeight</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetSeedU">GetSeedU</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetSeedV">GetSeedV</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetSNneighbour">GetSNneighbour</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetSNseed">GetSNseed</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetStoNover2">GetStoNover2</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DHit:GetStripsInCluster">GetStripsInCluster</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DHit:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DHit.html">DHit</a>&amp;</td><td class="funcname"><a class="funcname" href="#DHit:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DHit.html">DHit</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:SetFound">SetFound</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> found = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:SetIsFromPreviousEvent">SetIsFromPreviousEvent</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> value = 1)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:SetNumber">SetNumber</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DHit:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DHit:evaluateChargeFraction">evaluateChargeFraction</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> aChargeFraction)</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DHit:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype">TArrayF*</td><td class="dataname"><a name="DHit:fChargeFractionDensity"></a>fChargeFractionDensity</td><td class="datadesc">Array of charge fraction densities for hit measurement</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fClusterAreaPulseSum"></a>fClusterAreaPulseSum</td><td class="datadesc">sum of pulseheight on strips in hit cluster area, no noise cuts</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fClusterLimit"></a>fClusterLimit</td><td class="datadesc">maximum extension in u,v,w for hit analysis</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fClusterLimitRadius"></a>fClusterLimitRadius</td><td class="datadesc">maximum search radius (in mm) from real center of gravity (in mm) to associate new pixels </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fClusterNoiseAverage"></a>fClusterNoiseAverage</td><td class="datadesc">hit cluster signal noise average</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fClusterPulseSum"></a>fClusterPulseSum</td><td class="datadesc">sum of pulseheight on strips in hit cluster, involves noise cuts</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fClusterSignalToNoise"></a>fClusterSignalToNoise</td><td class="datadesc">hit cluster signal to noise ratio</td></tr>
+<tr class="data"><td class="datatype"><a href="./DCut.html">DCut</a>*</td><td class="dataname"><a name="DHit:fCut"></a>fCut</td><td class="datadesc">pointer to cuts</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fDebugHit"></a>fDebugHit</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="DHit:fFound"></a>fFound</td><td class="datadesc">kTRUE is associated to a track, JB 2009/05/22</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fHitNumber"></a>fHitNumber</td><td class="datadesc">hit number</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fIndexLeft"></a>fIndexLeft</td><td class="datadesc">index of left most strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fIndexLofSeed"></a>fIndexLofSeed</td><td class="datadesc">index of strip left from seed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fIndexRight"></a>fIndexRight</td><td class="datadesc">index of right most strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fIndexRofSeed"></a>fIndexRofSeed</td><td class="datadesc">index of strip right from seed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fIndexSeed"></a>fIndexSeed</td><td class="datadesc">index of seed strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="DHit:fIsFromPreviousEvent"></a>fIsFromPreviousEvent</td><td class="datadesc">explicit // VR 2014.08.28</td></tr>
+<tr class="data"><td class="datatype"><a href="./DPixel.html">DPixel</a>*</td><td class="dataname"><a name="DHit:fPSeed"></a>fPSeed</td><td class="datadesc">pointer to the hit seed pixel, JB 2009/05/01 </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPhLeft"></a>fPhLeft</td><td class="datadesc">pulseheight on left most strip in two strip cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPhLofSeed"></a>fPhLofSeed</td><td class="datadesc">pulseheight on strip left from seed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPhRight"></a>fPhRight</td><td class="datadesc">pulseheight on right most strip in two strip cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPhRofSeed"></a>fPhRofSeed</td><td class="datadesc">pulseheight on strip right from seed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPhSeed"></a>fPhSeed</td><td class="datadesc">pulseheight on seed strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./DPlane.html">DPlane</a>*</td><td class="dataname"><a name="DHit:fPlane"></a>fPlane</td><td class="datadesc">pointer to the device which got this hit</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPosLeft"></a>fPosLeft</td><td class="datadesc">position of left most strip in two strip cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPosLofSeed"></a>fPosLofSeed</td><td class="datadesc">position of strip left of seed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPosRight"></a>fPosRight</td><td class="datadesc">position of strip in right most cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPosRofSeed"></a>fPosRofSeed</td><td class="datadesc">position of strip right from seed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fPosSeed"></a>fPosSeed</td><td class="datadesc">position of the seed strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fPositionAlgorithm"></a>fPositionAlgorithm</td><td class="datadesc">1 = Center of Gravity, 2 = eta, 3= kappa, 4 = gamma</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fPositionHit"></a>fPositionHit</td><td class="datadesc">position of the hit, measured with 2-strip eta </td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fPositionHitCG"></a>fPositionHitCG</td><td class="datadesc">position of the hit measured with center of gravity method</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fPositionHitCG22"></a>fPositionHitCG22</td><td class="datadesc">position of the hit measured with center of gravity method over a 2x2 cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fPositionHitCG33"></a>fPositionHitCG33</td><td class="datadesc">position of the hit measured with center of gravity method over a 3x3 cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fPositionHitEta"></a>fPositionHitEta</td><td class="datadesc">position of the hit measured with eta correction from 3x3 cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fPositionHitEta22"></a>fPositionHitEta22</td><td class="datadesc">position of the hit measured with eta correction from 2x2 cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fSNneighbour"></a>fSNneighbour</td><td class="datadesc">signal / noise of neighbours</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fSNseed"></a>fSNseed</td><td class="datadesc">signal / noise of seed pixel, JB 2013/11/08</td></tr>
+<tr class="data"><td class="datatype"><a href="./DStrip.html">DStrip</a>*</td><td class="dataname"><a name="DHit:fSeed"></a>fSeed</td><td class="datadesc">pointer to the hit seed strip </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fSeedNoise"></a>fSeedNoise</td><td class="datadesc">noise on seed, JB 2013/11/08</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fSeedPulseHeight"></a>fSeedPulseHeight</td><td class="datadesc">pulseheight on seed, JB 2013/11/08</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fSeedU"></a>fSeedU</td><td class="datadesc">U position of hit seed strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DHit:fSeedV"></a>fSeedV</td><td class="datadesc">V position of hit seed strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fStoNover2"></a>fStoNover2</td><td class="datadesc">MB 2010/11/12</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a>*</td><td class="dataname"><a name="DHit:fStripDistanceU"></a>fStripDistanceU</td><td class="datadesc">! array of seed distanceU from strips in hit cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a>*</td><td class="dataname"><a name="DHit:fStripDistanceV"></a>fStripDistanceV</td><td class="datadesc">! array of seed distanceV from strips in hit cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DHit:fStripIndex"></a>fStripIndex</td><td class="datadesc">| array of index of strip in the full plane matrix</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DHit:fStripIndexArray"></a>fStripIndexArray</td><td class="datadesc">! array of indices to strips inside the hit</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a>*</td><td class="dataname"><a name="DHit:fStripNoise"></a>fStripNoise</td><td class="datadesc">! array of noise from strips in hit cluster  YV 27/11/09</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DHit:fStripPitch"></a>fStripPitch</td><td class="datadesc">pointer to strip pitch in plane</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a>*</td><td class="dataname"><a name="DHit:fStripPulseHeight"></a>fStripPulseHeight</td><td class="datadesc">! array of pulseheights from strips in hit cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fStripsInClusterArea"></a>fStripsInClusterArea</td><td class="datadesc"># strips in cluster area</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fStripsInClusterDemanded"></a>fStripsInClusterDemanded</td><td class="datadesc">exact number of strips required in Hit, set by user</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fStripsInClusterFound"></a>fStripsInClusterFound</td><td class="datadesc">number of strips in the hit cluster</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DHit:fTableSize"></a>fTableSize</td><td class="datadesc">Size of Arrays allocated in constructor // VR 2014.08.28</td></tr>
+
+</table></div>
+</div>
+<h2><a id="DHit:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DHit" href="./DHit.html">DHit</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DHit:DHit" href="src/DHit.cxx.html#VTbHjC">DHit</a>()</span><br />
+<div class="funccomm"><pre> <a href="./DHit.html">DHit</a> default ctr
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DHit:DHit%1" href="src/DHit.cxx.html#bHOEQD">DHit</a>(<a href="./DR3.html">DR3</a>&amp; aPosition, <a href="./DPlane.html">DPlane</a>&amp; aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a> aHitNumber)</span><br />
+<div class="funccomm"><pre> <a href="./DHit.html">DHit</a> constructor
+
+ Last Modified: JB 2009/05/22
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DHit:Clone" href="src/DHit.cxx.html#ILcFsC">Clone</a>(<a href="./DHit.html">DHit</a>* original, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> fullCopy = 1)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DHit:_DHit" href="src/DHit.cxx.html#Zs1plB">~DHit</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionUhitCG" href="src/DHit.cxx.html#LEGFIE">GetPositionUhitCG</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionVhitCG" href="src/DHit.cxx.html#fresIE">GetPositionVhitCG</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionWhitCG" href="src/DHit.cxx.html#zS3TJE">GetPositionWhitCG</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionUhitEta" href="src/DHit.cxx.html#dSrCcE">GetPositionUhitEta</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionVhitEta" href="src/DHit.cxx.html#x5DqcE">GetPositionVhitEta</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionUhitCG33" href="src/DHit.cxx.html#NkOeBD">GetPositionUhitCG33</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionVhitCG33" href="src/DHit.cxx.html#dQiKVD">GetPositionVhitCG33</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionUhitCG22" href="src/DHit.cxx.html#BTOeBD">GetPositionUhitCG22</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionVhitCG22" href="src/DHit.cxx.html#R.hKVD">GetPositionVhitCG22</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionUhitEta22" href="src/DHit.cxx.html#DAXXnD">GetPositionUhitEta22</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionVhitEta22" href="src/DHit.cxx.html#H7bSsC">GetPositionVhitEta22</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionUhit" href="src/DHit.cxx.html#tv3FmE">GetPositionUhit</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionVhit" href="src/DHit.cxx.html#NXQtmE">GetPositionVhit</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionWhit" href="src/DHit.cxx.html#h_oUnE">GetPositionWhit</a>() const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:Distance" href="src/DHit.cxx.html#k4TUBB">Distance</a>(<a href="./DHit.html">DHit</a>* aHit)</span><br />
+<div class="funccomm"><pre> Return the distance between this hit and the pointed hit
+ the pointed hit position (from another plane) is extrapolated to the plane of this hit
+ assuming a flat slope
+
+ JB, 2009/05/21
+ Modified: JB, 2010/11/25, use new method to transform from one plane to the other
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:Distance%1" href="src/DHit.cxx.html#N4DTVD">Distance</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</span><br />
+<div class="funccomm"><pre> Return the distance between this hit and the pointed track impact in the plane
+
+ JB, 2009/06/26
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:Distance%2" href="src/DHit.cxx.html#sKWFIE">Distance</a>(<a href="./DR3.html">DR3</a>* aPoint)</span><br />
+<div class="funccomm"><pre> Return the distance between this hit and the point
+ which coordinates are assumed to be given in the frame of the hit plane.
+
+ JB, 2011/07/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DHit:Analyse" href="src/DHit.cxx.html#VWyD5B">Analyse</a>(<a href="./DStrip.html">DStrip</a>* aStrip)</span><br />
+<div class="funccomm"><pre> Construct a hit (or cluster) from a seed strip:
+ 1) try to associate all neighbouring strips that pass selection cut
+ 2) check the build hit passes all selections
+ 3) order the array <a href="./DHit.html#DHit:fStripIndexArray" title="Int_t* DHit::fStripIndexArray">fStripIndexArray</a> of neighbours by decreasing pulseheight
+ 4) compute cluster charge, noise and position
+
+ Return a boolean: <a href="./ListOfTypes.html#Bool_t">kTRUE</a> if hit is selected, kFalse otherwise
+
+ re-organized a little bit by JB, 2007 June
+ Different CoGs and Etas added by JB, 2007 Nov
+ Realeasing (Found=<a href="./ListOfTypes.html#bool">false</a>) neighbour strips for rejected hit, JB 2012/08/18
+ Storing noise of strips, JB 2012/08/19
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DHit:Analyse%1" href="src/DHit.cxx.html#EEGNrD">Analyse</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;* aListOfPixels)</span><br />
+<div class="funccomm"><pre> Valid for sparse data acquisition
+
+ Construct a hit (or cluster) from a seed pixel and the list of all fired pixels:
+ 1) try to associate all neighbouring strips that pass selection cut
+ 2) check the build hit passes all selections
+ 3) order the array <a href="./DHit.html#DHit:fStripIndexArray" title="Int_t* DHit::fStripIndexArray">fStripIndexArray</a> of neighbours by decreasing pulseheight
+ 4) compute cluster charge, noise and position
+
+ Note that the behavior of this method is affected by the AnalysisMode chosen.
+
+ Return a boolean: <a href="./ListOfTypes.html#Bool_t">kTRUE</a> if hit is selected, kFalse otherwise
+
+ Constructed from the original <a href="./DHit.html#DHit:Analyse" title="Bool_t DHit::Analyse(DStrip* aStrip) or overloads">Analyse</a>( <a href="./DStrip.html">DStrip</a>*) by JB, 2009 April 29
+ Last modified, JB 2009/05/12
+ Last Modified, RDM 2009/08/05 for Mimosa25
+ Last Modified, JB 2009/08/21 for binary output
+ Last Modified, JB 2009/08/30 for cut on #strips in cluster
+ Last Modified, JB 2009/09/01 for CoG 2x2
+ Last Modified, YV 2009/11/27 for estimation of noise
+ Last Modified, JB 2010/10/05 automatic management of with or without noise
+ Last Modified, JB 2010/10/15 correction of previous management for Area S/N
+ Last Modified, MG 2010/06/28 corrected CGs computation
+ Last Modified, MB 2010/11/12 include new counting on #pixels with SN&gt;2
+ Last Modified, JB 2011/07/21 for binary ouput, allow to reallocate seed for large clusters
+ Last Modified, JB 2011/11/07 test if pixels are considered twice as neighbours
+ Last Modified, JB+SS 2013/06/23 manage timestamp cut for multiframe
+ Last Modified, JB 2013/11/08 store initial seed information
+ Last Modified, VR 2014/07/12 Condition to look for a new seed change : cogRow type <a href="./ListOfTypes.html#Int_t">Int_t</a> -&gt; <a href="./ListOfTypes.html#Double_t">Double_t</a>
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DHit:Analyse_2_cgo" href="src/DHit.cxx.html#fl_Qe">Analyse_2_cgo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;* aListOfPixels)</span><br />
+<div class="funccomm"><pre> Based on <a href="./DHit.html#DHit:Analyse" title="Bool_t DHit::Analyse(DStrip* aStrip) or overloads">Analyse</a>( <a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt; *aListOfPixels) but
+     Compute the center of gravity with floating point value in <span class="string">"pixel unit"</span>
+     <a href="./#TObject:Compare" title="Int_t TObject::Compare(const TObject* obj)">Compare</a> the ditance between cog to a pixel position (in pixel unit in floating point) with <a href="./DHit.html#DHit:fClusterLimit" title="DR3* DHit::fClusterLimit">fClusterLimit</a> to associate or not a pixel
+     <span class="string">"Pixel unit"</span> is choose for clarity (for debug this unity is more clear !)
+ Hit is valid if  <a href="./DHit.html#DHit:fCut" title="DCut* DHit::fCut">fCut</a>-><a href="./DCut.html#DCut:GetStripsInClusterMin" title="Int_t DCut::GetStripsInClusterMin()">GetStripsInClusterMin</a>() &lt;= <a href="./DHit.html#DHit:fStripsInClusterFound" title="Int_t DHit::fStripsInClusterFound">fStripsInClusterFound</a> &amp;&amp; <a href="./DHit.html#DHit:fCut" title="DCut* DHit::fCut">fCut</a>-><a href="./DCut.html#DCut:GetStripsInClusterMax" title="Int_t DCut::GetStripsInClusterMax()">GetStripsInClusterMax</a>() &gt;= <a href="./DHit.html#DHit:fStripsInClusterFound" title="Int_t DHit::fStripsInClusterFound">fStripsInClusterFound</a>
+
+ Construct a hit (or cluster) from a seed pixel and the list of all fired pixels:
+ 1) try to associate all neighbouring strips that pass selection cut
+ 2) check the build hit passes all selections
+ 3) order the array <a href="./DHit.html#DHit:fStripIndexArray" title="Int_t* DHit::fStripIndexArray">fStripIndexArray</a> of neighbours by decreasing pulseheight
+ 4) compute cluster charge, noise and position
+
+ Note that the behavior of this method is affected by the AnalysisMode chosen.
+
+ Return a boolean: <a href="./ListOfTypes.html#Bool_t">kTRUE</a> if hit is selected, kFalse otherwise
+
+ Constructed from the original <a href="./DHit.html#DHit:Analyse" title="Bool_t DHit::Analyse(DStrip* aStrip) or overloads">Analyse</a>( <a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt; *aListOfPixels) by VR 2014/07/16
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DHit:Analyse_Dynamic" href="src/DHit.cxx.html#ZxhxeB">Analyse_Dynamic</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPixelIndexInList, vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;* aListOfPixels)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DStrip.html">DStrip</a>* <a class="funcname" name="DHit:GetMinor" href="src/DHit.cxx.html#PD09ZE">GetMinor</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+<div class="funccomm"><pre> <a href="./DHit.html#DHit:GetMinor" title="DStrip* DHit::GetMinor(Int_t aSk)">GetMinor</a>(0) is <a href="./DHit.html#DHit:fSeed" title="DStrip* DHit::fSeed">fSeed</a>, <a href="./DHit.html#DHit:GetMinor" title="DStrip* DHit::GetMinor(Int_t aSk)">GetMinor</a>(1) is strip with lower pulseheight
+ than <a href="./DHit.html#DHit:fSeed" title="DStrip* DHit::fSeed">fSeed</a>
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:evaluateChargeFraction" href="src/DHit.h.html#oqkN_B">evaluateChargeFraction</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> aChargeFraction)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DHit:DHit" href="src/DHit.h.html#d_1itC">DHit</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetNumber" href="src/DHit.h.html#bSUybD">GetNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fHitNumber" title="Int_t DHit::fHitNumber">fHitNumber</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DHit:SetNumber" href="src/DHit.h.html#xwGJcE">SetNumber</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DHit.html#DHit:fHitNumber" title="Int_t DHit::fHitNumber">fHitNumber</a> = aNb;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DHit:GetFound" href="src/DHit.h.html#O1mKED">GetFound</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DHit.html#DHit:fFound" title="Bool_t DHit::fFound">fFound</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DHit:SetFound" href="src/DHit.h.html#kxHnYB">SetFound</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> found = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DHit.html#DHit:fFound" title="Bool_t DHit::fFound">fFound</a> = found; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetDebug" href="src/DHit.h.html#MskPRB">GetDebug</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DHit.html#DHit:fDebugHit" title="Int_t DHit::fDebugHit">fDebugHit</a>;              }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DHit:SetDebug" href="src/DHit.h.html#LSmI2C">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DHit.html#DHit:fDebugHit" title="Int_t DHit::fDebugHit">fDebugHit</a> = aDebug;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPixel.html">DPixel</a>            * <a class="funcname" name="DHit:GetPSeed" href="src/DHit.h.html#YNRhUE">GetPSeed</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fPSeed" title="DPixel* DHit::fPSeed">fPSeed</a>;                 }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DStrip.html">DStrip</a>            * <a class="funcname" name="DHit:GetSeed" href="src/DHit.h.html#srswGB">GetSeed</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fSeed" title="DStrip* DHit::fSeed">fSeed</a>;                 }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a>               * <a class="funcname" name="DHit:GetPosition" href="src/DHit.h.html#cCxJWC">GetPosition</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DHit.html#DHit:fPositionHit" title="DR3* DHit::fPositionHit">fPositionHit</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetClusterPulseSum" href="src/DHit.h.html#lvkCzE">GetClusterPulseSum</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fClusterPulseSum" title="Float_t DHit::fClusterPulseSum">fClusterPulseSum</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetClusterAreaPulseSum" href="src/DHit.h.html#BC5VrD">GetClusterAreaPulseSum</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fClusterAreaPulseSum" title="Float_t DHit::fClusterAreaPulseSum">fClusterAreaPulseSum</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetIndex" href="src/DHit.h.html#oxXHJD">GetIndex</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tSk) const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fStripIndex" title="Int_t* DHit::fStripIndex">fStripIndex</a>[<a href="./DHit.html#DHit:fStripIndexArray" title="Int_t* DHit::fStripIndexArray">fStripIndexArray</a>[tSk]];      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DHit:GetIsFromPreviousEvent" href="src/DHit.h.html#azngDE">GetIsFromPreviousEvent</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DHit.html#DHit:fIsFromPreviousEvent" title="Bool_t DHit::fIsFromPreviousEvent">fIsFromPreviousEvent</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DHit:SetIsFromPreviousEvent" href="src/DHit.h.html#XEgMKB">SetIsFromPreviousEvent</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> value = 1)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DHit.html#DHit:fIsFromPreviousEvent" title="Bool_t DHit::fIsFromPreviousEvent">fIsFromPreviousEvent</a>=value;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPulseHeight" href="src/DHit.h.html#Irn9.C">GetPulseHeight</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tSk) const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fStripPulseHeight" title="Float_t* DHit::fStripPulseHeight">fStripPulseHeight</a>[<a href="./DHit.html#DHit:fStripIndexArray" title="Int_t* DHit::fStripIndexArray">fStripIndexArray</a>[tSk]];}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetNoise" href="src/DHit.h.html#XHYBeD">GetNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tSk) const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fStripNoise" title="Float_t* DHit::fStripNoise">fStripNoise</a>[<a href="./DHit.html#DHit:fStripIndexArray" title="Int_t* DHit::fStripIndexArray">fStripIndexArray</a>[tSk]];}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetClusterSignalToNoise" href="src/DHit.h.html#y4mW6C">GetClusterSignalToNoise</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fClusterSignalToNoise" title="Float_t DHit::fClusterSignalToNoise">fClusterSignalToNoise</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetClusterNoiseAverage" href="src/DHit.h.html#QPBRg">GetClusterNoiseAverage</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fClusterNoiseAverage" title="Float_t DHit::fClusterNoiseAverage">fClusterNoiseAverage</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetStripsInCluster" href="src/DHit.h.html#dLrPYE">GetStripsInCluster</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fStripsInClusterFound" title="Int_t DHit::fStripsInClusterFound">fStripsInClusterFound</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPlane.html">DPlane</a>            * <a class="funcname" name="DHit:GetPlane" href="src/DHit.h.html#lhUAh">GetPlane</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fPlane" title="DPlane* DHit::fPlane">fPlane</a>;                }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetSeedU" href="src/DHit.h.html#EqMgSC">GetSeedU</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fSeedU" title="Float_t DHit::fSeedU">fSeedU</a>;                }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetSeedV" href="src/DHit.h.html#LlRbXB">GetSeedV</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fSeedV" title="Float_t DHit::fSeedV">fSeedV</a>;                }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPulseHeightLeft" href="src/DHit.h.html#mXtP1E">GetPulseHeightLeft</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fPhLeft" title="Float_t DHit::fPhLeft">fPhLeft</a>;               }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPulseHeightRight" href="src/DHit.h.html#mFPylD">GetPulseHeightRight</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fPhRight" title="Float_t DHit::fPhRight">fPhRight</a>;              }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPulseHeightLeftOfSeed" href="src/DHit.h.html#v.9rhE">GetPulseHeightLeftOfSeed</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fPhLofSeed" title="Float_t DHit::fPhLofSeed">fPhLofSeed</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPulseHeightRightOfSeed" href="src/DHit.h.html#Uc2Vv">GetPulseHeightRightOfSeed</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fPhRofSeed" title="Float_t DHit::fPhRofSeed">fPhRofSeed</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetPositionULeft" href="src/DHit.h.html#v7y91D">GetPositionULeft</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fPosLeft" title="Float_t DHit::fPosLeft">fPosLeft</a>;              }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetStoNover2" href="src/DHit.h.html#SiGMj">GetStoNover2</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fStoNover2" title="Int_t DHit::fStoNover2">fStoNover2</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetIndexLeft" href="src/DHit.h.html#KteP0D">GetIndexLeft</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fIndexLeft" title="Int_t DHit::fIndexLeft">fIndexLeft</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetIndexRight" href="src/DHit.h.html#JwOWPD">GetIndexRight</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fIndexRight" title="Int_t DHit::fIndexRight">fIndexRight</a>;           }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DHit:GetIndexSeed" href="src/DHit.h.html#GOLhgB">GetIndexSeed</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fIndexSeed" title="Int_t DHit::fIndexSeed">fIndexSeed</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetSNneighbour" href="src/DHit.h.html#GydmZ">GetSNneighbour</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fSNneighbour" title="Float_t DHit::fSNneighbour">fSNneighbour</a>;         }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetSNseed" href="src/DHit.h.html#UfW9XE">GetSNseed</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fSNseed" title="Float_t DHit::fSNseed">fSNseed</a>;          }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetSeedPulseHeight" href="src/DHit.h.html#N62NbB">GetSeedPulseHeight</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fSeedPulseHeight" title="Float_t DHit::fSeedPulseHeight">fSeedPulseHeight</a>;          }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DHit:GetSeedNoise" href="src/DHit.h.html#JrTBEC">GetSeedNoise</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DHit.html#DHit:fSeedNoise" title="Float_t DHit::fSeedNoise">fSeedNoise</a>;          }</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id: DHit.h,v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:00</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

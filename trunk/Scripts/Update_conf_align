@@ -1,0 +1,125 @@
+#!/usr/bin/perl -w
+# $Id: Update_conf_align.pl ,v 1.0 2005/05/03 18:00:00 shabetai Exp $
+# Alexandre SHABETAI shabetai@in2p3.fr 
+# Modified JB 2011/04/05 
+# 
+# ATTENTION: this version does not work with the new alignment used from taf.2.6.1
+#
+
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+# This script updates the MIMOSA runXXX.cfg file with new new values comming from the Mimosa Align Tracker 
+# (akwa telescope) methode.
+
+#usage : see sub Usage code.
+
+use warnings;
+use strict;
+
+#------------------------------------------------------------------------------------------
+# Usage: prints this script usage info on stderr
+
+sub Usage {
+print STDERR "usage : ./Update_conf_align <config_filename>.cfg pl1 Tilt1 AlignementU pl2 Tilt1 AlignementU pl3 Tilt1 AlignementU pl4Tilt1 AlignementU debug_flag\n";
+print STDERR "                                                   ^     plane #1     ^ ^      plne #2      ^^     plane #3       ^^    plane #4      ^            \n"; 
+print STDERR "ex : ./Update_conf_align  run9581.cfg 2.33 1 1 +3.2 2 2 -4.4 5 5.3 6.4 6 70.20 -d  \n" ;        
+print STDERR "Will be called fromm the MIMOSA ROOT Framwork \n";
+die "Arguments provided wwere incorrect!\n";
+return -1
+
+} 
+
+#------------------------------------------------------------------------------------------
+# Modify(pl,Tilt1,AlignementU,debug)
+# Modify the runXXXX.cfg file with new values form the tracker alignement
+# args : 
+# - 0 :  the secondary plane number to  update
+# - 1 to 3 :  the new PositionsX, PositionsY, PositionsZ in mm
+# - 4 to 6 :  the new TiltZ, TiltY, TiltX in mm
+# - 1 :  the new Tilt1 value (from tracker alignement)
+# - 2 :  the new AlignementU value (from tracker alignement)
+# - 3 : debug flag (if '-d' or '-d2' print info on stdout
+# - 4 : current input file ($in) line 
+# returns the new value of the current line
+
+sub Modify  {
+
+       if ($_[3] eq'-d2') {print "plane ",$_[0]," : \n" ; }
+
+
+       if ($_[4]=~/^Tilt1/) {
+        print "plane ",$_[0]," : \n" ; 
+        print "Old value :: ", $_[4] ; $_[4]=~s/^Tilt1:\s*[+-]?\d*[.]?\d*\s{1}?/Tilt1:             $_[1] /g;
+        print "New value :: ", $_[4] ;
+      }
+
+      if ($_[4]=~/^AlignementU/) {
+      if ($_[3] eq '-d') {print "plane ",$_[0]," : \n" ; }
+       print "Old value :: ",$_[4] ; $_[4]=~s/^AlignementU:\s*[+-]?\d*[.]?\d*\s{0,2}\n/AlignementU:       $_[2] \n/g;
+       print "New value :: ", $_[4] ;
+      }
+
+return  $_[4];
+
+}
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+# main 
+
+#if incorrect number of args
+if ($#ARGV ne 13) {&Usage();}
+
+my $debug='no';
+if (defined($ARGV[9])) { $debug=$ARGV[9];} else {$debug='no';}
+
+if ($debug eq '-d'){
+ for ( my $i = 0; $i <= $#ARGV; ++$i ) {
+        print "ARGV[$i] = '$ARGV[$i]'\n";
+  }
+}
+
+
+#define and open files
+my $in=$ARGV[0];
+my $out=$in.'.new';
+$debug=$ARGV[9];
+
+open(FIN,"$in") or die "Cannot open $in for read :$!";
+open(FOUT,">$out") or die "Cannot open $out for write :$!";
+#flock(FOUT,LOCK_EX) or die "flock bombed out in lockex, $!";
+
+#main loop on on all lines of $in and look for the plane number
+
+print "The config file ",$in," will be updated with new values from the tracker aligement... \n\n";
+
+my $plane=0;
+
+while (my $line=<FIN>) {
+ 
+ if ($line=~/-.Plane/) {$plane++;}
+
+  if($plane eq $ARGV[1]) { $line=&Modify($plane,$ARGV[2],$ARGV[3],$debug,$line);}
+   elsif ($plane eq $ARGV[4]) { $line=&Modify($plane,$ARGV[5],$ARGV[6],$debug,$line);}
+   elsif ($plane eq $ARGV[7]) { $line=&Modify($plane,$ARGV[8],$ARGV[9],$debug,$line);}
+   elsif ($plane eq $ARGV[10]) { $line=&Modify($plane,$ARGV[11],$ARGV[12],$debug,$line);}
+   else  {
+   #print "no change: plane ", $plane, "\n"; #die "No change";
+  }
+
+#create the new file $out              
+print FOUT $line;
+
+} #End while loop
+
+#close and rename files
+close FOUT or die "Cannot close $out :$!";
+close FIN  or die "Cannot close $in :$!";
+#if ($debug eq '-d') {#print "Proceed? [y/n] :"; #my $key = getc(STDIN);# if($key ne y) {#die "ok... execution abborted! file $in not modified" ;}}
+
+rename($out,$in)  or die "Cannot rename $out to $in :$!";
+
+print "\nThat's done!\n";
+exit 0;

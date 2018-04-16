@@ -1,0 +1,46 @@
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/u/u.var
+Goal      : Variables definition of 
+Prj date  : 12/01/2004
+File date : //2004
+Doc date  : //2002
+Rev       : 30/12/2005
+          : - stb lib for DLL building
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef PPORT_VAR
+#define PPORT_VAR
+
+
+/* ================= */
+/*  Variable example */
+/* ================= */
+
+static UInt8  PPO_VGPortReady[PPO_MAX_PORT_NB];
+static UInt8  PPO_VGNoHwAccess[PPO_MAX_PORT_NB];
+static UInt8  PPO_VGReadDataOutPortBeforeWrite[PPO_MAX_PORT_NB];
+
+UInt32 PPO_VGBaseAdr[PPO_MAX_PORT_NB];
+UInt32 PPO_VGOutAdr [PPO_MAX_PORT_NB];
+UInt32 PPO_VGCtrlAdr[PPO_MAX_PORT_NB];
+UInt32 PPO_VGIn1Adr [PPO_MAX_PORT_NB];
+
+UInt8  PPO_VGOutData[PPO_MAX_PORT_NB];
+UInt8  PPO_VGCtrlData[PPO_MAX_PORT_NB];
+UInt8  PPO_VGCtrlDataReadBack[PPO_MAX_PORT_NB]; // To store read back value of output control port
+
+#ifdef CC_APP_SPI_INOUTWRAPPER 
+     HINSTANCE hLib;
+     inpfuncPtr Inp32;
+     oupfuncPtr Out32;
+#endif	 
+	 
+/* ============== */
+/*  */
+/* ============== */
+ULong  CptWait;
+
+#endif

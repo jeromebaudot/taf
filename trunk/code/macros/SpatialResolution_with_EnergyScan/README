@@ -1,0 +1,111 @@
+This macro is intented to estimate the spatial reasolutions, both in U and V directions, 
+for sensors tested in a test beam with a configuration where both DUT and telescope reference 
+planes are sensors of the same type operated with the same parameters (e.g. threshold). 
+This macro also extracts the beam energy, and is intended to be used for cases in which the 
+beam energy is low enough that multiple scattering effects are important.
+
+- Experimental input:
+The experimental input are the measured residues taking each sensors as DUT and considering the 
+rest as reference planes for tracking. Then, if in the experimental setup there are N such sensors, 
+then N residudes, both on U and V directions, can be measured.
+
+- Input from MC simulation:
+Another input needed for the analysis are the residues as a function of the sensors spatial 
+resolution (sigma_sp) for several values of the beam energy (Ebeam) extracted from MC. This 
+information is in a format of a histogram with the residue at the DUT position as a function 
+of the sensor sigma_sp. There will be one .root file containing such a histrogram for each Ebeam 
+sampled value and for each senso. So, if there are N sensors and M sampled values of Ebeam, there 
+will be NxM such .root files.
+
+These set of root files are used to build a function residue_i(sigma_sp,Ebeam), where residue_i 
+is the residue at expected at sensor ith. This function is built by making linear interpolation 
+between the sampled poits of Ebeam and sigma_sp. This function is then used to build a chi^2 function 
+for sensor ith as follows,
+
+chi^2_i(U/V) = (residue_exp_i - residue_i(sigma_sp(U/V),Ebeam))^2/error_residue_exp_i(U/V)^2
+
+where residue_exp_i and error_residue_exp_i are the mesured residue and its errors for sensor 
+ith considered as DUT.
+
+The set of chi^2_i(U/V) are used to build a total chi^2(U/V) as follows,
+
+ chi^2_tot(U/V) = sum_i [chi^2_i(U/V)]
+
+The function chi^2_tot(U/V) depends only on sigma_sp(U/V) and Ebeam. The total chi^2 is then the sum 
+of the total chi^2_tot in U and V directions,
+
+chi^2_tot = chi^2_tot(U) + chi^2_tot(V)
+
+which depends on sigma_sp(U), sigma_sp(V) and Ebeam. This is the function to be minimized to extract 
+these parameters. The minimization is performed by TMinuit of ROOT. The ouput of the code are the values 
+of sigma_sp(U), sigma_sp(V) and Ebeam at the minimum with the corresponding errors and correlation matrix, 
+as well as, a set of plots (.pdf file) which illustrate the method and the quality of the fit.
+
+
+In order to use the code it needs to the compiled as follows,
+
+>$ make clean
+>$ make
+
+This will create an executable called SpatialResolutionApp
+
+It is then executed by using the executable and giving a datacard (DataCard.txt) with the all 
+input informations to perform the analysis
+
+>$ SpatialResolutionApp  DataCard.txt
+
+
+The datacard file is as follows,
+
+////////////////////////////////////////////////////////////////////
+//Sensor Name
+MimosaName:  Mimosa28
+
+//Table list with the experimentally measured residues for all sensors (example shown below)
+//Table  Plane-Number   Plane-position (cm)            .root data files from MimosaPro analysis
+Data:         1              -4.6                     results_ana_M28/run28822Pl1_ClCharge.root
+Data:         2              -4.1                     results_ana_M28/run28822Pl2_ClCharge.root
+Data:         3               4.4                     results_ana_M28/run28822Pl3_ClCharge.root
+Data:         4               4.9                     results_ana_M28/run28822Pl4_ClCharge.root
+Data:         5               0.0                     results_ana_M28/run28822Pl5_ClCharge.root
+
+//List with the MC simulation files for the different planes and Beam energies (see below)
+MC:        SomeMacros/DataCards/ListOfMCFiles_run28822_BeamEScan_SALAT_Feb2014.txt
+
+//Pixel Characteristics (sizes are either in microns or microns^2):
+//This characteristics are mainly for metadata info on the quality plots
+Diode:    8.00   16.00
+Ampl:     0.28    1.5
+Cap:      MIM
+Pitch:    20.7   20.7
+
+//experimental residue systematic (in microsn)
+Syst:     0.05
+
+//Output file name
+Output:   OutputDir/Spatial_Resolution_SALAT_Run28822_DESYFeb2014_BeamEScan
+
+/////////////////////////////////////////////////////////////////////
+
+
+The list of MC files is a file with the following format (some example below)
+//file_name.root        Ebeam           Plane-number
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_4.6GeV.root  4.6   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_4.8GeV.root  4.8   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_5.0GeV.root  5.0   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_5.2GeV.root  5.2   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_5.4GeV.root  5.4   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_5.6GeV.root  5.6   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_5.8GeV.root  5.8   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_6.0GeV.root  6.0   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_6.2GeV.root  6.2   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_6.4GeV.root  6.4   1
+results_ana_M28/MCStandAlone_run28822Pl1_ClCharge_G4_WithTape_BeamEScan_6.6GeV.root  6.6   1
+results_ana_M28/MCStandAlone_run28822Pl2_ClCharge_G4_WithTape_BeamEScan_1.0GeV.root  1.0   2
+results_ana_M28/MCStandAlone_run28822Pl2_ClCharge_G4_WithTape_BeamEScan_1.2GeV.root  1.2   2
+results_ana_M28/MCStandAlone_run28822Pl2_ClCharge_G4_WithTape_BeamEScan_1.4GeV.root  1.4   2
+results_ana_M28/MCStandAlone_run28822Pl2_ClCharge_G4_WithTape_BeamEScan_1.6GeV.root  1.6   2
+results_ana_M28/MCStandAlone_run28822Pl2_ClCharge_G4_WithTape_BeamEScan_1.8GeV.root  1.8   2
+
+
+

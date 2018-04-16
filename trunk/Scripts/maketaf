@@ -1,0 +1,146 @@
+#!/bin/bash
+
+########################
+#       HOWTO
+########################
+#
+# Script to make taf anywhere 
+# $maketaf [clean] [nobeep]
+#
+# By Valerian REITHINGER, 2014/12/17
+#
+# Modifications
+#  JB 2016/04/22 default is no beep
+#
+########################
+
+########################
+#       CONFIG
+########################
+MAKEDIR="$DTDIR/code";
+MAKECOMMAND="make";
+#MAKECOMMAND="make -j 4";
+
+# default values, affected by args : 
+CLEAN=false;
+NOBEEP=true;
+########################
+
+########################
+#       WORK
+########################
+
+#*********************
+# sub function
+#*********************
+function clearVar
+{
+  unset ORIGINALPWD
+  unset MAKEDIR
+  unset MAKECOMMAND
+  unset STARTDATE
+  unset STARTTIME
+  unset FINISHDATE
+  unset FINISHTIMEW
+  unset WORKTIME
+  unset COMMAND
+  unset RETURNVALUE
+  unset CLEAN
+  set NOBEEP
+}
+
+#*********************
+# Args processing
+#*********************
+for arg in "$@"
+do
+	case $arg in
+    clean)
+        CLEAN=true;
+        ;;
+    nobeep)
+        NOBEEP=true;
+        ;;
+    beep)
+        NOBEEP=false;
+        ;;
+    *)
+        echo "usage : maketaf [clean] [nobeep]";
+        clearVar;
+        exit -1;
+        ;;
+	esac
+done
+
+#*********************
+# Do the jobs
+#*********************
+ORIGINALPWD=`pwd`;
+STARTDATE=$(date);
+STARTTIME=$(date +"%s");
+
+echo "********************"
+echo "*     make taf     *" 
+echo "********************"
+echo "-> started on $STARTDATE";
+
+# cd to $MAKEDIR
+COMMAND="cd $MAKEDIR";
+echo "-> $COMMAND";
+eval $COMMAND;
+RETURNVALUE=$?
+if [ "$RETURNVALUE" = "0" ] ; then
+	echo -e "  * ok *"
+else
+	echo -e "  ** FAILED TO GO TO MAKE DIR ! **"
+	clearVar;
+	exit -1;
+fi 
+
+# make clean
+if [ $CLEAN = true ] ; then
+	COMMAND="make clean";
+	echo "-> $COMMAND";
+	eval $COMMAND;
+	RETURNVALUE=$?;
+	if [ "$RETURNVALUE" = "0" ] ; then
+		echo -e "  * ok *";
+	else
+		echo -e "  ** FAILED TO MAKE CLEAN ! **";
+		clearVar;
+		exit -1;
+	fi 
+fi
+
+# make 
+echo "-> $MAKECOMMAND";
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
+eval $MAKECOMMAND;
+RETURNVALUE=$?;
+echo "*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*";
+if [ "$RETURNVALUE" = "0" ] ; then
+	echo -e "  * MAKE OK :-D *";
+	if [ ! $NOBEEP = true ] ; then
+		beep -f 100 -l 100 -n -f 200 -l 100 -n -f 500 -l 100 -n -f 1000 -l 100;
+	fi
+else
+	echo -e "  ** FAILED TO MAKE ! :-( **";
+	echo -e "   =>  Good luck to debug ...";
+	if [ ! $NOBEEP = true ] ; then
+		beep -f 100 -l 300 -r 2;
+	fi
+fi 
+
+
+FINISHDATE=$(date);
+FINISHTIME=$(date +"%s");
+WORKTIME=$(($FINISHTIME - $STARTTIME));
+echo "********************"
+echo "-> finished on $FINISHDATE";
+echo "-> work time : $(($WORKTIME / 60)):$(($WORKTIME % 60))";
+COMMAND="cd $ORIGINALPWD";
+echo "-> $COMMAND";
+eval $COMMAND;
+echo "********************";
+clearVar
+exit 0;

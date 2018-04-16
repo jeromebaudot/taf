@@ -1,0 +1,191 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Tue Jul 26 04:21:29 2011            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DLine - source file</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="../ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="../ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();">
+<pre class="code">
+<span class="comment">// @(#)maf/dtools:$Name:  $:$Id: <a href="../DLine.html">DLine</a>.cxx,v.1 2005/10/02 18:03:46 sha Exp $</span>
+<span class="comment">// Author :  Dirk Meier     98/01/09</span>
+
+  <span class="comment">//////////////////////////////////////////////////////////////////////////////////////////////</span>
+  <span class="comment">//                                                                                          //</span>
+  <span class="comment">// <a href="../DLine.html#DLine:Class" title="TClass* DLine::Class()">Class</a> Description of <a href="../DLine.html">DLine</a>                                                               // </span>
+  <span class="comment">//                                                                                          //</span>
+  <span class="comment">// a Line object is defined by its                                                          //</span>
+  <span class="comment">//                  origin     = (x_0,y_0,z_0),                                             //</span>
+  <span class="comment">//                  direction  = (dx,dy,dz),                                                //</span>
+  <span class="comment">// and              length.                                                                 //</span>
+  <span class="comment">// Points on the line at r_i are given as a function                                        //</span>
+  <span class="comment">// of the parameter beta. beta has no dimension.                                            //</span>
+  <span class="comment">// r_i(beta) = origin_i + beta * direction_i                                                //</span>
+  <span class="comment">// If one wants the pair (x,y) as a function of z along (0,0,dz) then beta = z/dz           //</span>
+  <span class="comment">//    and r_1(beta) = x_0 + z * dx/dz                                                       //</span>
+  <span class="comment">//        r_2(beta) = y_0 + z * dy/dz                                                       //</span>
+  <span class="comment">//        r_3(beta) = z_0 + z * 1                                                           //  </span>
+  <span class="comment">// In case one needs pair (x,y,z) as a function of l along (dx,dy,dz) then beta' = l/dl     //</span>
+  <span class="comment">//    and r_1(beta') = x_0 + l * dx/dl                                                      //</span>
+  <span class="comment">//        r_2(beta') = y_0 + l * dy/dl                                                      //</span>
+  <span class="comment">//        r_3(beta') = z_0 + l * dz/dl                                                      //</span>
+  <span class="comment">// with the relation beta^2 = beta'^2 * (1-x^2/l^2-y^2/l^2) / (1-dx^2/dl^2-dy^2/dl^2)       //</span>
+  <span class="comment">//                                                                                          //</span>
+  <span class="comment">//////////////////////////////////////////////////////////////////////////////////////////////</span>
+
+
+<span class="comment">//*-- Modified :  </span>
+<span class="comment">//*-- Copyright:  RD42</span>
+<span class="comment">//*-- Author   :  Dirk Meier   98/01/09</span>
+<span class="comment">//*KEEP,CopyRight.</span>
+
+<span class="comment">// Last Modified: JB 2011/07/25 destructor</span>
+
+<span class="comment">/************************************************************************
+ * Copyright(c) 1997, DiamondTracking, RD42@cern.ch
+ ***********************************************************************/</span>
+<span class="comment">//*KEND.</span>
+
+<span class="comment">//*KEEP,<a href="../DLine.html">DLine</a>.</span>
+<span class="cpp">#include "<a href="../DLine.h">DLine.h</a>"</span>
+<span class="comment">//*KEEP,<a href="../DR3.html">DR3</a>.</span>
+<span class="cpp">#include "<a href="../DR3.h">DR3.h</a>"</span>
+<span class="comment">//*KEND.</span>
+
+ClassImp(<a href="../DLine.html">DLine</a>) <span class="comment">// Description of a Line</span>
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//  </span>
+
+<a name="bmHdYE"></a><a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:DLine" title="DLine DLine::DLine() or overloads">DLine</a>(){ 
+  <a href="../DLine.html#DLine:fOrigin" title="DR3* DLine::fOrigin">fOrigin</a>    = <span class="keyword">new</span> <a href="../DR3.html">DR3</a>();
+  <a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a> = <span class="keyword">new</span> <a href="../DR3.html">DR3</a>();
+  <a href="../DLine.html#DLine:fSlope" title="DR3* DLine::fSlope">fSlope</a>     = <span class="keyword">new</span> <a href="../DR3.html">DR3</a>();
+  <a href="../DLine.html#DLine:fLength" title="Float_t DLine::fLength">fLength</a>    = 0.0;
+}
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//  </span>
+
+<a name="d50IME"></a><a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:DLine" title="DLine DLine::DLine() or overloads">DLine</a>(<a href="../DR3.html">DR3</a> &amp;aOrigin, <a href="../DR3.html">DR3</a> &amp;aDirection, <a href="../ListOfTypes.html#Float_t">Float_t</a> aLength){
+  <a href="../DLine.html#DLine:fOrigin" title="DR3* DLine::fOrigin">fOrigin</a>    = <span class="keyword">new</span> <a href="../DR3.html">DR3</a>(aOrigin);
+  <a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a> = <span class="keyword">new</span> <a href="../DR3.html">DR3</a>(aDirection);
+  <a href="../DLine.html#DLine:fSlope" title="DR3* DLine::fSlope">fSlope</a>     = <span class="keyword">new</span> <a href="../DR3.html">DR3</a>();
+  <a href="../DLine.html#DLine:fLength" title="Float_t DLine::fLength">fLength</a>    = aLength;
+}
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//  </span>
+
+<a name="cKAczE"></a><a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:_DLine" title="void DLine::~DLine()">~DLine</a>(){
+  
+  <span class="comment">// delete instruction modified to avoid crash, JB 2011/07/25</span>
+  <span class="keyword">delete</span> <a href="../DLine.html#DLine:fOrigin" title="DR3* DLine::fOrigin">fOrigin</a>;
+  <span class="keyword">delete</span> <a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a>;
+  <span class="keyword">delete</span> <a href="../DLine.html#DLine:fSlope" title="DR3* DLine::fSlope">fSlope</a>;
+}
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//  </span>
+
+<a name="hZYSCB"></a><span class="keyword">void</span> <a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:SetValue" title="void DLine::SetValue(const DR3&amp; aOrigin,const DR3&amp; aDirection,const DR3&amp; aSlope,const Float_t aLength)">SetValue</a>(<span class="keyword">const</span> <a href="../DR3.html">DR3</a>&amp; aOrigin, 
+		     <span class="keyword">const</span> <a href="../DR3.html">DR3</a>&amp; aDirection, 
+		     <span class="keyword">const</span> <a href="../DR3.html">DR3</a>&amp; aSlope,
+		     <span class="keyword">const</span> <a href="../ListOfTypes.html#Float_t">Float_t</a> aLength){
+  *<a href="../DLine.html#DLine:fOrigin" title="DR3* DLine::fOrigin">fOrigin</a>    = aOrigin;
+  *<a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a> = aDirection;
+  *<a href="../DLine.html#DLine:fSlope" title="DR3* DLine::fSlope">fSlope</a>     = aSlope;
+  <a href="../DLine.html#DLine:fLength" title="Float_t DLine::fLength">fLength</a>     = aLength;
+}
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//  </span>
+
+<a name="OYU9sE"></a><span class="keyword">void</span> <a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:Zero" title="void DLine::Zero()">Zero</a>(){
+  <a href="../DLine.html#DLine:fOrigin" title="DR3* DLine::fOrigin">fOrigin</a>-><a href="../DR3.html#DR3:Zero" title="void DR3::Zero()">Zero</a>();
+  <a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a>-><a href="../DR3.html#DR3:Zero" title="void DR3::Zero()">Zero</a>();
+  <a href="../DLine.html#DLine:fSlope" title="DR3* DLine::fSlope">fSlope</a>-><a href="../DR3.html#DR3:Zero" title="void DR3::Zero()">Zero</a>();
+  <a href="../DLine.html#DLine:fLength" title="Float_t DLine::fLength">fLength</a> = 0;
+}
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//  </span>
+
+<a name="de0IPC"></a><a href="../DR3.html">DR3</a> <a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:GetPoint" title="DR3 DLine::GetPoint(Float_t beta)">GetPoint</a>(<a href="../ListOfTypes.html#Float_t">Float_t</a> beta){
+  <a href="../DR3.html">DR3</a> result;
+  result = (*<a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a>) * beta;
+  <span class="keyword">return</span> result += *<a href="../DLine.html#DLine:fOrigin" title="DR3* DLine::fOrigin">fOrigin</a>; 
+}
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//   </span>
+
+<a name="eRLdsE"></a><a href="../DR3.html">DR3</a> <a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:GetIntersectZ" title="DR3 DLine::GetIntersectZ(Float_t aZvalue)">GetIntersectZ</a>(<a href="../ListOfTypes.html#Float_t">Float_t</a> aZvalue){
+  <a href="../ListOfTypes.html#Float_t">Float_t</a> tDz;
+  <a href="../DR3.html">DR3</a>     tZero;
+  tDz = <a href="../DLine.html#DLine:GetDirection" title="DR3&amp; DLine::GetDirection()">GetDirection</a>()(2);
+  <span class="keyword">if</span> (tDz != 0.)
+    <span class="keyword">return</span> <a href="../DLine.html#DLine:GetPoint" title="DR3 DLine::GetPoint(Float_t beta)">GetPoint</a>(aZvalue/tDz);
+  <span class="keyword">else</span>
+    <span class="keyword">return</span> tZero;
+}
+
+<span class="comment">//______________________________________________________________________________</span>
+<span class="comment">//  </span>
+
+<a name="kar32E"></a><a href="../ListOfTypes.html#Float_t">Float_t</a> <a href="../DLine.html">DLine</a>::<a href="../DLine.html#DLine:Distance" title="Float_t DLine::Distance(DR3&amp; p)">Distance</a>(<a href="../DR3.html">DR3</a> &amp;p){
+  <span class="comment">// distance d = sqrt(n_k n_k) between point p_k and line G</span>
+  <span class="comment">// with G is set of r_k :  r_k = a_k x + b_k ; for all x element R and k = 1..3</span>
+  <span class="comment">// ... now n_i pops out :</span>
+  <span class="comment">//        n_i = (1_ik - a_i a_k / a^2) (p_k - b_k)    ; 1_ik is kronecker's thing</span>
+  <span class="comment">// ... which delivers distance d: (note a,b,c,p are 3-Vectors)</span>
+  <span class="comment">//        d = sqrt(c^2 - 2 (a*c)^2 / a^2 + (a*c)^2)   with c = p - b, </span>
+  <span class="comment">// * is the scalar vector product</span>
+  <span class="comment">// and wire it in:</span>
+
+  <a href="../DR3.html">DR3</a>  c;
+  <a href="../ListOfTypes.html#Float_t">Float_t</a> d;
+
+  c.SetDifference(p, *<a href="../DLine.html#DLine:fOrigin" title="DR3* DLine::fOrigin">fOrigin</a>);
+  d = c.InnerProduct(*<a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a>);
+  
+  <span class="keyword">return</span> sqrt(c.InnerProduct(c) - 
+	      2 * d * d / <a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a>-><a href="../DR3.html#DR3:InnerProduct" title="Float_t DR3::InnerProduct(DR3&amp; a)">InnerProduct</a>(*<a href="../DLine.html#DLine:fDirection" title="DR3* DLine::fDirection">fDirection</a>) + 
+	      d * d);
+}
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+
+<br />
+<!--SIGNATURE-->
+
+<em>Last change: Tue Jul 26 04:21:29 2011</em><br />
+<em>Last generated: 2011-07-26 04:21</em><br />
+
+<hr />
+<em>
+This page has been automatically generated. If you have any comments or suggestions about the page layout send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>, or contact <a href="mailto:rootdev@root.cern.ch">the developers</a> with any questions or problems regarding ROOT.
+</em>
+</body>
+</html>

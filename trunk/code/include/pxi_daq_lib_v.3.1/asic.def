@@ -1,0 +1,238 @@
+
+
+/*******************************************************************************
+File      : x:\lib\com\asic\asic.def
+Goal      : Macros definition of ASIC common constants / strcutures librairy
+Prj date  : 29/06/2009
+File date : 29/06/2009
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef ASIC_DEF
+#define ASIC_DEF
+
+
+
+
+/* ============== */
+/*  */
+/* ============== */
+// 30/04/2014 - MS - upg FSBB0
+
+typedef enum {
+  
+  ASIC__NONE,   // 0
+  ASIC__MI26,   // 1
+  ASIC__ULT1,   // 2
+  ASIC__SUZE02, // 3
+  ASIC__FSBB0,  // 4
+  ASIC__NB
+
+} ASIC__TEAsicName;
+
+
+/* ============== */
+/*  */
+/* ============== */
+
+// 12/12/13 GC - Upg AROM1D :
+// ASIC_ARM_... => ARM stand for Asic & Read Mode
+// 05/05/2014 - MS - Upg FSBB0 : 
+// added   ASIC__ARM_FSBB0_A_416 ,  ASIC__ARM_FSBB0_A_420 ,  ASIC__ARM_FSBB_M0_D_416L ,  ASIC__ARM_FSBB0_D_420 , //
+
+typedef enum {
+  
+  ASIC__ARM_NONE,   // 0
+  ASIC__ARM_SIS_REF, // Silicon Strip Reference detectors
+  ASIC__ARM_MI1,   //
+  ASIC__ARM_MI2,   //
+  ASIC__ARM_MI3, //
+  ASIC__ARM_MI4 , //
+  ASIC__ARM_MI5 , //
+  ASIC__ARM_MI6A , //
+  ASIC__ARM_MI6D , //
+  ASIC__ARM_MI7A , //
+  ASIC__ARM_MI7D , //
+  ASIC__ARM_MI8A , //
+  ASIC__ARM_MI8D , //
+  ASIC__ARM_MI9 , //
+  ASIC__ARM_MI10 , //
+  ASIC__ARM_MI11 , //
+  ASIC__ARM_MI12 , //
+  ASIC__ARM_MI13 , //
+  ASIC__ARM_MI14 , //
+  ASIC__ARM_MI15 , //
+  ASIC__ARM_MI16 , //
+  ASIC__ARM_MI17 , //
+  ASIC__ARM_MI18, //
+  ASIC__ARM_MI19 , //
+  
+  // ASIC__ARM_MI20_PH1_A_640L , //
+  // ASIC__ARM_MI20_PH1_A_642L , //
+  // ASIC__ARM_MI20_PH1_D_640L , //
+  // ASIC__ARM_MI20_PH1_D_642L , //
+
+  ASIC__ARM_MI20_MSTAR3_A_320L , //
+  ASIC__ARM_MI20_MSTAR3_D_320L , //
+  
+
+  ASIC__ARM_MI21 , //
+  
+  ASIC__ARM_MI22_A_576L , //
+  ASIC__ARM_MI22_A_578L , //
+  ASIC__ARM_MI22_D_576L , //
+  ASIC__ARM_MI22_D_578L , //
+  
+  ASIC__ARM_MI22_THRA_A_320L , //
+  ASIC__ARM_MI22_THRA_A_322L , //
+  ASIC__ARM_MI22_THRA_D_320L , //
+  ASIC__ARM_MI22_THRA_D_322L , //
+  
+  ASIC__ARM_MI22_THRB_A_64L , //
+  ASIC__ARM_MI22_THRB_A_66L , //
+  ASIC__ARM_MI22_THRB_D_64L , //
+  ASIC__ARM_MI22_THRB_D_66L , //
+    
+  ASIC__ARM_MI23_PH1_A_640L , //
+  ASIC__ARM_MI23_PH1_A_642L , //
+  ASIC__ARM_MI23_PH1_D_640L , //
+  ASIC__ARM_MI23_PH1_D_642L , //
+    
+  ASIC__ARM_MI24 , //
+  ASIC__ARM_MI25 , //
+  
+  ASIC__ARM_MI26_A_576L , //
+  ASIC__ARM_MI26_A_578L , //
+  ASIC__ARM_MI26_D_576L , //
+  ASIC__ARM_MI26_D_578L , //
+  
+  ASIC__MI27 , //
+  
+  ASIC__ARM_MI28_A_928L , //
+  ASIC__ARM_MI28_A_930L , //
+  ASIC__ARM_MI28_D_928L , //
+  ASIC__ARM_MI28_D_930L , //
+  
+  ASIC__MI29, //
+  
+  ASIC__ARM_MI30S_A_256L , //
+  ASIC__ARM_MI30S_A_258L , //
+  ASIC__ARM_MI30S_D_256L , //
+  ASIC__ARM_MI30S_D_258L , //
+  
+  ASIC__ARM_MI30E_A_64L , //
+  ASIC__ARM_MI30E_A_66L , //
+  ASIC__ARM_MI30E_D_64L , //
+  ASIC__ARM_MI30E_D_66L , //
+  
+  ASIC__ARM_MI31 , //
+  ASIC__ARM_MI32_A , //
+  ASIC__ARM_MI32_D , //
+  ASIC__ARM_MI33 , //
+  ASIC__ARM_MI34 , //
+  ASIC__ARM_AROM0 , //
+  
+  ASIC__ARM_AROM1_A_64L , //
+  ASIC__ARM_AROM1_A_68L , //
+  ASIC__ARM_AROM1_D_64L , //
+  ASIC__ARM_AROM1_D_68L , //
+
+  ASIC__ARM_SUZE02, //
+  
+  ASIC__ARM_FSBB_M0_A_416L , //
+  ASIC__ARM_FSBB_M0_A_420L , //
+  ASIC__ARM_FSBB_M0_D_416L , //
+  ASIC__ARM_FSBB_M0_D_420L , //
+
+  ASIC__ARM_FSBB_A0_A_416L , //
+  ASIC__ARM_FSBB_A0_A_420L , //
+  ASIC__ARM_FSBB_A0_D_416L , //
+  ASIC__ARM_FSBB_A0_D_420L , //
+  
+  ASIC__ARM_NB  //
+  
+} ASIC__TEAsicReadMode;
+
+
+/* ============== */
+/*  */
+/* ============== */
+
+typedef enum {
+  
+  // Position of trigger AS it is registered by acquisition board
+  // It means : during this frame a trigger pulse has been detected while reading
+  //            - this line
+  //            - at this clock position during this line
+  
+  // Remember that this information concern NOT current frame BUT next one because Mimosa 26 
+  // has a pipeline of one frame 
+  
+  ASIC__MI26_TRIG_RES__SIG_LINE, // Index of Mimosa 26 line read when trigger occurs ( As is => without correction )
+  ASIC__MI26_TRIG_RES__SIG_CLK,  // Index of clock cycle <0..15> ( 16 clock / line ) when trigger occurs ( As is => without correction )
+  
+  ASIC__MI26_TRIG_RES__LINE,     // Index of Mimosa 26 line read when trigger occurs AFTER correction
+  ASIC__MI26_TRIG_TOT_NB         // Total number of triggers
+  
+} ASIC__MI26_TETrigRes;
+
+
+
+/* ============== */
+/*  */
+/* ============== */
+
+typedef enum {
+  
+  // Position of trigger AS it is registered by acquisition board
+  // It means : during this frame a trigger pulse has been detected while reading
+  //            - this line
+  //            - at this clock position during this line
+  
+  // Remember that this information concern NOT current frame BUT next one because Mimosa 26
+  // has a pipeline of one frame
+  
+  ASIC__ULT1_TRIG_RES__SIG_LINE, // Index of Mimosa 26 line read when trigger occurs ( As is => without correction )
+  ASIC__ULT1_TRIG_RES__SIG_CLK,  // Index of clock cycle <0..15> ( 16 clock / line ) when trigger occurs ( As is => without correction )
+  
+  ASIC__ULT1_TRIG_RES__LINE,     // Index of Mimosa 26 line read when trigger occurs AFTER correction
+  ASIC__ULT1_TRIG_TOT_NB         // Total number of triggers
+  
+} ASIC__ULT1_TETrigRes;
+
+/* ============== */
+/*  */
+/* ============== */
+
+typedef enum {
+  
+  // Position of trigger AS it is registered by acquisition board
+  // It means : during this frame a trigger pulse has been detected while reading
+  //            - this line
+  //            - at this clock position during this line
+  
+  // Remember that this information concern NOT current frame BUT next one because Mimosa 26
+  // has a pipeline of one frame
+  
+  ASIC__FSBB0_TRIG_RES__SIG_LINE, // Index of Mimosa 26 line read when trigger occurs ( As is => without correction )
+  ASIC__FSBB0_TRIG_RES__SIG_CLK,  // Index of clock cycle <0..15> ( 16 clock / line ) when trigger occurs ( As is => without correction )
+  
+  ASIC__FSBB0_TRIG_RES__LINE,     // Index of Mimosa 26 line read when trigger occurs AFTER correction
+  ASIC__FSBB0_TRIG_TOT_NB         // Total number of triggers
+  
+} ASIC__FSBB0_TETrigRes;
+#define ASIC__ENUM_TRIG_RES_NB 4
+
+
+
+#endif

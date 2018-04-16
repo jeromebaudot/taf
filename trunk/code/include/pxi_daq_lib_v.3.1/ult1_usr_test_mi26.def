@@ -1,0 +1,76 @@
+/*******************************************************************************
+File      : x:\lib\com\maps\ult1\ult1_usr.def
+Goal      : Macros definition of Ultimate 1 library => for lib test with Mi26.
+          : It provides Ultimate 1 types definition and data handling functions.
+Prj date  : 01/03/2011
+File date : 01/03/2011
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+: as it stays in a public research context. You are not allowed to use it
+: for commercial purpose. You must put this header with laboratory and
+: authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef ULT1_USR_TEST_MI26_DEF
+#define ULT1_USR_TEST_MI26_DEF
+
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+#define ULT1__ZS_FFRAME_MODE_2X80MHZ_W16_SZ   576 // Mi26 = 576
+#define ULT1__ZS_FFRAME_MODE_2X80MHZ_W8_SZ   1152 // Mi26 = 1152
+
+#define ULT1__ZS_FFRAME_RAW_MAX_W8   2280 // Data part size ( sum of 2 links ) in W8  - Mi26 = 2280
+#define ULT1__ZS_FFRAME_RAW_MAX_W16  1140 // Data part size ( sum of 2 links ) in W16 - Mi26 = 1140
+#define ULT1__ZS_FFRAME_RAW_MAX_W32   570 // Data part size ( sum of 2 links ) in W32 - Mi26 =  570
+
+#define ULT1__ZS_FFRAME_RAW_TOTAL_SZ_W32 576 // Mi26 =  576
+
+
+#define ULT1__ZS_FFRAME_MAX_STATES_NB_PER_STATES_REC   9 // Mi26 = 9
+#define ULT1__ZS_FFRAME_MAX_STATES_REC               576 // Mi26 = 576 - one per line
+
+// ======================================
+// For ULT1 discri analysis tools
+// ======================================
+
+// Submatrices number
+
+#define ULT1__SUB_MAT_NB          4
+
+// --------------------
+// Bias registers index
+// --------------------
+
+#define ULT1__REG_BIAS_NB        19
+
+#define ULT1__REG_BIAS_ICLPDISC   0
+#define ULT1__REG_BIAS_IPWRSW     1
+#define ULT1__REG_BIAS_IBUF       2
+#define ULT1__REG_BIAS_ID1PWRS    3
+#define ULT1__REG_BIAS_ID2PWRS    4
+#define ULT1__REG_BIAS_ILVDSTX    5
+#define ULT1__REG_BIAS_ILVDSRX    6
+#define ULT1__REG_BIAS_IVTST1     7
+#define ULT1__REG_BIAS_IVTST2     8
+#define ULT1__REG_BIAS_IANABUF    9
+#define ULT1__REG_BIAS_IVDREF1D  10
+#define ULT1__REG_BIAS_IVDREF1C  11
+#define ULT1__REG_BIAS_IVDREF1B  12
+#define ULT1__REG_BIAS_IVDREF1A  13
+#define ULT1__REG_BIAS_IVDREF2   14
+#define ULT1__REG_BIAS_IDIS1     15
+#define ULT1__REG_BIAS_IDIS2     16
+#define ULT1__REG_BIAS_IPXI      17
+#define ULT1__REG_BIAS_VPIXCLP   18
+
+
+#endif

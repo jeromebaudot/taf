@@ -1,0 +1,611 @@
+%
+% Short user manual on TAF
+%
+\documentclass[a4paper, 12pt, twoside]{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amssymb,bm,graphicx,epsfig,subfigure}
+\usepackage{hyperref}
+
+\topmargin=-1cm
+\hoffset=0cm
+\oddsidemargin=0cm
+\evensidemargin=0cm
+\textwidth=16.5cm
+\textheight=23cm
+\raggedbottom % Allow the page size to vary a bit ...
+
+\def\mm{~$\mu$m}
+\newcommand{\pit}[2]{\parbox{#1\linewidth}{\medskip #2 \medskip}}
+\newcommand{\comment}[1]{{\textcolor{blue}{\it#1}}}
+\newcommand{\TAF}{{\bf TAF }}
+\newcommand{\MAF}{{\bf MAF }}
+
+\hypersetup{
+colorlinks=true, %colorise les liens
+urlcolor= blue, %couleur des hyperliens
+linkcolor= blue, %couleur des liens internes
+bookmarks=true, %créé des signets pour Acrobat
+bookmarksopen=true, %si les signets Acrobat sont créés, les afficher complètement.
+}
+
+\setcounter{tocdepth}{1}
+
+\begin{document}
+\sloppy
+
+
+\begin{minipage}{.3\linewidth}
+\begin{flushleft}
+\includegraphics*[width=40mm]{/Users/jeromeb/Pictures/logo/logoTAF.eps}\\
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{.45\linewidth}\begin{center}
+\Large{\bf TAF user short manual}
+\end{center}\end{minipage}
+%\begin{minipage}{.3\linewidth}
+%\begin{flushright}
+%\epsfig{file=/Users/jeromeb/Pictures/logo//logo_IPHC.eps,width=40mm}\\
+%\end{flushright}
+%\end{minipage}
+
+\vspace{.5cm}
+
+\begin{flushright}
+note by J.~Baudot (\href{mailto:baudot@in2p3.fr}{baudot@in2p3.fr})\\
+IPHC, Universit\'e de Strasbourg - CNRS\\
+for full credits see section \ref {secCredits}
+
+\vspace{.5cm}
+
+2014, May 30 version
+\end{flushright}
+
+%\vspace{1.cm}
+
+\tableofcontents
+
+%\vspace{1.cm}
+\newpage 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{What is TAF?}
+
+\TAF stands for {\it TAPI Analysis Framework}, it is the package created and managed by IPHC to characterize CMOS pixel and strip sensors from data acquired with various sources (X- or $\beta$-rays, laser) or with particle beams. In the former case, only one sensor is tested. In the latter case, a telescope made of reference planes is used to identify the particle trajectories (straight tracks) and extrapolate them onto the tested sensor or device under test (DUT). The whole architecture of the software inherit from this goal.\\
+\TAF can also been used to reconstruct data from other sources ($\alpha$-,$\gamma$-rays), simply to track particles without a DUT or to build vertices from tracks. The software can handle some more or less complex geometries, surface made of several sensors or double-sided object. However, only straight tracks are considered.\\
+
+\noindent
+This software is meant as a lightweight package, you only need {\tt ROOT} installed. Indeed \TAF classes are simply added to {\tt ROOT} and you will perform all commands within the {\tt ROOT} environment.\\
+\TAF is of course not the only general package for segmented sensor beam test analysis. A famous package, benefitting from a large user community, is {\tt EUTelescope} (see \url{http://eutelescope.web.cern.ch/}).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Scope of this short manual}
+
+This document intends to present the specificities of \TAF  with respect to the previous IPHC beam telescope package: \MAF  (MIMOSA Analysis Framework). The reader is expected to be familiar with beam telescope analysis with \MAF , which is nicely described in the note \emph{MAF - Mimosa Analysis Framework Documentation} by A.~Besson, D.~Greandjean \& A.~Shabetai, from June 2006 and available at \url{http://www.iphc.cnrs.fr/IMG/ps/mimosa_doc.ps}. Whenever a feature of \TAF is said to be similar in \MAF, the reader is kindly invited to refer to this previous much more detailed documentation.\\
+
+The evolution from \MAF  to \TAF  was driven by the need to exploit pixel sensors as reference planes for the telescope and to reconstruct several tracks in the same event which was not possible with \MAF . This enterprise was the occasion to improve some \MAF  features and add new ones. %One may consider \TAF  as almost a true
+Each section below focusses on a specific task performed when analyzing beam test data.% and underlines the difference, if any, with \TAF  compared to \MAF.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{General philosophy}
+
+The \TAF  workflow is very similar to the one of \MAF  and the same operations come with the same time sequence. The code itself is build upon 3 different parts corresponding to the 3 main functionalities.
+\begin{enumerate}
+\item Tools to decode raw data files from the acquisition systems and build physical events from these data (BoardReader classes): \TAF  allows to plug a new decoding class for any new data acquisition format (contrary to \MAF  which was frozen on a given format). See section \ref{secReader} for details.
+\item Tools for the raw data analysis which produces hits, tracks, mini-vectors or vertices: those are displayed inline event-by-event (see section \ref{secEbyE}) or massively analyzed and stored in a TTree (see section \ref{secRawdata}).
+\item Tools to perform the final analysis on hits from the DUT or tracks or both (see section \ref{secAnalysis}): this step re-reads hits and tracks from the TTree produced in the previous step and produce final plots for detection efficiency and spatial resolution. For historical reason, it is possible to redo the clustering and alignment for the (In principle, \TAF  allows to analyze hits and tracks reconstructed by another package, the interface is however still to be written.)
+\end{enumerate}
+For the first two steps, the output files are stored in a directory named {\tt Results/xxxxx} (where {\tt xxxxx} stands for the run number); while the outputs of the third final step are located in the {\tt results\_Mxx} (where {\tt xx} stands for the sensor type) directory.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Installation}
+\label{secInstall}
+
+\noindent
+{\bf Versions}\\
+\noindent
+The code can be obtained from a tar file at the location \url{http://www.iphc.cnrs.fr/Public-documentation.html}, or from the internal IPHC SVN server (public solution under study).\\ 
+You have the choice between the {\tt DEV} version with the latest changes, but still under development, or a {\tt tag} version which is frozen.\\
+The installation is extremely similar to the one of \MAF. \\
+
+
+\noindent
+{\bf Directories}\\
+\noindent
+Decompressing this archive will create the mandatory basic structure of directories:
+\begin{itemize}
+\item {\tt code}: all the sources and the Makefiles for compilation,
+\item {\tt Scripts}: useful scripts, see below,
+\item {\tt config}: contains all the configuration files required for each run, see the section \ref{secConfig},
+\item {\tt doc}: contains this documentation, the \MAF  write-up as well as the HTML files to browse the code (start with {\tt ClassIndex.html}).
+\end{itemize}
+The following directories are created at the compilation or running step:
+\begin{itemize}
+\item {\tt bin}: contains libraries and the executable,
+\item {\tt datDSF}: contains the output TTree,
+\item {\tt Results}: output files for each run coming from the hit and track reconstruction step,
+\item {\tt results\_Mxx}: output files for the final analysis, where {\tt xx} for the sensor type.
+\end{itemize}
+
+
+\noindent
+Please read the {\tt README} file which contains useful information on the version, the compilation and running.\\
+
+
+\noindent
+{\bf Compilation}
+
+\noindent
+The compilation and running requires the configuration of a number of environment variables, which is performed by the instruction {\tt source Scripts/thistaf.sh}.\\
+On most cases, you will not need to edit the script. But it can happen that editing is necessary, for instance to hard code the ROOT path. In this case, follow the instructions provided in the comments of the script. On Mac-OS, it might still be required to use the old configuration script through the instruction {\tt source Scripts/TAF-config}, but you will need to edit it before.\\
+
+\noindent
+Compiling can be operated in two ways:
+\begin{itemize}
+\item[{\bf a)}] go to the {\tt code} directory and issue a {\tt make} command, use {\tt make clean} to remove previous compilation results;
+\item[{\bf b)}] launch {\tt ROOT} and execute the {\tt Scripts/compilTAF.C} macro, see arguments inside the macro for options.
+\end{itemize}
+Be aware that the code does not compile under Windows yet, but runs perfectly on Linux or Mac-OS.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Configuration}
+\label{secConfig}
+
+The \TAF  configuration for a given run, describes in details the geometry of the experiment, the characteristics of the sensors used, the acquisition setup and the final analysis parameters. It is the real ``command board'' of the software, even if some parameters are hardcoded (see the {\tt README} file for a list). So at first order, you do not need to edit the code at all but rather edit configurations.\\
+The configuration is written in a text file (directory {\tt config} and extension {\tt .cfg}) which follows the \MAF  data card format {\tt <aField>: <aValue>}. They are many fields, some compulsory and other not. A detailed description of all of them is out of the scope of this short documentation. For some of them you will find comments defining their meaning in the examples of configuration files provided. Otherwise, all fields are described in the class {\tt DSetup.cxx}.\\
+
+\noindent
+Some guidance on the four parts of the configuration are however provided below.
+
+\subsection{Run Parameters}
+Run number, date, path to the raw data files or to secondary noise-defining file.\\
+The path to the raw data files is written directly at the beginning of the configuration file as well as the format of the file names (in the acquisition section). There is no need to create symbolic links to the binary file like with \MAF.
+
+\subsection{Parameters of the Tracker}
+Number of detector planes, tracking and alignment methods and parameters.
+
+\subsection{Parameters of the Detector Planes}
+Defines how one plane is connected to its raw data, parameters of the readout, the analysis (noise, clustering into hits and hit position) and geometry (both position in the laboratory and description of segmentation). One of the fundamental parameter ({\tt AnalysisMode}) indicates wether the sensing elements are strips with analogue output ({\tt AnalysisMode=1}), pixels with analogue outputs ({\tt AnalysisMode=2}) or pixel with binary outputs ({\tt AnalysisMode=3}). ``Analogue output'' has to be understood as a value coded on more than 1 bit.\\ 
+
+\noindent
+Note that each planes are declared one after the other. The plane number, used throughout the code to identify planes, is not explicitly defined. Rather the plane number is incremented each time a new plane is declared.\\
+Ladder can also be declared, they are made of several planes. This is a convenient way to define large sensitive area with a single position, made of several smaller areas (planes) with a position defined relatively to the large one (the ladder).
+
+\subsection{Parameters of the Data Acquisition}
+Number of different file types, parameters for each decoder of these files.
+
+\subsection{Parameters for Analysis}
+Additional cut definitions, range of histograms and redefinition of segmentation.
+This section is new compared to \MAF, where these information were hardcoded.
+
+% The way the raw data files are associated to the planes declared allows almost any kind of mapping (one file serving several planes or one planes linked to several files). A detail description of this mechanism is outside the scope of this brief documentation. Please, refer to configuration file examples. The basic concept is the one of ``input''. An acquisition board may have several ``inputs'' representing the same number of channels. Then a plane is connected to as many inputs as necessary from, potentially, any boards. One could easily understand that to build a series of channels in the proper order, a ``shift'' for each input is needed. The fields corresponding to these concepts are documented inside the configuration file itself. Be sure to look at the code output after the initialization step ({\tt gTAF->InitSession} command) which traces which matching was understood from the configuration.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Deconding your data: BoarReaders}
+\label{secReader}
+
+\TAF  includes several methods to decode raw data files from various data acquisition system. The idea is that each method correponds to a specific class. Whatever the decoding class, the input is made of a raw data file or a list of files, and the output is a list of pixels to be used for subsequent analysis. In this way, the decoding is decoupled from the further analysis steps.\\
+
+This is the current list of decoding possibilities.
+\begin{itemize}
+\item {\tt IMGBoardReader}: IPHC USB-Imager board.
+\item {\tt GIGBoardReader}: output of GEANT4-based simulation package by A.Besson and L.Cousin.
+\item {\tt PXIBoardReader}: IPHC National Instrument PXI IO board.
+\item {\tt PXIeBoardReader}: IPHC National Instrument PXIexpress FlexRIO board.
+\item {\tt TNTBoardReader}: IPHC TNT board.
+\item {\tt VMEBoardReader}: LNF (Frascati) CAEN VME board for sparsified binary output sensors (MIMOSA-26/28).
+\item {\tt AliMIMOSA22RawStreamVASingle}: LNF (Frascati) CAEN VME board for binary output sensors (MIMOSA-22).
+\item {\tt DecoderM18\_fb}: LNF (Frascati) CAEN VME board for analog output sensors (MIMOSA-18)
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Generalities on how to run the code}
+\label{secRunning}
+
+\noindent
+{\bf Start}
+
+\noindent
+To run any algorithm from \TAF, you first need to instantiate an object of type {\tt MimosaAnalysis} with the name {\tt gTAF}. On LINUX this is done automatically if you have compiled with ``make'' when you launch \TAF . On MAC-OS or on LINUX, if you have compiled using the macro {\tt compiltaf.C} you will have to instantiate this object yourself within ROOT:\\
+{\tt TAF> MimosaAnalysis *gTAF = new MimosaAnalysis()}\\
+
+
+From that point, the running flow is similar to the \MAF  one with some additions. First, you always have to initialize the session (read the configuration file) with:\\
+{\tt gTAF->InitSession(myRunNumber)}\\
+
+\noindent
+Be sure you have the corresponding {\tt config/run<myRunNumber>.cfg} ready.\\
+
+\noindent
+You may get help on the available commands with:
+{\tt gTAF->Help()}\\
+
+
+\noindent
+{\bf Debugging}
+
+\noindent
+You may set the debugging level at any time with (the higher the more messages, 0 to turn back to quite mode, negative levels switch debugging for the decoding methods, while positive levels switch debugging for the clustering and tracking methods):
+{\tt gTAF->SetDebug(aDebugLevel)}\\
+
+
+\noindent
+{\bf Workflow}
+
+\noindent
+The next batch of commands could consist in:
+\begin{itemize}
+\item compute and store the pedestal and noise for each pixels, see section \ref{secNoise},
+\item generate a lookup table for the so-called $\eta$-algorithm which optimizes the position reconstruction with respect to a center of gravity method (only valid for analog output sensors);\\ use the command:\\
+{\tt gTAF->MakeEta()}
+\item align the telescope, see section \ref{secAlign},
+\item perform event-by-event analysis, see section \ref{secEbyE};\\ use the following command to make a menu appear:\\
+{\tt gTAF->GetRaw()}
+\item perform the data mining to reconstruct hits and tracks, see section \ref{secRawdata};\\ use the command:\\
+{\tt gTAF->DSFProduction(1000000)}
+\item perform the final analysis step correlating hits with tracks, see section \ref{secAnalysis};\\ use the command:\\
+{\tt gTAF->MimosaPro(...)}
+\end{itemize}
+
+\noindent
+It is advised to quit and restart \TAF between each step.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Noise analysis}
+\label{secNoise}
+
+To compute the pedestal and noise, \MAF  was relying on the fact that a value for each channel was available for each event. The pedestal and noise were computed on the forst events and then updated regularly.\\
+With digital or sparsified data, this is no longer the case. However, if you specify a readout mode ({\tt Readout} data card) below 100, the analysis will still be performed as in \MAF .\\
+For other mode, either you do not need the pedestal and noise values or a dedicated run is used to initialize them.\\
+In the later case, this run shall have a configuration file with a {\tt Readout} below 100. Then after the initialization issue the command:\\
+\noindent
+{\tt TAF>gTAF->GetRaw()->Noise()}\\
+
+\noindent
+A file {\tt Noise\_run<NoiseRunNb>.root} is generated in the {\tt Results/<NoiseRunNb>} directory containing a map of the pedestals and noises. In order to use these values for a new run {\tt myRunNumber}, two steps are required:
+\begin{itemize}
+\item copy this file into the directory {\tt Results/<myRunNumber>} corresponding to the run with data to analyse,
+\item edit the configuration file {\tt config/<myRunNumber>.cfg} to set the following datacard:\\
+{\tt NoiseRun:        NoiseRunNb}
+\end{itemize}
+Then, when the hit reconstruction will be performed on the {\tt myRunRunNumber} data, the pedestal and noise values will be taken into account.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tracker Alignment}
+\label{secAlign}
+
+Alignment has to be understood as the determination, for each detector, of the 6 parameters (3 translations and 3 rotations) which define the position and orientation of a plane in the laboratory or telescope frame. This frame is defined by one or two fixed reference planes named ``primary`` reference(s). Positions are fitted for ``secondary'' references and DUTs. The type of the plane is set in the configuration file (see section \ref{secConfig}) with the {\tt status} field according to:
+\begin{itemize}
+\item[{\bf 0:}] ``seed'' plane = fixed or primary reference, also used as a seed point for tracking (they can be several such planes to describe the physical situation where a detection plane is made of several sensors with independant readout),
+\item[{\bf 1:}]  fixed or primary reference,
+\item[{\bf 2:}]  secondary reference,
+\item[{\bf 3:}]  DUT.
+\end{itemize}
+
+
+As underlined previously, \TAF  can accomodate any number of planes as reference detectors (not exactly 8 as for \MAF ) and the same for the DUTs. The alignment procedure follows the same semi-automatic iterative procedure than in \MAF  except that \TAF  updates the translations AND the rotation angles. This last point allows to deal with situation where planes are tilted with respect to the beam axis. Each iteration for a given plane consists in the following steps:
+\begin{enumerate}
+\item accumulating a pre-defined number of hit-track associations chosen as the nearest ones within a given distance,
+\item compute in the frame associated to the plane the two translations and one rotation (around the axis perpendicular to the plane) which minimize the sum of the squared hit-to-track distances,
+\item propagate back those three parameters in the telescope frame which means that the 3 translations and 3 rotations are updated.
+\end{enumerate}
+The iterations stop when the parameters are updated by an amplitude below a fixed value.\\
+
+\noindent
+{\bf IMPORTANT:} The align tracker procedure automatically update the configuration file where the new position is stored. So, pay attention not to re-edit it afterwards and overwrite the alignment values. Also, note that the fields updated are different than for \MAF ; \TAF  updates the following fields: {\tt PositionsX, PositionsY, PositionsZ, TiltZ, TiltY, TiltX} and the fields {\tt AlignmentTilt, AlignmentU, AlignmentV} are set to $0$. The three last parameters are still used to initialize the plane position for backward compatibility BUT after the alignment they are reseted so that they do no change anymore the position stored in the 6 other parameters.\\
+
+\noindent
+To launch the automatic procedure (one set of iteration), use the command:\\
+\noindent
+{\tt TAF>gTAF->AlignTracker()}\\
+
+\noindent
+They are some options you may changed from default values, browse the code to know more.\\
+
+\noindent
+The procedure is only semi-automatic because it may be useful to first align all the planes with respect to a single ``seed'' plane, then to align secondary reference planes with respect to all primary references and finaly to align the DUTs with respect to all the reference planes. To do so, you will need to play with the tracker alignment status to change which planes are aligned and which are used to build the track. Here could be a way to go:
+\begin{itemize}
+\item First \TAF session:\\
+{\tt TAF>gTAF->SetlAlignStatus(0)} {\it(indicate only seed is used for tracking all other planes will be aligned)}\\
+{\tt TAF>gTAF->AlignTracker(2000)} {\it(note the large distance hit-track required)}\\
+\item Second \TAF session:\\
+{\tt TAF>gTAF->SetlAlignStatus(1)} {\it(indicate primary ref. are used for tracking all secondary ref. will be aligned)}\\
+{\tt TAF>gTAF->AlignTracker()}\\
+\item Last \TAF session:\\
+{\tt TAF>gTAF->SetlAlignStatus(2)} {\it(indicate all ref. are used for tracking only DUTs will be aligned)}\\
+{\tt TAF>gTAF->AlignTracker()}\\
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Event-by-event analysis and display}
+\label{secEbyE}
+
+\TAF allows to view the raw data and perform the analysis event-by-event through the {\tt MRaw.cxx} class methods;\\ simply issue the command:\\
+{\tt TAF>gTAF->GetRaw()}\\
+
+\noindent
+A comprehensive menu pops up. The {\tt NOISE MAP} method was already described previously in section \ref{secNoise}, other descriptions are provided in the code itself. You can get more printed output with the {\tt Toggle Verbosity} button (for debugging, use {\tt gTAF->GetRaw()->SetDebug(aDebugLevel)}). Note that each method usually has parameters that you may modify from default by calling them directly from the command line with\\
+{\tt TAF>gTAF->GetRaw()->[Method]( arg1, arg2, ...)}\\
+
+\noindent
+Some of these methods, named {\tt CumulateXXXX}, cumul the results over a given number of events. They are usefull to plot characteritics of fired pixels, hits or tracks in order to check there are real hits on the detector planes as well as to optimize the selection cuts and parameters of the clustering and tracking.\\
+
+\noindent
+Note that most of those methods write some output files, including histograms and/or text, that you will find in the directory {tt Results/xxxxx} where {\tt xxxxx} stands for the run number.\\
+Also, the method displaying hits does plot the extrapolated track impact as well. Because tracking is involved, its behaviour depends on the Tracker alignment status (see sections \ref{secAlign} and \ref{secRawdata}).\\
+
+
+\noindent
+You may notice that there is a {\tt USER PLOT} method. This one is intended for the user to modify as she/he wants following the provided template.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Raw data analysis}
+\label{secRawdata}
+
+To produce the {\tt TTree} considered as the data summary file containing hits and tracks information, use (like in \MAF):\\
+{\tt TAF>gTAF->DSFProcudtion(<myEventNumber>)}\\
+
+\noindent
+The clustering and tracking algorithms are those described in section \ref{secAlgorithms}, as well as the selection criteria, which are entirely defined in the configuration file. Note that if you are analysing a single plane or do not want tracks, you can skip the tracking step by setting the field {\tt TracksMaximum} to $0$ in the configuration file.
+
+\noindent
+{\bf Outputs}
+
+\noindent
+The objects stored in this {\tt TTree} are defined in the class {\tt DEven.h}. It is important to underline that for hits (subclass {\tt DAuthenticHit}), the information (index, signal, noise) of each constitutive pixels are stored. It goes the same with tracks, except that an object {\tt DTransparentPlane} is stored for each plane crossed by the same track.\\
+Further analysis can be done either accessing directly the {\tt TTree} leaves with standard {\tt ROOT} method or with the tools provided by {\tt TAF} like explained in section \ref{secAnalysis}.\\
+To save some disk space, the {\tt TTree} does not store by default the hits from the reference planes (status different from 3). To force the storage of these hits as well, use the following option:\\
+{\tt TAF>gTAF->DSFProcudtion(<myEventNumber>, 0)}\\
+
+\noindent
+The output {\tt TTree} is stored in the file {datDSF/runxxxxx\_nn.root} where {\tt xxxxx} is the run number and {\tt nn} a number increased each time {\tt DSFProduction} is invoked for the same run, exactly like in \MAF. In parallel the final printouts, summarizing how many events were read and the number of hits per plane as well as number of tracks, are saved in the {\tt DSFProd.log} file loacted in \TAF home directory.\\
+You may ask for a number of events larger than the one available, \TAF will stop anyway after the last one.\\
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Final analysis}
+\label{secAnalysis}
+
+\noindent
+{\bf Initialization}
+
+\noindent
+You can use the methods described here only after the raw data analysis (see section \ref{secRawdata}) which produces the {\tt TTree}. The goal is to obtain the final histograms for your analysis of the plane corresponding to the DUT. You can add more selections through the arguments of the methods described here or within the dedicated part of the configuration file. It is also possible to re-align the DUT with respect to the trackers.\\
+Before performing the anaysis itself, you shall indicate which plane you choose as DUT (you may have several planes with status 3). You have to method to specify your DUT:
+\begin{itemize}
+\item[{\bf a)}] at the initialization with: {\tt gTAF->InitSession({\it myRunNumber},{\it myDUTnumber})};
+\item[{\bf b)}] after the initizalisation with: {\tt gTAF->SetPlaneNumber({\it myDUTnumber})}.
+\end{itemize}
+Additionnaly, the file containing the {\tt TTree} which will be analyzed is by default {\tt datDSF/run{\it{myRunNumber}}\_{NN}.root}, where {\tt NN} is the higher number available in the directory. You may want to choose another file however, for instance if you have renamed it after {\tt DSFProduction}, in that case use:\\
+{\tt gTAF->SetDSFFile({\it myFile})}.\\
+
+
+\noindent
+{\bf Available methods and outputs}
+
+\noindent
+This final analysis part is readily used as in the \MAF case except that they are more methods (get the list by browsing the code or with the command {\tt gTAF->Help()}):
+\begin{itemize}
+\item {\tt MimosaPro}, this is the central method for efficiency and spatial resolution studies with a telescope, identical to \MAF except that there is no more two different methods for analog or digitized outputs;
+\item {\tt MimosaCluster}, performs the hit searching on planes only (no tracking) and fill histograms which characterize in detail the reconstructed clusters;
+\item {\tt MimosaCalibration}, start with {\tt MimosaCluster} and add specific histograms useful when calibrating the sensor with a $^{55}$Fe source;
+\item {\tt MimosaFakerate}, compute the fake hit rate per pixel in the absence of beam;
+\item {\tt MimosaMiniVectors}, is similar to {\tt MimosaPro} but consider the DUT is composite object made of two planes;
+\item {\tt MimosaPro2Planes}, perform the same analysis as {\tt MimosaPro} but for two planes simultaneously;
+\item {\tt MimosaProLadder}, perform the same analysis as {\tt MimosaPro} but for all the planes associated to a ladder.
+\end{itemize}
+All those methods read the {\tt TTree} generated by {\tt DSFProduction} and then generate a pop-up menu to plot the final histograms, which are partly described in the \MAF note and in the {\tt MPost.cxx} file. Whenever you run a menu command, the corresponding plots are stored in a file named {\tt results\_ana\_M{\it{XX}}/run{\it{NNNNN}}Pl{\it{P}}\_ClCharge.root}, where {\it{XX}} stands for the DUT type, corresponding to plane number {\it{P}} and {\it{NNNNN}} stands for the run number. Also the printed information on the output are stored in the file {\tt results\_ana\_M{\it{XX}}/Main\_results.csv}.\\
+
+
+\noindent
+{\bf Selection criteria}
+
+\noindent
+Arguments of those methods are more or less self-explanatory but it could be necessary to browse the code to understand them. They usually corresponds to cuts on the cluster signals, selection of a geometrical area on the sensor, cuts on the tracks and are described in the \MAF note. The section ``{\tt Parameter for Analysis}'' of the configuration files contains a number of definition for those cuts, especially the geometrical ones.\\
+Indeed, it is possible in the final analysis to focus on a specific part of a sensor which we call a ``submatrix''. Those submatrices could be defined independantly from the readout structure and in any number, just follow the template of the configuration file.\\
+All those definitions were previously hardcoded in the {\tt MPara.cxx} file of the \MAF framework.\\ 
+
+\noindent
+For the convenience of users developping a piece of code in the final analysis (either MAnalysis.cxx or MCommands.cxx files), a specific variable, names UserFlag, can be set in the configuration file and is available as a data member of the MAnalysis class, so available anywhere.
+
+%%%%%%
+\subsection{MimosaPro analysis}
+
+Additional details on the parameters...
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Geometry description}
+\label{secGeometry}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Basic algorithms description}
+\label{secAlgorithms}
+
+We provide here a basic description of the structure of the main algorithms, clustering and tracking, and where you will find their implementation in the code. Prior to this short introduction, a note is given on the object used by these methods.
+
+%%%%%%
+\subsection{Containers for sensing elements}
+
+\noindent
+Difference between the {\tt DStrip} and {\tt DPixel} objects.
+
+
+%%%%%%
+\subsection{Clustering}
+
+\noindent
+{\bf Strategy}
+
+\noindent
+Clustering identify pixels groups to make a hit and compute the charge associated to this hit as well as its position. The strategy in \TAF consists in selecting a seed pixel and gather neighbouring pixels to it.\\
+
+\noindent
+If the plane has analogue ouputs ({\tt AnalysisMode=1} or {\tt 2}), then seed pixels are identified as the ones with the highest signal. In this case, the clustering algorithm starts with the highest signal pixel, tries to make a hit, marks any pixels associated to the hit as such. Then it resumes the same procedure with the next highest signal pixel which is not yet associated to a hit. And so on, up to the exhaustion of available pixels.\\
+
+\noindent
+If the plane has binary outputs ({\tt AnalysisMode=3}), the first available pixel is try as a seed pixel and associated with potential neighbouring pixels. During this gathering process, it might appear that the seed pixel is no more the central pixel due to the addition of new pixels. In this case, the seed pixel is redefined as the central one and the association process restarts from the beginning of available pixels.\\
+
+\noindent
+Association of a new pixel to a hit works on the basis of distance cuts between the new pixel and the seed pixel. For pixel (2D segmented planes) the distances in both direction are tested against the cut value defined in the configuration file {\tt ClusterLimitU} and {\tt ClusterLimitV}. There is no cut on the pixel value. So for instance, if {\tt ClusterLimitU=2$\times$PitchU} and {\tt ClusterLimitV=2$\times$PitchV}, then hits can be as large as a $5\times5$ pixels area with 25 pixels.\\  
+Currently, each pixel can only be associated to a single hit, there is no final procedure to separate what might be merged clusters.\\
+
+
+\noindent
+{\bf Hit selection}
+
+\noindent
+There are two types of selection cuts to decice to keep a hit or not, all cut values are defined in the configuration file.\\
+The first type concerns the signal values, and thus they are used only for analogue outputs:
+\begin{itemize}
+\item signal-over-noise ratio for the seed pixel $\leq$ {\tt ThreshSeedSN},
+\item signal-over-noise ratio for the neighbout pixels  $\leq$ {\tt ThreshNeighbourSN}, where ``neighbour'' means all pixels of the cluster but the seed.
+\end{itemize}
+The second type concerns the number of pixels in the hit that shall be within the incluse limits: {\tt MinNStrips} and {\tt MaxNStrips}.\\
+
+
+\noindent
+{\bf Implementation}
+
+\noindent
+The seed finding is implemented in the method {\tt find\_hits()} within the {\tt DPlane.cxx} class. The gathering of neighbouring pixels and the estimate of the hit properties are done in the {\tt DHit.cxx} class with the {\tt Analyse} method. Note there are two such methods depending on wether the analysis is performed with {\tt DStrip} or {\tt DPixel} objects.
+
+
+%%%%%%
+\subsection{Tracking}
+
+\noindent
+{\bf Strategy}
+
+\noindent
+The tracking strategy in \TAF follows the standard approach to extrapolate the track from one plane to the other in an iterative way. The implementation is currently limited only to a straight track model and does not take into account multiple scattering.  The track starts with a single hit and a zero slope. Then, the track seed extrapolation to the next (with respect to the index, not necessarily with respect to geometry) plane defines the center of a circular search area. If there are hits on this plane within the search area, the nearest one to the center is associated to the track. The parameters of the track are recomputed, and the iteration goes on with the next plane. Once all planes have been scanned, the track is tested against selection cuts.\\
+
+\noindent
+Role of planes in the tracking depends on their status and on the status of the alignment:
+\begin{itemize}
+\item {\tt Status = 3}: the plane is ignored by tracking,
+\item {\tt Status = 0}: all hits of the plane are used as track seed,
+\item {\tt Status = 1} or {\tt 2}: hits of the plane are considered for association to an existing tested track, if the alignment status is lower or equal to the plane status.
+\end{itemize}
+\noindent
+Consequently the following commands will have the followinf effects:
+\begin{itemize}
+\item {\tt TAF>gTAF->SetAlignStatus(2)}: this is the {\bf default}, you don't need to issue the command if you want this option, all reference planes ({\tt Status} 0, 1 or 2) are used for the tracking and the minimum number of hits to build a track is the one defined by the field {\tt PlanesForTrackMinimum} of the configuration file;
+\item {\tt TAF>gTAF->SetAlignStatus(1)}:  only the primary reference planes ({\tt Status} 0 or 1) are used for the tracking and the minimum number of hits to build a track is reduced with respect to the one defined by the field {\tt PlanesForTrackMinimum};
+\item {\tt TAF>gTAF->SetAlignStatus(0)}: only the ``seed'' plane(s) ({\tt Status} 0) is(are) used for the tracking and the minimum number of hits to build a track is set to 1. 
+\end{itemize}
+
+\noindent
+They are four track parameters to describe a straight line in space ($x, y$ at $z=0$ and slopes ${\mathrm d}x/dz$, ${\mathrm d}y/dz$). They are obtained by a least square fit, where all uncertainties are ignored so far. A $\chi^{2}$ is neverthless computed using expected resolution for each plane. This resolution is taken from the {\tt Resolution} parameter in the configuration file.\\
+
+\noindent
+{\bf Track selection}
+
+\noindent
+The few parameters driving the tracking behavior are defined in the {\tt Parameters of the Tracker} section of the configuration files. Their list is:
+\begin{itemize}
+\item  {\tt TracksMaximum}: maximum number of track to reconstruct,
+\item {\tt PlanesForTrackMinimum}: minimum of hits (1 hit per plane) to be associated to a track, if not reached the tested track is discarded,  
+\item {\tt HitsInPlaneTrackMaximum}:  excludes a plane from tracking for a given event, if the number of hits reconstructed in this plane is larger than this value, 
+\item {\tt SearchHitDistance}: defines the hit search area from the track extrapolation. 
+\end{itemize}
+
+
+\noindent
+{\bf Implementation}
+
+\noindent
+The track finding based on iterative extrapolation is implemented in the method {\tt find\_tracks()} within the {\tt DTracker.cxx} class. The computation of the track parameters is done in the {\tt DTrack.cxx} class with the {\tt Analyze} method.
+
+
+
+%%%%%%
+\subsection{Track-hit correlation analysis}
+
+\noindent
+The methods for the final analysis (listed in section \ref{secAnalysis}) are defined in the {\tt MCommands.cxx} file. All use common methods are implemented in the {\tt MAnalysis.cxx} file. Note that both groups of methods belong to the same class {\tt MimosaAnalysis}. Another class {\tt MHist.cxx} defines all the histograms filled by the previously mentioned methods.\\
+There are template {\tt User} methods in the  {\tt MAnalysis.cxx} and {\tt MHist.cxx} files, which are called from {\tt MimosaPro}.\\
+
+\noindent
+This implementation is a major difference with \MAF where the full final analysis was coded within a single 2000 lines long function... 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Developers' corner}
+\label{secDeveloper}
+
+This section intends to provide hints to modify the code itself.\\
+Once you fill confident, please consult the {\tt TO DO LIST} in the {\tt README} file to contribute.
+
+%%%%%%%%
+\subsection{Implementing a new sensor?}
+
+
+%%%%%%%%
+\subsection{Implementing a new decoder?}
+
+
+%%%%%%%%
+\subsection{Changing the basic algorithms}
+
+
+%%%%%%%%
+\subsection{Adding plots to the final analysis}
+
+Histograms are defined in the {\tt MHist} class. You need to create a pointer in the {\tt MHist.h} file and then book it in the function {\tt BookingHistograms} of the  {\tt MHist.cxx} file. Please, try to place the definition of your new histograms nearby other related histograms.\\
+
+\noindent
+Histograms are filled within the different methods of the {\tt MAnalysis.cxx} file. All the available variables, related to pixels, hits or tracks, are data member of the class {\tt MAnalysis} defined in the {\tt MAnalysis.h} file. Look there first before defining a new variable.\\
+
+\noindent
+The display of histograms is done in the functions of the {\tt MPost.cxx} file, which the user access through the menu displayed at the end of each final analysis methods like {\tt MimosaPro()}. The histograms are also saved in the output file in these functions.
+
+
+%%%%%%%%
+\subsection{Adding plots to the event-by-event analysis}
+
+All display related to the event-by-event analysis is implemented in the {\tt MRaw} class. Each functions there are independent and contains the booking and filling of their own histograms. So, simply change one function at a time.\\
+If you add a new function, don't forget to add it to the menu defined in the {\tt PrepareRaw()} function.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Credits}
+\label{secCredits}
+
+It is a pleasure to write a few lines about all the people who participated to the development of this package.\\
+The early version in C++ was written in the 90's by Dirk Meyer at CERN within the RD42 collaboration to study diamond detectors with a silicon strip telescope. The code itself inherited from earlier FORTRAN versions developed in Strasbourg by Renato Turcheta and then Farez Djama for silicon strip sensors.\\
+
+The C++ package was brought back in Strasbourg by Christophe Suire and the author in the late 90's for the characterization of silicon strip sensors within the STAR and ALICE collaboration. At the turn of the new century, the CMOS sensor group took over the code to study pixel detectors, still with the same silicon strip telescope. That was the creation of \MAF  by Youri Gornushkin, Gilles Orazi, Auguste Besson, Damien Grandjean and later on with Alexandre Shabetai, Rita De Masi and (again!) the author.\\
+
+The advent of telescope using pixel sensors as reference planes generated the need for \TAF  in 2005. Among the \TAF  contributors we find: Rita De Masi, Loic Cousin, Yorgos Voutsinas, Mario Bachaalany, Marie Gelin, Rhorry Gauld (Oxford) and the author. Some of the raw data decoding methods have been provided in 2014 by Italian colleagues working in the ALICE collaboration and by Christian Finck from IPHC.\\
+In order to analyse data from Carbon ion beams, many additions were done by V. Reithinger (IPN Lyon) between 2012 and 2014.\\
+
+
+A reformatted version of the package, more C++ rules compliant, to get rid of the heavy historical layers, has been re-written by Christian Finck and Regina Rescigno to serve as the reconstruction package of the vertex detector of the FIRST experiment and for the simulation and analysis of experiment with Carbon beams.\\
+
+The various versions of this package would not have been successful in producing a load of published results if it had not benefited from the advises of semiconductor detector experts: Wojtek Dulinski, Harris Kagan, Renato Turchetta and Marc Winter.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{thebibliography}{99}
+
+%\bibitem{noteMAF}  A.~Besson, D.~Greandjean and A.~Shabetai, \emph{MAF - Mimosa Analysis Framework Documentation}, June 2006.
+
+%\end{thebibliography}
+
+\end{document}
+

@@ -1,0 +1,529 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:00:58 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DStrip</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DStrip','','DStrip.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DStrip.h.html">header file</a>
+<a class="descrheadentry" href="src/DStrip.cxx.html">source file</a>
+<a class="descrheadentry" href="DStrip_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DStrip:description">class description</a> 
+<a class="descrheadentry" href="#DStrip:Function_Members">function members</a>
+<a class="descrheadentry" href="#DStrip:Data_Members">data members</a>
+<a class="descrheadentry" href="#DStrip:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DStrip</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DStrip:description"></a>class DStrip: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./DStrip.html#DStrip:Class" title="TClass* DStrip::Class()">Class</a> Description of <a href="./DStrip.html">DStrip</a>
+
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DStrip:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DStrip:DStrip">DStrip</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DStrip:DStrip%2">DStrip</a>(<span class="keyword">const</span> <a href="./DStrip.html">DStrip</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DStrip:DStrip%1">DStrip</a>(<a href="./DPlane.html">DPlane</a>&amp; aPlane, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aStripIndex, <a href="./DR3.html">DR3</a>&amp; aPosition, <a href="./DR3.html">DR3</a>&amp; aSize)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DStrip:_DStrip">~DStrip</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DStrip:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:Distance">Distance</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:Distance%1">Distance</a>(<span class="keyword">const</span> <a href="./DR3.html">DR3</a>&amp; aPosition)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:DistanceU">DistanceU</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:DistanceU%1">DistanceU</a>(<span class="keyword">const</span> <a href="./DR3.html">DR3</a>&amp; aPosition)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:DistanceV">DistanceV</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:DistanceV%1">DistanceV</a>(<span class="keyword">const</span> <a href="./DR3.html">DR3</a>&amp; aPosition)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:Found">Found</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetCommonMode">GetCommonMode</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DStrip.html">DStrip</a>*</td><td class="funcname"><a class="funcname" href="#DStrip:GetNeighbour">GetNeighbour</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNI)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetNeighbourCount">GetNeighbourCount</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetNoise">GetNoise</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetNoiseCounts">GetNoiseCounts</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetPedestal">GetPedestal</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetPedestalCounts">GetPedestalCounts</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetPixelIndex">GetPixelIndex</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPlane.html">DPlane</a>*</td><td class="funcname"><a class="funcname" href="#DStrip:GetPlane">GetPlane</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetPlaneNumber">GetPlaneNumber</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a>&amp;</td><td class="funcname"><a class="funcname" href="#DStrip:GetPosition">GetPosition</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetPulseHeight">GetPulseHeight</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetPulseHeightToNoise">GetPulseHeightToNoise</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetRawFrame1Value">GetRawFrame1Value</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetRawFrame2Value">GetRawFrame2Value</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetRawValue">GetRawValue</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>*</td><td class="funcname"><a class="funcname" href="#DStrip:GetSetup">GetSetup</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a>&amp;</td><td class="funcname"><a class="funcname" href="#DStrip:GetSize">GetSize</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:GetStripIndex">GetStripIndex</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:InitNoise">InitNoise</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:InitNoiseAndPedestal">InitNoiseAndPedestal</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:InitPedestal">InitPedestal</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:Introduce">Introduce</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DStrip:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:KillNoise">KillNoise</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DStrip.html">DStrip</a>&amp;</td><td class="funcname"><a class="funcname" href="#DStrip:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DStrip.html">DStrip</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetCommonMode">SetCommonMode</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tCM)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetFound">SetFound</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetNoise">SetNoise</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tNV)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetPedestal">SetPedestal</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tPV)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetPixelIndex">SetPixelIndex</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> anIndex)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetRawFrame1Value">SetRawFrame1Value</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetRawFrame2Value">SetRawFrame2Value</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SetRawValue">SetRawValue</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SumSquareValue">SumSquareValue</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:SumValue">SumValue</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:Update">Update</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:UpdateNoise">UpdateNoise</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tSV)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:UpdatePedestal">UpdatePedestal</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:UpdatePedestalAndNoise">UpdatePedestalAndNoise</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:UpdateSignal">UpdateSignal</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DStrip:UpdateSignal%1">UpdateSignal</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:aSignalSupressedValue">aSignalSupressedValue</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* pfc, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:extremumIndex">extremumIndex</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a>* d, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DStrip:median">median</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* z, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DStrip:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fBound"></a>fBound</td><td class="datadesc">circle in mm around seed center</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fCacheSize"></a>fCacheSize</td><td class="datadesc">the size for the noise and pedestal buffer = 5;</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fCallCount"></a>fCallCount</td><td class="datadesc">Number of events in long term noise calc.</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fCallCountMaximum"></a>fCallCountMaximum</td><td class="datadesc">how many events to include</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fCommonMode"></a>fCommonMode</td><td class="datadesc">the common mode value </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fDebugStrip"></a>fDebugStrip</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="DStrip:fFound"></a>fFound</td><td class="datadesc">flag, that strip is found in hit</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fInitialPedestal"></a>fInitialPedestal</td><td class="datadesc">initial pedestal value</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fInitialTMS"></a>fInitialTMS</td><td class="datadesc">initial variance (the mean square)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fNeighbourCount"></a>fNeighbourCount</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fNeighbourCountMaximum"></a>fNeighbourCountMaximum</td><td class="datadesc">max. # of neighbours in bound</td></tr>
+<tr class="data"><td class="datatype"><a href="./DStrip.html">DStrip</a>**</td><td class="dataname"><a name="DStrip:fNeighbourList"></a>fNeighbourList</td><td class="datadesc">! array of strips in the neighbourhood</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fNoise"></a>fNoise</td><td class="datadesc">noise on strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fNoiseCache"></a>fNoiseCache[50]</td><td class="datadesc">FIFO buffer for noise measurement</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fNoiseCacheIndex"></a>fNoiseCacheIndex</td><td class="datadesc">counter </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fPedestal"></a>fPedestal</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fPedestalCache"></a>fPedestalCache[50]</td><td class="datadesc">FIFO buffer for noise measurement</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fPedestalCacheIndex"></a>fPedestalCacheIndex</td><td class="datadesc">counter </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fPixelIndex"></a>fPixelIndex</td><td class="datadesc">corresponding index in the pixel List, JB 2012/08/18 </td></tr>
+<tr class="data"><td class="datatype"><a href="./DPlane.html">DPlane</a>*</td><td class="dataname"><a name="DStrip:fPlane"></a>fPlane</td><td class="datadesc">pointer to the plane </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fPlaneNumber"></a>fPlaneNumber</td><td class="datadesc">number of the plane</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a></td><td class="dataname"><a name="DStrip:fPosition"></a>fPosition</td><td class="datadesc">position in uvw coordinates in the plane</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fPulseHeight"></a>fPulseHeight</td><td class="datadesc">pulseheight on strip</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fRawFrame1Value"></a>fRawFrame1Value</td><td class="datadesc">the rawvalue w/o CDS (1st frame)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fRawFrame2Value"></a>fRawFrame2Value</td><td class="datadesc">the rawvalue w/o CDS (2nd frame)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fRawValue"></a>fRawValue</td><td class="datadesc">the rawvalue</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a></td><td class="dataname"><a name="DStrip:fSize"></a>fSize</td><td class="datadesc">size in uvw directions</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fStripIndex"></a>fStripIndex</td><td class="datadesc">number of this strip </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fSumCount"></a>fSumCount</td><td class="datadesc">counter for raw signal summation</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fSumSquareCount"></a>fSumSquareCount</td><td class="datadesc">counter for squared raw signal summation</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fSumSquareValue"></a>fSumSquareValue</td><td class="datadesc">sum of squares of raw values for noise initialization</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DStrip:fSumValue"></a>fSumValue</td><td class="datadesc">sum of  values for pedestal/noise initialization</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="DStrip:fUsePulse"></a>fUsePulse</td><td class="datadesc">flag, that strip can be used in analysis</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fWeightNoise"></a>fWeightNoise</td><td class="datadesc">a weight (e.g. 100) for pedestal follower</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DStrip:fWeightPedestal"></a>fWeightPedestal</td><td class="datadesc">a weight (e.g. 100) for pedestal follower</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>*</td><td class="dataname"><a name="DStrip:fc"></a>fc</td><td class="datadesc">pointer to the configuration</td></tr>
+
+</table></div>
+</div>
+<h2><a id="DStrip:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DStrip" href="./DStrip.html">DStrip</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DStrip:DStrip" href="src/DStrip.cxx.html#tKPPND">DStrip</a>()</span><br />
+<div class="funccomm"><pre> <a href="./DStrip.html">DStrip</a> default constructor
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DStrip:_DStrip" href="src/DStrip.cxx.html#BdIsGC">~DStrip</a>()</span><br />
+<div class="funccomm"><pre> <a href="./DStrip.html">DStrip</a> default destructor
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DStrip:DStrip%1" href="src/DStrip.cxx.html#m0QnWB">DStrip</a>(<a href="./DPlane.html">DPlane</a>&amp; aPlane, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aStripIndex, <a href="./DR3.html">DR3</a>&amp; aPosition, <a href="./DR3.html">DR3</a>&amp; aSize)</span><br />
+<div class="funccomm"><pre> constructor of a Strip or Pixel
+
+ Last modified: JB, 2008/10/15
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetPulseHeightToNoise" href="src/DStrip.cxx.html#yf3igE">GetPulseHeightToNoise</a>()</span><br />
+<div class="funccomm"><pre><a href="./ListOfTypes.html#Double_t">Double_t</a> <a href="./DStrip.html">DStrip</a>::<a href="./DStrip.html#DStrip:GetPulseHeightToNoise" title="Float_t DStrip::GetPulseHeightToNoise()">GetPulseHeightToNoise</a>(){
+----ADC
+----abm8
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DStrip.html">DStrip</a>* <a class="funcname" name="DStrip:GetNeighbour" href="src/DStrip.cxx.html#ZXVHiB">GetNeighbour</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNI)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SumValue" href="src/DStrip.cxx.html#JbM3q">SumValue</a>()</span><br />
+<div class="funccomm"><pre> external value replaced by data member <a href="./DStrip.html#DStrip:fRawValue" title="Float_t DStrip::fRawValue">fRawValue</a>
+ JB 2009/05/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SumSquareValue" href="src/DStrip.cxx.html#b5tEF">SumSquareValue</a>()</span><br />
+<div class="funccomm"><pre> external value replaced by data member <a href="./DStrip.html#DStrip:fRawValue" title="Float_t DStrip::fRawValue">fRawValue</a>
+ JB 2009/05/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:InitPedestal" href="src/DStrip.cxx.html#oAnYCE">InitPedestal</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:InitNoise" href="src/DStrip.cxx.html#fMetw">InitNoise</a>()</span><br />
+<div class="funccomm"><pre> initializes the noise using the first N events
+ the initial noise is normally higher.
+ the initial noise is convoluted with common mode error,
+ common mode variation are order of 15% from single strip noise in telescope silicon
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:InitNoiseAndPedestal" href="src/DStrip.cxx.html#smWWtE">InitNoiseAndPedestal</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:Update" href="src/DStrip.cxx.html#YALp6C">Update</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:UpdatePedestalAndNoise" href="src/DStrip.cxx.html#vMYyfD">UpdatePedestalAndNoise</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:UpdatePedestal" href="src/DStrip.cxx.html#YAH2rB">UpdatePedestal</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:UpdateNoise" href="src/DStrip.cxx.html#wvQxsE">UpdateNoise</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tSV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:UpdateSignal" href="src/DStrip.cxx.html#U0jBwC">UpdateSignal</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:UpdateSignal%1" href="src/DStrip.cxx.html#ODKtKC">UpdateSignal</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetNoise" href="src/DStrip.cxx.html#T56k9D">SetNoise</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tNV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetPedestal" href="src/DStrip.cxx.html#J9uOTB">SetPedestal</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tPV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetRawValue" href="src/DStrip.cxx.html#QZzj0D">SetRawValue</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetRawFrame1Value" href="src/DStrip.cxx.html#noTGDB">SetRawFrame1Value</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetRawFrame2Value" href="src/DStrip.cxx.html#b3EVDB">SetRawFrame2Value</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tRV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:median" href="src/DStrip.cxx.html#hVhYt">median</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* z, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+<div class="funccomm"><pre> <a href="./DStrip.html#DStrip:median" title="Float_t DStrip::median(Float_t* z,const Int_t N)">median</a> is an estimator for mean
+ order array ascending or descending, then take value at half size
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:aSignalSupressedValue" href="src/DStrip.cxx.html#GXjwdC">aSignalSupressedValue</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* pfc, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:extremumIndex" href="src/DStrip.cxx.html#opAiQC">extremumIndex</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a>* d, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:Introduce" href="src/DStrip.cxx.html#DlkaeE">Introduce</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</span><br />
+<div class="funccomm"><pre>  find out about neighbouring strips, fill list with neighbours
+ the strip itself might get introduced to itself!!
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:Distance" href="src/DStrip.cxx.html#gNrCgE">Distance</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:Distance%1" href="src/DStrip.cxx.html#d5bVRD">Distance</a>(<span class="keyword">const</span> <a href="./DR3.html">DR3</a>&amp; aPosition)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:DistanceU" href="src/DStrip.cxx.html#VlaHWE">DistanceU</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:DistanceU%1" href="src/DStrip.cxx.html#Jp3KqD">DistanceU</a>(<span class="keyword">const</span> <a href="./DR3.html">DR3</a>&amp; aPosition)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:DistanceV" href="src/DStrip.cxx.html#hWp4VE">DistanceV</a>(<a href="./DStrip.html">DStrip</a>&amp; aStrip)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:DistanceV%1" href="src/DStrip.cxx.html#dQQyiD">DistanceV</a>(<span class="keyword">const</span> <a href="./DR3.html">DR3</a>&amp; aPosition)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DStrip:KillNoise" href="src/DStrip.cxx.html#KNj74B">KillNoise</a>()</span><br />
+<div class="funccomm"><pre> discard a pixel signal in MIMOSA if it's a standalone one
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DStrip:DStrip" href="src/DStrip.h.html#jhupsE">DStrip</a>()</span><br />
+<div class="funccomm"><pre>class <a href="./DStrip.html">DStrip</a> : public <a href="./DPixel.html">DPixel</a> {
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetCommonMode" href="src/DStrip.h.html#SJ81qB">SetCommonMode</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tCM)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DStrip.html#DStrip:fCommonMode" title="Float_t DStrip::fCommonMode">fCommonMode</a> = tCM;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetRawFrame1Value" href="src/DStrip.h.html#mb6qQE">GetRawFrame1Value</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fRawFrame1Value" title="Float_t DStrip::fRawFrame1Value">fRawFrame1Value</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetRawFrame2Value" href="src/DStrip.h.html#yMZIzD">GetRawFrame2Value</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fRawFrame2Value" title="Float_t DStrip::fRawFrame2Value">fRawFrame2Value</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:GetStripIndex" href="src/DStrip.h.html#HfCHg">GetStripIndex</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fStripIndex" title="Int_t DStrip::fStripIndex">fStripIndex</a>;    }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:GetPixelIndex" href="src/DStrip.h.html#X3ZUtC">GetPixelIndex</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fPixelIndex" title="Int_t DStrip::fPixelIndex">fPixelIndex</a>;    }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetPixelIndex" href="src/DStrip.h.html#mXE.Q">SetPixelIndex</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> anIndex)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DStrip.html#DStrip:fPixelIndex" title="Int_t DStrip::fPixelIndex">fPixelIndex</a> = anIndex;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:GetPlaneNumber" href="src/DStrip.h.html#p7Ej0D">GetPlaneNumber</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fPlaneNumber" title="Int_t DStrip::fPlaneNumber">fPlaneNumber</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetRawValue" href="src/DStrip.h.html#dAeDYB">GetRawValue</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fRawValue" title="Float_t DStrip::fRawValue">fRawValue</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetPulseHeight" href="src/DStrip.h.html#Q2Iaq">GetPulseHeight</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fPulseHeight" title="Float_t DStrip::fPulseHeight">fPulseHeight</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetNoise" href="src/DStrip.h.html#hjLJ5D">GetNoise</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fNoise" title="Float_t DStrip::fNoise">fNoise</a>;         }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetPedestal" href="src/DStrip.h.html#rrOMl">GetPedestal</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fPedestal" title="Float_t DStrip::fPedestal">fPedestal</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DStrip:GetCommonMode" href="src/DStrip.h.html#UnMBzD">GetCommonMode</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fCommonMode" title="Float_t DStrip::fCommonMode">fCommonMode</a>;    }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:GetPedestalCounts" href="src/DStrip.h.html#IcRCOB">GetPedestalCounts</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fSumCount" title="Int_t DStrip::fSumCount">fSumCount</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:GetNoiseCounts" href="src/DStrip.h.html#Akp0dB">GetNoiseCounts</a>()</span><br />
+<div class="funccomm"><pre>
+  //YV 04/06/09 change floats to <a href="./ListOfTypes.html#double">double</a>
+  <a href="./ListOfTypes.html#Double_t">Double_t</a>            <a href="./DStrip.html#DStrip:GetRawValue" title="Float_t DStrip::GetRawValue()">GetRawValue</a>()                  { return  <a href="./DStrip.html#DStrip:fRawValue" title="Float_t DStrip::fRawValue">fRawValue</a>;      }
+  <a href="./ListOfTypes.html#Double_t">Double_t</a>            <a href="./DStrip.html#DStrip:GetPulseHeight" title="Float_t DStrip::GetPulseHeight()">GetPulseHeight</a>()               { return  <a href="./DStrip.html#DStrip:fPulseHeight" title="Float_t DStrip::fPulseHeight">fPulseHeight</a>;   }
+  <a href="./ListOfTypes.html#Double_t">Double_t</a>            <a href="./DStrip.html#DStrip:GetPulseHeightToNoise" title="Float_t DStrip::GetPulseHeightToNoise()">GetPulseHeightToNoise</a>();
+  <a href="./ListOfTypes.html#Double_t">Double_t</a>            <a href="./DStrip.html#DStrip:GetNoise" title="Float_t DStrip::GetNoise()">GetNoise</a>()                     { return  <a href="./DStrip.html#DStrip:fNoise" title="Float_t DStrip::fNoise">fNoise</a>;         }
+  <a href="./ListOfTypes.html#Double_t">Double_t</a>            <a href="./DStrip.html#DStrip:GetPedestal" title="Float_t DStrip::GetPedestal()">GetPedestal</a>()                  { return  <a href="./DStrip.html#DStrip:fPedestal" title="Float_t DStrip::fPedestal">fPedestal</a>;      }
+  <a href="./ListOfTypes.html#Double_t">Double_t</a>            <a href="./DStrip.html#DStrip:GetCommonMode" title="Float_t DStrip::GetCommonMode()">GetCommonMode</a>()                { return  <a href="./DStrip.html#DStrip:fCommonMode" title="Float_t DStrip::fCommonMode">fCommonMode</a>;    }
+
+</pre></div>
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fSumSquareCount" title="Int_t DStrip::fSumSquareCount">fSumSquareCount</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a>&amp; <a class="funcname" name="DStrip:GetPosition" href="src/DStrip.h.html#h_3ndD">GetPosition</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fPosition" title="DR3 DStrip::fPosition">fPosition</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a>&amp; <a class="funcname" name="DStrip:GetSize" href="src/DStrip.h.html#SWAyDE">GetSize</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fSize" title="DR3 DStrip::fSize">fSize</a>;          }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPlane.html">DPlane</a>            * <a class="funcname" name="DStrip:GetPlane" href="src/DStrip.h.html#p.uPHE">GetPlane</a>()</span><br />
+<div class="funccomm"><pre>---abesson september 2005
+</pre></div>
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fPlane" title="DPlane* DStrip::fPlane">fPlane</a>;         }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSetup.html">DSetup</a>            * <a class="funcname" name="DStrip:GetSetup" href="src/DStrip.h.html#nEJnBB">GetSetup</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>   <a href="./DStrip.html#DStrip:fc" title="DSetup* DStrip::fc">fc</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DStrip:GetNeighbourCount" href="src/DStrip.h.html#gKaJzD">GetNeighbourCount</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fNeighbourCount" title="Int_t DStrip::fNeighbourCount">fNeighbourCount</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DStrip:Found" href="src/DStrip.h.html#j2_4PD">Found</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DStrip.html#DStrip:fFound" title="Bool_t DStrip::fFound">fFound</a>;         }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DStrip:SetFound" href="src/DStrip.h.html#WHkrhB">SetFound</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> b)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DStrip.html#DStrip:fFound" title="Bool_t DStrip::fFound">fFound</a> = b;             }</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: Mon Sep  1 10:00:58 2014 </em><em>&raquo; Last generated: 2014-09-01 10:00</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:00 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DAcq</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DAcq','','DAcq.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DAcq.h.html">header file</a>
+<a class="descrheadentry" href="src/DAcq.cxx.html">source file</a>
+<a class="descrheadentry" href="DAcq_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DAcq:description">class description</a> 
+<a class="descrheadentry" href="#DAcq:Function_Members">function members</a>
+<a class="descrheadentry" href="#DAcq:Data_Members">data members</a>
+<a class="descrheadentry" href="#DAcq:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DAcq</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DAcq:description"></a>class DAcq: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./DAcq.html#DAcq:Class" title="TClass* DAcq::Class()">Class</a> Description of <a href="./DAcq.html">DAcq</a> (DataAcquisition)
+
++ construct the DataAcquisition with its devices, inputs and channels
++ prepare buffers for data
++ translation of binary data to variables
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DAcq:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DAcq:DAcq">DAcq</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DAcq:DAcq%1">DAcq</a>(<a href="./DSetup.html">DSetup</a>&amp; c)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DAcq:DAcq%2">DAcq</a>(<span class="keyword">const</span> <a href="./DAcq.html">DAcq</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DAcq:_DAcq">~DAcq</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DAcq:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:DumpHexToTerm">DumpHexToTerm</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DAcq:DumpSynchroInfo">DumpSynchroInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = -1)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetDebug">GetDebug</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetEventNumber">GetEventNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetFrameAt">GetFrameAt</a>(<span class="keyword">int</span> index)</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="funcname"><a class="funcname" href="#DAcq:GetFrames">GetFrames</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="funcname"><a class="funcname" href="#DAcq:GetLineOverflow">GetLineOverflow</a>()</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<a href="./DMonteCarlo.html">DMonteCarlo</a>*&gt;*</td><td class="funcname"><a class="funcname" href="#DAcq:GetListOfMonteCarlo">GetListOfMonteCarlo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;*</td><td class="funcname"><a class="funcname" href="#DAcq:GetListOfPixels">GetListOfPixels</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DAcq:GetMatchingPlaneAndShift">GetMatchingPlaneAndShift</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> mdt, <a href="./ListOfTypes.html#Int_t">Int_t</a> mdl, <a href="./ListOfTypes.html#Int_t">Int_t</a> input, <a href="./ListOfTypes.html#Int_t">Int_t</a> channel, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; aShift)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetNumberOfFrames">GetNumberOfFrames</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetNumberOfTimestamps">GetNumberOfTimestamps</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetNumberOfTriggers">GetNumberOfTriggers</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="funcname"><a class="funcname" href="#DAcq:GetRawData">GetRawData</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> mdt, <a href="./ListOfTypes.html#Int_t">Int_t</a> mdl, <a href="./ListOfTypes.html#Int_t">Int_t</a> input)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetRealEventNumber">GetRealEventNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetRunNumber">GetRunNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>&amp;</td><td class="funcname"><a class="funcname" href="#DAcq:GetSetup">GetSetup</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetSynchroInfo">GetSynchroInfo</a>(<span class="keyword">int</span> anEventId, <span class="keyword">int</span>&amp; anAcqId, <span class="keyword">int</span>&amp; aFrameId)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetTimestampAt">GetTimestampAt</a>(<span class="keyword">int</span> index)</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="funcname"><a class="funcname" href="#DAcq:GetTimestamps">GetTimestamps</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:GetTriggerAt">GetTriggerAt</a>(<span class="keyword">int</span> index)</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="funcname"><a class="funcname" href="#DAcq:GetTriggers">GetTriggers</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DAcq:InitSynchroInfo">InitSynchroInfo</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DAcq:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">TBits*</td><td class="funcname"><a class="funcname" href="#DAcq:NextEvent">NextEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> eventNumber, <a href="./ListOfTypes.html#Int_t">Int_t</a> aTrigger = -1)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DAcq.html">DAcq</a>&amp;</td><td class="funcname"><a class="funcname" href="#DAcq:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DAcq.html">DAcq</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DAcq:PrintStatistics">PrintStatistics</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; stream = <a href="./ListOfTypes.html#ostream">cout</a>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DAcq:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DAcq:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DAcq:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DAcq:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DAcq:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="dataname"><a name="DAcq:ListOfFrames"></a>ListOfFrames</td><td class="datadesc">list of frames JB 2010/06/16</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="dataname"><a name="DAcq:ListOfLineOverflow"></a>ListOfLineOverflow</td><td class="datadesc">line overflow vector per sensor, MG 2012/02/15</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="dataname"><a name="DAcq:ListOfTimestamps"></a>ListOfTimestamps</td><td class="datadesc">list of timestamps JB 2010/06/16</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;*</td><td class="dataname"><a name="DAcq:ListOfTriggers"></a>ListOfTriggers</td><td class="datadesc">list of triggers JB 2010/06/16</td></tr>
+<tr class="data"><td class="datatype"><a href="./AliMIMOSA22RawStreamVASingle.html">AliMIMOSA22RawStreamVASingle</a>**</td><td class="dataname"><a name="DAcq:fALI22"></a>fALI22</td><td class="datadesc">pointer to ALI22 boards, JB 2014/05/14</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fDebugAcq"></a>fDebugAcq</td><td class="datadesc">Acq debug flag</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fEventNumber"></a>fEventNumber</td><td class="datadesc">Number of the event according to DSession, JB 2009/05/26</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fEventsMissed"></a>fEventsMissed</td><td class="datadesc">Number of events missed for synchronization</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fFramesN"></a>fFramesN</td><td class="datadesc">number of frames in the event, JB 2009/05/22</td></tr>
+<tr class="data"><td class="datatype"><a href="./GIGBoardReader.html">GIGBoardReader</a>**</td><td class="dataname"><a name="DAcq:fGIG"></a>fGIG</td><td class="datadesc">pointer to GIG boards, JB 2012/04/25</td></tr>
+<tr class="data"><td class="datatype"><a href="./IMGBoardReader.html">IMGBoardReader</a>**</td><td class="dataname"><a name="DAcq:fIMG"></a>fIMG</td><td class="datadesc">pointer to IMG boards, JB 2012/07/22</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>****</td><td class="dataname"><a name="DAcq:fIndexShift"></a>fIndexShift</td><td class="datadesc">index shift to add</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<span class="keyword">int</span>&gt;***</td><td class="dataname"><a name="DAcq:fInputSegments"></a>fInputSegments</td><td class="datadesc">limits of segments for this input, JB 2013/08/14</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DAcq:fLineOverflowN"></a>fLineOverflowN</td><td class="datadesc">overflow line counter, MG 2012/02/15</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DMonteCarlo.html">DMonteCarlo</a>*&gt;*</td><td class="dataname"><a name="DAcq:fListOfMonteCarlo"></a>fListOfMonteCarlo</td><td class="datadesc">pointer to list of hit montecarlo</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;*</td><td class="dataname"><a name="DAcq:fListOfPixels"></a>fListOfPixels</td><td class="datadesc">pointer to list of hit pixel</td></tr>
+<tr class="data"><td class="datatype"><a href="./DecoderM18.html">DecoderM18</a>**</td><td class="dataname"><a name="DAcq:fM18"></a>fM18</td><td class="datadesc">pointer to DecoderM18 boards, JB 2014/05/25, then 2014/08/26</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>****</td><td class="dataname"><a name="DAcq:fMatchingPlane"></a>fMatchingPlane</td><td class="datadesc">plane matching the input</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fMaxSegments"></a>fMaxSegments</td><td class="datadesc">max nb of segements allowed for an input</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fModuleTypes"></a>fModuleTypes</td><td class="datadesc">number of Acquisition Module Types</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fNbSynchroInfo"></a>fNbSynchroInfo</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./PXIBoardReader.html">PXIBoardReader</a>**</td><td class="dataname"><a name="DAcq:fPXI"></a>fPXI</td><td class="datadesc">pointer to PXI boards</td></tr>
+<tr class="data"><td class="datatype"><a href="./PXIeBoardReader.html">PXIeBoardReader</a>**</td><td class="dataname"><a name="DAcq:fPXIe"></a>fPXIe</td><td class="datadesc">pointer to PXIexpress boards</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>***</td><td class="dataname"><a name="DAcq:fRawData"></a>fRawData</td><td class="datadesc">pointer to Raw Values</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fRealEventNumber"></a>fRealEventNumber</td><td class="datadesc">Number of the event writen in the board</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fRunNumber"></a>fRunNumber</td><td class="datadesc">Run Number the event is in</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a>*</td><td class="dataname"><a name="DAcq:fSynchroFileName"></a>fSynchroFileName</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">unsigned</span> <span class="keyword">char</span>*</td><td class="dataname"><a name="DAcq:fSynchroInfo"></a>fSynchroInfo</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./TNTBoardReader.html">TNTBoardReader</a>**</td><td class="dataname"><a name="DAcq:fTNT"></a>fTNT</td><td class="datadesc">pointer to TNT boards</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fTimestampsN"></a>fTimestampsN</td><td class="datadesc">number of timestamps in the event, JB 2009/05/26</td></tr>
+<tr class="data"><td class="datatype"><a href="./DGlobalTools.html">DGlobalTools</a></td><td class="dataname"><a name="DAcq:fTool"></a>fTool</td><td class="datadesc">JB 2013/08/20</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DAcq:fTriggersN"></a>fTriggersN</td><td class="datadesc">number of triggers in the event, JB 2009/05/22</td></tr>
+<tr class="data"><td class="datatype"><a href="./VMEBoardReader.html">VMEBoardReader</a>**</td><td class="dataname"><a name="DAcq:fVME"></a>fVME</td><td class="datadesc">pointer to VME boards, JB 2014/05/13</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>*</td><td class="dataname"><a name="DAcq:fc"></a>fc</td><td class="datadesc">pointer to the configuration</td></tr>
+
+</table></div>
+</div>
+<h2><a id="DAcq:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DAcq" href="./DAcq.html">DAcq</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DAcq:DAcq" href="src/DAcq.cxx.html#KdqItC">DAcq</a>()</span><br />
+<div class="funccomm"><pre> Default <a href="./DAcq.html">DAcq</a> ctor.
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DAcq:DAcq%1" href="src/DAcq.cxx.html#MZmkbE">DAcq</a>(<a href="./DSetup.html">DSetup</a>&amp; c)</span><br />
+<div class="funccomm"><pre> Constructs the Data Acquisition with value
+ read from configuration file
+
+ JB, 2008/10/14
+ modified JB 2009/05/06
+ modified JB 2009/08/20 to add PXI boards
+ modified JB 2010/07/07 to init NULL pointers for list of triggers
+ modified JB 2010/08/23 to allow new triggerMode flag and use of moduleType/10
+ modified JB 2011/06/19 Introduction of PXI &amp; PXIe readers for backward compatibility
+ modified JB 2011/06/28 passage of #rows to PXIe
+ modified SS 2011/11/14 passage of eventBuildingMode for PXIe
+ modified MG 2012/03/14 init <a href="./DAcq.html#DAcq:ListOfLineOverflow" title="vector&lt;int&gt;* DAcq::ListOfLineOverflow">ListOfLineOverflow</a>
+ modified JB 2012/04/25 to add GIG boards (GEANT4-DIGMaps)
+ Modified JB 2012/07/22 to add IMG boards (analog Imager)
+ Modified JB 2012/08/10 to count missed events
+ Modified JB 2012/08/18 to pass eventsPerFile to <a href="./IMGBoardReader.html">IMGBoardReader</a>
+ Modified JB 2012/08/19 to pass FileHeaderLine to <a href="./IMGBoardReader.html">IMGBoardReader</a>
+ Modified JB 2013/06/22 passage of eventBuildingBoardMode
+ Modified JB 2013/08/14,15 manage input offset to allow severall planes on same input
+ Modified JB 2014/03/13 forward DUT status to Reader
+ Modified JB 2014/05/13 to add VME boards (Eleuterio's format)
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DAcq:_DAcq" href="src/DAcq.cxx.html#MIYuqB">~DAcq</a>()</span><br />
+<div class="funccomm"><pre> Default <a href="./DAcq.html">DAcq</a> destructor.
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DAcq:SetDebug" href="src/DAcq.cxx.html#KQKdbE">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+<div class="funccomm"><pre> Set the debug level
+ JB 2009/05/22
+ Modified JB 2009/08/20, PXIBoard added
+ Modified JB 2009/09/09, debug set if level=0
+ Modified JB 2010/08/23 to use modulteType/10
+ Modified JB 2011/06/19 Introduction of PXI &amp; PXIe readers for backward compatibility
+ Modified MG 2012/03/14 added lineOverflow for <a href="./PXIeBoardReader.html">PXIeBoardReader</a>
+ Modified JB 2012/04/25 to add GIG boards (GEANT4-DIGMaps)
+ Modified SS 2012/08/01 to add IMG boards
+ Modified JB 2014/05/13 to add VME boards
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a>* <a class="funcname" name="DAcq:GetRawData" href="src/DAcq.cxx.html#TxIatC">GetRawData</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> mdt, <a href="./ListOfTypes.html#Int_t">Int_t</a> mdl, <a href="./ListOfTypes.html#Int_t">Int_t</a> input)</span><br />
+<div class="funccomm"><pre> Return the pointer to the address of the first data of
+ the given mdt module type, mdl module number and input
+ all these index are expected to start at 1
+
+ JB, 2008/10/17
+ Modified: JB 2013/08/16 manage different channel numbers per input
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DAcq:GetMatchingPlaneAndShift" href="src/DAcq.cxx.html#l3ZRaD">GetMatchingPlaneAndShift</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> mdt, <a href="./ListOfTypes.html#Int_t">Int_t</a> mdl, <a href="./ListOfTypes.html#Int_t">Int_t</a> input, <a href="./ListOfTypes.html#Int_t">Int_t</a> channel, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; aPlane, <a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; aShift)</span><br />
+<div class="funccomm"><pre> Set the plane and the shift matching the given
+  module type, number, input and channel.
+ All indexes expected to start at 1.
+
+ The vector <a href="./DAcq.html#DAcq:fInputSegments" title="vector&lt;int&gt;*** DAcq::fInputSegments">fInputSegments</a> provides the lower limits of a segment
+  for a given module type and number and input number.
+ Its minimum size is 1.
+ This means that if an input has only one segment: <a href="./DAcq.html#DAcq:fInputSegments" title="vector&lt;int&gt;*** DAcq::fInputSegments">fInputSegments</a>[0] = 1,
+  and with segments like 1-256 / 257-512:
+   <a href="./DAcq.html#DAcq:fInputSegments" title="vector&lt;int&gt;*** DAcq::fInputSegments">fInputSegments</a>[0] = 1 and <a href="./DAcq.html#DAcq:fInputSegments" title="vector&lt;int&gt;*** DAcq::fInputSegments">fInputSegments</a>[1] = 257
+
+ JB 2013/08/14
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DAcq:InitSynchroInfo" href="src/DAcq.cxx.html#L_fT6">InitSynchroInfo</a>()</span><br />
+<div class="funccomm"><pre> <a href="./#TObject:Read" title="Int_t TObject::Read(const char* name)">Read</a> the file containing the synchronization information
+  and store them in a buffer.
+
+ Return <a href="./ListOfTypes.html#bool">true</a> upon success.
+
+ JB, 2012/07/19
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DAcq:GetSynchroInfo" href="src/DAcq.cxx.html#HaQAxD">GetSynchroInfo</a>(<span class="keyword">int</span> anEventId, <span class="keyword">int</span>&amp; anAcqId, <span class="keyword">int</span>&amp; aFrameId)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TBits* <a class="funcname" name="DAcq:NextEvent" href="src/DAcq.cxx.html#OTU1VC">NextEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> eventNumber, <a href="./ListOfTypes.html#Int_t">Int_t</a> aTrigger = -1)</span><br />
+<div class="funccomm"><pre> <a href="./#TObject:Read" title="Int_t TObject::Read(const char* name)">Read</a> next event from file(s),
+  the event number is defined by <a href="./DSession.html">DSession</a>.
+ If aTrigger != -1 (default is -1) then the event with this specific trigger
+  number is searched for (valid only for <a href="./PXIeBoardReader.html">PXIeBoardReader</a> yet).
+ The return code is a pointer to 3 bits :
+  bit 0: 1 if readout is OK (meaning there are still some events to read),
+  bit 1: 1 if synchronization between modules was required and succesfull,
+  bit 2: 1 if event data is OK (meaning analysis can be performed).
+
+ JB, 208/10/13
+ Last modified JB 2009/05/12
+ Last modified JB 2009/08/20 to add PXI boards
+ Last modified JB 2010/06/16 to store full trigger and frame info from BoardReaders
+ Last modified JB 2010/08/23 to use modulteType/10
+ Last modified JB 2011/06/19 Introduction of PXI &amp; PXIe readers for backward compatibility
+ Last modified MG 2012/03/14 Line overflow vector for PXIe
+ Last modified JB 2012/04/25 to add GIG boards (GEANT4-DIGMaps)
+ Last modified JB 2012/07/10 to allow selection of event by trigger
+ Last modified JB 2012/07/22 to add IMG boards (analog Imager)
+ Last modified JB 2012/07/22 to synchronized IMG and PXIe boards
+ Last modified SS 2012/08/01 bug fixes for synchronization
+ Last modified SS 2012/08/10 introducing TBits output and missed events
+ Last modified JB 2013/06/22 concatenation of lists from different modules
+ Last modified JB 2013/08/14 usage of <a href="./DAcq.html#DAcq:GetMatchingPlaneAndShift" title="void DAcq::GetMatchingPlaneAndShift(Int_t mdt,Int_t mdl,Int_t input,Int_t channel,Int_t&amp; aPlane,Int_t&amp; aShift)">GetMatchingPlaneAndShift</a>
+ Last modified JB 2014/05/13 to add VME boards
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DAcq:DumpHexToTerm" href="src/DAcq.cxx.html#rQtMLD">DumpHexToTerm</a>()</span><br />
+<div class="funccomm"><pre> print Event Buffer sedezimal (hexadecimal)
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DAcq:PrintStatistics" href="src/DAcq.cxx.html#n2SNCB">PrintStatistics</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; stream = <a href="./ListOfTypes.html#ostream">cout</a>)</span><br />
+<div class="funccomm"><pre> print Statistics for each acquisition module
+
+ JB 2009/09/09
+ Last modified JB 2010/08/23 to use modulteType/10
+ Modified SS 2011/12/14 output stream can be set from outside
+ Modified JB 2012/08/17 printout nb of events (total and missed)
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DAcq:DumpSynchroInfo" href="src/DAcq.cxx.html#RDr5DC">DumpSynchroInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> nEvents = -1)</span><br />
+<div class="funccomm"><pre> <a href="./#TObject:Print" title="void TObject::Print(Option_t* option=&quot;&quot;)">Print</a> the information on synchronisation in a file
+  for the required nb of events
+
+ JB 2013/08/20
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DAcq:DAcq" href="src/DAcq.h.html#pvkd2">DAcq</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<a href="./DPixel.html">DPixel</a>*&gt; * <a class="funcname" name="DAcq:GetListOfPixels" href="src/DAcq.h.html#sRBJ3C">GetListOfPixels</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</span><br />
+<div class="funccomm"><pre>vector&lt;<a href="./ListOfTypes.html#Int_t">Int_t</a>&gt;   *<a href="./DAcq.html#DAcq:GetListOfPixels" title="vector&lt;DPixel*&gt;* DAcq::GetListOfPixels(Int_t aPlaneNumber)">GetListOfPixels</a>( <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber) { return &amp;<a href="./DAcq.html#DAcq:fListOfPixels" title="vector&lt;DPixel*&gt;* DAcq::fListOfPixels">fListOfPixels</a>[aPlaneNumber]; }// get the hit pixel index list for a given plane
+</pre></div>
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> &amp;<a href="./DAcq.html#DAcq:fListOfPixels" title="vector&lt;DPixel*&gt;* DAcq::fListOfPixels">fListOfPixels</a>[aPlaneNumber-1]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<a href="./DMonteCarlo.html">DMonteCarlo</a>*&gt; * <a class="funcname" name="DAcq:GetListOfMonteCarlo" href="src/DAcq.h.html#qIzskE">GetListOfMonteCarlo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> &amp;<a href="./DAcq.html#DAcq:fListOfMonteCarlo" title="vector&lt;DMonteCarlo*&gt;* DAcq::fListOfMonteCarlo">fListOfMonteCarlo</a>[aPlaneNumber-1]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetEventNumber" href="src/DAcq.h.html#OKrubE">GetEventNumber</a>() const</span><br />
+<div class="funccomm"><pre> without any interpretation of data
+</pre></div>
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:fEventNumber" title="Int_t DAcq::fEventNumber">fEventNumber</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetRealEventNumber" href="src/DAcq.h.html#iuggCB">GetRealEventNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:fRealEventNumber" title="Int_t DAcq::fRealEventNumber">fRealEventNumber</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetRunNumber" href="src/DAcq.h.html#UaKpJD">GetRunNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:fRunNumber" title="Int_t DAcq::fRunNumber">fRunNumber</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<span class="keyword">int</span>&gt;     * <a class="funcname" name="DAcq:GetTriggers" href="src/DAcq.h.html#SdBKU">GetTriggers</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:ListOfTriggers" title="vector&lt;int&gt;* DAcq::ListOfTriggers">ListOfTriggers</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<span class="keyword">int</span>&gt;     * <a class="funcname" name="DAcq:GetFrames" href="src/DAcq.h.html#hRKzNB">GetFrames</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:ListOfFrames" title="vector&lt;int&gt;* DAcq::ListOfFrames">ListOfFrames</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<span class="keyword">int</span>&gt;     * <a class="funcname" name="DAcq:GetTimestamps" href="src/DAcq.h.html#ScwVuD">GetTimestamps</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:ListOfTimestamps" title="vector&lt;int&gt;* DAcq::ListOfTimestamps">ListOfTimestamps</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<span class="keyword">int</span>&gt;     * <a class="funcname" name="DAcq:GetLineOverflow" href="src/DAcq.h.html#lArgx">GetLineOverflow</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:ListOfLineOverflow" title="vector&lt;int&gt;* DAcq::ListOfLineOverflow">ListOfLineOverflow</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetNumberOfTriggers" href="src/DAcq.h.html#rTrexE">GetNumberOfTriggers</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:fTriggersN" title="Int_t DAcq::fTriggersN">fTriggersN</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetNumberOfFrames" href="src/DAcq.h.html#N87gkC">GetNumberOfFrames</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:fFramesN" title="Int_t DAcq::fFramesN">fFramesN</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetNumberOfTimestamps" href="src/DAcq.h.html#wpHGHB">GetNumberOfTimestamps</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:fTimestampsN" title="Int_t DAcq::fTimestampsN">fTimestampsN</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetTriggerAt" href="src/DAcq.h.html#fPoafD">GetTriggerAt</a>(<span class="keyword">int</span> index)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:ListOfTriggers" title="vector&lt;int&gt;* DAcq::ListOfTriggers">ListOfTriggers</a>-&gt;at(index); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetFrameAt" href="src/DAcq.h.html#fwL9JC">GetFrameAt</a>(<span class="keyword">int</span> index)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:ListOfFrames" title="vector&lt;int&gt;* DAcq::ListOfFrames">ListOfFrames</a>-&gt;at(index); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetTimestampAt" href="src/DAcq.h.html#cYpK.C">GetTimestampAt</a>(<span class="keyword">int</span> index)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:ListOfTimestamps" title="vector&lt;int&gt;* DAcq::ListOfTimestamps">ListOfTimestamps</a>-&gt;at(index); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSetup.html">DSetup</a>&amp; <a class="funcname" name="DAcq:GetSetup" href="src/DAcq.h.html#HzvTGC">GetSetup</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> *<a href="./DAcq.html#DAcq:fc" title="DSetup* DAcq::fc">fc</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DAcq:GetDebug" href="src/DAcq.h.html#L9TQU">GetDebug</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DAcq.html#DAcq:fDebugAcq" title="Int_t DAcq::fDebugAcq">fDebugAcq</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id: DAcq.h,v.2 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

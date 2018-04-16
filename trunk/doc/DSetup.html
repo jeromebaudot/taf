@@ -1,0 +1,440 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:00:57 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DSetup</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DSetup','','DSetup.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DSetup.h.html">header file</a>
+<a class="descrheadentry" href="src/DSetup.cxx.html">source file</a>
+<a class="descrheadentry" href="DSetup_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DSetup:description">class description</a> 
+<a class="descrheadentry" href="#DSetup:Function_Members">function members</a>
+<a class="descrheadentry" href="#DSetup:Data_Members">data members</a>
+<a class="descrheadentry" href="#DSetup:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DSetup</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DSetup:description"></a>class DSetup: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./DSetup.html#DSetup:Class" title="TClass* DSetup::Class()">Class</a> Description of <a href="./DSetup.html">DSetup</a>
+
+ <a href="./#TObject:Read" title="Int_t TObject::Read(const char* name)">Read</a> Setup of the Acquisition, Telescope and Analysis
+  from the configuration file (text format),
+  defined from the run number.
+
+ All the parameters need not to be present in the text
+  file, but if they are indeed needed to run
+  they should be initialized !
+ ** WARNING ** currently (June 2013) the situation is not cleaned
+  and many paramameters are not initialized.
+
+ This is the list of all known parameters by category: (in construction)
+  MANDATORY means this parameter has to be in the config file
+  1st parameter means this parameter shall be the first in the list
+  --&gt; if one of these 2 rules is broken, the file parsing will crash!
+
+
+                              Run Parameters
+
+ Affiliation      = [optional] (<a href="./ListOfTypes.html#char">char</a>) {<span class="string">""</span>}
+ Signature        = [optional] (<a href="./ListOfTypes.html#char">char</a>) {<span class="string">""</span>}
+ BeamTime         = [optional] (<a href="./ListOfTypes.html#char">char</a>) {<span class="string">""</span>}
+ Confidence       = [optional] (<a href="./ListOfTypes.html#char">char</a>) {<span class="string">""</span>}
+ DataPath         = [MANDATORY](<a href="./ListOfTypes.html#char">char</a>)      directory of the raw data
+ DataSubDirPrefix = [optional] (<a href="./ListOfTypes.html#char">char</a>) {<span class="string">""</span>} sub directory for data files, stored in DataPath/DataSubDirPrefixXXX/ with XXX the run number
+ Extension        = [optional] (<a href="./ListOfTypes.html#char">char</a>) {<span class="string">""</span>}
+ RunNumber        = [OBSOLET]              RunNumber is get from <a href="./DSession.html">DSession</a>, set via gTAF-&gt;InitSession(...)
+ EventsInFile     = [MANDATORY for <a href="./IMGBoardReader.html">IMGBoardReader</a>] (<a href="./ListOfTypes.html#int">int</a>) {0}
+ StartIndex       = [MANDATORY for <a href="./IMGBoardReader.html">IMGBoardReader</a>] (<a href="./ListOfTypes.html#int">int</a>) {0}
+ EndIndex         = [MANDATORY for <a href="./IMGBoardReader.html">IMGBoardReader</a>] (<a href="./ListOfTypes.html#int">int</a>) {0}
+ NoiseRun         = [optional] (<a href="./ListOfTypes.html#int">int</a>) {0}  defines either the file with the noise for each pixel, or a specific method to remove noisy pixels (see <a href="./DGlobalTools.html">DGlobalTools</a>::VetoPixels)
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DSetup:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSetup:DSetup">DSetup</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSetup:DSetup%1">DSetup</a>(<a href="./DSession.html">DSession</a>&amp; aSession)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSetup:DSetup%2">DSetup</a>(<span class="keyword">const</span> <a href="./DSetup.html">DSetup</a>&amp; c)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DSetup:_DSetup">~DSetup</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DSetup:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__AcqParameter_t.html">AcqParameter_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:GetAcqPar">GetAcqPar</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__AnalysisParameter_t.html">AnalysisParameter_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:GetAnalysisPar">GetAnalysisPar</a>()</td></tr>
+<tr class="func"><td class="funcret">TString</td><td class="funcname"><a class="funcname" href="#DSetup:GetConfigPath">GetConfigPath</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DSetup:GetDebug">GetDebug</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__LadderParameter_t.html">LadderParameter_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:GetLadderPar">GetLadderPar</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> anID)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__AcqModuleParameter_t.html">AcqModuleParameter_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:GetModulePar">GetModulePar</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aMTN)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__PlaneParameter_t.html">PlaneParameter_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:GetPlanePar">GetPlanePar</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPN)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__RunParameter_t.html">RunParameter_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:GetRunPar">GetRunPar</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSession.html">DSession</a>*</td><td class="funcname"><a class="funcname" href="#DSetup:GetSession">GetSession</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__TrackerParameter_t.html">TrackerParameter_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:GetTrackerPar">GetTrackerPar</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DSetup:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>&amp;</td><td class="funcname"><a class="funcname" href="#DSetup:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DSetup.html">DSetup</a>&amp; a)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadConfiguration">ReadConfiguration</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:SetConfigFileName">SetConfigFileName</a>(TString aCFN)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:SetConfigPath">SetConfigPath</a>(TString aCP)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:copy">copy</a>(<span class="keyword">const</span> <a href="./DSetup.html">DSetup</a>&amp; a)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:getRidOfLine">getRidOfLine</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:nextField">nextField</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:nextItem">nextItem</a>(<a href="./ListOfTypes.html#Char_t">Char_t</a> delimiter)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:read_item">read_item</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; arg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:read_item%1">read_item</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>&amp; arg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:read_r3">read_r3</a>(<a href="./DR3.html">DR3</a>&amp; arg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:read_strings">read_strings</a>(<a href="./ListOfTypes.html#Char_t">Char_t</a>* aString, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLength)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:read_TStrings">read_TStrings</a>(TString&amp; TheString, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLength)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadAnalysisParameters">ReadAnalysisParameters</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadDAQBoardParameters">ReadDAQBoardParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aBoardNumber = -1)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadDAQParameters">ReadDAQParameters</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadLadderParameters">ReadLadderParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderNumber = -1)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadPlaneParameters">ReadPlaneParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber = -1)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadRunParameters">ReadRunParameters</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadSubmatrixParameters">ReadSubmatrixParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSubmatrixNumber = -1)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DSetup:ReadTrackerParameters">ReadTrackerParameters</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DSetup:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapubl"><b>public:</b>
+<table class="data" id="tabdatapubl" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__AcqParameter_t.html">AcqParameter_t</a></td><td class="dataname"><a name="DSetup:AcqParameter"></a>AcqParameter</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__AnalysisParameter_t.html">AnalysisParameter_t</a></td><td class="dataname"><a name="DSetup:AnalysisParameter"></a>AnalysisParameter</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DSetup:ChannelAllUse"></a>ChannelAllUse</td><td class="datadesc">! use all channels in DAcq</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>**</td><td class="dataname"><a name="DSetup:ChannelUse"></a>ChannelUse</td><td class="datadesc">! pointer to bits on good channels</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__RunParameter_t.html">RunParameter_t</a></td><td class="dataname"><a name="DSetup:RunParameter"></a>RunParameter</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__TrackerParameter_t.html">TrackerParameter_t</a></td><td class="dataname"><a name="DSetup:TrackerParameter"></a>TrackerParameter</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__AcqModuleParameter_t.html">AcqModuleParameter_t</a>*</td><td class="dataname"><a name="DSetup:pAcqModuleParameter"></a>pAcqModuleParameter</td><td class="datadesc">! don''t put in Streamer </td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__LadderParameter_t.html">LadderParameter_t</a>*</td><td class="dataname"><a name="DSetup:pLadderParameter"></a>pLadderParameter</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>::<a href="./DSetup__PlaneParameter_t.html">PlaneParameter_t</a>*</td><td class="dataname"><a name="DSetup:pPlaneParameter"></a>pPlaneParameter</td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSetup:DSetupDebug"></a>DSetupDebug</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSetup:fAddedLadders"></a>fAddedLadders</td><td class="datadesc">counter of ladders added in config</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSetup:fAddedPlanes"></a>fAddedPlanes</td><td class="datadesc">counter of planes added in config</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSetup:fConfigFileName"></a>fConfigFileName</td><td class="datadesc">name of the configuration file</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#ifstream">ifstream</a></td><td class="dataname"><a name="DSetup:fConfigFileStream"></a>fConfigFileStream</td><td></td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSetup:fConfigPath"></a>fConfigPath</td><td class="datadesc">name of the configuration path</td></tr>
+<tr class="data"><td class="datatype">TString</td><td class="dataname"><a name="DSetup:fConfigPathAndFileName"></a>fConfigPathAndFileName</td><td class="datadesc">both path and file name appended</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DSetup:fFieldMaxLength"></a>fFieldMaxLength</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a>*</td><td class="dataname"><a name="DSetup:fFieldName"></a>fFieldName</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./DSession.html">DSession</a>*</td><td class="dataname"><a name="DSetup:fSession"></a>fSession</td><td class="datadesc">pointer to the current session</td></tr>
+
+</table></div>
+</div>
+<h2><a id="DSetup:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DSetup" href="./DSetup.html">DSetup</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DSetup:DSetup" href="src/DSetup.cxx.html#ve2wCD">DSetup</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DSetup:DSetup%1" href="src/DSetup.cxx.html#EG5DfC">DSetup</a>(<a href="./DSession.html">DSession</a>&amp; aSession)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:SetConfigPath" href="src/DSetup.cxx.html#zAaHxD">SetConfigPath</a>(TString aCP)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:SetConfigFileName" href="src/DSetup.cxx.html#QUn9mD">SetConfigFileName</a>(TString aCFN)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadRunParameters" href="src/DSetup.cxx.html#tGfJc">ReadRunParameters</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadTrackerParameters" href="src/DSetup.cxx.html#CE1CjC">ReadTrackerParameters</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadLadderParameters" href="src/DSetup.cxx.html#Kexae">ReadLadderParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderNumber = -1)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadPlaneParameters" href="src/DSetup.cxx.html#OZON1">ReadPlaneParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber = -1)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadDAQParameters" href="src/DSetup.cxx.html#vE3wk">ReadDAQParameters</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadDAQBoardParameters" href="src/DSetup.cxx.html#abETOE">ReadDAQBoardParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aBoardNumber = -1)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadAnalysisParameters" href="src/DSetup.cxx.html#rxWUsB">ReadAnalysisParameters</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadSubmatrixParameters" href="src/DSetup.cxx.html#MYQahC">ReadSubmatrixParameters</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSubmatrixNumber = -1)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:ReadConfiguration" href="src/DSetup.cxx.html#kIVO5D">ReadConfiguration</a>()</span><br />
+<div class="funccomm"><pre> Reads telescope plane and detector configuration from configuration file
+ The call order of each method matters!
+ 1) Run param.
+ 2) Tracker param.
+ 3) Plane and/or Ladder param.
+ 4) DAQ param.
+ 5) DAQ Module/Board param.
+ 6) Final analysis param.
+
+ Modified: JB 2013/01/16, use new parsing methods
+ Modified: VR 2016/06/30, run number is get from <a href="./DSession.html">DSession</a> and DataSubDirPrefixXXX (XXX = run #) concatenated to DataPath if set
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DSetup:DSetup%2" href="src/DSetup.cxx.html#qxB8pB">DSetup</a>(<span class="keyword">const</span> <a href="./DSetup.html">DSetup</a>&amp; c)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSetup.html">DSetup</a>&amp; <a class="funcname" name="DSetup:operator_" href="src/DSetup.cxx.html#PT5Tc">operator=</a>(<span class="keyword">const</span> <a href="./DSetup.html">DSetup</a>&amp; a)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:copy" href="src/DSetup.cxx.html#ogeTb">copy</a>(<span class="keyword">const</span> <a href="./DSetup.html">DSetup</a>&amp; a)</span><br />
+<div class="funccomm"><pre> Prepare a <a href="./#TObject:Copy" title="void TObject::Copy(TObject&amp; object)">Copy</a> into this class
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:nextItem" href="src/DSetup.cxx.html#WiGl2E">nextItem</a>(<a href="./ListOfTypes.html#Char_t">Char_t</a> delimiter)</span><br />
+<div class="funccomm"><pre> Move the file parsing pointer to the character <span class="string">"delimiter"</span>
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:nextField" href="src/DSetup.cxx.html#ZrVrkC">nextField</a>()</span><br />
+<div class="funccomm"><pre> Move the file parsing pointer to the character <span class="string">"delimiter"</span>
+ store in <a href="./DSetup.html#DSetup:fFieldName" title="Char_t* DSetup::fFieldName">fFieldName</a> the previous chain of characters
+  (skipping spaces, new lines and the delimiter)
+
+ Modified JB 2012/12/20 include recording of fieldName
+ Modified JB 2013/01/16 skip comment lines
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:read_r3" href="src/DSetup.cxx.html#VQp5NE">read_r3</a>(<a href="./DR3.html">DR3</a>&amp; arg)</span><br />
+<div class="funccomm"><pre> Modified BH 2013/08/21 memory leak removed
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:read_item" href="src/DSetup.cxx.html#Jow.2D">read_item</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>&amp; arg)</span><br />
+<div class="funccomm"><pre><a href="./DSetup.html#DSetup:nextItem" title="void DSetup::nextItem(Char_t delimiter)">nextItem</a>(<span class="string">':'</span>);
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:read_item%1" href="src/DSetup.cxx.html#HFcJzC">read_item</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>&amp; arg)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:read_strings" href="src/DSetup.cxx.html#gtAg2B">read_strings</a>(<a href="./ListOfTypes.html#Char_t">Char_t</a>* aString, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLength)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:read_TStrings" href="src/DSetup.cxx.html#TGC.PC">read_TStrings</a>(TString&amp; TheString, <a href="./ListOfTypes.html#Int_t">Int_t</a> aLength)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:getRidOfLine" href="src/DSetup.cxx.html#lL3f4B">getRidOfLine</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DSetup:SetDebug" href="src/DSetup.h.html#fAN9IE">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DSetup.html#DSetup:DSetupDebug" title="Int_t DSetup::DSetupDebug">DSetupDebug</a> = aDebug; <a href="./ListOfTypes.html#ostream">cout</a> &lt;&lt; <span class="string">"DSetup debug updated to "</span> &lt;&lt; <a href="./DSetup.html#DSetup:DSetupDebug" title="Int_t DSetup::DSetupDebug">DSetupDebug</a> &lt;&lt; endl;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSession.html">DSession</a>    * <a class="funcname" name="DSetup:GetSession" href="src/DSetup.h.html#jGJ3_">GetSession</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSetup.html#DSetup:fSession" title="DSession* DSetup::fSession">fSession</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DSetup:GetDebug" href="src/DSetup.h.html#JFEZUE">GetDebug</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSetup.html#DSetup:DSetupDebug" title="Int_t DSetup::DSetupDebug">DSetupDebug</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TString <a class="funcname" name="DSetup:GetConfigPath" href="src/DSetup.h.html#qqdVPC">GetConfigPath</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSetup.html#DSetup:fConfigPath" title="TString DSetup::fConfigPath">fConfigPath</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">AnalysisParameter_t&amp; <a class="funcname" name="DSetup:GetAnalysisPar" href="src/DSetup.h.html#q60YP">GetAnalysisPar</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DSetup.html#DSetup:AnalysisParameter" title="DSetup::AnalysisParameter_t DSetup::AnalysisParameter">AnalysisParameter</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TrackerParameter_t&amp; <a class="funcname" name="DSetup:GetTrackerPar" href="src/DSetup.h.html#rtaUaB">GetTrackerPar</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DSetup.html#DSetup:TrackerParameter" title="DSetup::TrackerParameter_t DSetup::TrackerParameter">TrackerParameter</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">LadderParameter_t&amp; <a class="funcname" name="DSetup:GetLadderPar" href="src/DSetup.h.html#zlb7w">GetLadderPar</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> anID)</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DSetup.html#DSetup:pLadderParameter" title="DSetup::LadderParameter_t* DSetup::pLadderParameter">pLadderParameter</a>[anID];}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">PlaneParameter_t&amp; <a class="funcname" name="DSetup:GetPlanePar" href="src/DSetup.h.html#b.T79D">GetPlanePar</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aPN)</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DSetup.html#DSetup:pPlaneParameter" title="DSetup::PlaneParameter_t* DSetup::pPlaneParameter">pPlaneParameter</a>[aPN-1];}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">AcqParameter_t&amp; <a class="funcname" name="DSetup:GetAcqPar" href="src/DSetup.h.html#Xj9oHB">GetAcqPar</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DSetup.html#DSetup:AcqParameter" title="DSetup::AcqParameter_t DSetup::AcqParameter">AcqParameter</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">AcqModuleParameter_t&amp; <a class="funcname" name="DSetup:GetModulePar" href="src/DSetup.h.html#TyOomC">GetModulePar</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aMTN)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DSetup.html#DSetup:pAcqModuleParameter" title="DSetup::AcqModuleParameter_t* DSetup::pAcqModuleParameter">pAcqModuleParameter</a>[aMTN-1]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">RunParameter_t&amp; <a class="funcname" name="DSetup:GetRunPar" href="src/DSetup.h.html#ml5mr">GetRunPar</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DSetup.html#DSetup:RunParameter" title="DSetup::RunParameter_t DSetup::RunParameter">RunParameter</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id:DSetup.h  v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:00</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

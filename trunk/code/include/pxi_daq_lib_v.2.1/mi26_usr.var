@@ -1,0 +1,33 @@
+
+/*******************************************************************************
+File      : x:\lib\com\maps\mi26\mi26_usr.var
+Goal      : Variables definition of Mi26 library.
+          : It provides Mi26 types definition and data handling functions.
+Prj date  : 24/11/2008
+File date : 24/11/2008
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef MI26_USR_VAR
+#define MI26_USR_VAR
+
+
+
+/* ============== */
+/*  */
+/* ============== */
+
+EXTERN VAR_STATIC  MI26__TContext MI26__VGContext;
+
+
+#endif

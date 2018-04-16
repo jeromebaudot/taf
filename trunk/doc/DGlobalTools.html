@@ -1,0 +1,383 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:00:56 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DGlobalTools</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DGlobalTools','','DGlobalTools.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DGlobalTools.h.html">header file</a>
+<a class="descrheadentry" href="src/DGlobalTools.cxx.html">source file</a>
+<a class="descrheadentry" href="DGlobalTools_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DGlobalTools:description">class description</a> 
+<a class="descrheadentry" href="#DGlobalTools:Function_Members">function members</a>
+<a class="descrheadentry" href="#DGlobalTools:Data_Members">data members</a>
+<a class="descrheadentry" href="#DGlobalTools:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DGlobalTools</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DGlobalTools:description"></a>class DGlobalTools</h1>
+<div class="classdescr">
+<pre>
+
+Collection of Global Tools
+this is the place for global constants, variables,
+functions and classes
+in particular place fit functions her
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DGlobalTools:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DGlobalTools:DGlobalTools">DGlobalTools</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DGlobalTools:DGlobalTools%1">DGlobalTools</a>(<span class="keyword">const</span> <a href="./DGlobalTools.html">DGlobalTools</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DGlobalTools:_DGlobalTools">~DGlobalTools</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:BuildVertex">BuildVertex</a>(<span class="keyword">double</span>* point11, <span class="keyword">double</span>* point12, <span class="keyword">double</span>* point21, <span class="keyword">double</span>* point22, <span class="keyword">double</span>* vertex)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="funcname"><a class="funcname" href="#DGlobalTools:BuildVertex%1">BuildVertex</a>(<a href="./DR3.html">DR3</a>&amp; pointA1, <a href="./DR3.html">DR3</a>&amp; pointA2, <a href="./DR3.html">DR3</a>&amp; pointB1, <a href="./DR3.html">DR3</a>&amp; pointB2, <a href="./DR3.html">DR3</a>&amp; intersection)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:Chi2ToProbability">Chi2ToProbability</a>(<span class="keyword">int</span> tDoF, <span class="keyword">double</span> tChi2)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DGlobalTools:Class">Class</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:CLof7LegendrePol">CLof7LegendrePol</a>(<span class="keyword">double</span>* x, <span class="keyword">double</span>* coeff)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:Confidence">Confidence</a>(<span class="keyword">int</span> tGoodN, <span class="keyword">int</span> tTotalN, <span class="keyword">float</span> tConfidenceLimit, <span class="keyword">float</span>&amp; tUpperError, <span class="keyword">float</span>&amp; tLowerError)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:Dummy">Dummy</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:GetEULER">GetEULER</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span>*</td><td class="funcname"><a class="funcname" href="#DGlobalTools:GetParameter">GetParameter</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:GetPI">GetPI</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:GetSpeedOfLight">GetSpeedOfLight</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:gMyAge">gMyAge</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:gPoly">gPoly</a>(<span class="keyword">float</span> aArg, <span class="keyword">float</span>* p, <span class="keyword">int</span> aOrder)</td></tr>
+<tr class="func"><td class="funcret">static <a href="./DGlobalTools.html">DGlobalTools</a>*&amp;</td><td class="funcname"><a class="funcname" href="#DGlobalTools:Instance">Instance</a>()</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DGlobalTools:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#DGlobalTools:LocalizeDirName">LocalizeDirName</a>(<span class="keyword">char</span>* inputString)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:LocalizeDirName%1">LocalizeDirName</a>(TString* inputString)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DGlobalTools.html">DGlobalTools</a>&amp;</td><td class="funcname"><a class="funcname" href="#DGlobalTools:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DGlobalTools.html">DGlobalTools</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:OrderIndexAsc">OrderIndexAsc</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>* aIndex, <a href="./ListOfTypes.html#Float_t">Float_t</a>* aArg, <a href="./ListOfTypes.html#Int_t">Int_t</a> aN)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:OrderIndexDes">OrderIndexDes</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>* aIndex, <a href="./ListOfTypes.html#Float_t">Float_t</a>* aArg, <a href="./ListOfTypes.html#Int_t">Int_t</a> aN)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P0">P0</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P1">P1</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P10">P10</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P11">P11</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P12">P12</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P13">P13</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P14">P14</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P15">P15</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P16">P16</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P17">P17</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P18">P18</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P19">P19</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P2">P2</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P3">P3</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P4">P4</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P5">P5</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P6">P6</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P7">P7</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P8">P8</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:P9">P9</a>(<span class="keyword">float</span> aArg)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:Poly">Poly</a>(<span class="keyword">float</span>* pArg, <span class="keyword">float</span>* pParameter)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">double</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:ProbabilityIntegral">ProbabilityIntegral</a>(<span class="keyword">double</span> z)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:SetOrder">SetOrder</a>(<span class="keyword">int</span> aOrder)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:SetParameter">SetParameter</a>(<span class="keyword">float</span>* aParameter, <span class="keyword">int</span> aN)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:SetVetoPixel">SetVetoPixel</a>(<span class="keyword">int</span> noiseRun)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:Swap">Swap</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* a, <a href="./ListOfTypes.html#Float_t">Float_t</a>* b)</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><span class="keyword">float</span></td><td class="funcname"><a class="funcname" href="#DGlobalTools:poly">poly</a>(<span class="keyword">float</span> aArg, <span class="keyword">float</span>* p, <span class="keyword">int</span> aOrder)</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DGlobalTools:Data_Members"></a>Data Members</h2>
+<div class="access" id="datapubl"><b>public:</b>
+<table class="data" id="tabdatapubl" cellspacing="0">
+<tr class="data"><td class="datatype"><span class="keyword">bool</span> (*)(<span class="keyword">int</span> chipNb, <span class="keyword">int</span> row, <span class="keyword">int</span> col)</td><td class="dataname"><a name="DGlobalTools:VetoPixel"></a>VetoPixel</td><td class="datadesc">JB 2012/03/11</td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><span class="keyword">float</span></td><td class="dataname"><a name="DGlobalTools:fChi2"></a>fChi2[40][16]</td><td class="datadesc">array of chi2 values at degree of freedom and probability </td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">float</span></td><td class="dataname"><a name="DGlobalTools:fChi2Probability"></a>fChi2Probability[16]</td><td class="datadesc">array of probabilities </td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">int</span></td><td class="dataname"><a name="DGlobalTools:fNparameter"></a>fNparameter</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">float</span></td><td class="dataname"><a name="DGlobalTools:fParameter"></a>fParameter[20]</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">double</span></td><td class="dataname"><a name="DGlobalTools:fProbabilityPhiZ"></a>fProbabilityPhiZ[460]</td><td class="datadesc">probability integral values</td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">double</span></td><td class="dataname"><a name="DGlobalTools:fProbabilityTest"></a>fProbabilityTest[460]</td><td class="datadesc">test variables</td></tr>
+<tr class="data"><td class="datatype">static <a href="./DGlobalTools.html">DGlobalTools</a>*</td><td class="dataname"><a name="DGlobalTools:fgInstance"></a>fgInstance</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">double</span></td><td class="dataname"><a name="DGlobalTools:gEULER"></a>gEULER</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">double</span></td><td class="dataname"><a name="DGlobalTools:gPI"></a>gPI</td><td></td></tr>
+<tr class="data"><td class="datatype"><span class="keyword">float</span></td><td class="dataname"><a name="DGlobalTools:gSpeedOfLight"></a>gSpeedOfLight</td><td></td></tr>
+
+</table></div>
+</div>
+<h2><a id="DGlobalTools:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td>
+<center><big><b><tt><a name="DGlobalTools" href="./DGlobalTools.html">DGlobalTools</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DGlobalTools:DGlobalTools" href="src/DGlobalTools.cxx.html#LiBCWC">DGlobalTools</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:Dummy" href="src/DGlobalTools.cxx.html#jYSKoE">Dummy</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:Swap" href="src/DGlobalTools.cxx.html#aZ_WFB">Swap</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* a, <a href="./ListOfTypes.html#Float_t">Float_t</a>* b)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:gMyAge" href="src/DGlobalTools.cxx.html#aeRsQE">gMyAge</a>()</span><br />
+<div class="funccomm"><pre> another test
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:gPoly" href="src/DGlobalTools.cxx.html#CEjgDE">gPoly</a>(<span class="keyword">float</span> aArg, <span class="keyword">float</span>* p, <span class="keyword">int</span> aOrder)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:OrderIndexDes" href="src/DGlobalTools.cxx.html#ehF5ZC">OrderIndexDes</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>* aIndex, <a href="./ListOfTypes.html#Float_t">Float_t</a>* aArg, <a href="./ListOfTypes.html#Int_t">Int_t</a> aN)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:OrderIndexAsc" href="src/DGlobalTools.cxx.html#uzxRBC">OrderIndexAsc</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a>* aIndex, <a href="./ListOfTypes.html#Float_t">Float_t</a>* aArg, <a href="./ListOfTypes.html#Int_t">Int_t</a> aN)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:Poly" href="src/DGlobalTools.cxx.html#ftp2.B">Poly</a>(<span class="keyword">float</span>* pArg, <span class="keyword">float</span>* pParameter)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:poly" href="src/DGlobalTools.cxx.html#uWAXHC">poly</a>(<span class="keyword">float</span> aArg, <span class="keyword">float</span>* p, <span class="keyword">int</span> aOrder)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:SetParameter" href="src/DGlobalTools.cxx.html#o9iOKD">SetParameter</a>(<span class="keyword">float</span>* aParameter, <span class="keyword">int</span> aN)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:Confidence" href="src/DGlobalTools.cxx.html#AjKS4">Confidence</a>(<span class="keyword">int</span> tGoodN, <span class="keyword">int</span> tTotalN, <span class="keyword">float</span> tConfidenceLimit, <span class="keyword">float</span>&amp; tUpperError, <span class="keyword">float</span>&amp; tLowerError)</span><br />
+<div class="funccomm"><pre> code borrowed from Lee Holloway (UofI/CDF)
+ 980227 via William to me, original in FORTRAN
+ compute probability limits from confidence level
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DGlobalTools:ProbabilityIntegral" href="src/DGlobalTools.cxx.html#q824CC">ProbabilityIntegral</a>(<span class="keyword">double</span> z)</span><br />
+<div class="funccomm"><pre> returns the value Phi(z)=1/sqrt(2pi) * Int_-inf^z dx exp(-0.5 * x2)
+ this is a lookup table
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DGlobalTools:Chi2ToProbability" href="src/DGlobalTools.cxx.html#baYxaD">Chi2ToProbability</a>(<span class="keyword">int</span> tDoF, <span class="keyword">double</span> tChi2)</span><br />
+<div class="funccomm"><pre> chi-square characterizes the deviation between an approximation and measurements.
+ the approximation has a degree of freedom.
+ the measurements are normal distributed around measurement mean.
+ The distribution of chi-squares at the degree of freedom is known.
+ here: the probability for the event with this chi2 to be combatible with the
+ approximation is the area from chi2 to infinite under the chi2-distribution curve.
+ it is tabulated in e.g. Bronstein Semendjajew, 1.1.2.10 p. 21
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DGlobalTools:CLof7LegendrePol" href="src/DGlobalTools.cxx.html#jHhXaC">CLof7LegendrePol</a>(<span class="keyword">double</span>* x, <span class="keyword">double</span>* coeff)</span><br />
+<div class="funccomm"><pre> Return the value of a combination of Legendre polynoms, evaluated at x.
+ The linear combination includes the 1st seventh polynoms
+   with the provided coefficients.
+ x SHALL BE BETWEEN -1 and 1 otherwise return 0.!
+
+ JB 2014/04/10
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">char</span>* <a class="funcname" name="DGlobalTools:LocalizeDirName" href="src/DGlobalTools.cxx.html#e3J9CB">LocalizeDirName</a>(<span class="keyword">char</span>* inputString)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:LocalizeDirName%1" href="src/DGlobalTools.cxx.html#lpzsMD">LocalizeDirName</a>(TString* inputString)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DGlobalTools:BuildVertex" href="src/DGlobalTools.cxx.html#xlkfqD">BuildVertex</a>(<span class="keyword">double</span>* point11, <span class="keyword">double</span>* point12, <span class="keyword">double</span>* point21, <span class="keyword">double</span>* point22, <span class="keyword">double</span>* vertex)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a> <a class="funcname" name="DGlobalTools:BuildVertex%1" href="src/DGlobalTools.cxx.html#JL9gtD">BuildVertex</a>(<a href="./DR3.html">DR3</a>&amp; pointA1, <a href="./DR3.html">DR3</a>&amp; pointA2, <a href="./DR3.html">DR3</a>&amp; pointB1, <a href="./DR3.html">DR3</a>&amp; pointB2, <a href="./DR3.html">DR3</a>&amp; intersection)</span><br />
+<div class="funccomm"><pre> VR 2014/06/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:SetVetoPixel" href="src/DGlobalTools.cxx.html#oeqx_D">SetVetoPixel</a>(<span class="keyword">int</span> noiseRun)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DGlobalTools:DGlobalTools" href="src/DGlobalTools.h.html#qKYZ6E">DGlobalTools</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">virtual</span> <a class="funcname" name="DGlobalTools:_DGlobalTools" href="src/DGlobalTools.h.html#RGCUkC">~DGlobalTools</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DGlobalTools:GetPI" href="src/DGlobalTools.h.html#v3iJ7">GetPI</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:gPI" title="double DGlobalTools::gPI">gPI</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">double</span> <a class="funcname" name="DGlobalTools:GetEULER" href="src/DGlobalTools.h.html#X8rcyC">GetEULER</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:gEULER" title="double DGlobalTools::gEULER">gEULER</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:GetSpeedOfLight" href="src/DGlobalTools.h.html#ofL91E">GetSpeedOfLight</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:gSpeedOfLight" title="float DGlobalTools::gSpeedOfLight">gSpeedOfLight</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DGlobalTools:SetOrder" href="src/DGlobalTools.h.html#eDsNBE">SetOrder</a>(<span class="keyword">int</span> aOrder)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DGlobalTools.html#DGlobalTools:fNparameter" title="int DGlobalTools::fNparameter">fNparameter</a> = aOrder+1; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span>       * <a class="funcname" name="DGlobalTools:GetParameter" href="src/DGlobalTools.h.html#Upt.9B">GetParameter</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P19" href="src/DGlobalTools.h.html#A4Zq1D">P19</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 19); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P18" href="src/DGlobalTools.h.html#QktWzD">P18</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 18); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P17" href="src/DGlobalTools.h.html#w8UvME">P17</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 17); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P16" href="src/DGlobalTools.h.html#MpobKE">P16</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 16); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P15" href="src/DGlobalTools.h.html#QktWRE">P15</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 15); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P14" href="src/DGlobalTools.h.html#gQBDPE">P14</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 14); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P13" href="src/DGlobalTools.h.html#IujgDE">P13</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 13); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P12" href="src/DGlobalTools.h.html#Ya3MBE">P12</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 12); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P11" href="src/DGlobalTools.h.html#cV8HIE">P11</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 11); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P10" href="src/DGlobalTools.h.html#sBQ0FE">P10</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 10); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P9" href="src/DGlobalTools.h.html#k89.e">P9</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 9); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P8" href="src/DGlobalTools.h.html#cGU.e">P8</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 8); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P7" href="src/DGlobalTools.h.html#UQqAf">P7</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 7); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P6" href="src/DGlobalTools.h.html#MaAAf">P6</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 6); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P5" href="src/DGlobalTools.h.html#k89Bf">P5</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 5); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P4" href="src/DGlobalTools.h.html#cGUBf">P4</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 4); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P3" href="src/DGlobalTools.h.html#ApRDf">P3</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 3); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P2" href="src/DGlobalTools.h.html#synCf">P2</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 2); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P1" href="src/DGlobalTools.h.html#QVlEf">P1</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 1); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">float</span> <a class="funcname" name="DGlobalTools:P0" href="src/DGlobalTools.h.html#If7Df">P0</a>(<span class="keyword">float</span> aArg)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DGlobalTools.html#DGlobalTools:poly" title="float DGlobalTools::poly(float aArg,float* p,int aOrder)">poly</a>(aArg, <a href="./DGlobalTools.html#DGlobalTools:fParameter" title="float DGlobalTools::fParameter">fParameter</a>, 0); }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DGlobalTools.html">DGlobalTools</a>*&amp; <a class="funcname" name="DGlobalTools:Instance" href="src/DGlobalTools.h.html#X3M_mC">Instance</a>()</span><br />
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id: GlobalTools.h,v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:00</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

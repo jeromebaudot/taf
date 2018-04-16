@@ -1,0 +1,20 @@
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/com_pc/
+Goal      : Variables definition of com_pc unit.
+Prj date  : 26/03/2003
+File date : 26/03/2003
+Doc date  : 26/03/2003
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+
+#ifndef COM_PC_VAR
+#define COM_PC_VAR
+
+
+  CPC_TContext  CPC_VGContext[CPC_OBJ_NB];
+  COM_TCommand* CPC_VGCommandsPt[CPC_OBJ_NB][CPC_CMD_REC_NB];
+
+#endif

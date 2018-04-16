@@ -1,0 +1,89 @@
+
+
+/*******************************************************************************
+File      : x:\lib\win\daq_pxi\daq_pxi.def
+Goal      : Macros definition of
+Prj date  : //200
+File date : //200
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef DAQ_PXI_DEF
+#define DAQ_PXI_DEF
+
+/* ======================== */
+/*  Conditional Compilation */
+/* ======================== */
+
+
+
+#define DPXI__MI26_SEARCH_TRIG_POS
+
+#define DPXI__MI26_EMUL_READ_6_MI26 // Read two times 3 Mi26 on same data lines
+                                    // Mi26 No 0, 1, 2 on In0,1 - In2,3 - In 4,5
+                                    // Mi26 No 3, 4, 5 on In0,1 - In2,3 - In 4,5
+                                    // used in DPXI_PRIV_FDeser6Mi26W32LsbFirst
+  
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+
+typedef enum {
+  
+  DPXI__MI26_READ_MODE__REGISTER,
+  DPXI__MI26_READ_MODE__ZS
+  
+} DPXI__MI26_TEReadMode;
+
+
+typedef enum {
+  
+  DPXI__MI26_READ_MODE_PAR__REG_ID,
+  DPXI__MI26_READ_MODE_PAR__ZS_MODE
+  
+} DPXI__MI26_TEReadModePar;
+
+
+#define DPXI__READ_MODE_MAX_PAR_NB 2
+
+
+typedef enum {
+  
+  DPXI__HW_TRIG_PAR__OFFSET,
+  DPXI__HW_TRIG_PAR__WINDOW,
+  DPXI__HW_TRIG_PAR_NB
+  
+} DPXI__TEHwTrigPar;
+
+
+
+#define STRING_LENGHT 256				//Can be any size
+
+
+
+#define DPXI__MI26_NB_MAX_MI26_PER_DAQ 8
+
+
+
+#define DPXI__MI26_TRG_SEARCH__START     1
+#define DPXI__MI26_TRG_SEARCH__RUNNING   2
+#define DPXI__MI26_TRG_SEARCH__DONE      0
+
+/* ============== */
+/*  */
+/* ============== */
+
+
+#endif

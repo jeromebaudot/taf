@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:00:59 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DEventHeader</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DEventHeader','','DEvent.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DEventHeader.h.html">header file</a>
+<a class="descrheadentry" href="src/DEventHeader.cxx.html">source file</a>
+<a class="descrheadentry" href="DEventHeader_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DEventHeader:description">class description</a> 
+<a class="descrheadentry" href="#DEventHeader:Function_Members">function members</a>
+<a class="descrheadentry" href="#DEventHeader:Data_Members">data members</a>
+<a class="descrheadentry" href="#DEventHeader:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DEventHeader</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DEventHeader:description"></a>class DEventHeader</h1>
+<div class="classdescr">
+<pre>
+<a href="./DEventHeader.html#DEventHeader:Class" title="TClass* DEventHeader::Class()">Class</a> Description of <a href="./DEvent.html">DEvent</a>
+
+Trigger event contains values from detector planes
+This event is later written to a data summary <span class="string">".root"</span> file
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DEventHeader:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DEventHeader:DEventHeader">DEventHeader</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DEventHeader:DEventHeader%1">DEventHeader</a>(<span class="keyword">const</span> <a href="./DEventHeader.html">DEventHeader</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DEventHeader:_DEventHeader">~DEventHeader</a>()</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DEventHeader:Class">Class</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DEventHeader:Clear">Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetDate">GetDate</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetEventNumber">GetEventNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetFrameAt">GetFrameAt</a>(<span class="keyword">int</span> index)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetNumberOfFrames">GetNumberOfFrames</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetNumberOfTimestamps">GetNumberOfTimestamps</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetNumberOfTriggers">GetNumberOfTriggers</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetRunNumber">GetRunNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetTime">GetTime</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetTimestampAt">GetTimestampAt</a>(<span class="keyword">int</span> index)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DEventHeader:GetTriggerAt">GetTriggerAt</a>(<span class="keyword">int</span> index)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DEventHeader:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DEventHeader.html">DEventHeader</a>&amp;</td><td class="funcname"><a class="funcname" href="#DEventHeader:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DEventHeader.html">DEventHeader</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DEventHeader:Print">Print</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DEventHeader:Set">Set</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aNEvent, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aNRun, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aDate, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aTime, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aType, vector&lt;<span class="keyword">int</span>&gt;* aListOfTriggers = 0, vector&lt;<span class="keyword">int</span>&gt;* aListOfFrames = 0, vector&lt;<span class="keyword">int</span>&gt;* aListOfTimestamps = 0)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DEventHeader:SetTimeSinceLastEvent">SetTimeSinceLastEvent</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aDeltaTime)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DEventHeader:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DEventHeader:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DEventHeader:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DEventHeader:Data_Members"></a>Data Members</h2>
+<div class="access" id="datapubl"><b>public:</b>
+<table class="data" id="tabdatapubl" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:EListOfFrames"></a>EListOfFrames[50]</td><td class="datadesc">list of frames JB 2010/07/07</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:EListOfTimestamps"></a>EListOfTimestamps[50]</td><td class="datadesc">list of timestamps JB 2010/07/07</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:EListOfTriggers"></a>EListOfTriggers[50]</td><td class="datadesc">list of triggers JB 2010/07/07</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:ENumberOfFrames"></a>ENumberOfFrames</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:ENumberOfTimestamps"></a>ENumberOfTimestamps</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:ENumberOfTriggers"></a>ENumberOfTriggers</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:Edate"></a>Edate</td><td class="datadesc">Date YYMMDD</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:Ek"></a>Ek</td><td class="datadesc">Number of the Event</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:Erelative"></a>Erelative</td><td class="datadesc">time in seconds since start of month, </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:Erunk"></a>Erunk</td><td class="datadesc">Number of the Run</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:Etime"></a>Etime</td><td class="datadesc">Time HHMMSS</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:EtimeSinceLastEvent"></a>EtimeSinceLastEvent</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DEventHeader:Etype"></a>Etype</td><td class="datadesc">type of the event </td></tr>
+
+</table></div>
+</div>
+<h2><a id="DEventHeader:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td>
+<center><big><b><tt><a name="DEventHeader" href="./DEventHeader.html">DEventHeader</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DEventHeader:Set" href="src/DEventHeader.cxx.html#TPrHjE">Set</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aNEvent, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aNRun, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aDate, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aTime, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aType, vector&lt;<span class="keyword">int</span>&gt;* aListOfTriggers = 0, vector&lt;<span class="keyword">int</span>&gt;* aListOfFrames = 0, vector&lt;<span class="keyword">int</span>&gt;* aListOfTimestamps = 0)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DEventHeader:Clear" href="src/DEventHeader.cxx.html#YtwGeD">Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>*  = <span class="string">""</span>)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DEventHeader:SetTimeSinceLastEvent" href="src/DEventHeader.cxx.html#Jq4MRB">SetTimeSinceLastEvent</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aDeltaTime)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DEventHeader:Print" href="src/DEventHeader.cxx.html#uyltCC">Print</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DEventHeader:DEventHeader" href="src/DEventHeader.h.html#zQKpgD">DEventHeader</a>()</span><br />
+<div class="funccomm"><pre> data which is characteristic to the event
+ convention: variables start with `E'
+</pre></div>
+
+<div class="code"><code class="inlinecode">{;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">virtual</span> <a class="funcname" name="DEventHeader:_DEventHeader" href="src/DEventHeader.h.html#r3iMtE">~DEventHeader</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetEventNumber" href="src/DEventHeader.h.html#h8DO_D">GetEventNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:Ek" title="Int_t DEventHeader::Ek">Ek</a>;    }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetRunNumber" href="src/DEventHeader.h.html#VrZE1C">GetRunNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:Erunk" title="Int_t DEventHeader::Erunk">Erunk</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetDate" href="src/DEventHeader.h.html#DgLIOD">GetDate</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:Edate" title="Int_t DEventHeader::Edate">Edate</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetTime" href="src/DEventHeader.h.html#TcaRKD">GetTime</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:Etime" title="Int_t DEventHeader::Etime">Etime</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetNumberOfTriggers" href="src/DEventHeader.h.html#j3JA0E">GetNumberOfTriggers</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:ENumberOfTriggers" title="Int_t DEventHeader::ENumberOfTriggers">ENumberOfTriggers</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetNumberOfFrames" href="src/DEventHeader.h.html#fffAZ">GetNumberOfFrames</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:ENumberOfFrames" title="Int_t DEventHeader::ENumberOfFrames">ENumberOfFrames</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetNumberOfTimestamps" href="src/DEventHeader.h.html#jtZTTD">GetNumberOfTimestamps</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:ENumberOfTimestamps" title="Int_t DEventHeader::ENumberOfTimestamps">ENumberOfTimestamps</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetTriggerAt" href="src/DEventHeader.h.html#OLZDnD">GetTriggerAt</a>(<span class="keyword">int</span> index)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:EListOfTriggers" title="Int_t DEventHeader::EListOfTriggers">EListOfTriggers</a>[index]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetFrameAt" href="src/DEventHeader.h.html#wL6hhB">GetFrameAt</a>(<span class="keyword">int</span> index)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:EListOfFrames" title="Int_t DEventHeader::EListOfFrames">EListOfFrames</a>[index]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DEventHeader:GetTimestampAt" href="src/DEventHeader.h.html#zjxNeB">GetTimestampAt</a>(<span class="keyword">int</span> index)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DEventHeader.html#DEventHeader:EListOfTimestamps" title="Int_t DEventHeader::EListOfTimestamps">EListOfTimestamps</a>[index]; }</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id: DEvent.h,v.2 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:00</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

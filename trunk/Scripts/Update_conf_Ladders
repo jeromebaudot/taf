@@ -1,0 +1,126 @@
+#!/usr/bin/perl -w
+
+use warnings;
+use strict;
+
+sub Usage {
+   print STDERR "usage : ./Update_conf_Ladders <config_filename>.cfg ladder1 PositionsX PositionsY PositionZ TiltZ TiltY TiltX [ladder2 PositionsX PositionsY PositionZ TiltZ TiltY TiltX...] [debug_flag]\n";
+   print STDERR "ex: ./Update_conf_Ladders run9581.cfg 1 0.1 1.11 2.11 2 .2 1.22 2.22 3 .3 1.33 2,33 4 0.4 1.44 2.44 5 .5 1.55 2.55 [-d]\n" ;
+   print STDERR "Will be called from the MIMOSA ROOT Framwork \n";
+   die "Arguments provided were incorrect!\n";
+   return -1
+}
+
+#------------------------------------------------------------------------------------------
+# Modify(pl,posX,posY,posZ,tiltZ,tiltY,tiltX,debug)
+# Modify the runXXXX.cfg file with new values form the tracker alignement
+# and zero any existing alignment parameters
+# args : 
+# - 0 : plane number
+# - 1 :  the secondary plane number to  update
+# - 2 to 4 :  the positions PositionX,Y,Z
+# - 5 to 7 :  the tilts TiltZ,Y,X (! PAY ATTENTION TO ORDER)
+# returns the new value of the current line
+
+sub Modify {
+
+  if ($_[7] eq '-d' && ( $_[8]=~/^LadderPositionX/ ||  $_[8]=~/^LadderTiltZ/ ) ) {
+    print "  Modifying ladder ",$_[0]," : \n" ; 
+  }
+
+  if ($_[8]=~/^LadderTiltZ/) {
+    print "    Old tilts :: ", $_[8] ; 
+    $_[8]="LadderTiltZ:             ".$_[4]."  Y:        ".$_[5]."  X:        ".$_[6]."\n";
+    print "    New tilts :: ", $_[8] ;
+  }
+  
+  if ($_[8]=~/^LadderPositionX/) {
+    print "    Old positions :: ", $_[8] ; 
+    $_[8]="LadderPositionX:        ".$_[1]."  Y:   ".$_[2]."  Z:   ".$_[3]."\n";
+    print "    New positions :: ", $_[8] ;
+  }
+
+return  $_[8];
+
+}
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+# main 
+
+#if incorrect number of args
+if ($#ARGV < 7) {&Usage();}
+
+my $debug='no';
+if (defined($ARGV[$#ARGV])) { $debug=$ARGV[$#ARGV];} else {$debug='no';}
+
+# Compute how many planes are to modified
+my $Nplanes=int $#ARGV/7;
+print "\n--> There are ", $Nplanes, " ladders to modify.\n";
+
+if ($debug eq '-d'){
+ for ( my $i = 0; $i <= $#ARGV; ++$i ) {
+        print "ARGV[$i] = '$ARGV[$i]'\n";
+  }
+}
+
+
+#define and open files
+my $in=$ARGV[0];
+my $back=$in.'.back';
+my $out=$in.'.new';
+
+open(FIN,"$in") or die "Cannot open $in for read :$!";
+open(FOUT,">$out") or die "Cannot open $out for write :$!";
+#flock(FOUT,LOCK_EX) or die "flock bombed out in lockex, $!";
+
+#main loop on on all lines of $in and look for the plane number
+
+print "The config file ",$in," will be updated with new values from the tracker aligement... \n\n";
+
+#print "The config file ",$in," will be saved to ",$back," and updated with new values from the tracker aligement... \n\n";
+#system ("cp $in $back")  or die "Cannot backup $in into $back :$!";
+
+my $plane=0;
+my $index=0;
+
+while (my $line=<FIN>) { # loop on file sparsing
+
+  if ($line=~/- Ladder/) { # detect a new plane
+    $plane++;
+    if ($debug eq '-d'){ print "Checking ladder ", $plane, ".\n"; }
+    $index=0;
+    for ( my $i = 1; $i <= $#ARGV; $i+=7 ) {
+      if( $plane eq $ARGV[$i] ) { 
+	$index=$i; 
+	print "Ladder ", $plane, ":\n";
+      }
+    }
+  }
+
+  if( $index>0 ) {
+    $line=&Modify($plane,$ARGV[$index+1],$ARGV[$index+2],$ARGV[$index+3],$ARGV[$index+4],$ARGV[$index+5],$ARGV[$index+6],$debug,$line);
+  }
+  else {
+    $line=$line;
+  }
+
+  #create the new file $out              
+  print FOUT $line;
+
+} #End while loop
+
+#close and rename files
+close FOUT or die "Cannot close $out :$!";
+close FIN  or die "Cannot close $in :$!";
+
+if ($debug eq '-d') {
+  print "Proceed? [y/n] :";
+  my $key = getc(STDIN);
+  if($key ne 'y') { die "ok... NOTHING DONE! file $in not modified" ;}
+}
+
+rename($out,$in)  or die "Cannot rename $out to $in :$!";  
+print "\nThat's done!\n";
+
+exit 0;

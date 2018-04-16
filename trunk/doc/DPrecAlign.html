@@ -1,0 +1,634 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:00 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DPrecAlign</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DPrecAlign','','DPrecAlign.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DPrecAlign.h.html">header file</a>
+<a class="descrheadentry" href="src/DPrecAlign.cxx.html">source file</a>
+<a class="descrheadentry" href="DPrecAlign_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DPrecAlign:description">class description</a> 
+<a class="descrheadentry" href="#DPrecAlign:Function_Members">function members</a>
+<a class="descrheadentry" href="#DPrecAlign:Data_Members">data members</a>
+<a class="descrheadentry" href="#DPrecAlign:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DPrecAlign</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DPrecAlign:description"></a>class DPrecAlign: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./DPrecAlign.html#DPrecAlign:Class" title="TClass* DPrecAlign::Class()">Class</a> Description of <a href="./DPrecAlign.html">DPrecAlign</a>
+
+ This class stores the precise alignement of a plane.
+ 6 parameters are used: 3 for translations and 3 for rotations.
+
+ Notations:
+  Telescope or tracker frame coordinates = XYZ
+  Plane frame coordinates = UVW
+
+ Transformations from one from to the other are :
+  XYZ = InverseRotation of (UVW) - Translations
+  UVW = Rotation of ( XYZ - Translations)
+
+ Parameters:
+  - translation vector is <a href="./DPrecAlign.html#DPrecAlign:_fTr" title="Double_t DPrecAlign::_fTr">_fTr</a>[3] (in micrometers)
+      these coordinates are given in the tracker frame.
+  - rotation angles vector <a href="./DPrecAlign.html#DPrecAlign:_fTh" title="Double_t DPrecAlign::_fTh">_fTh</a>[3] (in radian)
+      rotations around the following axis 0=z 1=y' 2=x<span class="string">".</span>
+
+ Standard usage:
+- First set the alignment parameters with
+<a href="./DPrecAlign.html#DPrecAlign:SetTranslation" title="void DPrecAlign::SetTranslation(Double_t t0,Double_t t1,Double_t t2) or overloads">SetTranslation</a>( tx, ty, tz)
+<a href="./DPrecAlign.html#DPrecAlign:SetRotations" title="void DPrecAlign::SetRotations(Double_t th0,Double_t th1,Double_t th2) or overloads">SetRotations</a>( thz, thx, thy)
+- Transformation hit coordinates from plane frame
+to tracker frame with:
+<a href="./DR3.html">DR3</a> hit_x = <a href="./DPrecAlign.html#DPrecAlign:TransformHitToTracker" title="DR3 DPrecAlign::TransformHitToTracker(DR3 uuu)">TransformHitToTracker</a>(<a href="./DR3.html">DR3</a> hit_u);
+- Transformation track coordinated from plane frame
+to tracker frame with:
+<a href="./DR3.html">DR3</a> track_u = <a href="./DPrecAlign.html#DPrecAlign:TransformTrackToPlane" title="DR3 DPrecAlign::TransformTrackToPlane() or overloads">TransformTrackToPlane</a>( <a href="./ListOfTypes.html#Double_t">Double_t</a> tx, <a href="./ListOfTypes.html#Double_t">Double_t</a> ty, <a href="./ListOfTypes.html#Double_t">Double_t</a> tz, <a href="./ListOfTypes.html#Double_t">Double_t</a> tdx, <a href="./ListOfTypes.html#Double_t">Double_t</a> tdy);
+ - if the alignment parameters are relative to another alignment (refAlign),
+   the absolute alignment (wrt the tracker) can be obtained with
+   <a href="./DPrecAlign.html#DPrecAlign:ConvoluteAlignment" title="void DPrecAlign::ConvoluteAlignment(DPrecAlign* refAlignment)">ConvoluteAlignment</a>( DPRecAlign *refAlign)
+
+ For alignment purpose when a minimization is required:
+  - Accumulate pairs of matching hit-track with
+   <a href="./DPrecAlign.html#DPrecAlign:NewData" title="void DPrecAlign::NewData(Float_t auh,Float_t avh,Float_t atx,Float_t aty,Float_t atz,Float_t atdx,Float_t atdy) or overloads">NewData</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> auh,<a href="./ListOfTypes.html#Float_t">Float_t</a> avh,<a href="./ListOfTypes.html#Float_t">Float_t</a> atx,<a href="./ListOfTypes.html#Float_t">Float_t</a> aty,<a href="./ListOfTypes.html#Float_t">Float_t</a> atz, <a href="./ListOfTypes.html#Float_t">Float_t</a> atdx, <a href="./ListOfTypes.html#Float_t">Float_t</a> atdy)
+
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DPrecAlign:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DPrecAlign:DPrecAlign">DPrecAlign</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DPrecAlign:DPrecAlign%1">DPrecAlign</a>(<span class="keyword">const</span> <a href="./DPrecAlign.html">DPrecAlign</a>&amp; aobj)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DPrecAlign:_DPrecAlign">~DPrecAlign</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:CalculateIntersection">CalculateIntersection</a>(<a href="./DataPoints.html">DataPoints</a>* aDataPoint)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:CalculatePlane">CalculatePlane</a>()</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ComputeRotationMatrix">ComputeRotationMatrix</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ComputeTorationMatrix">ComputeTorationMatrix</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ConvoluteAlignment">ConvoluteAlignment</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* refAlignment)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ConvoluteRotation">ConvoluteRotation</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> tiltW)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ConvoluteRotation%1">ConvoluteRotation</a>(<a href="./DR3.html">DR3</a> aTilt)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ConvoluteUVWAlignment">ConvoluteUVWAlignment</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> shiftU, <a href="./ListOfTypes.html#Double_t">Double_t</a> shiftV, <a href="./ListOfTypes.html#Double_t">Double_t</a> tiltW)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:CopyAlignment">CopyAlignment</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* anAlign)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:DataSize">DataSize</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:DataSize1">DataSize1</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:DecomposeRotations">DecomposeRotations</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">TList*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetDataPoints">GetDataPoints</a>()</td></tr>
+<tr class="func"><td class="funcret">TList*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetDataPoints1">GetDataPoints1</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetDebug">GetDebug</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a>*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetInitialPosition">GetInitialPosition</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a>*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetInitialRotations">GetInitialRotations</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a>*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetRotationMatrix">GetRotationMatrix</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a>*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetRotations">GetRotations</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a>*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetTorationMatrix">GetTorationMatrix</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetTrackPosition">GetTrackPosition</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Double_t">Double_t</a>*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:GetTranslation">GetTranslation</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DPrecAlign:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ListDataPoints">ListDataPoints</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:NewData%1">NewData</a>(<a href="./DataPoints.html">DataPoints</a>* myDataPoint)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:NewData">NewData</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> auh, <a href="./ListOfTypes.html#Float_t">Float_t</a> avh, <a href="./ListOfTypes.html#Float_t">Float_t</a> atx, <a href="./ListOfTypes.html#Float_t">Float_t</a> aty, <a href="./ListOfTypes.html#Float_t">Float_t</a> atz, <a href="./ListOfTypes.html#Float_t">Float_t</a> atdx, <a href="./ListOfTypes.html#Float_t">Float_t</a> atdy)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:NewData1">NewData1</a>(<a href="./DataPoints.html">DataPoints</a>* myDataPoint)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp;</td><td class="funcname"><a class="funcname" href="#TObject:operator_"><span class="baseclass">TObject::</span>operator=</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; rhs)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:PrintAll">PrintAll</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:PrintRotationMatrix">PrintRotationMatrix</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:PrintTranslations">PrintTranslations</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ResetDataPoints">ResetDataPoints</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ResetDataPoints1">ResetDataPoints1</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:RotateToPlane">RotateToPlane</a>(<a href="./DR3.html">DR3</a> xxx)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:RotateToTracker%1">RotateToTracker</a>(<a href="./DR3.html">DR3</a> uuu)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:RotateToTracker">RotateToTracker</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> u, <a href="./ListOfTypes.html#Double_t">Double_t</a> v, <a href="./ListOfTypes.html#Double_t">Double_t</a> w)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetInitialPosition">SetInitialPosition</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetInitialRotations">SetInitialRotations</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetRotations%1">SetRotations</a>(<a href="./DR3.html">DR3</a> tilt)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetRotations">SetRotations</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> th0, <a href="./ListOfTypes.html#Double_t">Double_t</a> th1, <a href="./ListOfTypes.html#Double_t">Double_t</a> th2)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetTrackPosition">SetTrackPosition</a>(<a href="./DR3.html">DR3</a> xxx)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetTranslation%1">SetTranslation</a>(<a href="./DR3.html">DR3</a> tr)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:SetTranslation">SetTranslation</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> t0, <a href="./ListOfTypes.html#Double_t">Double_t</a> t1, <a href="./ListOfTypes.html#Double_t">Double_t</a> t2)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:Streamer">Streamer</a>(TBuffer&amp; R__b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPrecAlign:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:TransformHitToPlane">TransformHitToPlane</a>(<a href="./DR3.html">DR3</a> xxx)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:TransformHitToTracker">TransformHitToTracker</a>(<a href="./DR3.html">DR3</a> uuu)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:TransformTrackToPlane">TransformTrackToPlane</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPrecAlign:TransformTrackToPlane%1">TransformTrackToPlane</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> tx, <a href="./ListOfTypes.html#Double_t">Double_t</a> ty, <a href="./ListOfTypes.html#Double_t">Double_t</a> tz, <a href="./ListOfTypes.html#Double_t">Double_t</a> tdx, <a href="./ListOfTypes.html#Double_t">Double_t</a> tdy)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DPrecAlign:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_Acoeff"></a>_Acoeff</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_Bcoeff"></a>_Bcoeff</td><td class="datadesc">Parameters of the rotated plane</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_Ccoeff"></a>_Ccoeff</td><td class="datadesc">(name changed, JB 2011/10/27)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_ahpla"></a>_ahpla[3][3]</td><td class="datadesc">inverse rotation around z</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_alpha"></a>_alpha[3][3]</td><td class="datadesc">rotation around z</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_ammag"></a>_ammag[3][3]</td><td class="datadesc">inverse rotation around x"</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_ateb"></a>_ateb[3][3]</td><td class="datadesc">inverse rotation around y'</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_beta"></a>_beta[3][3]</td><td class="datadesc">rotation around y'</td></tr>
+<tr class="data"><td class="datatype">TList</td><td class="dataname"><a name="DPrecAlign:_data"></a>_data</td><td class="datadesc">List of the points: u,v and x,y,z,dx/dz,dy/dz</td></tr>
+<tr class="data"><td class="datatype">TList</td><td class="dataname"><a name="DPrecAlign:_data1"></a>_data1</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_fTh"></a>_fTh[3]</td><td class="datadesc">Rotations  0=z 1=y 2=x   R(tracker-&gt;Plan)=Rz.Ry.Rx </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_fTr"></a>_fTr[3]</td><td class="datadesc">Translations </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_gamma"></a>_gamma[3][3]</td><td class="datadesc">rotation around x"</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_initialPosition"></a>_initialPosition[3]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_initialRotations"></a>_initialRotations[3]</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_rotmat"></a>_rotmat[3][3]</td><td class="datadesc">gamma*beta*alpha</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_tormat"></a>_tormat[3][3]</td><td class="datadesc">inverse rotation matrix</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_xh"></a>_xh</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_yh"></a>_yh</td><td class="datadesc">track point in xyz system at plane</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPrecAlign:_zh"></a>_zh</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPrecAlign:fDebugDPrecAlign"></a>fDebugDPrecAlign</td><td class="datadesc">DPrecAlign debug flag</td></tr>
+
+</table></div>
+</div>
+<h2><a id="DPrecAlign:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DPrecAlign" href="./DPrecAlign.html">DPrecAlign</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DPrecAlign:DPrecAlign%1" href="src/DPrecAlign.cxx.html#rbX4bD">DPrecAlign</a>(<span class="keyword">const</span> <a href="./DPrecAlign.html">DPrecAlign</a>&amp; aobj)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DPrecAlign:DPrecAlign" href="src/DPrecAlign.cxx.html#wcTT7B">DPrecAlign</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DPrecAlign:_DPrecAlign" href="src/DPrecAlign.cxx.html#cfIBY">~DPrecAlign</a>()</span><br />
+<div class="funccomm"><pre> <a href="./DPrecAlign.html">DPrecAlign</a> default destructor
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:NewData" href="src/DPrecAlign.cxx.html#h1bbfB">NewData</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> auh, <a href="./ListOfTypes.html#Float_t">Float_t</a> avh, <a href="./ListOfTypes.html#Float_t">Float_t</a> atx, <a href="./ListOfTypes.html#Float_t">Float_t</a> aty, <a href="./ListOfTypes.html#Float_t">Float_t</a> atz, <a href="./ListOfTypes.html#Float_t">Float_t</a> atdx, <a href="./ListOfTypes.html#Float_t">Float_t</a> atdy)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:NewData1" href="src/DPrecAlign.cxx.html#uFJnhC">NewData1</a>(<a href="./DataPoints.html">DataPoints</a>* myDataPoint)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:NewData%1" href="src/DPrecAlign.cxx.html#QbJdbC">NewData</a>(<a href="./DataPoints.html">DataPoints</a>* myDataPoint)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ListDataPoints" href="src/DPrecAlign.cxx.html#ZlwOFD">ListDataPoints</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPrecAlign:DataSize" href="src/DPrecAlign.cxx.html#Z3ZjhB">DataSize</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPrecAlign:DataSize1" href="src/DPrecAlign.cxx.html#MReK6D">DataSize1</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetInitialRotations" href="src/DPrecAlign.cxx.html#ewSVf">SetInitialRotations</a>()</span><br />
+<div class="funccomm"><pre>initialRotations = new <a href="./ListOfTypes.html#Double_t">Double_t</a>[3];
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetInitialPosition" href="src/DPrecAlign.cxx.html#hhkBuB">SetInitialPosition</a>()</span><br />
+<div class="funccomm"><pre>initialPosition = new <a href="./ListOfTypes.html#Double_t">Double_t</a>[3];
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetRotations" href="src/DPrecAlign.cxx.html#lhgA.B">SetRotations</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> th0, <a href="./ListOfTypes.html#Double_t">Double_t</a> th1, <a href="./ListOfTypes.html#Double_t">Double_t</a> th2)</span><br />
+<div class="funccomm"><pre>th0, th1, th2 : Rotation angles around z, y' and x<span class="string">" axis</span>
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetRotations%1" href="src/DPrecAlign.cxx.html#Yr.gvB">SetRotations</a>(<a href="./DR3.html">DR3</a> tilt)</span><br />
+<div class="funccomm"><pre>tilt[0], tilt[1], tilt[2] should be the rotation angles around the z, y' and x<span class="string">" axis</span>
+ JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetTranslation" href="src/DPrecAlign.cxx.html#LxUhLE">SetTranslation</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> t0, <a href="./ListOfTypes.html#Double_t">Double_t</a> t1, <a href="./ListOfTypes.html#Double_t">Double_t</a> t2)</span><br />
+<div class="funccomm"><pre> Sets a translation
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetTranslation%1" href="src/DPrecAlign.cxx.html#bC_xL">SetTranslation</a>(<a href="./DR3.html">DR3</a> tr)</span><br />
+<div class="funccomm"><pre>tr[0], tr[1], tr[2] should be the translation along the x y z axis
+ JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:CopyAlignment" href="src/DPrecAlign.cxx.html#go2YW">CopyAlignment</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* anAlign)</span><br />
+<div class="funccomm"><pre> <a href="./#TObject:Copy" title="void TObject::Copy(TObject&amp; object)">Copy</a> the alignment parameters of anAlign,
+ and recompute everything.
+
+ JB 2014/02/17
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ComputeRotationMatrix" href="src/DPrecAlign.cxx.html#DKp1ED">ComputeRotationMatrix</a>()</span><br />
+<div class="funccomm"><pre>Compute the rotation matrix from Tracker frame to Plane Frame
+ alpha is the rotation around z
+ beta is the rotation around y'
+ gamma is the rotation around x<span class="string">"</span>
+ final matrix is gamma*beta*alpha
+
+ This method is called when the rotation angles are set
+  with <a href="./DPrecAlign.html#DPrecAlign:SetRotations" title="void DPrecAlign::SetRotations(Double_t th0,Double_t th1,Double_t th2) or overloads">SetRotations</a>( thz, thy, thx).
+
+ Matrix element expression assuming:
+ ca = cos(alpha), sb=sin(beta), cg/sg=cos/sin(gamma)
+
+ ca.cb	      cb.sa		-sb
+ ca.sb.sg-sa.sg   sa.sb.sg+ca.cg	cb.sg
+ ca.sb.cg-sa.sg   sa.sb.cg-ca.sg	cb.cg
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ComputeTorationMatrix" href="src/DPrecAlign.cxx.html#kdV1ED">ComputeTorationMatrix</a>()</span><br />
+<div class="funccomm"><pre>Compute the rotation matrix from Plane frame to Tracker Frame
+ ahpla is the inverse rotation around z
+ ateb is the inverse rotation around y
+ ammag is the inverse rotation around x
+ final matrix is ammag*ateb*ahpla
+
+ This method is called when the rotation matrix is computed
+  with <a href="./DPrecAlign.html#DPrecAlign:ComputeRotationMatrix" title="void DPrecAlign::ComputeRotationMatrix()">ComputeRotationMatrix</a>().
+
+ Created: JB 2010/09/03
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:CalculatePlane" href="src/DPrecAlign.cxx.html#rVkPDB">CalculatePlane</a>()</span><br />
+<div class="funccomm"><pre> A,B and C are parameters of the plane: z+Ax+By+C=0
+
+ This method is called when the rotation angles are set
+  with <a href="./DPrecAlign.html#DPrecAlign:SetRotations" title="void DPrecAlign::SetRotations(Double_t th0,Double_t th1,Double_t th2) or overloads">SetRotations</a>( thz, thy, thx), just after the rotation matrix
+  has been calculated.
+
+ The original method crashed in certain cases and was replaced by a
+  more robust computation.
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:CalculateIntersection" href="src/DPrecAlign.cxx.html#GIXdVB">CalculateIntersection</a>(<a href="./DataPoints.html">DataPoints</a>* aDataPoint)</span><br />
+<div class="funccomm"><pre>If a plane is determined as Ax+By+z+C=0
+ and a line - as x=x0+t*a
+                 y=y0+t*b
+                 z=z0+t*c
+ then a crossection point is at -t=Ax0+By0+z0+C/(Aa+Bb+c)
+ and one can calculate x,y,z of that point
+ All computation in telescope frame
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:PrintRotationMatrix" href="src/DPrecAlign.cxx.html#EPBmEC">PrintRotationMatrix</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:PrintTranslations" href="src/DPrecAlign.cxx.html#NgFBSB">PrintTranslations</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:PrintAll" href="src/DPrecAlign.cxx.html#NYSYBD">PrintAll</a>()</span><br />
+<div class="funccomm"><pre> JB 2010/09/08
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:RotateToPlane" href="src/DPrecAlign.cxx.html#SBVa1D">RotateToPlane</a>(<a href="./DR3.html">DR3</a> xxx)</span><br />
+<div class="funccomm"><pre> Rotate a vector from the telescope frame to the plane  frame
+
+ Created: JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:RotateToTracker" href="src/DPrecAlign.cxx.html#J3Q3wC">RotateToTracker</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> u, <a href="./ListOfTypes.html#Double_t">Double_t</a> v, <a href="./ListOfTypes.html#Double_t">Double_t</a> w)</span><br />
+<div class="funccomm"><pre> Rotate a (U,V,W) vector from the plane frame to the telescope frame
+
+ Created: JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:RotateToTracker%1" href="src/DPrecAlign.cxx.html#tHc28">RotateToTracker</a>(<a href="./DR3.html">DR3</a> uuu)</span><br />
+<div class="funccomm"><pre> Rotate a vector from the plane frame to the telescope frame
+
+ Created: JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:TransformHitToTracker" href="src/DPrecAlign.cxx.html#v2D0qD">TransformHitToTracker</a>(<a href="./DR3.html">DR3</a> uuu)</span><br />
+<div class="funccomm"><pre> Boost the given position from the plane frame to the telescope frame
+
+ Created: JB 2010/09/03
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:TransformHitToPlane" href="src/DPrecAlign.cxx.html#vzQ2zB">TransformHitToPlane</a>(<a href="./DR3.html">DR3</a> xxx)</span><br />
+<div class="funccomm"><pre> Boost the given position from the tracker frame to the plane frame
+ Use the mechanism built for track, though there is no need
+ to find the track intersection with the plane
+
+ Created: JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:TransformTrackToPlane" href="src/DPrecAlign.cxx.html#bm0OaE">TransformTrackToPlane</a>()</span><br />
+<div class="funccomm"><pre> Returns the position where the track crosses the plane
+ in the plane frame
+ Assumes the position of the track at the plane but in the telescop frame is known
+
+ Note the plane is considered as flat with no deformation,
+  to take into account deformation, call <a href="./DPlane.html">DPlane</a>::<a href="./DPlane.html#DPlane:Intersection" title="DR3 DPlane::Intersection(DTrack* aTrack)">Intersection</a>
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:TransformTrackToPlane%1" href="src/DPrecAlign.cxx.html#fgOBoC">TransformTrackToPlane</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> tx, <a href="./ListOfTypes.html#Double_t">Double_t</a> ty, <a href="./ListOfTypes.html#Double_t">Double_t</a> tz, <a href="./ListOfTypes.html#Double_t">Double_t</a> tdx, <a href="./ListOfTypes.html#Double_t">Double_t</a> tdy)</span><br />
+<div class="funccomm"><pre> Returns the position where the track crosses the plane
+ in the plane frame
+ (tx, ty, tz=0) are the coordinate of the track origin in the telescope frame
+ (tdx, tdy, tdz=1) are the slope of the track so that, in the telescope frame,
+ the track equation is: x=(z-tz)*tdx+tx, y=(z-tz)*tdy+ty, z=(z-tz)*tdz+tz
+
+ Created: JB 2010/09/10
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetTrackPosition" href="src/DPrecAlign.cxx.html#zNn6NB">SetTrackPosition</a>(<a href="./DR3.html">DR3</a> xxx)</span><br />
+<div class="funccomm"><pre> Set a <span class="string">"track"</span> position in the XYZ frame
+
+ JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPrecAlign:GetTrackPosition" href="src/DPrecAlign.cxx.html#lfVHeE">GetTrackPosition</a>()</span><br />
+<div class="funccomm"><pre> Returns the position where the track crosses the plane
+ in the telescope frame
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ConvoluteRotation" href="src/DPrecAlign.cxx.html#QYZEHD">ConvoluteRotation</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> tiltW)</span><br />
+<div class="funccomm"><pre> Recompute the rotation angles around z,y',x<span class="string">"</span>
+ taking into account an additional rotation around w
+
+ First compute the new rotation matrix : R(z,y,x)*R-1(w,0,0)
+ Then compute the new toration matrix : R(w,0,0)*R-1(z,y,x)
+ Finaly deconvolute the rotation matrix to get the new angles
+
+ JB 2010/11/25
+ Modified JB 2011/04/05 matrix product swapped
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ConvoluteRotation%1" href="src/DPrecAlign.cxx.html#cGrBJC">ConvoluteRotation</a>(<a href="./DR3.html">DR3</a> aTilt)</span><br />
+<div class="funccomm"><pre> Recompute the rotation matrix R and angles around z,y',x<span class="string">"</span>
+  taking into account additional rotation angles from aTilt.
+
+ Notation:
+  o Rin is the initial rotation matrix,
+  o Rtilt is the rotation matrix Rtilt from the agnles aTilt,
+  o Rout is the final rotation matrix with
+     Rout = Rin x Rtilt
+
+ JB 2014/02/16
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ConvoluteUVWAlignment" href="src/DPrecAlign.cxx.html#KMCez">ConvoluteUVWAlignment</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> shiftU, <a href="./ListOfTypes.html#Double_t">Double_t</a> shiftV, <a href="./ListOfTypes.html#Double_t">Double_t</a> tiltW)</span><br />
+<div class="funccomm"><pre> Recompute all the alignment parameters in the XYZ frame
+ from an alignment performed in the UVW frame
+  (only U,V shifts and W anlge)
+
+ First convolute the W alignment angle with the initial rotation matrix
+ so far, the new rotation angles are not updated, just the matrices (2010/11/25)
+
+ Then convolute the alignment (shift and rotation) with the initial position and rotations
+ first rotate the u-shift vector to tracker coordinates
+ which then has to be added to the plane center position.
+
+ Also update the plane definition
+
+ JB 2010/11/25
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ConvoluteAlignment" href="src/DPrecAlign.cxx.html#EGfoyD">ConvoluteAlignment</a>(<a href="./DPrecAlign.html">DPrecAlign</a>* refAlignment)</span><br />
+<div class="funccomm"><pre> Consider the current alignment is relative to the given one (refAlignment).
+ So change this alignment to be absolute wrt Telescope frame.
+
+ Notation:
+  o current alignment = shift vector Srel, rotation matrix Rrel,
+  o reference alignment = shift vector Sref, rotation matrix Rref,
+  o final aboslute alignemnt = shift vector Sabs, rotation matrix Rabs.
+
+ Formula are:
+  Rabs = Rref x Rrel
+  Sabs = invRrel x Srel + Sref
+
+ JB 2014/02/16
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:DecomposeRotations" href="src/DPrecAlign.cxx.html#wUE7l">DecomposeRotations</a>()</span><br />
+<div class="funccomm"><pre> Decomposes the rotation matrix, that is:
+ compute the values of the rotation angle around z, x', y<span class="string">"</span>
+ from the values of the rotation matrix
+
+ To solve ambiguities, angle values nearest to the known ones are chosen.
+
+ Updates the angle values in the <a href="./DPrecAlign.html#DPrecAlign:_fTh" title="Double_t DPrecAlign::_fTh">_fTh</a> vector,
+ [0]=z, [1]=y', [2]=x<span class="string">"</span>
+
+ JB 2011/04/04
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:Streamer" href="src/DPrecAlign.cxx.html#cmm6DE">Streamer</a>(TBuffer&amp; R__b)</span><br />
+<div class="funccomm"><pre> Modified: JB 2010/09/03
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ResetDataPoints" href="src/DPrecAlign.h.html#iAWIT">ResetDataPoints</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPrecAlign.html#DPrecAlign:_data" title="TList DPrecAlign::_data">_data</a>.<a href="./#TObject:Delete" title="void TObject::Delete(Option_t* option=&quot;&quot;)">Delete</a>();}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:ResetDataPoints1" href="src/DPrecAlign.h.html#VfabHD">ResetDataPoints1</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPrecAlign.html#DPrecAlign:_data1" title="TList DPrecAlign::_data1">_data1</a>.<a href="./#TObject:Delete" title="void TObject::Delete(Option_t* option=&quot;&quot;)">Delete</a>();}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a>* <a class="funcname" name="DPrecAlign:GetRotations" href="src/DPrecAlign.h.html#qz.C8C">GetRotations</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPrecAlign.html#DPrecAlign:_fTh" title="Double_t DPrecAlign::_fTh">_fTh</a> ;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a>* <a class="funcname" name="DPrecAlign:GetTranslation" href="src/DPrecAlign.h.html#Xk7LAC">GetTranslation</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPrecAlign.html#DPrecAlign:_fTr" title="Double_t DPrecAlign::_fTr">_fTr</a> ;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a>* <a class="funcname" name="DPrecAlign:GetRotationMatrix" href="src/DPrecAlign.h.html#AScUXD">GetRotationMatrix</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> (<a href="./ListOfTypes.html#Double_t">Double_t</a>*)<a href="./DPrecAlign.html#DPrecAlign:_rotmat" title="Double_t DPrecAlign::_rotmat">_rotmat</a> ;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a>* <a class="funcname" name="DPrecAlign:GetTorationMatrix" href="src/DPrecAlign.h.html#nv_2WD">GetTorationMatrix</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> (<a href="./ListOfTypes.html#Double_t">Double_t</a>*)<a href="./DPrecAlign.html#DPrecAlign:_tormat" title="Double_t DPrecAlign::_tormat">_tormat</a> ;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TList* <a class="funcname" name="DPrecAlign:GetDataPoints" href="src/DPrecAlign.h.html#oGXsfD">GetDataPoints</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> &amp;<a href="./DPrecAlign.html#DPrecAlign:_data" title="TList DPrecAlign::_data">_data</a> ;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TList* <a class="funcname" name="DPrecAlign:GetDataPoints1" href="src/DPrecAlign.h.html#WQMwiD">GetDataPoints1</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> &amp;<a href="./DPrecAlign.html#DPrecAlign:_data1" title="TList DPrecAlign::_data1">_data1</a> ;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a>* <a class="funcname" name="DPrecAlign:GetInitialRotations" href="src/DPrecAlign.h.html#PSK7ZC">GetInitialRotations</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPrecAlign.html#DPrecAlign:_initialRotations" title="Double_t DPrecAlign::_initialRotations">_initialRotations</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Double_t">Double_t</a>* <a class="funcname" name="DPrecAlign:GetInitialPosition" href="src/DPrecAlign.h.html#FQp.K">GetInitialPosition</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPrecAlign.html#DPrecAlign:_initialPosition" title="Double_t DPrecAlign::_initialPosition">_initialPosition</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPrecAlign:SetDebug" href="src/DPrecAlign.h.html#gLmbwD">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPrecAlign.html#DPrecAlign:fDebugDPrecAlign" title="Int_t DPrecAlign::fDebugDPrecAlign">fDebugDPrecAlign</a> = aDebug;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPrecAlign:GetDebug" href="src/DPrecAlign.h.html#oiYIVB">GetDebug</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DPrecAlign.html#DPrecAlign:fDebugDPrecAlign" title="Int_t DPrecAlign::fDebugDPrecAlign">fDebugDPrecAlign</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id: DPrecAlign.h,v.1 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>

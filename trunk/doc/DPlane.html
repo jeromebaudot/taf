@@ -1,0 +1,920 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!--                                             -->
+<!-- Author: ROOT team (rootdev@pcroot.cern.ch)  -->
+<!--                                             -->
+<!--   Date: Mon Sep  1 10:01:01 2014            -->
+<!--                                             -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>DPlane</title>
+<meta name="rating" content="General" />
+<meta name="objecttype" content="Manual" />
+<meta name="keywords" content="software development, oo, object oriented, unix, x11, windows, c++, html, rene brun, fons rademakers, cern" />
+<meta name="description" content="ROOT - An Object Oriented Framework For Large Scale Data Analysis." />
+<link rel="stylesheet" type="text/css" href="ROOT.css" id="ROOTstyle" />
+<script type="text/javascript" src="ROOT.js"></script>
+</head>
+<body  onload="javascript:SetValuesFromCookie();"><div id="body_content">
+<div id="root_header"><img src="http://root.cern.ch/drupal/sites/default/files/rootdrawing-logo.png" alt="ROOT logo"/></div>
+<a name="TopOfPage"></a>
+<script type="text/javascript">WriteFollowPageBox('class DPlane','','DPlane.h');</script>
+<div id="toplinks">
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Quick Links:</span>
+<a class="descrheadentry" href="http://root.cern.ch">ROOT Homepage</a>
+<a class="descrheadentry" href="./ClassIndex.html">Class Index</a>
+<a class="descrheadentry" href="./ClassHierarchy.html">Class Hierarchy</a></div>
+<script type="text/javascript">
+function onSearch() {
+var s='http://www.google.com/search?q=%s+site%3A%u+-site%3A%u%2Fsrc%2F+-site%3A%u%2Fexamples%2F';
+var ref=String(document.location.href).replace(/https?:\/\//,'').replace(/\/[^\/]*$/,'').replace(/\//g,'%2F');
+window.location.href=s.replace(/%u/ig,ref).replace(/%s/ig,escape(document.searchform.t.value));
+return false;}
+</script>
+<form id="searchform" name="searchform" onsubmit="return onSearch()" action="javascript:onSearch();" method="post">
+<input name="t" size="30" value="Search documentation..." onfocus="if (document.searchform.t.value=='Search documentation...') document.searchform.t.value='';"></input>
+<a id="searchlink"  title="www.google.com"  href="javascript:onSearch();" onclick="return onSearch()">Search</a></form>
+</div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Source:</span>
+<a class="descrheadentry" href="src/DPlane.h.html">header file</a>
+<a class="descrheadentry" href="src/DPlane.cxx.html">source file</a>
+<a class="descrheadentry" href="DPlane_Tree.pdf">inheritance tree (.pdf)</a> 
+</div></div>
+<div class="descrhead"><div class="descrheadcontent">
+<span class="descrtitle">Sections:</span>
+<a class="descrheadentry" href="#DPlane:description">class description</a> 
+<a class="descrheadentry" href="#DPlane:Function_Members">function members</a>
+<a class="descrheadentry" href="#DPlane:Data_Members">data members</a>
+<a class="descrheadentry" href="#DPlane:Class_Charts">class charts</a>
+</div></div>
+</div>
+<div class="location">
+<a class="locationlevel" href="index.html">TAF</a>
+ &#187; <a class="locationlevel" href="./INCLUDE_Index.html">INCLUDE</a>
+ &#187; <a class="locationlevel" href="#TopOfPage">DPlane</a>
+</div>
+<div class="dropshadow"><div class="withshadow"><h1><a name="DPlane:description"></a>class DPlane: public TObject</h1>
+<div class="classdescr">
+<pre>
+<a href="./DPlane.html#DPlane:Class" title="TClass* DPlane::Class()">Class</a> Description of <a href="./DPlane.html">DPlane</a>
+
++ finds pedestal
++ calculates pulseheight
++ corrects for common mode (shift)
++ calculates single noise
+
+
+</pre></div>
+</div></div>
+
+<div id="functions">
+<h2><a id="DPlane:Function_Members"></a>Function Members (Methods)</h2>
+<div class="access" id="funcpubl"><b>public:</b>
+<table class="func" id="tabfuncpubl" cellspacing="0">
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DPlane:DPlane">DPlane</a>()</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DPlane:DPlane%2">DPlane</a>(<span class="keyword">const</span> <a href="./DPlane.html">DPlane</a>&amp;)</td></tr>
+<tr class="func"><td class="funcret"></td><td class="funcname"><a class="funcname" href="#DPlane:DPlane%1">DPlane</a>(<a href="./DTracker.html">DTracker</a>&amp; aTracker, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderNumber)</td></tr>
+<tr class="func"><td class="funcret"> virtual</td><td class="funcname"><a class="funcname" href="#DPlane:_DPlane">~DPlane</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AbstractMethod"><span class="baseclass">TObject::</span>AbstractMethod</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:Align">Align</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifFit = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:AlignAllHits">AlignAllHits</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifFit = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:AlignData">AlignData</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound, vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; myData)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:AlignPrec">AlignPrec</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:AlignPrecUpdateConfig">AlignPrecUpdateConfig</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:AppendPad"><span class="baseclass">TObject::</span>AppendPad</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Browse"><span class="baseclass">TObject::</span>Browse</a>(TBrowser* b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ChangePositionByOffset">ChangePositionByOffset</a>(<a href="./DR3.html">DR3</a>&amp; offset)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ChangePositionByValue">ChangePositionByValue</a>(<a href="./DR3.html">DR3</a>&amp; newvalue)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ChangeTiltByOffset">ChangeTiltByOffset</a>(<a href="./DR3.html">DR3</a>&amp; offset)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ChangeTiltByValue">ChangeTiltByValue</a>(<a href="./DR3.html">DR3</a>&amp; newvalue)</td></tr>
+<tr class="func"><td class="funcret">static TClass*</td><td class="funcname"><a class="funcname" href="#DPlane:Class">Class</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:ClassName"><span class="baseclass">TObject::</span>ClassName</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Clear"><span class="baseclass">TObject::</span>Clear</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:Clone"><span class="baseclass">TObject::</span>Clone</a>(<span class="keyword">const</span> <span class="keyword">char</span>* newname = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Compare"><span class="baseclass">TObject::</span>Compare</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ComputeStripPosition">ComputeStripPosition</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> col, <a href="./ListOfTypes.html#Int_t">Int_t</a> lin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; u, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; v, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; w)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ComputeStripPosition_UVToColRow">ComputeStripPosition_UVToColRow</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> u, <a href="./ListOfTypes.html#Double_t">Double_t</a> v, <span class="keyword">double</span>&amp; col, <span class="keyword">double</span>&amp; lin)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Copy"><span class="baseclass">TObject::</span>Copy</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>&amp; object) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPlane:DeformedLocalPoint">DeformedLocalPoint</a>(<a href="./DR3.html">DR3</a>&amp; aPlaneCoordinate)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Delete"><span class="baseclass">TObject::</span>Delete</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:Digitize">Digitize</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> aValue)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:DigitizeMatrix">DigitizeMatrix</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:DistancetoPrimitive"><span class="baseclass">TObject::</span>DistancetoPrimitive</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Draw"><span class="baseclass">TObject::</span>Draw</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DrawClass"><span class="baseclass">TObject::</span>DrawClass</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:DrawClone"><span class="baseclass">TObject::</span>DrawClone</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Dump"><span class="baseclass">TObject::</span>Dump</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Error"><span class="baseclass">TObject::</span>Error</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute"><span class="baseclass">TObject::</span>Execute</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Execute%1"><span class="baseclass">TObject::</span>Execute</a>(TMethod* method, TObjArray* params, <a href="./ListOfTypes.html#Int_t">Int_t</a>* error = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ExecuteEvent"><span class="baseclass">TObject::</span>ExecuteEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> event, <a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Fatal"><span class="baseclass">TObject::</span>Fatal</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>*</td><td class="funcname"><a class="funcname" href="#TObject:FindObject%1"><span class="baseclass">TObject::</span>FindObject</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetAcqInputNumber">GetAcqInputNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DAlign.html">DAlign</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetAlignment">GetAlignment</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetAnalysisMode">GetAnalysisMode</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetCDSvariance">GetCDSvariance</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Long_t">Long_t</a>&amp;</td><td class="funcname"><a class="funcname" href="#DPlane:GetChannel">GetChannel</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Long_t">Long_t</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetChannelIndices">GetChannelIndices</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetChannelsN">GetChannelsN</a>()</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetChargeFractionDensity">GetChargeFractionDensity</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tStripIndex)</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetChargeFractionDistribution">GetChargeFractionDistribution</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tStripIndex)</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetChargeFractionUniv">GetChargeFractionUniv</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetCommonMode">GetCommonMode</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetCommonModeRegion">GetCommonModeRegion</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aRegion) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetCommonRegions">GetCommonRegions</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DCut.html">DCut</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetCut">GetCut</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetDebug">GetDebug</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetDigitalThresholdNb">GetDigitalThresholdNb</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetDigitialThresholds">GetDigitialThresholds</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetDrawOption"><span class="baseclass">TObject::</span>GetDrawOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetDtorOnly"><span class="baseclass">TObject::</span>GetDtorOnly</a>()</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetEtaIntU">GetEtaIntU</a>()</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetEtaIntU2">GetEtaIntU2</a>()</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetEtaIntV">GetEtaIntV</a>()</td></tr>
+<tr class="func"><td class="funcret">TH1F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetEtaIntV2">GetEtaIntV2</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DHit.html">DHit</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetHit">GetHit</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aHk) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetHitFinder">GetHitFinder</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetHitsN">GetHitsN</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetHitsNewN">GetHitsNewN</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetHitsOldN">GetHitsOldN</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetHitsUnTrackedLastEventN">GetHitsUnTrackedLastEventN</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DHit.html">DHit</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetHitUnTrackedLastEvent">GetHitUnTrackedLastEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aHk) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">TH2F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetHNoise">GetHNoise</a>()</td></tr>
+<tr class="func"><td class="funcret">TH2F*</td><td class="funcname"><a class="funcname" href="#DPlane:GetHPedestal">GetHPedestal</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetIconName"><span class="baseclass">TObject::</span>GetIconName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetInitialNoise">GetInitialNoise</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetLadderNumber">GetLadderNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret">vector&lt;<a href="./DMonteCarlo.html">DMonteCarlo</a>*&gt;*</td><td class="funcname"><a class="funcname" href="#DPlane:GetListOfMonteCarlo">GetListOfMonteCarlo</a>()</td></tr>
+<tr class="func"><td class="funcret">vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;*</td><td class="funcname"><a class="funcname" href="#DPlane:GetListOfPixels">GetListOfPixels</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetMaxHits">GetMaxHits</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetMimoType">GetMimoType</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetName"><span class="baseclass">TObject::</span>GetName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetNoise">GetNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret">TFile*</td><td class="funcname"><a class="funcname" href="#DPlane:GetNoiseFile">GetNoiseFile</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetNoiseRun">GetNoiseRun</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetObjectInfo"><span class="baseclass">TObject::</span>GetObjectInfo</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> px, <a href="./ListOfTypes.html#Int_t">Int_t</a> py) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetObjectStat"><span class="baseclass">TObject::</span>GetObjectStat</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Option_t">Option_t</a>*</td><td class="funcname"><a class="funcname" href="#TObject:GetOption"><span class="baseclass">TObject::</span>GetOption</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetOverThresholdC">GetOverThresholdC</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetOverThresholdN">GetOverThresholdN</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetPedestal">GetPedestal</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Char_t">Char_t</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetPlaneName">GetPlaneName</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetPlaneNumber">GetPlaneNumber</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Char_t">Char_t</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetPlanePurpose">GetPlanePurpose</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a>&amp;</td><td class="funcname"><a class="funcname" href="#DPlane:GetPosition">GetPosition</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetPositionU">GetPositionU</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetPositionV">GetPositionV</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetPrecAlignment">GetPrecAlignment</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DHit.html">DHit</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetPrincipalHit">GetPrincipalHit</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetPulseHeight">GetPulseHeight</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetPulseHeightToNoise">GetPulseHeightToNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetPulseRangeMaximum">GetPulseRangeMaximum</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetRawData">GetRawData</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetRawFrame1Value">GetRawFrame1Value</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetRawFrame2Value">GetRawFrame2Value</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetRawValue">GetRawValue</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetReadout">GetReadout</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DSetup.html">DSetup</a>&amp;</td><td class="funcname"><a class="funcname" href="#DPlane:GetSetup">GetSetup</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a>&amp;</td><td class="funcname"><a class="funcname" href="#DPlane:GetSize">GetSize</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetStatus">GetStatus</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DStrip.html">DStrip</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetStrip">GetStrip</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Long_t">Long_t</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetStripIndices">GetStripIndices</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a>&amp;</td><td class="funcname"><a class="funcname" href="#DPlane:GetStripPitch">GetStripPitch</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetStripResponseSetting">GetStripResponseSetting</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetStripsN">GetStripsN</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetStripsNu">GetStripsNu</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetStripsNv">GetStripsNv</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetThreshold">GetThreshold</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a>&amp;</td><td class="funcname"><a class="funcname" href="#DPlane:GetTilt">GetTilt</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:GetTiltW">GetTiltW</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">const</span> <span class="keyword">char</span>*</td><td class="funcname"><a class="funcname" href="#TObject:GetTitle"><span class="baseclass">TObject::</span>GetTitle</a>() <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DTracker.html">DTracker</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:GetTracker">GetTracker</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#UInt_t">UInt_t</a></td><td class="funcname"><a class="funcname" href="#TObject:GetUniqueID"><span class="baseclass">TObject::</span>GetUniqueID</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:HandleTimer"><span class="baseclass">TObject::</span>HandleTimer</a>(TTimer* timer)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#ULong_t">ULong_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Hash"><span class="baseclass">TObject::</span>Hash</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Info"><span class="baseclass">TObject::</span>Info</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> <span class="keyword">char</span>* classname) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:InheritsFrom%1"><span class="baseclass">TObject::</span>InheritsFrom</a>(<span class="keyword">const</span> TClass* cl) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Inspect"><span class="baseclass">TObject::</span>Inspect</a>() <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPlane:Intersection">Intersection</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:InvertBit"><span class="baseclass">TObject::</span>InvertBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="func"><td class="funcret">virtual TClass*</td><td class="funcname"><a class="funcname" href="#DPlane:IsA">IsA</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsEqual"><span class="baseclass">TObject::</span>IsEqual</a>(<span class="keyword">const</span> <a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsFolder"><span class="baseclass">TObject::</span>IsFolder</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsOnHeap"><span class="baseclass">TObject::</span>IsOnHeap</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsSortable"><span class="baseclass">TObject::</span>IsSortable</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:IsZombie"><span class="baseclass">TObject::</span>IsZombie</a>() <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ls"><span class="baseclass">TObject::</span>ls</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MayNotUse"><span class="baseclass">TObject::</span>MayNotUse</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DStrip.html">DStrip</a>*</td><td class="funcname"><a class="funcname" href="#DPlane:NearestStrip">NearestStrip</a>(<a href="./DR3.html">DR3</a>&amp; aPosition)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Notify"><span class="baseclass">TObject::</span>Notify</a>()</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Obsolete"><span class="baseclass">TObject::</span>Obsolete</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* asOfVers, <span class="keyword">const</span> <span class="keyword">char</span>* removedFromVers) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete%1"><span class="baseclass">TObject::</span>operator delete</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:operator_delete[]%1"><span class="baseclass">TObject::</span>operator delete[]</a>(<span class="keyword">void</span>* ptr, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new%1"><span class="baseclass">TObject::</span>operator new</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span>*</td><td class="funcname"><a class="funcname" href="#TObject:operator_new[]%1"><span class="baseclass">TObject::</span>operator new[]</a>(<a href="./ListOfTypes.html#size_t">size_t</a> sz, <span class="keyword">void</span>* vp)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DPlane.html">DPlane</a>&amp;</td><td class="funcname"><a class="funcname" href="#DPlane:operator_">operator=</a>(<span class="keyword">const</span> <a href="./DPlane.html">DPlane</a>&amp;)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Paint"><span class="baseclass">TObject::</span>Paint</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPlane:PlaneToTracker">PlaneToTracker</a>(<a href="./DR3.html">DR3</a>&amp; aPlaneCoordinate)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Pop"><span class="baseclass">TObject::</span>Pop</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Print"><span class="baseclass">TObject::</span>Print</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:PrintPosition">PrintPosition</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:PrintTilt">PrintTilt</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Read"><span class="baseclass">TObject::</span>Read</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:RecursiveRemove"><span class="baseclass">TObject::</span>RecursiveRemove</a>(<a href="./#TObject:TObject" title="TObject TObject::TObject() or overloads">TObject</a>* obj)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:ResetBit"><span class="baseclass">TObject::</span>ResetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SaveAs"><span class="baseclass">TObject::</span>SaveAs</a>(<span class="keyword">const</span> <span class="keyword">char</span>* filename = <span class="string">""</span>, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>) <span class="keyword">const</span><span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SavePrimitive"><span class="baseclass">TObject::</span>SavePrimitive</a>(<a href="./ListOfTypes.html#ostream">ostream</a>&amp; out, <a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit%1"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f)</td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetBit"><span class="baseclass">TObject::</span>SetBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> set)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetCDSvariance">SetCDSvariance</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> aVar)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetDebug">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDrawOption"><span class="baseclass">TObject::</span>SetDrawOption</a>(<a href="./ListOfTypes.html#Option_t">Option_t</a>* option = <span class="string">""</span>)<span class="funcprop"><abbr title="has a popup menu entry">MENU</abbr> </span></td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetDtorOnly"><span class="baseclass">TObject::</span>SetDtorOnly</a>(<span class="keyword">void</span>* obj)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetHitsN">SetHitsN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetHitsNewN">SetHitsNewN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetHitsOldN">SetHitsOldN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetHitsUnTrackedLastEventN">SetHitsUnTrackedLastEventN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</td></tr>
+<tr class="funcinh"><td class="funcret">static <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetObjectStat"><span class="baseclass">TObject::</span>SetObjectStat</a>(<a href="./ListOfTypes.html#Bool_t">Bool_t</a> stat)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetPositionU">SetPositionU</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> posU)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetPositionV">SetPositionV</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> posV)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetStatus">SetStatus</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aStatusValue)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetTiltW">SetTiltW</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tiltW)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SetUniqueID"><span class="baseclass">TObject::</span>SetUniqueID</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> uid)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ShowAlignment">ShowAlignment</a>()</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:ShowMembers">ShowMembers</a>(TMemberInspector&amp; insp)</td></tr>
+<tr class="func"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:Streamer">Streamer</a>(TBuffer&amp; b)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:StreamerNVirtual">StreamerNVirtual</a>(TBuffer&amp; b)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:SysError"><span class="baseclass">TObject::</span>SysError</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBit"><span class="baseclass">TObject::</span>TestBit</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:TestBits"><span class="baseclass">TObject::</span>TestBits</a>(<a href="./ListOfTypes.html#UInt_t">UInt_t</a> f) <span class="keyword">const</span></td></tr>
+<tr class="func"><td class="funcret"><a href="./DR3.html">DR3</a></td><td class="funcname"><a class="funcname" href="#DPlane:TrackerToPlane">TrackerToPlane</a>(<a href="./DR3.html">DR3</a>&amp; aTrackerCoordinate)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:Update">Update</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:UpdatePositions">UpdatePositions</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:UseCurrentStyle"><span class="baseclass">TObject::</span>UseCurrentStyle</a>()</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:Warning"><span class="baseclass">TObject::</span>Warning</a>(<span class="keyword">const</span> <span class="keyword">char</span>* method, <span class="keyword">const</span> <span class="keyword">char</span>* msgfmt) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0)</td></tr>
+<tr class="funcinh"><td class="funcret">virtual <a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#TObject:Write%1"><span class="baseclass">TObject::</span>Write</a>(<span class="keyword">const</span> <span class="keyword">char</span>* name = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> option = 0, <a href="./ListOfTypes.html#Int_t">Int_t</a> bufsize = 0) <span class="keyword">const</span></td></tr>
+
+</table></div>
+<div class="access" id="funcprot"><b>protected:</b>
+<table class="func" id="tabfuncprot" cellspacing="0">
+<tr class="funcinh"><td class="funcret">virtual <span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:DoError"><span class="baseclass">TObject::</span>DoError</a>(<span class="keyword">int</span> level, <span class="keyword">const</span> <span class="keyword">char</span>* location, <span class="keyword">const</span> <span class="keyword">char</span>* fmt, va_list va) <span class="keyword">const</span></td></tr>
+<tr class="funcinh"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#TObject:MakeZombie"><span class="baseclass">TObject::</span>MakeZombie</a>()</td></tr>
+
+</table></div>
+<div class="access" id="funcpriv"><b>private:</b>
+<table class="func" id="tabfuncpriv" cellspacing="0">
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:aHitSupressedMean">aHitSupressedMean</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> entries)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:aHitSupressedValue">aHitSupressedValue</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> entries)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:analyze_basics">analyze_basics</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:CalculateCommonMode">CalculateCommonMode</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:CheckSaturation">CheckSaturation</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:extremumIndex">extremumIndex</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a>* d, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:find_hits">find_hits</a>()</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:FindNeighbours">FindNeighbours</a>()</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:mean">mean</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:median">median</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:minimum">minimum</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a>* d, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:runningMean">runningMean</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> om, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> o, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> n, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="funcname"><a class="funcname" href="#DPlane:runningVariance">runningVariance</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> ov, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> o, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> n, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:SetPedandNoiseFromHisto">SetPedandNoiseFromHisto</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> col, <a href="./ListOfTypes.html#Int_t">Int_t</a> row, <a href="./DPixel.html">DPixel</a>* aPixel)</td></tr>
+<tr class="func"><td class="funcret"><span class="keyword">void</span></td><td class="funcname"><a class="funcname" href="#DPlane:UpdatePedestalAndNoise">UpdatePedestalAndNoise</a>()</td></tr>
+
+</table></div>
+</div>
+
+<div id="datamembers">
+<h2><a name="DPlane:Data_Members"></a>Data Members</h2>
+<div class="access" id="enumpubl"><b>public:</b>
+<table class="data" id="tabenumpubl" cellspacing="0">
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span>EStatusBits { </td><td class="dataname"><a href="#TObject:kCanDelete">kCanDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kMustCleanup">kMustCleanup</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kObjInCanvas">kObjInCanvas</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kIsReferenced">kIsReferenced</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kHasUUID">kHasUUID</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kCannotPick">kCannotPick</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNoContextMenu">kNoContextMenu</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kInvalidObject">kInvalidObject</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+<tr class="datainh"><td class="datatype">enum <span class="baseclass">TObject::</span><i>[unnamed]</i> { </td><td class="dataname"><a href="#TObject:kIsOnHeap">kIsOnHeap</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kNotDeleted">kNotDeleted</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kZombie">kZombie</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kBitMask">kBitMask</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kSingleKey">kSingleKey</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kOverwrite">kOverwrite</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype"></td><td class="dataname"><a href="#TObject:kWriteDelete">kWriteDelete</a></td><td></td></tr>
+<tr class="datainh"><td class="datatype">};</td><td></td><td></td></tr>
+
+</table></div>
+<div class="access" id="datapriv"><b>private:</b>
+<table class="data" id="tabdatapriv" cellspacing="0">
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a>*</td><td class="dataname"><a name="DPlane:aCacheRawData"></a>aCacheRawData</td><td class="datadesc">! pointer to temporary copy of Raw Data </td></tr>
+<tr class="data"><td class="datatype"><a href="./DAcq.html">DAcq</a>*</td><td class="dataname"><a name="DPlane:fAcq"></a>fAcq</td><td class="datadesc">pointer to Data Acquisition</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAcqChannelNumber"></a>fAcqChannelNumber</td><td class="datadesc">first strip nb associated to the first channel number for this input (start at 1)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAcqChannelOffset"></a>fAcqChannelOffset</td><td class="datadesc">the number of the first channel related to the plane for this input (start at 1)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAcqInputNumber"></a>fAcqInputNumber</td><td class="datadesc">input number this plane is connected to in the Acquisition Module</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAcqInputsN"></a>fAcqInputsN</td><td class="datadesc">Number of inputs the plane is connected to</td></tr>
+<tr class="data"><td class="datatype">DAcqModule*</td><td class="dataname"><a name="DPlane:fAcqModule"></a>fAcqModule</td><td class="datadesc">pointer to Acquisition Module (e.g. Sirocco) </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAcqModuleChannels"></a>fAcqModuleChannels</td><td class="datadesc">number of channels per input of the module type</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAcqModuleNumber"></a>fAcqModuleNumber</td><td class="datadesc">number of the Acquisition Module </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAcqModuleTypeNumber"></a>fAcqModuleTypeNumber</td><td class="datadesc">this plane is connected to an input in fDacToolNumber</td></tr>
+<tr class="data"><td class="datatype"><a href="./DAlign.html">DAlign</a>*</td><td class="dataname"><a name="DPlane:fAlign"></a>fAlign</td><td class="datadesc">plane alignement</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fAnalysisMode"></a>fAnalysisMode</td><td class="datadesc">0, 1=Strips, 2=Pixels</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DPlane:fCDSvariance"></a>fCDSvariance</td><td class="datadesc">variance of signal distributon in the plane after CDS</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Long_t">Long_t</a>*</td><td class="dataname"><a name="DPlane:fChannel"></a>fChannel</td><td class="datadesc">! pointer to Channels </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Long_t">Long_t</a>*</td><td class="dataname"><a name="DPlane:fChannelGood"></a>fChannelGood</td><td class="datadesc">! list of good channels ( 1= good, 0 = bad)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fChannelsN"></a>fChannelsN</td><td class="datadesc">number of channels in this plane</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DPlane:fChargeFractionDensity"></a>fChargeFractionDensity</td><td class="datadesc">Charge Fraction density distribution, not used (JB 2007) </td></tr>
+<tr class="data"><td class="datatype">TObjArray*</td><td class="dataname"><a name="DPlane:fChargeFractionDensityList"></a>fChargeFractionDensityList</td><td class="datadesc">list of charge fraction densities</td></tr>
+<tr class="data"><td class="datatype">TObjArray*</td><td class="dataname"><a name="DPlane:fChargeFractionDistributionList"></a>fChargeFractionDistributionList</td><td class="datadesc">list of charge fraction distrubutions</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Long_t">Long_t</a>*</td><td class="dataname"><a name="DPlane:fCommonChannels"></a>fCommonChannels</td><td class="datadesc">! Number of Channels in these plane regions </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a>*</td><td class="dataname"><a name="DPlane:fCommonShift"></a>fCommonShift</td><td class="datadesc">! Common Signal shift in plane regions</td></tr>
+<tr class="data"><td class="datatype"><a href="./DCut.html">DCut</a>*</td><td class="dataname"><a name="DPlane:fCut"></a>fCut</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fDebugPlane"></a>fDebugPlane</td><td class="datadesc">plane debug flag</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="DPlane:fDigitalStripResponse"></a>fDigitalStripResponse</td><td class="datadesc">kTRUE = forces digital strip response, hitposition = seed</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DPlane:fDigitizeThresholds"></a>fDigitizeThresholds</td><td class="datadesc">thresholds for digitization emulation, JB 2013/07/17</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DPlane:fEtaIntU"></a>fEtaIntU</td><td class="datadesc">Histo for Eta algorithm in 2D, JB Sept 2007</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DPlane:fEtaIntU2"></a>fEtaIntU2</td><td class="datadesc">Histo for Eta algorithm 2x2 in 2D, JB Novemb 2007</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DPlane:fEtaIntV"></a>fEtaIntV</td><td class="datadesc">Histo for Eta algorithm in 2D, JB Sept 2007</td></tr>
+<tr class="data"><td class="datatype">TH1F*</td><td class="dataname"><a name="DPlane:fEtaIntV2"></a>fEtaIntV2</td><td class="datadesc">Histo for Eta algorithm 2x2 in 2D, JB Novemb 2007</td></tr>
+<tr class="data"><td class="datatype">TBRIK*</td><td class="dataname"><a name="DPlane:fGeometry"></a>fGeometry</td><td></td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="DPlane:fHNoise"></a>fHNoise</td><td class="datadesc">Histo for noise computation </td></tr>
+<tr class="data"><td class="datatype">TH2F*</td><td class="dataname"><a name="DPlane:fHPedestal"></a>fHPedestal</td><td class="datadesc">Histo for pedestal computation </td></tr>
+<tr class="data"><td class="datatype"><a href="./DHit.html">DHit</a>**</td><td class="dataname"><a name="DPlane:fHit"></a>fHit</td><td class="datadesc">! list of pointers to hits</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fHitFinder"></a>fHitFinder</td><td class="datadesc">type of hit finder, JB 2013/07/17</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fHitMax"></a>fHitMax</td><td class="datadesc">maximum number of hits allowed in plane</td></tr>
+<tr class="data"><td class="datatype"><a href="./DHit.html">DHit</a>**</td><td class="dataname"><a name="DPlane:fHitUnTrackedLastEvent"></a>fHitUnTrackedLastEvent</td><td class="datadesc">Explicit   // VR 2014.08.28  </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fHitsN"></a>fHitsN</td><td class="datadesc">number of hits found in plane (total)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fHitsNew"></a>fHitsNew</td><td class="datadesc">number of new hits for this event // VR 2014.08.28</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fHitsOld"></a>fHitsOld</td><td class="datadesc">number of untracked hits from previous event added to the list // VR 2014.08.28</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fHitsUnTrackedLastEventN"></a>fHitsUnTrackedLastEventN</td><td class="datadesc">number of hits not associated to a track in last event // VR 2014.08.28</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fIfDeformation"></a>fIfDeformation</td><td class="datadesc">Flag to model or not deformation, JB 2014/04/10</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fIfDigitize"></a>fIfDigitize</td><td class="datadesc">control digitization emulation, JB 2013/07/17</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fInitialCounter"></a>fInitialCounter</td><td class="datadesc">counter for intialization of pedestal</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fInitialNoise"></a>fInitialNoise</td><td class="datadesc">number of events  for intialization of noise</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fInitialPedestal"></a>fInitialPedestal</td><td class="datadesc">number of events  for intialization of pedestal</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fInitialStatus"></a>fInitialStatus</td><td class="datadesc">0 before init, 1 after</td></tr>
+<tr class="data"><td class="datatype">DInp*</td><td class="dataname"><a name="DPlane:fInput"></a>fInput</td><td class="datadesc">pointer to the Input in the Acquisition </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fKeepUnTrackedHitsBetw2evts"></a>fKeepUnTrackedHitsBetw2evts</td><td class="datadesc">explicit // VR 2014.08.28</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Bool_t">Bool_t</a></td><td class="dataname"><a name="DPlane:fKillNoise"></a>fKillNoise</td><td class="datadesc">flag in case of noise suppression (call to KillNoise)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fLadderNumber"></a>fLadderNumber</td><td class="datadesc">LC 2013/01/14. number of the ladder.</td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DMonteCarlo.html">DMonteCarlo</a>*&gt;*</td><td class="dataname"><a name="DPlane:fListOfMonteCarlo"></a>fListOfMonteCarlo</td><td></td></tr>
+<tr class="data"><td class="datatype">vector&lt;<a href="./DPixel.html">DPixel</a>*&gt;*</td><td class="dataname"><a name="DPlane:fListOfPixels"></a>fListOfPixels</td><td class="datadesc">pointer to list of hit pixel</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fMapping"></a>fMapping</td><td class="datadesc">JB 2012/11/21</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fMimosaType"></a>fMimosaType</td><td class="datadesc">RDM210509</td></tr>
+<tr class="data"><td class="datatype">TFile*</td><td class="dataname"><a name="DPlane:fNoiseFile"></a>fNoiseFile</td><td class="datadesc">File containing histos with peds and noises</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fNoiseRun"></a>fNoiseRun</td><td class="datadesc">Id of noise run</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DPlane:fOverThresholdC"></a>fOverThresholdC</td><td class="datadesc">the pulseheight sum on strips over threshold</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Long_t">Long_t</a></td><td class="dataname"><a name="DPlane:fOverThresholdN"></a>fOverThresholdN</td><td class="datadesc">the number of channels which exceed threshold</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DPlane:fPitch"></a>fPitch</td><td class="datadesc">pitch of strips in u,v,w direction</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fPixelsN"></a>fPixelsN</td><td class="datadesc">number of hit pixels</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a>*</td><td class="dataname"><a name="DPlane:fPlaneName"></a>fPlaneName</td><td class="datadesc">! name of this device</td></tr>
+<tr class="data"><td class="datatype">TNode*</td><td class="dataname"><a name="DPlane:fPlaneNode"></a>fPlaneNode</td><td></td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a>*</td><td class="dataname"><a name="DPlane:fPlaneNodeName"></a>fPlaneNodeName</td><td class="datadesc">!			   </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fPlaneNumber"></a>fPlaneNumber</td><td class="datadesc">the number given to the plane e.g. this Sirocco</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Char_t">Char_t</a>*</td><td class="dataname"><a name="DPlane:fPlanePurpose"></a>fPlanePurpose</td><td class="datadesc">purpose e.g. reference or test or whatever</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DPlane:fPosition"></a>fPosition</td><td class="datadesc">Position of the center in the tracker coordinate system</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DPlane:fPositionU"></a>fPositionU</td><td class="datadesc">the distance between 0 plane and z, perpendicular to strips</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DPlane:fPositionV"></a>fPositionV</td><td class="datadesc">the distance between 0 plane and z, perpendicular to strips</td></tr>
+<tr class="data"><td class="datatype"><a href="./DPrecAlign.html">DPrecAlign</a>*</td><td class="dataname"><a name="DPlane:fPrecAlign"></a>fPrecAlign</td><td class="datadesc">store plane precision alignement</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DPlane:fPulseRangeMaximum"></a>fPulseRangeMaximum</td><td class="datadesc">maximum pulseheight expected on a strip in this plane</td></tr>
+<tr class="data"><td class="datatype">TRandom</td><td class="dataname"><a name="DPlane:fRandomGenerator"></a>fRandomGenerator</td><td class="datadesc">random generator (seed is set at initialization)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a>*</td><td class="dataname"><a name="DPlane:fRawData"></a>fRawData</td><td class="datadesc">! pointer to Raw Data in Data Acquisition</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fReadout"></a>fReadout</td><td class="datadesc">1=normal (look Update() method)</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fRegions"></a>fRegions</td><td class="datadesc">number of regions for common mode correction (e.g. 2 if 2 readout chips)</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSession.html">DSession</a>*</td><td class="dataname"><a name="DPlane:fSession"></a>fSession</td><td class="datadesc">JB 2011/07/21 to get rid of global var</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DPlane:fSize"></a>fSize</td><td class="datadesc">rectangular extensions </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fStatus"></a>fStatus</td><td class="datadesc">1=Primary, 2=Secondary Reference, or 3=Test Plane</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Long_t">Long_t</a>*</td><td class="dataname"><a name="DPlane:fStripIndices"></a>fStripIndices</td><td class="datadesc">! pointer to strip indices </td></tr>
+<tr class="data"><td class="datatype"><a href="./DStrip.html">DStrip</a>**</td><td class="dataname"><a name="DPlane:fStripList"></a>fStripList</td><td class="datadesc">! list of pointers to strips</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fStripsN"></a>fStripsN</td><td class="datadesc">sum of strips in u,v and w   </td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fStripsNu"></a>fStripsNu</td><td class="datadesc">number of strips in u direction</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Int_t">Int_t</a></td><td class="dataname"><a name="DPlane:fStripsNv"></a>fStripsNv</td><td class="datadesc">number of strips in v direction</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Float_t">Float_t</a></td><td class="dataname"><a name="DPlane:fThreshold"></a>fThreshold</td><td class="datadesc">a threshold for measuring occupancy</td></tr>
+<tr class="data"><td class="datatype"><a href="./DR3.html">DR3</a>*</td><td class="dataname"><a name="DPlane:fTilt"></a>fTilt</td><td class="datadesc">tilting angles [radian], three Euler angles, comes later</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPlane:fTiltW"></a>fTiltW</td><td class="datadesc">the tilt in W</td></tr>
+<tr class="data"><td class="datatype"><a href="./DGlobalTools.html">DGlobalTools</a></td><td class="dataname"><a name="DPlane:fTool"></a>fTool</td><td class="datadesc">JB 2014/04/21</td></tr>
+<tr class="data"><td class="datatype"><a href="./DTracker.html">DTracker</a>*</td><td class="dataname"><a name="DPlane:fTracker"></a>fTracker</td><td class="datadesc">pointer to the Tracker</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPlane:fUDeformationCoef"></a>fUDeformationCoef[8]</td><td class="datadesc">Coeff. for U-deformation model, JB 2014/04/10</td></tr>
+<tr class="data"><td class="datatype"><a href="./ListOfTypes.html#Double_t">Double_t</a></td><td class="dataname"><a name="DPlane:fVDeformationCoef"></a>fVDeformationCoef[8]</td><td class="datadesc">Coeff. for V-deformation model, JB 2014/04/10</td></tr>
+<tr class="data"><td class="datatype"><a href="./DSetup.html">DSetup</a>*</td><td class="dataname"><a name="DPlane:fc"></a>fc</td><td class="datadesc">pointer to Configuration</td></tr>
+
+</table></div>
+</div>
+<h2><a id="DPlane:Class_Charts"></a>Class Charts</h2>
+<!--INHERITANCE TREE-->
+<table><tr><td width="10%"></td><td width="70%"><a href="ClassHierarchy.html">Inheritance Chart</a>:</td></tr><tr class="inhtree"><td width="10%"></td><td width="70%"><table class="inhtree"><tr><td>
+<table width="100%" border="0" cellpadding ="0" cellspacing="2"><tr>
+<td><table><tr>
+<td bgcolor="#f7f7f7" align="right">
+<tt>TObject</tt></td>
+</tr></table></td>
+<td>&larr;</td><td>
+<center><big><b><tt><a name="DPlane" href="./DPlane.html">DPlane</a></tt></b></big></center>
+</td>
+<td><table><tr>
+<td></td>
+</tr></table></td>
+</tr></table>
+</td></tr></table></td></tr></table>
+<h2>Function documentation</h2>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DPlane:DPlane" href="src/DPlane.cxx.html#WT2gg">DPlane</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPlane.html#DPlane:fDebugPlane" title="Int_t DPlane::fDebugPlane">fDebugPlane</a>=0; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DPlane:DPlane%1" href="src/DPlane.cxx.html#vjYsKB">DPlane</a>(<a href="./DTracker.html">DTracker</a>&amp; aTracker, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aPlaneNumber, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> aLadderNumber)</span><br />
+<div class="funccomm"><pre> Main constructor of the DPLane class.
+
+ Last Modified: JB 2009/08/21
+ Last Modified: JB 2009/09/01, skip <a href="./DStrip.html">DStrip</a> list construction for sparsified data
+ Last Modified: JB 2011/07/07 to localize path names
+ Last Modified: JB 2012/11/21 include Mapping for strip position computation
+ Last Modified: LC 2013/Sping introducing the ladder that this plane may belong to
+ Last Modified: JB 2013/07/17 new control parameters (HitFinder, IfDigitize)
+ Last Modified: JB 2013/08/15 new parameter <a href="./DPlane.html#DPlane:fAcqChannelOffset" title="Int_t DPlane::fAcqChannelOffset">fAcqChannelOffset</a>
+ Last Modified: JB 2014/04/21 get deformation parameters
+ Last Modified: VR 2014/07/12 replace aPixel-&gt;SetSize( (*<a href="./DPlane.html#DPlane:fSize" title="DR3* DPlane::fSize">fSize</a>)) by aPixel-&gt;SetSize( (*<a href="./DPlane.html#DPlane:fPitch" title="DR3* DPlane::fPitch">fPitch</a>))
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DPlane:_DPlane" href="src/DPlane.cxx.html#DBzS1B">~DPlane</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetDebug" href="src/DPlane.cxx.html#LJnSFC">SetDebug</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aDebug)</span><br />
+<div class="funccomm"><pre> Initialize or update the debug level
+ update also the level for hits
+ JB 2009/05/12
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH1F* <a class="funcname" name="DPlane:GetChargeFractionDensity" href="src/DPlane.cxx.html#xqkD4C">GetChargeFractionDensity</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tStripIndex)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname">TH1F* <a class="funcname" name="DPlane:GetChargeFractionDistribution" href="src/DPlane.cxx.html#EwCxYB">GetChargeFractionDistribution</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> tStripIndex)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:ShowAlignment" href="src/DPlane.cxx.html#rpDjVC">ShowAlignment</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DPlane:Align" href="src/DPlane.cxx.html#CgeV.D">Align</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifFit = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DPlane:AlignAllHits" href="src/DPlane.cxx.html#W5MWG">AlignAllHits</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <a href="./ListOfTypes.html#Bool_t">Bool_t</a> ifFit = <a href="./ListOfTypes.html#Bool_t">kTRUE</a>)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:UpdatePositions" href="src/DPlane.cxx.html#ClqcOE">UpdatePositions</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:AlignPrec" href="src/DPlane.cxx.html#Ikz_vD">AlignPrec</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:AlignData" href="src/DPlane.cxx.html#PqbdmD">AlignData</a>(<a href="./DTrack.html">DTrack</a>* aTrack, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> tiniBound, vector&lt;<a href="./ListOfTypes.html#Float_t">Float_t</a>&gt;&amp; myData)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:AlignPrecUpdateConfig" href="src/DPlane.cxx.html#tgCa1B">AlignPrecUpdateConfig</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetCommonModeRegion" href="src/DPlane.cxx.html#s4FLZE">GetCommonModeRegion</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aRegion) const</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DStrip.html">DStrip</a>* <a class="funcname" name="DPlane:NearestStrip" href="src/DPlane.cxx.html#wUhpRC">NearestStrip</a>(<a href="./DR3.html">DR3</a>&amp; aPosition)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetPulseRangeMaximum" href="src/DPlane.cxx.html#ldBASE">GetPulseRangeMaximum</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetPulseHeightToNoise" href="src/DPlane.cxx.html#LalKOE">GetPulseHeightToNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetCommonMode" href="src/DPlane.cxx.html#bPxtq">GetCommonMode</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetRawValue" href="src/DPlane.cxx.html#GMeP7C">GetRawValue</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetRawFrame1Value" href="src/DPlane.cxx.html#rfG2bC">GetRawFrame1Value</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetRawFrame2Value" href="src/DPlane.cxx.html#zVQ0bC">GetRawFrame2Value</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetPedestal" href="src/DPlane.cxx.html#HLNXq">GetPedestal</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetPulseHeight" href="src/DPlane.cxx.html#XWiLGE">GetPulseHeight</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetNoise" href="src/DPlane.cxx.html#RZcrKD">GetNoise</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetCDSvariance" href="src/DPlane.cxx.html#P29H8B">SetCDSvariance</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> aVar)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DHit.html">DHit</a>* <a class="funcname" name="DPlane:GetPrincipalHit" href="src/DPlane.cxx.html#CQkWZ">GetPrincipalHit</a>()</span><br />
+<div class="funccomm"><pre> Modified: JB 2012/08/27 to return NULL if no hits
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DPlane:Update" href="src/DPlane.cxx.html#kXkHBC">Update</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DStrip.html">DStrip</a>* <a class="funcname" name="DPlane:GetStrip" href="src/DPlane.cxx.html#WMjrtD">GetStrip</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+<div class="funccomm"><pre> Modified by JB, to start at 0 up to <a href="./DPlane.html#DPlane:fStripsN" title="Int_t DPlane::fStripsN">fStripsN</a>-1, 2008/10/17
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:ComputeStripPosition" href="src/DPlane.cxx.html#RItt9C">ComputeStripPosition</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> col, <a href="./ListOfTypes.html#Int_t">Int_t</a> lin, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; u, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; v, <a href="./ListOfTypes.html#Double_t">Double_t</a>&amp; w)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:ComputeStripPosition_UVToColRow" href="src/DPlane.cxx.html#uTeAF">ComputeStripPosition_UVToColRow</a>(<a href="./ListOfTypes.html#Double_t">Double_t</a> u, <a href="./ListOfTypes.html#Double_t">Double_t</a> v, <span class="keyword">double</span>&amp; col, <span class="keyword">double</span>&amp; lin)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:FindNeighbours" href="src/DPlane.cxx.html#ux8OkD">FindNeighbours</a>()</span><br />
+<div class="funccomm"><pre>-+-+-+   Finding neighbours
+ checked by JB, 2008/10/17
+ Modified: AB 2012/10/22 bug fixed in computation of neighbourLines/Columns
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetPedandNoiseFromHisto" href="src/DPlane.cxx.html#gujj2C">SetPedandNoiseFromHisto</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> col, <a href="./ListOfTypes.html#Int_t">Int_t</a> row, <a href="./DPixel.html">DPixel</a>* aPixel)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:analyze_basics" href="src/DPlane.cxx.html#X_zw0B">analyze_basics</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:UpdatePedestalAndNoise" href="src/DPlane.cxx.html#xj0kgD">UpdatePedestalAndNoise</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:CalculateCommonMode" href="src/DPlane.cxx.html#CoaXrD">CalculateCommonMode</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:minimum" href="src/DPlane.cxx.html#yRjaV">minimum</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a>* d, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:extremumIndex" href="src/DPlane.cxx.html#EOU65C">extremumIndex</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a>* d, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DPlane:CheckSaturation" href="src/DPlane.cxx.html#pelAR">CheckSaturation</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:Digitize" href="src/DPlane.cxx.html#Lp51BC">Digitize</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> aValue)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:DigitizeMatrix" href="src/DPlane.cxx.html#YUXbpC">DigitizeMatrix</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:find_hits" href="src/DPlane.cxx.html#glGxK">find_hits</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPlane:DeformedLocalPoint" href="src/DPlane.cxx.html#aKUqm">DeformedLocalPoint</a>(<a href="./DR3.html">DR3</a>&amp; aPlaneCoordinate)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPlane:PlaneToTracker" href="src/DPlane.cxx.html#bidx0C">PlaneToTracker</a>(<a href="./DR3.html">DR3</a>&amp; aPlaneCoordinate)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPlane:TrackerToPlane" href="src/DPlane.cxx.html#hhSjwC">TrackerToPlane</a>(<a href="./DR3.html">DR3</a>&amp; aTrackerCoordinate)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a> <a class="funcname" name="DPlane:Intersection" href="src/DPlane.cxx.html#lpi8EB">Intersection</a>(<a href="./DTrack.html">DTrack</a>* aTrack)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetPositionU" href="src/DPlane.cxx.html#EsfM6">SetPositionU</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> posU)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetPositionV" href="src/DPlane.cxx.html#YTpM6">SetPositionV</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> posV)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetTiltW" href="src/DPlane.cxx.html#MZcU_B">SetTiltW</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a> tiltW)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:ChangePositionByOffset" href="src/DPlane.cxx.html#a7E4S">ChangePositionByOffset</a>(<a href="./DR3.html">DR3</a>&amp; offset)</span><br />
+<div class="funccomm"><pre>VR 2014/06/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:ChangePositionByValue" href="src/DPlane.cxx.html#f7UvCD">ChangePositionByValue</a>(<a href="./DR3.html">DR3</a>&amp; newvalue)</span><br />
+<div class="funccomm"><pre>VR 2014/06/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:ChangeTiltByOffset" href="src/DPlane.cxx.html#IR.A.B">ChangeTiltByOffset</a>(<a href="./DR3.html">DR3</a>&amp; offset)</span><br />
+<div class="funccomm"><pre>VR 2014/06/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:ChangeTiltByValue" href="src/DPlane.cxx.html#syfugC">ChangeTiltByValue</a>(<a href="./DR3.html">DR3</a>&amp; newvalue)</span><br />
+<div class="funccomm"><pre>VR 2014/06/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:PrintPosition" href="src/DPlane.cxx.html#C.xL5E">PrintPosition</a>(<span class="keyword">void</span>)</span><br />
+<div class="funccomm"><pre>VR 2014/06/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:PrintTilt" href="src/DPlane.cxx.html#ynczRD">PrintTilt</a>(<span class="keyword">void</span>)</span><br />
+<div class="funccomm"><pre>VR 2014/06/29
+</pre></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:aHitSupressedMean" href="src/DPlane.h.html#ajGM_B">aHitSupressedMean</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> entries)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:aHitSupressedValue" href="src/DPlane.h.html#VVYeAC">aHitSupressedValue</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> entries)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:median" href="src/DPlane.h.html#ZDJzCE">median</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:mean" href="src/DPlane.h.html#jR.HKD">mean</a>(<a href="./ListOfTypes.html#Float_t">Float_t</a>* data, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:runningMean" href="src/DPlane.h.html#SwPA4B">runningMean</a>(<span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> om, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> o, <span class="keyword">const</span> <a href="./ListOfTypes.html#Float_t">Float_t</a> n, <span class="keyword">const</span> <a href="./ListOfTypes.html#Int_t">Int_t</a> N)</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"> <a class="funcname" name="DPlane:DPlane" href="src/DPlane.h.html#DWYg2C">DPlane</a>()</span><br />
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DSetup.html">DSetup</a>&amp; <a class="funcname" name="DPlane:GetSetup" href="src/DPlane.h.html#gAi3VC">GetSetup</a>()</span><br />
+<div class="funccomm"><pre>DAcqModule&amp;  GetAcqModule()                     { return *<a href="./DPlane.html#DPlane:fAcqModule" title="DAcqModule* DPlane::fAcqModule">fAcqModule</a>; }
+DInp&amp;        GetInput()                         { return *<a href="./DPlane.html#DPlane:fInput" title="DInp* DPlane::fInput">fInput</a>;     }
+</pre></div>
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> *<a href="./DPlane.html#DPlane:fc" title="DSetup* DPlane::fc">fc</a>;         }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetMaxHits" href="src/DPlane.h.html#ASfU2">GetMaxHits</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHitMax" title="Int_t DPlane::fHitMax">fHitMax</a>;    }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Long_t">Long_t</a> <a class="funcname" name="DPlane:GetChannelsN" href="src/DPlane.h.html#wMKklE">GetChannelsN</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fChannelsN" title="Int_t DPlane::fChannelsN">fChannelsN</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetStripsN" href="src/DPlane.h.html#gMWO6C">GetStripsN</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fStripsN" title="Int_t DPlane::fStripsN">fStripsN</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetStripsNu" href="src/DPlane.h.html#acHdIB">GetStripsNu</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fStripsNu" title="Int_t DPlane::fStripsNu">fStripsNu</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetStripsNv" href="src/DPlane.h.html#uDgEIB">GetStripsNv</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fStripsNv" title="Int_t DPlane::fStripsNv">fStripsNv</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Long_t">Long_t</a>       * <a class="funcname" name="DPlane:GetStripIndices" href="src/DPlane.h.html#a.Gx9C">GetStripIndices</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fStripIndices" title="Long_t* DPlane::fStripIndices">fStripIndices</a>;       }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Long_t">Long_t</a>       * <a class="funcname" name="DPlane:GetChannelIndices" href="src/DPlane.h.html#oK1B2">GetChannelIndices</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fChannel" title="Long_t* DPlane::fChannel">fChannel</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a>     * <a class="funcname" name="DPlane:GetRawData" href="src/DPlane.h.html#C5eggD">GetRawData</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fRawData" title="Int_t* DPlane::fRawData">fRawData</a>;            }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<a href="./DPixel.html">DPixel</a>*&gt; * <a class="funcname" name="DPlane:GetListOfPixels" href="src/DPlane.h.html#O_r4wE">GetListOfPixels</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fListOfPixels" title="vector&lt;DPixel*&gt;* DPlane::fListOfPixels">fListOfPixels</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">vector&lt;<a href="./DMonteCarlo.html">DMonteCarlo</a>*&gt; * <a class="funcname" name="DPlane:GetListOfMonteCarlo" href="src/DPlane.h.html#VxLga">GetListOfMonteCarlo</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>   <a href="./DPlane.html#DPlane:fListOfMonteCarlo" title="vector&lt;DMonteCarlo*&gt;* DPlane::fListOfMonteCarlo">fListOfMonteCarlo</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Long_t">Long_t</a>&amp; <a class="funcname" name="DPlane:GetChannel" href="src/DPlane.h.html#IZCh.D">GetChannel</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aSk)</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fChannel" title="Long_t* DPlane::fChannel">fChannel</a>[aSk-1];     }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetInitialNoise" href="src/DPlane.h.html#HSISwE">GetInitialNoise</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fInitialNoise" title="Int_t DPlane::fInitialNoise">fInitialNoise</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetCommonRegions" href="src/DPlane.h.html#UaliqE">GetCommonRegions</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fRegions" title="Int_t DPlane::fRegions">fRegions</a>;     }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetAcqInputNumber" href="src/DPlane.h.html#TIo3JE">GetAcqInputNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fAcqInputNumber" title="Int_t DPlane::fAcqInputNumber">fAcqInputNumber</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetDigitalThresholdNb" href="src/DPlane.h.html#YtSAvE">GetDigitalThresholdNb</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DPlane.html#DPlane:fIfDigitize" title="Int_t DPlane::fIfDigitize">fIfDigitize</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a>       * <a class="funcname" name="DPlane:GetDigitialThresholds" href="src/DPlane.h.html#ScJUeC">GetDigitialThresholds</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DPlane.html#DPlane:fDigitizeThresholds" title="Int_t* DPlane::fDigitizeThresholds">fDigitizeThresholds</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DAlign.html">DAlign</a>      * <a class="funcname" name="DPlane:GetAlignment" href="src/DPlane.h.html#seoCMD">GetAlignment</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fAlign" title="DAlign* DPlane::fAlign">fAlign</a>;       }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DPrecAlign.html">DPrecAlign</a>  * <a class="funcname" name="DPlane:GetPrecAlignment" href="src/DPlane.h.html#LNFaR">GetPrecAlignment</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fPrecAlign" title="DPrecAlign* DPlane::fPrecAlign">fPrecAlign</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a>&amp; <a class="funcname" name="DPlane:GetStripPitch" href="src/DPlane.h.html#KWxlQB">GetStripPitch</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> *<a href="./DPlane.html#DPlane:fPitch" title="DR3* DPlane::fPitch">fPitch</a>;       }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetHitsN" href="src/DPlane.h.html#TYlfoC">GetHitsN</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHitsN" title="Int_t DPlane::fHitsN">fHitsN</a>;       }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetHitsNewN" href="src/DPlane.h.html#ZJiQHD">GetHitsNewN</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHitsNew" title="Int_t DPlane::fHitsNew">fHitsNew</a>;     }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetHitsOldN" href="src/DPlane.h.html#KVdV4D">GetHitsOldN</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHitsOld" title="Int_t DPlane::fHitsOld">fHitsOld</a>;     }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetHitsUnTrackedLastEventN" href="src/DPlane.h.html#p9sr">GetHitsUnTrackedLastEventN</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHitsUnTrackedLastEventN" title="Int_t DPlane::fHitsUnTrackedLastEventN">fHitsUnTrackedLastEventN</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetHitsN" href="src/DPlane.h.html#RZHtP">SetHitsN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPlane.html#DPlane:fHitsN" title="Int_t DPlane::fHitsN">fHitsN</a>                  = aNb;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetHitsNewN" href="src/DPlane.h.html#tl4uJB">SetHitsNewN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPlane.html#DPlane:fHitsNew" title="Int_t DPlane::fHitsNew">fHitsNew</a>                = aNb;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetHitsOldN" href="src/DPlane.h.html#xdVKsD">SetHitsOldN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPlane.html#DPlane:fHitsOld" title="Int_t DPlane::fHitsOld">fHitsOld</a>                = aNb;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetHitsUnTrackedLastEventN" href="src/DPlane.h.html#TBHZrD">SetHitsUnTrackedLastEventN</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aNb)</span><br />
+
+<div class="code"><code class="inlinecode">{<a href="./DPlane.html#DPlane:fHitsUnTrackedLastEventN" title="Int_t DPlane::fHitsUnTrackedLastEventN">fHitsUnTrackedLastEventN</a>= aNb;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DHit.html">DHit</a>        * <a class="funcname" name="DPlane:GetHit" href="src/DPlane.h.html#I.o.gD">GetHit</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aHk) const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHit" title="DHit** DPlane::fHit">fHit</a>[aHk-1];  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DHit.html">DHit</a>        * <a class="funcname" name="DPlane:GetHitUnTrackedLastEvent" href="src/DPlane.h.html#V.VzBE">GetHitUnTrackedLastEvent</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aHk) const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHitUnTrackedLastEvent" title="DHit** DPlane::fHitUnTrackedLastEvent">fHitUnTrackedLastEvent</a>[aHk-1];  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Char_t">Char_t</a>      * <a class="funcname" name="DPlane:GetPlaneName" href="src/DPlane.h.html#MHg0uB">GetPlaneName</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fPlaneName" title="Char_t* DPlane::fPlaneName">fPlaneName</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Char_t">Char_t</a>      * <a class="funcname" name="DPlane:GetPlanePurpose" href="src/DPlane.h.html#S6gmFD">GetPlanePurpose</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fPlanePurpose" title="Char_t* DPlane::fPlanePurpose">fPlanePurpose</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetPlaneNumber" href="src/DPlane.h.html#SpageC">GetPlaneNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fPlaneNumber" title="Int_t DPlane::fPlaneNumber">fPlaneNumber</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetLadderNumber" href="src/DPlane.h.html#uDZ8hB">GetLadderNumber</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fLadderNumber" title="Int_t DPlane::fLadderNumber">fLadderNumber</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DCut.html">DCut</a>        * <a class="funcname" name="DPlane:GetCut" href="src/DPlane.h.html#I1jEHB">GetCut</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fCut" title="DCut* DPlane::fCut">fCut</a>;         }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetHitFinder" href="src/DPlane.h.html#flrn7B">GetHitFinder</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fHitFinder" title="Int_t DPlane::fHitFinder">fHitFinder</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetPositionU" href="src/DPlane.h.html#OgfjFC">GetPositionU</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fPositionU" title="Float_t DPlane::fPositionU">fPositionU</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetPositionV" href="src/DPlane.h.html#mzL3xB">GetPositionV</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fPositionV" title="Float_t DPlane::fPositionV">fPositionV</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetTiltW" href="src/DPlane.h.html#RhYgQC">GetTiltW</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fTiltW" title="Double_t DPlane::fTiltW">fTiltW</a>;       }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a>&amp; <a class="funcname" name="DPlane:GetPosition" href="src/DPlane.h.html#qPm.5E">GetPosition</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> *<a href="./DPlane.html#DPlane:fPosition" title="DR3* DPlane::fPosition">fPosition</a>;    }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a>&amp; <a class="funcname" name="DPlane:GetSize" href="src/DPlane.h.html#StdYPE">GetSize</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> *<a href="./DPlane.html#DPlane:fSize" title="DR3* DPlane::fSize">fSize</a>;        }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DR3.html">DR3</a>&amp; <a class="funcname" name="DPlane:GetTilt" href="src/DPlane.h.html#WdmYX">GetTilt</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> *<a href="./DPlane.html#DPlane:fTilt" title="DR3* DPlane::fTilt">fTilt</a>;        }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetStatus" href="src/DPlane.h.html#sVxw9C">GetStatus</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fStatus" title="Int_t DPlane::fStatus">fStatus</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetAnalysisMode" href="src/DPlane.h.html#a30FwB">GetAnalysisMode</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fAnalysisMode" title="Int_t DPlane::fAnalysisMode">fAnalysisMode</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetReadout" href="src/DPlane.h.html#Tgq9PB">GetReadout</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fReadout" title="Int_t DPlane::fReadout">fReadout</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetMimoType" href="src/DPlane.h.html#YpUhyC">GetMimoType</a>() const</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fMimosaType" title="Int_t DPlane::fMimosaType">fMimosaType</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><span class="keyword">void</span> <a class="funcname" name="DPlane:SetStatus" href="src/DPlane.h.html#iFsJFD">SetStatus</a>(<a href="./ListOfTypes.html#Int_t">Int_t</a> aStatusValue)</span><br />
+
+<div class="code"><code class="inlinecode">{ <a href="./DPlane.html#DPlane:fStatus" title="Int_t DPlane::fStatus">fStatus</a> = aStatusValue;     }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetCDSvariance" href="src/DPlane.h.html#KhEXQE">GetCDSvariance</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>   <a href="./DPlane.html#DPlane:fCDSvariance" title="Float_t DPlane::fCDSvariance">fCDSvariance</a>;   }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetThreshold" href="src/DPlane.h.html#O5MB8D">GetThreshold</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fThreshold" title="Float_t DPlane::fThreshold">fThreshold</a>;      }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetOverThresholdN" href="src/DPlane.h.html#NL.yhD">GetOverThresholdN</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fOverThresholdN" title="Long_t DPlane::fOverThresholdN">fOverThresholdN</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Float_t">Float_t</a> <a class="funcname" name="DPlane:GetOverThresholdC" href="src/DPlane.h.html#lIa6hE">GetOverThresholdC</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fOverThresholdC" title="Float_t DPlane::fOverThresholdC">fOverThresholdC</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./DTracker.html">DTracker</a>    * <a class="funcname" name="DPlane:GetTracker" href="src/DPlane.h.html#P5___D">GetTracker</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fTracker" title="DTracker* DPlane::fTracker">fTracker</a>;        }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH1F        * <a class="funcname" name="DPlane:GetChargeFractionUniv" href="src/DPlane.h.html#osfYu">GetChargeFractionUniv</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPlane.html#DPlane:fChargeFractionDensity" title="TH1F* DPlane::fChargeFractionDensity">fChargeFractionDensity</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH1F        * <a class="funcname" name="DPlane:GetEtaIntU" href="src/DPlane.h.html#j4Cz7D">GetEtaIntU</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPlane.html#DPlane:fEtaIntU" title="TH1F* DPlane::fEtaIntU">fEtaIntU</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH1F        * <a class="funcname" name="DPlane:GetEtaIntV" href="src/DPlane.h.html#zk2y7D">GetEtaIntV</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPlane.html#DPlane:fEtaIntV" title="TH1F* DPlane::fEtaIntV">fEtaIntV</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH1F        * <a class="funcname" name="DPlane:GetEtaIntU2" href="src/DPlane.h.html#y4CzjD">GetEtaIntU2</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPlane.html#DPlane:fEtaIntU2" title="TH1F* DPlane::fEtaIntU2">fEtaIntU2</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH1F        * <a class="funcname" name="DPlane:GetEtaIntV2" href="src/DPlane.h.html#Ol2yjD">GetEtaIntV2</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPlane.html#DPlane:fEtaIntV2" title="TH1F* DPlane::fEtaIntV2">fEtaIntV2</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Bool_t">Bool_t</a> <a class="funcname" name="DPlane:GetStripResponseSetting" href="src/DPlane.h.html#U7cB3C">GetStripResponseSetting</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span>  <a href="./DPlane.html#DPlane:fDigitalStripResponse" title="Bool_t DPlane::fDigitalStripResponse">fDigitalStripResponse</a>;  }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH2F        * <a class="funcname" name="DPlane:GetHNoise" href="src/DPlane.h.html#xomO8D">GetHNoise</a>()</span><br />
+<div class="funccomm"><pre>YV21/10/09
+</pre></div>
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DPlane.html#DPlane:fHNoise" title="TH2F* DPlane::fHNoise">fHNoise</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TH2F        * <a class="funcname" name="DPlane:GetHPedestal" href="src/DPlane.h.html#BTQYKC">GetHPedestal</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DPlane.html#DPlane:fHPedestal" title="TH2F* DPlane::fHPedestal">fHPedestal</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetNoiseRun" href="src/DPlane.h.html#zy0n7">GetNoiseRun</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPlane.html#DPlane:fNoiseRun" title="Int_t DPlane::fNoiseRun">fNoiseRun</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname">TFile       * <a class="funcname" name="DPlane:GetNoiseFile" href="src/DPlane.h.html#qqRwRC">GetNoiseFile</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{<span class="keyword">return</span> <a href="./DPlane.html#DPlane:fNoiseFile" title="TFile* DPlane::fNoiseFile">fNoiseFile</a>; }</code></div>
+<div style="clear:both;"></div>
+</div>
+<div class="funcdoc"><span class="funcname"><a href="./ListOfTypes.html#Int_t">Int_t</a> <a class="funcname" name="DPlane:GetDebug" href="src/DPlane.h.html#QxNOX">GetDebug</a>()</span><br />
+
+<div class="code"><code class="inlinecode">{ <span class="keyword">return</span> <a href="./DPlane.html#DPlane:fDebugPlane" title="Int_t DPlane::fDebugPlane">fDebugPlane</a>;}</code></div>
+<div style="clear:both;"></div>
+</div>
+
+<br />
+<!--SIGNATURE-->
+<div id="footer">
+
+<em>&raquo; Last changed: maf/dtools:$Name:  $:$Id: DPlane.h,v.3 2005/10/02 18:03:46 sha Exp $ </em><em>&raquo; Last generated: 2014-09-01 10:01</em><br />
+<em>This page has been automatically generated. For comments or suggestions regarding the documentation or ROOT in general please send a mail to <a href="mailto:rootdev@root.cern.ch">ROOT support</a>.</em>
+</div>
+</div>
+</body>
+</html>
