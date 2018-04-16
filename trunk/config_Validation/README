@@ -1,0 +1,125 @@
+
+All the config files in this directory are intended for validation of code developments. 
+The main principle is that new developments should be compatible with the analysis of old 
+data. In this spirit the validation procedure intent to verify that the new developments 
+still allow to reproduce old results.
+
+The set of config files in this directory are as well intented for learning how to use 
+TAF to new users by analysing data of different nature and experimental setups.
+
+The config files in this directory contain in the form of commentaries all the information 
+needed to preform the validations, i.e. they contain,
+  - The meaning of the config file, i.e. which kind of data it represents, e.g. beam-test, 
+    radioactive source at laboratory, ...
+  - The location of the data to be used.
+  - The list of procedures to be run on this data.
+
+Each config file, with a generic name runXXX.cfg, where XXX is a run number, has a similarly 
+named pdf file (runXXX.pdf), which contains a list of plots issued from running the requested 
+procedures. In the proccess of validation, the developper should compare the plots he/she produces 
+during with the reference plots and numbers in the runXXX.pdf file.
+
+In order to be able to use the config files in the config_Validation directory you will need to create 
+a symbolic link inside the config directory, e.g.
+
+>$ cd config/
+>$ ln -s ../config_Validation/runXXX.cfg .
+
+An additional steps will be to verify that the DataPath: variable in the config file 
+is point to a location reacheable by your system.
+
+You are now ready to start the validation process just by reading out the executing TAF and 
+reading out the config file,
+
+>$ taf -run XXX
+
+And then executing the procedures stated as commentary at the beginning of the config file.
+
+Here below is a list with a quick description of the set of config files for the validation/learning 
+procedure. Even though the validation procedure mandatory requires that some of the config files 
+listed below to be fully executed, some others are optional depending of the kind of developments 
+being carried out. This is why each config file below has additional information about when it should 
+be executed.
+
+//1st list the mandatory ones, and then try to classify them according to which developments should be 
+//require additional validations.
+
+* Data pour validation
+
+ - MI26/MI28 SOLEIL/LABO -> init, cluster
+    data:   /rawcmos100/data/DATA_Beam/mimosa26/2014_06_Manip_Soleil_2plans/738
+    config: /rawcmos100/data/DATA_Beam/mimosa26/2014_06_Manip_Soleil_2plans/trunk_SoleilAnalysis/config/run738.cfg
+    NOTE:   Valiated!
+    
+ - FSBB DESY -> PXIe, staggering, eff, resol, multi
+    data:    /rawcmos100/data/DATA_Beam/FSBB/2015_10_CERN_FSBB/35807/
+    config:  /rawcmos100/data/DATA_Beam/FSBB/2015_10_CERN_FSBB/TAF_trunk_FSBBM0bis_BT_CERN_v1/config/run35807.cfg.Pl3DUT
+    NOTE:    Validated!
+    
+ - G4-MC-data -> Beam-test simulated data
+    data:    /rawcmos100/data/DATA_simulation/G4MimosaSimu/Simu_validation/
+    config:  /rawcmos100/data/DATA_simulation/G4MimosaSimu/Simu_validation/
+    NOTE:    Validated!
+    
+ - PIPPER-2 LABO -> IMG, init, cluster, resol
+    data:    /rawcmos100/data/DATA_Laboratory/pipper2/EPI18/NonIrradiatedTest/Temp_m10C/PreScale7/31801130/
+    config:  /rawcmos100/data/DATA_Laboratory/pipper2/EPI18/NonIrradiatedTest/Temp_m10C/PreScale7/31801130/run31801130.cfg 
+    NOTE:    Validated!
+    
+  - MI26-PLUME -> PXIe, minivector
+    data:   /rawcmos100/data/DATA_Beam/mimosa26/2011_10_CERN_SPS_plume/226057
+    config: /rawcmos100/data/DATA_Beam/mimosa26/2011_10_CERN_SPS_plume/Analysis/config/run226057.cfg
+    NOTE:   Need to discuss with Jérôme some extrange features of the data.
+    
+  - MI26 CERN -> PXIe, efficacite, resolution, multiplicite
+    data:   /rawcmos100/data/DATA_Beam/mimosa26/2010_06_CERN_SPS/PXIe/260604.zip
+    config: /rawcmos16c/jeromeb/SVNMAC/CMOS/taf/trunk/config/run26705.cfg
+    NOTE:   Not able to read the file with any of the PXIe libraries.
+    
+ - MI28 SALAT -> PXIe, init, cluster (Plane 1)
+    data:    /rawcmos100/data/DATA_Beam/mimosa28_Ultimate/2014_11_CERN_SALAT/28843/
+    config:  /rawcmos100/data/DATA_Beam/mimosa28_Ultimate/2014_11_CERN_SALAT/Analysis/config/run28843.cfg
+    NOTE:    Validated, but still some features to be understood.
+   
+ - MI28 GSI -> init, cluster, (track ?)
+    data:    /rawcmos100/data/DATA_Beam/mimosa28_Ultimate/2012_05_GSI_Biophysic_Hadrontherapie/4_zero_degree_aligment/RUN_128017*
+    config:  /rawcmos100/data/DATA_Beam/mimosa28_Ultimate/2012_05_GSI_Biophysic_Hadrontherapie/Analysis/config/run128017.cfg
+    NOTE:    Not able to alignment and tracking, need to help to understand experimental set-up.
+   
+ - MI34 CERN -> IMG, lecture single- and multi- frame, efficacite  (done)
+    data:   /rawcmos100/data/DATA_Beam/mimosa34/2013_08_19_DESY_line24_MI34_PXIe/chip11_HR20_50um_30C_P29/34542
+    config: /rawcmos100/data/DATA_Beam/mimosa34/2013_08_19_DESY_line24_MI34_PXIe/Analysis/config/run34542.cfg
+    NOTE:   Need some help to be able to correcly analyse this data
+    
+ - MI18 LABO -> IMG, init, cluster 
+    data:   /rawcmos100/data/DATA_Laboratory/mimosa18/mimosa18_calib_june_2007
+    config: calib file not found yet...
+    NOTE:   Need further discussion
+    
+ - MI18 CERN -> init, cluster, track, resol (guess world record <1 um !)
+    code:   taf_20022008 (don’t know really what was the DAQ system...)  (done)
+    data:   /rawcmos100/data/DATA_Beam/mimosa18/09_2007_CERN-SPS_TAPI_4plans/Runs/18528/18528.zip
+    config: /rawcmos100/data/DATA_Beam/mimosa18/09_2007_CERN-SPS_TAPI_4plans/Analysis/config/run18528.cfg
+    NOTE:   Code doesn't crash but something definitively is wrong: no pixels in any of the planes.
+ 
+ - MI22-AHR -> STRIP telescope, IMG, sous-matrix, efficacite, resolution (Need further discussion)
+    data:   /rawcmos100/data/DATA_Beam/mimosa22AHR/2010_August_CERN_SPS
+    config: Analysed only with MAF...
+    NOTE:   How do we define the config file. Need some help here.
+    
+ - PIPPER-1 -> ???
+    data:    ???
+    config:  ???
+    NOTE:    Need to discuss if it is worth it to put it in the list of validation steps.
+ 
+- MI34 LABO -> IMG, init, cluster, Multi-frame (done)
+    data:    /rawcmos100/data/DATA_Laboratory/mimosa34/Data_PXIe/10frames/Sr-90_data_370MBq/Chip12_HR30_IncreasedDistTo13.5cm/30C/34939/
+    config:  /rawcmos100/data/DATA_Laboratory/mimosa34/Data_PXIe/10frames/Sr-90_data_370MBq/Chip12_HR30_IncreasedDistTo13.5cm/30C/34939/run34939.cfg.10Frames_Sr90_370_13.5cm
+    NOTE:    Not able to correctly read data. Spotted a couple of changes in DPlane for Readout == 232, and some changes inside IMGBoardReader. Need to check with Jerome hoe to fix this.
+             This data corresponds to multi-frame data-taking with a beta (Sr-90) source. Need to implement in MRaw a procedure to 
+             anayse this data. Need to tranlate a private code into taf. Will be useful for beta source data in PIPPER-2 sensor.
+
+
+
+
+
