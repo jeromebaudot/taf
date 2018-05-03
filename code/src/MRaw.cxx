@@ -6903,151 +6903,77 @@ void MRaw::UserPlot( Int_t nEvents)
 {
   // Do whatever you want there
   //
-  // JB 2009/09/08
-  // Last Modified JB 2013/05/26 test readout not 0
-
 
   // ------------------------------------------------------
-  // Example to print DAQ debug messages for a list of events
-  //  which number is written in a file
-  // JB 2012/09/06
+  // Example to build two maps of pixel signals
+  //  - one map is the average signal received per pixel and per event
+  //  - the other maps pixels with signal higher than a given threshold
+  //   no clustering is involved here BUT note that DisplayNoise() is called
+  // JB 2018/05/02
 
+
+  //-- Init
+  Int_t iPlane=1;
+  Float_t threshold = 400;
 
   DTracker *tTracker  =  fSession->GetTracker();
-  DPlane   *tPlane;
-  DHit     *aHit;
-  DTrack   *aTrack;
+  DPlane   *tPlane = tTracker->GetPlane(iPlane);
 
-  //-- Choose plane
-  Int_t iPlane=7;
-  tPlane = tTracker->GetPlane(iPlane);
-
+  
   //-- Book histograms
 
-  TCanvas *cdisplayraw = new TCanvas("cdisplayraw", "Inspect Raw Data", 5, 5, 800, 700);
+  TCanvas *cdisplayraw = new TCanvas("cdisplayraw", "Inspect Raw Data", 5, 5, 900, 700);
   cdisplayraw->UseCurrentStyle();
-  cdisplayraw->Clear();
-  TPaveLabel* label = new TPaveLabel();
-  Char_t canvasTitle[200];
-  TPad *pad = new TPad("pad","",0.,0.,1.,0.945);
-  pad->Draw();
-  gStyle->SetPadRightMargin(1.);
-
+  cdisplayraw->Divide(2,1);
+  
   Char_t name[50], title[100];
   sprintf( name, "hrawdatapl%d", iPlane);
-  sprintf( title, "Raw data of plane (%d) %s", iPlane, tPlane->GetPlanePurpose());
+  sprintf( title, "Average signal map of plane (%d) %s;col index;row index", iPlane, tPlane->GetPlanePurpose());
   TH2F *hRawData = new TH2F(name, title, tPlane->GetStripsNu(), 0, tPlane->GetStripsNu(), tPlane->GetStripsNv(), 0, tPlane->GetStripsNv());
-  hRawData->SetMarkerStyle(20);
-  hRawData->SetMarkerSize(.4);
-  hRawData->SetMarkerColor(1);
   hRawData->SetStats(kFALSE);
 
   sprintf( name, "hhitmapipl%d", iPlane);
-  sprintf( title, "Hit map of plane (%d) %s", iPlane, tPlane->GetPlanePurpose());
+  sprintf( title, "Map of fired pixels plane (%d) %s;col index;row index", iPlane, tPlane->GetPlanePurpose());
   TH2F *hHitMapIndex = new TH2F(name, title, tPlane->GetStripsNu(), 0, tPlane->GetStripsNu(),
 			  tPlane->GetStripsNv(), 0, tPlane->GetStripsNv());
-  hHitMapIndex->SetMarkerStyle(24);
-  hHitMapIndex->SetMarkerSize(1.8);
-  hHitMapIndex->SetMarkerColor(1);
   hHitMapIndex->SetStats(kFALSE);
 
-  sprintf( name, "htrackmapipl%d", iPlane);
-  sprintf( title, "Track map of plane (%d) %s", iPlane, tPlane->GetPlanePurpose());
-  TH2F *hTrackMapIndex = new TH2F( *(hHitMapIndex));
-  hTrackMapIndex->SetName( name);
-  hTrackMapIndex->SetTitle( title);
-  hTrackMapIndex->SetMarkerStyle(28);
-  hTrackMapIndex->SetMarkerSize(2.0);
-  hTrackMapIndex->SetMarkerColor(2.0);
-  hTrackMapIndex->SetStats(kFALSE);
-
-
-
-  ifstream in;
-  in.open("bad_list_run32827.txt");
 
   //-- Init noise
   DisplayNoise();
-  Int_t currentEvtNb = fSession->GetCurrentEventNumber();
+  fSession->SetEvents(nEvents);
 
   //-- start the loop on event nb to be read
-  Int_t evtNb, evtToSkip;
-  Int_t nlines = 0;
   Int_t iCol, iRow;
+  Int_t currentEvtNb = fSession->GetCurrentEventNumber();
 
   ToggleVerbosity();
-  while ( currentEvtNb<nEvents) {
-    in >> evtNb; // event to be read
-    if (!in.good()) break; // test if reading OK
-    currentEvtNb = fSession->GetCurrentEventNumber();
-    evtToSkip = evtNb - currentEvtNb;
-    cout << endl << "*******************************************************" << endl;
-    cout << "   Line " << nlines << ", looking for event " << evtNb << ", current event " << currentEvtNb << "(max " << nEvents << "), to skip: " << evtToSkip << endl;
-    fSession->SetDebug(0);
-    SkipEvent( evtToSkip+2);
-    fSession->SetDebug(-2);
-    fSession->SetEvents(2);
+  while ( currentEvtNb<nEvents) { // loop on events
     fSession->NextRawEvent();
     tTracker->Update();
 
-    hRawData->Reset("CE");
-    hHitMapIndex->Reset("CE");
-    hTrackMapIndex->Reset("CE");
-    if ( tPlane->GetReadout() >= 100 ){ // sparsified readout RDM210509
-     std::vector<DPixel*> *aList = tPlane->GetListOfPixels();
-      if(fVerbose) cout << "Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
-      for( Int_t iPix=0; iPix<(Int_t)aList->size(); iPix++) { // loop on fired pixels
-        iCol = aList->at(iPix)->GetPixelColumn();
-        iRow = aList->at(iPix)->GetPixelLine();
-        hRawData->SetBinContent( iCol+1, iRow+1, aList->at(iPix)->GetPulseHeight());
-      } //end llop on fired pixels
-    } //end of sparsified readout
+    for( Int_t iStrip=0; iStrip<tPlane->GetStripsN(); iStrip++) { // loop on strips
+      iCol = iStrip%tPlane->GetStripsNu();
+      iRow = iStrip/tPlane->GetStripsNu();
+      hRawData->Fill( iCol+1, iRow+1, tPlane->GetPulseHeight(iStrip));
+      if( tPlane->GetPulseHeight(iStrip)>threshold ) hHitMapIndex->Fill( iCol+1, iRow+1, 1);
+    } //end loop on strips
 
-    else if ( tPlane->GetReadout() < 100 && tPlane->GetReadout() > 0 ){ // if non-sparsified readout, test if not 0 added (JB 2013/05/26)
-      for( Int_t iStrip=0; iStrip<tPlane->GetStripsN(); iStrip++) {
-        iCol = iStrip%tPlane->GetStripsNu();
-        iRow = iStrip/tPlane->GetStripsNu();
-        hRawData->SetBinContent( iCol+1, iRow+1, tPlane->GetPulseHeight(iStrip));
-      } //end loop on strips
-    } //end of non-sparsified readout
+    currentEvtNb = fSession->GetCurrentEventNumber();
+  } // end loop on events
 
-    if(fVerbose) cout << "Plane " << iPlane << " has " << tPlane->GetHitsN() << " hits reconstructed" << endl;
-    for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
-      aHit = (DHit*)tPlane->GetHit( iHit);
-      iCol = aHit->GetPositionUhit()/tPlane->GetStripPitch()(0)+tPlane->GetStripsNu()/2;
-      iRow = aHit->GetPositionVhit()/tPlane->GetStripPitch()(1)+tPlane->GetStripsNv()/2;
-      hHitMapIndex->SetBinContent( iCol+1, iRow+1, 1); // JB 2009/08/31
-      if(fVerbose) printf("MRaw::DisplayRawData2D  pl %d, hit[%d] = (%.1f,%.1f) or (col, row) = (%d, %d) in plane.\n", iPlane, iHit, aHit->GetPositionUhit(), aHit->GetPositionVhit(), iCol, iRow);
-    } //end loop on hits
+  // Averaging
+  hRawData->Scale(1./nEvents);
+  
+  // Display
+  cdisplayraw->cd(1);
+  hRawData->Draw("colz");
+  cdisplayraw->cd(1);
+  hHitMapIndex->DrawCopy("colz");
+  cdisplayraw->Update();
 
-    if(fVerbose) cout << "Tracker has " << tTracker->GetTracksN() << " tracks reconstructed" << endl;
-    for( Int_t iTrack=1; iTrack<=tTracker->GetTracksN(); iTrack++ ) { // loop on tracks
-      aTrack = tTracker->GetTrack(iTrack);
-      iCol = (Int_t)tPlane->Intersection(aTrack)(0)/tPlane->GetStripPitch()(0)+tPlane->GetStripsNu()/2;
-      iRow = (Int_t)tPlane->Intersection(aTrack)(1)/tPlane->GetStripPitch()(1)+tPlane->GetStripsNv()/2;
-      hTrackMapIndex->Fill( iCol, iRow, 1);
-      if(fVerbose) printf("MRaw::DisplayRawData2D  pl %d, track[%d] = (%.1f,%.1f) or (col, row) = (%d, %d) in plane.\n", iPlane, iTrack, tPlane->Intersection(aTrack)(0), tPlane->Intersection(aTrack)(1), iCol, iRow);
-    } // end loop on tracks
-
-    //cdisplayraw->Clear();
-    cdisplayraw->cd();
-    sprintf(canvasTitle, "Run %d Event %d", fSession->GetRunNumber(), fSession->GetCurrentEventNumber()-1);
-    label->DrawPaveLabel(0.3,0.95,0.7,0.9999,canvasTitle);
-    pad->cd();
-    hRawData->DrawCopy("colz");
-    hHitMapIndex->DrawCopy("Psame");
-    hTrackMapIndex->DrawCopy("Psame");
-    cdisplayraw->Update();
-    sprintf(canvasTitle, "run%d_event%d.png", fSession->GetRunNumber(), fSession->GetCurrentEventNumber());
-    cdisplayraw->SaveAs( canvasTitle);
-
-    cout << endl << "------------------------------------------------------" << endl;
-    nlines++;
-  }
-
-  cout << endl << "Number of lines read: " << nlines << endl;
-
-  in.close();
+  // Save the canvas
+  cdisplayraw->SaveAs( TString::Format("run%d_%ds.root", fSession->GetRunNumber(), nEvents) );
 
 }
 

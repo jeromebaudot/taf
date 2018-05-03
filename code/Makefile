@@ -49,7 +49,7 @@ CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 -Wno-unuse
 LIBS        = $(ROOTLIBS)
 GLIBS       = $(ROOTGLIBS)
 LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore -lSpectrum \
- -lTMVA -L/sw/lib -ltiff
+-lTMVA -L/sw/lib #-ltiff
 
 #------------------------------------------------------------------------------
 
@@ -58,11 +58,10 @@ DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
     AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h \
     DSession.h DSetup.h \
 		DAcq.h DTracker.h DPlane.h DStrip.h \
-      DHit.h DTrack.h DLine.h DR3.h DCut.h DAlign.h \
+    DHit.h DTrack.h DLine.h DR3.h DCut.h DAlign.h \
 		DEvent.h  DEventMC.h  DParticle.h DGlobalTools.h \
-      DPrecAlign.h DPixel.h DLadder.h DMiniVector.h \
-      DTrackFitter.h \
-			DBeaster.h\
+    DPrecAlign.h DPixel.h DLadder.h DMiniVector.h DHelix.h DHelixFitter.h\
+    DTrackFitter.h DBeaster.h\
 # DXRay2DPdf.h
 
 
@@ -76,9 +75,8 @@ DTSRCS		= MMain.cxx \
 		DAcq.cxx DTracker.cxx  DPlane.cxx DStrip.cxx  \
 		DHit.cxx DTrack.cxx DLine.cxx DR3.cxx DCut.cxx DAlign.cxx \
 		DEvent.cxx  DEventMC.cxx  DParticle.cxx DGlobalTools.cxx \
-		DPrecAlign.cxx DPixel.cxx DLadder.cxx DMiniVector.cxx \
-        DTrackFitter.cxx \
-				DBeaster.cxx\
+		DPrecAlign.cxx DPixel.cxx DLadder.cxx DMiniVector.cxx DHelix.cxx DHelixFitter.cxx \
+    DTrackFitter.cxx DBeaster.cxx\
 # DXRay2DPdf.cxx
 
 MSRCS		= MPrep.cxx MAnalysis.cxx MPost.cxx MCommands.cxx  MMCGeneration.cxx  MAlign.cxx MHist.cxx MRaw.cxx MRax.cxx \
