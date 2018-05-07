@@ -202,8 +202,9 @@ void BeastCheckPosition();
                     Float_t MaxSpectrum=7000,
                     Bool_t readNormFromFile=kFALSE,
                     Bool_t normalizeADCspectrum=kFALSE,
-                    Float_t cutLimit=0.95);
-
+                    Float_t cutLimit=0.95,
+                    Int_t fitXray=0);
+  
   void SeedCuts(Int_t nEvents=1000);
 
   void BetaSourceMultiFrameAnalysis(int     aPlane  = 0,

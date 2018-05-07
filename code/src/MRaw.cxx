@@ -9080,11 +9080,16 @@ void MRaw::XrayAnalysis( Int_t nEvents,
                         Float_t HighestPeakPositionEv, Float_t MinSpectrum, Float_t MaxSpectrum,
                         Bool_t readNormFromFile,
                         Bool_t normalizeADCspectrum,
-                        Float_t cutLimit)
+                        Float_t cutLimit,
+                        Int_t fitXray)//fitXray: 0==no fitting, 1==55Fe, 2==Cr, 3==Cu, 4==Mo
 {
+  
+  
+  
   // Analysis specific for X-ray data
   // Call by gTAF->GetRaw()->XrayAnalysis()
   // JH, 2016/07/20 originally copied from DisplayCumulatedHits2D
+  //JH, 4/4/2018 => Added fitting of hhitseedq with multiple parameters
   
   
   if(ProduceTree) {
@@ -9328,13 +9333,13 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     hHitSeedVsNeighbourSN[iPlane-1]->SetYTitle("neighbourgs S/N");
     sprintf( name, "hhitcharge%d", iPlane);
     sprintf( title, "Hit charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitCharge[iPlane-1] = new TH1F(name, title, 7000, 0., 7000.);
+    hHitCharge[iPlane-1] = new TH1F(name, title, 16001, 0., 16000.);
     hHitCharge[iPlane-1]->SetXTitle("ADC unit");
     // JB 2013/10/08
     
     sprintf( name, "hhitseedqcut%d", iPlane);
     sprintf( title, "Seed pixel charge cut at %f of plane %d - %s; seed charge (ADCu); counts", cutLimit,iPlane, tPlane->GetPlanePurpose());
-    hHitSeedCharge_CUT[iPlane-1] = new TH1F(name, title, 3000, 0, 3000);
+    hHitSeedCharge_CUT[iPlane-1] = new TH1F(name, title, 16001, 0, 16000);
     
     
     sprintf( name, "hhitqratio%d", iPlane);
@@ -9359,7 +9364,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         
       }
       else {
-        hHitSeedCharge[iPlane-1] = new TH1F(name, title, 3000, 0, 3000);
+        hHitSeedCharge[iPlane-1] = new TH1F(name, title, 16001, 0, 16000);
       }
     }
     else {
@@ -9371,11 +9376,11 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     
     sprintf( name, "hhitneighbourq%d", iPlane);
     sprintf( title, "Neighbour pixels charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitNeighbourCharge[iPlane-1] = new TH1F(name, title, 7000, 0, 7000);
+    hHitNeighbourCharge[iPlane-1] = new TH1F(name, title, 16001, 0, 16000);
     hHitNeighbourCharge[iPlane-1]->SetXTitle("charge (ADCu)");
     sprintf( name, "hhitseedneighbourgq%d", iPlane);
     sprintf( title, "Neighbour pixels VS seed charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitSeedVsNeighbourCharge[iPlane-1] = new TH2F(name, title, 4201, 0, 4200, 8401, -4200, 4200);
+    hHitSeedVsNeighbourCharge[iPlane-1] = new TH2F(name, title, 16001, 0, 16000, 16001, -8000, 8000);
     hHitSeedVsNeighbourCharge[iPlane-1]->SetXTitle("seed charge (ADCu)");
     hHitSeedVsNeighbourCharge[iPlane-1]->SetYTitle("neighbourgs charge (ADCu)");
     sprintf( name, "hhitseedneighbourgq_cut%d", iPlane);
@@ -9385,7 +9390,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     hHitSeedVsNeighbourCharge_cut[iPlane-1]->SetYTitle("neighbourgs charge (ADCu)");
     sprintf( name, "hhitseedneighbourgq_cutseed%d", iPlane);
     sprintf( title, "Neighbour pixels VS seed charge of plane %d - %s cutseed", iPlane, tPlane->GetPlanePurpose());
-    hHitSeedVsNeighbourCharge_cutseed[iPlane-1] = new TH2F(name, title, 7001, 0, 7000, 7001, 0, 7000);
+    hHitSeedVsNeighbourCharge_cutseed[iPlane-1] = new TH2F(name, title, 16001, 0, 16000, 16001, 0, 16000);
     hHitSeedVsNeighbourCharge_cutseed[iPlane-1]->SetXTitle("seed charge (ADCu)");
     hHitSeedVsNeighbourCharge_cutseed[iPlane-1]->SetYTitle("neighbourgs charge (ADCu)");
     sprintf( name, "hhitseedsnseedq%d", iPlane);
@@ -9943,9 +9948,728 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   }
   
   
+  // Fitting hhitseedq
+  TH1F** hHitSeedChargeFit=new TH1F*[nPlanes];
+  TH1F** hHitSeedChargeFitNoBg=new TH1F*[nPlanes];
+  TH1F** hb=new TH1F*[nPlanes];
+  TF1* Fit_func [nPlanes];
+  TF1* Fit_func_Kalpha [nPlanes];
+  TF1* Fit_func_Kbeta [nPlanes];
+  
+  TF1* Fit_func_NoBg [nPlanes];
+  TF1* Fit_func_Kalpha_NoBg [nPlanes];
+  TF1* Fit_func_Kbeta_NoBg [nPlanes];
+  
+  
+  
+  TH1F** hHitSeedChargeBifFit=new TH1F*[nPlanes];
+  TH1F** hHitSeedChargeBifFitNoBg=new TH1F*[nPlanes];
+  
+  TF1* BifFit_func [nPlanes];
+  TF1* BifFit_func_Kalpha [nPlanes];
+  TF1* BifFit_func_Kbeta [nPlanes];
+  
+  TF1* BifFit_func_NoBg [nPlanes];
+  TF1* BifFit_func_Kalpha_NoBg [nPlanes];
+  TF1* BifFit_func_Kbeta_NoBg [nPlanes];
+  
+  
+  
+  
+  TSpectrum* spectrum [nPlanes];
+  
+  
+  double Rfit_keV[2];
+  double Rfit_ADC[2];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++)
+  {
+    hHitSeedChargeFit[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
+    hHitSeedChargeFit[iPlane-1]->SetName("hhitseedq1_fit");
+    
+    hHitSeedChargeFitNoBg[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
+    hHitSeedChargeFitNoBg[iPlane-1]->SetName("hhitseedq1_fit_no_bg");
+    
+    hHitSeedChargeBifFit[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
+    hHitSeedChargeBifFit[iPlane-1]->SetName("hhitseedq1_bifurcated_fit");
+    
+    hHitSeedChargeBifFitNoBg[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
+    hHitSeedChargeBifFitNoBg[iPlane-1]->SetName("hhitseedq1_bifuracted_fit_no_bg");
+    
+    if (fitXray!=0)
+    {
+      double Peak_position = -999;
+      double Peak_Height   = -1.0e+20;
+      double Xmin_peak_search = 500.0;
+      
+      
+      spectrum[iPlane-1] = new TSpectrum();
+      hb[iPlane-1] = (TH1F*)spectrum[iPlane-1]->Background(hHitSeedChargeFit[iPlane-1],70);
+      hb[iPlane-1]->SetLineColor(kBlack);
+      hb[iPlane-1]->SetLineWidth(2);
+      hb[iPlane-1]->SetLineStyle(2);
+      
+      for(int j=0;j<hHitSeedChargeFit[iPlane-1]->GetXaxis()->GetNbins();j++)
+      {
+        double v,e,vb,eb,vorig;
+        vb           = hb[iPlane-1]->GetBinContent(j+1);
+        eb           = sqrt(hb[iPlane-1]->GetBinContent(j+1));
+        v            = hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1);
+        vorig     = hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1);
+        e            = sqrt(hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1));
+        
+        v           -= vb;
+        e            = sqrt(pow(e,2) + pow(eb,2));
+        if(hHitSeedChargeFitNoBg[iPlane-1]->FindBin(Peak_position) == j+1) Peak_Height -= vb;
+        
+        
+        
+        
+        hb[iPlane-1]->SetBinContent(j+1,vb);
+        hHitSeedChargeFit[iPlane-1]->SetBinContent(j+1,vorig);
+        
+        hHitSeedChargeFitNoBg[iPlane-1]->SetBinContent(j+1,v);
+        hHitSeedChargeFitNoBg[iPlane-1]->SetBinError(j+1,  e);
+        
+        hHitSeedChargeBifFit[iPlane-1]->SetBinContent(j+1,vorig);
+        
+        hHitSeedChargeBifFitNoBg[iPlane-1]->SetBinContent(j+1,v);
+        hHitSeedChargeBifFitNoBg[iPlane-1]->SetBinError(j+1,  e);
+        
+        
+      }
+      
+      
+      
+      // ===============================================
+      // Looking for the calibration peak
+      // ===============================================
+      for(int j=0;j<hHitSeedChargeBifFitNoBg[iPlane-1]->GetXaxis()->GetNbins();j++)
+      {
+        double c = hHitSeedChargeBifFitNoBg[iPlane-1]->GetBinCenter(j+1);
+        double v = hHitSeedChargeBifFitNoBg[iPlane-1]->GetBinContent(j+1);
+        if(c < Xmin_peak_search) continue;
+        
+        if(Peak_Height < v)
+        {
+          Peak_Height   = v;
+          Peak_position = c;
+        }
+      }
+      cout <<"Peak height: " <<Peak_Height << ", Peak position: "<< Peak_position <<endl;
+      
+      
+      
+      
+      Double_t calibrationEnergy=-1.;//keV
+      Double_t secondPeak=-1.;//keV
+      
+      
+      
+      
+      if (fitXray==1)// 55Fe
+      {
+        calibrationEnergy=5.89502;//keV
+        secondPeak=6.49045;
+        //Limits for the fit in energy
+        Rfit_keV[0] = 4.9; //keV
+        Rfit_keV[1] = 7.0; //keV
+        //Conversion of the limits in ADC units
+        Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
+        Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
+      }
+      
+      else if (fitXray==2)// Cr
+      {
+        calibrationEnergy=5.41472;//keV
+        secondPeak=2.*calibrationEnergy;
+        //Limits for the fit in energy
+        Rfit_keV[0] = 4.0; //keV
+        Rfit_keV[1] = 13.0; //keV
+        //Conversion of the limits in ADC units
+        Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
+        Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
+      }
+      
+      else if (fitXray==3)// Cu
+      {
+        calibrationEnergy=8.04778;//keV
+        secondPeak=2.*calibrationEnergy;
+        //Limits for the fit in energy
+        Rfit_keV[0] = 7.0; //keV
+        Rfit_keV[1] = 18.0; //keV
+        //Conversion of the limits in ADC units
+        Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
+        Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
+      }
+      
+      else if (fitXray==4)// Mo
+      {
+        calibrationEnergy=17.47934;//keV
+        secondPeak=19.9; //Arbitrary second peak energy in the ADC range below
+        //Limits for the fit in energy
+        Rfit_keV[0] = 14.0; //keV
+        Rfit_keV[1] = 20.0; //keV
+        //Conversion of the limits in ADC units
+        Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
+        Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
+      }
+      
+      double left_sigma  = -999;
+      double right_sigma = -999;
+      int SomeN = 0.0;
+      for(int j=0;j<hHitSeedChargeFit[iPlane-1]->GetXaxis()->GetNbins()-1;j++)
+      {
+        double x1 = hHitSeedChargeFit[iPlane-1]->GetBinCenter(j+1);
+        double x2 = hHitSeedChargeFit[iPlane-1]->GetBinCenter(j+2);
+        double y1 = hHitSeedChargeFit[iPlane-1]->GetBinContent(j+1);
+        double y2 = hHitSeedChargeFit[iPlane-1]->GetBinContent(j+2);
+        if(x1 < Rfit_ADC[0]) continue;
+        if(x2 > Rfit_ADC[1]) continue;
+        
+        SomeN += y1;
+        
+        if(y1 <= Peak_Height*0.5 && y2 > Peak_Height*0.5 && left_sigma  < 0.0) left_sigma  = 0.5*(x1+x2);
+        if(y1 >= Peak_Height*0.5 && y2 < Peak_Height*0.5 && right_sigma < 0.0) right_sigma = 0.5*(x1+x2);
+      }
+      cout<<"ls: "<<left_sigma<<"rs: "<<right_sigma<<endl;
+      double MyMean  = Peak_position;
+      cout<<Peak_position<<endl;
+      double MySigma = 0.5*(right_sigma - left_sigma);
+      double MyAlpha = 1.5;
+      double Myn     = 10.0;
+      double MyN1    = SomeN*0.9;
+      double MyN2    = SomeN*0.1;
+      double MyN     = SomeN;
+      double MyFrac  = 0.1;
+      
+      double RMyMean[2];
+      double RMySigma[2];
+      double RMyAlpha[2];
+      double RMyn[2];
+      double RMyN1[2];
+      double RMyN2[2];
+      double RMyN[2];
+      double RMyFrac[2];
+      RMyMean[0]  = Rfit_ADC[0];
+      RMyMean[1]  = Rfit_ADC[1];
+      RMySigma[0] = MySigma*1.0e-5;
+      RMySigma[1] = MySigma*1.0e+1;
+      RMyAlpha[0] = 0.0;
+      RMyAlpha[1] = 5.0;
+      RMyn[0]     = 1.0;
+      RMyn[1]     = 20.0;
+      RMyN1[0]    = 0.0;
+      RMyN1[1]    = 1.0e+3*(MyN1+MyN2);
+      RMyN2[0]    = 0.0;
+      RMyN2[1]    = 1.0e+3*(MyN1+MyN2);
+      RMyN[0]     = 0.0;
+      RMyN[1]     = 1.0e+3*MyN;
+      RMyFrac[0]  = 0.0;
+      RMyFrac[1]  = 1.0;
+      
+      cout << endl;
+      cout  << " Peak Position at " << Peak_position << " ADCu, with height " << Peak_Height << ". Fit range (" << Rfit_keV[0] << "," << Rfit_keV[1] << ") keV => (" << Rfit_ADC[0] << "," << Rfit_ADC[1] << ")" << endl;
+      cout<< "Nb of entries in range with background: "<<hHitSeedChargeFit[iPlane-1]->Integral(RMyMean[0],RMyMean[1])<<endl;
+      cout << "Initial values of fit parameters:" << endl;
+      cout << "mean  = " << MyMean  << "  (" << RMyMean[0]  << "," << RMyMean[1]  << ") ADCu" << endl;
+      cout << "sigma = " << MySigma << "  (" << RMySigma[0] << "," << RMySigma[1] << ") ADCu" << endl;
+      cout << "alpha = " << MyAlpha << "  (" << RMyAlpha[0] << "," << RMyAlpha[1] << ")"      << endl;
+      cout << "n     = " << Myn     << "  (" << RMyn[0]     << "," << RMyn[1]     << ")"      << endl;
+      // TF1 * f = new TF1("f",fptr,&MyFunction::Evaluate,0,1,npar,"MyFunction","Evaluate");   // create TF1 class.
+      
+      
+      
+      Char_t fitResultsFileName[300];
+      sprintf(fitResultsFileName,"%sFitResults_%d.txt",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
+      sprintf(fitResultsFileName,"%s", fTool.LocalizeDirName(fitResultsFileName)); // JB 2011/07/07
+      ofstream fitResultsFile;
+      fitResultsFile.open(fitResultsFileName);
+      
+      if (fitXray==1){fitResultsFile<<"================ 55Fe FITS ================"<<"\n";}
+      else if (fitXray==2){fitResultsFile<<"================= Cr FITS ================="<<"\n";}
+      else if (fitXray==3){fitResultsFile<<"================= Cu FITS ================="<<"\n";}
+      else if (fitXray==4){fitResultsFile<<"================= Mo FITS ================="<<"\n";}
+      
+      
+      
+      
+      /*==========================================================================================================================
+       ============================================================================================================================
+       ================================================== BIFURCATED FIT OF 55Fe ==================================================
+       ============================================================================================================================
+       ==========================================================================================================================*/
+      
+      
+      
+      BifFit_func[iPlane-1] = new TF1("BiffitCB", &fTool, &DGlobalTools::fpeaksBifurcatedCB55Fe, Rfit_ADC[0], Rfit_ADC[1], 12, "DGlobalTools", "fpeaksBifurcatedCB55Fe");
+      
+      
+      //BifFit_func[iPlane-1] = new TF1("fitCB", fTool.fpeaksBifurcatedCB, Rfit_ADC[0], Rfit_ADC[1], 7);
+      if (fitXray==1)
+      {
+        BifFit_func[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(1,"#mu K#beta (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(2,"#sigma_{K#alphaLEFT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(3,"#sigma_{K#betaLEFT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(4,"#sigma_{K#alphaRIGHT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(5,"#sigma_{K#betaLEFT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(6,"#alpha K#alpha");
+        BifFit_func[iPlane-1]->SetParName(7,"#alpha K#beta");
+        BifFit_func[iPlane-1]->SetParName(8,"n K#alpha");
+        BifFit_func[iPlane-1]->SetParName(9,"n K#beta");
+        BifFit_func[iPlane-1]->SetParName(10,"N_{K#alpha}");
+        BifFit_func[iPlane-1]->SetParName(11,"N_{K#beta}");
+      }
+      else // Changing names for other sources than 55Fe => Harmonics
+      {
+        BifFit_func[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(1,"2 x #mu K#alpha (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(2,"#sigma_{K#alphaLEFT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(3,"#sigma_{2xK#alphaLEFT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(4,"#sigma_{K#alphaRIGHT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(5,"#sigma_{2xK#alphaLEFT} (ADCu)");
+        BifFit_func[iPlane-1]->SetParName(6,"#alpha K#alpha");
+        BifFit_func[iPlane-1]->SetParName(7,"#alpha 2xK#alpha");
+        BifFit_func[iPlane-1]->SetParName(8,"n K#alpha");
+        BifFit_func[iPlane-1]->SetParName(9,"n 2xK#alpha");
+        BifFit_func[iPlane-1]->SetParName(10,"N_{K#alpha}");
+        BifFit_func[iPlane-1]->SetParName(11,"N_{2xK#alpha}");
+      }
+      
+      
+      
+      BifFit_func[iPlane-1]->SetParameter(0,MyMean);
+      BifFit_func[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
+      BifFit_func[iPlane-1]->SetParameter(2,MySigma);
+      BifFit_func[iPlane-1]->SetParameter(3,MySigma);
+      BifFit_func[iPlane-1]->SetParameter(4,MySigma);
+      BifFit_func[iPlane-1]->SetParameter(5,MySigma);
+      BifFit_func[iPlane-1]->SetParameter(6,MyAlpha);
+      BifFit_func[iPlane-1]->SetParameter(7,MyAlpha);
+      BifFit_func[iPlane-1]->SetParameter(8,Myn);
+      BifFit_func[iPlane-1]->SetParameter(9,Myn);
+      BifFit_func[iPlane-1]->SetParameter(10,MyN1);
+      if (fitXray==4) //Forcing parameters for Mo where there is no second peak
+      {
+        BifFit_func[iPlane-1]->FixParameter(11,0.0);
+      }
+      else
+      {
+        BifFit_func[iPlane-1]->SetParameter(11,MyN2);
+      }
+      
+      BifFit_func[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
+      BifFit_func[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
+      BifFit_func[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
+      BifFit_func[iPlane-1]->SetParLimits(3,RMySigma[0],RMySigma[1]);
+      BifFit_func[iPlane-1]->SetParLimits(4,RMySigma[0],RMySigma[1]);
+      BifFit_func[iPlane-1]->SetParLimits(5,RMySigma[0],RMySigma[1]);
+      BifFit_func[iPlane-1]->SetParLimits(6,RMyAlpha[0],RMyAlpha[1]);
+      BifFit_func[iPlane-1]->SetParLimits(7,RMyAlpha[0],RMyAlpha[1]);
+      BifFit_func[iPlane-1]->SetParLimits(8,RMyn[0],RMyn[1]);
+      BifFit_func[iPlane-1]->SetParLimits(9,RMyn[0],RMyn[1]);
+      BifFit_func[iPlane-1]->SetParLimits(10,RMyN1[0],RMyN1[1]);
+      BifFit_func[iPlane-1]->SetParLimits(11,RMyN2[0],RMyN2[1]);
+      
+      BifFit_func[iPlane-1]->SetLineColor(kBlue);
+      BifFit_func[iPlane-1]->SetLineWidth(2);
+      BifFit_func[iPlane-1]->SetNpx(10000);
+      
+      hHitSeedChargeBifFit[iPlane-1]->Fit(BifFit_func[iPlane-1],"RQ");
+      
+      
+      
+      cout<<"\n================ BIFURCATED FIT WITH BACKGROUND ===================="<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(0)<<": "<<BifFit_func[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(0)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(1)<<": "<<BifFit_func[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(1)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(2)<<": "<<BifFit_func[iPlane-1]->GetParameter(2)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(2)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(3)<<": "<<BifFit_func[iPlane-1]->GetParameter(3)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(3)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(4)<<": "<<BifFit_func[iPlane-1]->GetParameter(4)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(4)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(5)<<": "<<BifFit_func[iPlane-1]->GetParameter(5)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(5)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(6)<<": "<<BifFit_func[iPlane-1]->GetParameter(6)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(6)<<endl;
+      cout<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<0.5*(BifFit_func[iPlane-1]->GetParameter(2)+BifFit_func[iPlane-1]->GetParameter(4))*2.355*calibrationEnergy*1000./BifFit_func[iPlane-1]->GetParameter(0) <<" eV"<<endl;
+      cout<<"Energy Resolution at "<<secondPeak<<" keV: "<<0.5*(BifFit_func[iPlane-1]->GetParameter(3)+BifFit_func[iPlane-1]->GetParameter(5))*2.355*secondPeak*1000./BifFit_func[iPlane-1]->GetParameter(1) <<" eV"<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(7)<<": "<<BifFit_func[iPlane-1]->GetParameter(7)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(7)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(8)<<": "<<BifFit_func[iPlane-1]->GetParameter(8)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(8)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(9)<<": "<<BifFit_func[iPlane-1]->GetParameter(9)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(9)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(10)<<": "<<BifFit_func[iPlane-1]->GetParameter(10)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(10)<<endl;
+      cout<<BifFit_func[iPlane-1]->GetParName(11)<<": "<<BifFit_func[iPlane-1]->GetParameter(11)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(11)<<endl;
+      cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeBifFit[iPlane-1]->Integral(BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
+      
+      
+      fitResultsFile<<"================ BIFURCATED FIT WITH BACKGROUND ===================="<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(0)<<": "<<BifFit_func[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(0)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(1)<<": "<<BifFit_func[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(1)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(2)<<": "<<BifFit_func[iPlane-1]->GetParameter(2)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(2)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(3)<<": "<<BifFit_func[iPlane-1]->GetParameter(3)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(3)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(4)<<": "<<BifFit_func[iPlane-1]->GetParameter(4)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(4)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(5)<<": "<<BifFit_func[iPlane-1]->GetParameter(5)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(5)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(6)<<": "<<BifFit_func[iPlane-1]->GetParameter(6)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(6)<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<0.5*(BifFit_func[iPlane-1]->GetParameter(2)+BifFit_func[iPlane-1]->GetParameter(4))*2.355*calibrationEnergy*1000./BifFit_func[iPlane-1]->GetParameter(0) <<" eV"<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<secondPeak<<" keV: "<<0.5*(BifFit_func[iPlane-1]->GetParameter(3)+BifFit_func[iPlane-1]->GetParameter(5))*2.355*secondPeak*1000./BifFit_func[iPlane-1]->GetParameter(1) <<" eV"<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(7)<<": "<<BifFit_func[iPlane-1]->GetParameter(7)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(7)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(8)<<": "<<BifFit_func[iPlane-1]->GetParameter(8)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(8)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(9)<<": "<<BifFit_func[iPlane-1]->GetParameter(9)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(9)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(10)<<": "<<BifFit_func[iPlane-1]->GetParameter(10)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(10)<<"\n";
+      fitResultsFile<<BifFit_func[iPlane-1]->GetParName(11)<<": "<<BifFit_func[iPlane-1]->GetParameter(11)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(11)<<"\n";
+      fitResultsFile<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeBifFit[iPlane-1]->Integral(BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<"\n";
+      
+      
+      /*===================================================================================
+       ================================ FIT WITHOUT BACKGROUND =============================
+       =====================================================================================*/
+      BifFit_func_NoBg[iPlane-1] = new TF1("BiffitCB_nobg", &fTool, &DGlobalTools::fpeaksBifurcatedCB55Fe, Rfit_ADC[0], Rfit_ADC[1], 12, "DGlobalTools", "fpeaksBifurcatedCB55Fe");
+      //BifFit_func_NoBg[iPlane-1] = new TF1("fitCB", fTool.fpeaksBifurcatedCB, Rfit_ADC[0], Rfit_ADC[1], 7);
+      if (fitXray==1)
+      {
+        BifFit_func_NoBg[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(1,"#mu K#beta (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(2,"#sigma_{K#alphaLEFT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(3,"#sigma_{K#betaLEFT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(4,"#sigma_{K#alphaRIGHT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(5,"#sigma_{K#betaLEFT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(6,"#alpha K#alpha");
+        BifFit_func_NoBg[iPlane-1]->SetParName(7,"#alpha K#beta");
+        BifFit_func_NoBg[iPlane-1]->SetParName(8,"n K#alpha");
+        BifFit_func_NoBg[iPlane-1]->SetParName(9,"n K#beta");
+        BifFit_func_NoBg[iPlane-1]->SetParName(10,"N_{K#alpha}");
+        BifFit_func_NoBg[iPlane-1]->SetParName(11,"N_{K#beta}");
+      }
+      else // Changing names for other sources than 55Fe => Harmonics
+      {
+        BifFit_func_NoBg[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(1,"2 x #mu K#alpha (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(2,"#sigma_{K#alphaLEFT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(3,"#sigma_{2xK#alphaLEFT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(4,"#sigma_{K#alphaRIGHT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(5,"#sigma_{2xK#alphaLEFT} (ADCu)");
+        BifFit_func_NoBg[iPlane-1]->SetParName(6,"#alpha K#alpha");
+        BifFit_func_NoBg[iPlane-1]->SetParName(7,"#alpha 2xK#alpha");
+        BifFit_func_NoBg[iPlane-1]->SetParName(8,"n K#alpha");
+        BifFit_func_NoBg[iPlane-1]->SetParName(9,"n 2xK#alpha");
+        BifFit_func_NoBg[iPlane-1]->SetParName(10,"N_{K#alpha}");
+        BifFit_func_NoBg[iPlane-1]->SetParName(11,"N_{2xK#alpha}");
+      }
+      
+      
+      
+      BifFit_func_NoBg[iPlane-1]->SetParameter(0,MyMean);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
+      BifFit_func_NoBg[iPlane-1]->SetParameter(2,MySigma);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(3,MySigma);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(4,MySigma);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(5,MySigma);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(6,MyAlpha);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(7,MyAlpha);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(8,Myn);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(9,Myn);
+      BifFit_func_NoBg[iPlane-1]->SetParameter(10,MyN1);
+      if (fitXray==4) //Forcing parameters for Mo where there is no second peak
+      {
+        BifFit_func_NoBg[iPlane-1]->FixParameter(11,0.0);
+      }
+      else
+      {
+        BifFit_func_NoBg[iPlane-1]->SetParameter(11,MyN2);
+      }
+      
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(3,RMySigma[0],RMySigma[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(4,RMySigma[0],RMySigma[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(5,RMySigma[0],RMySigma[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(6,RMyAlpha[0],RMyAlpha[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(7,RMyAlpha[0],RMyAlpha[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(8,RMyn[0],RMyn[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(9,RMyn[0],RMyn[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(10,RMyN1[0],RMyN1[1]);
+      BifFit_func_NoBg[iPlane-1]->SetParLimits(11,RMyN2[0],RMyN2[1]);
+      
+      BifFit_func_NoBg[iPlane-1]->SetLineColor(kBlue);
+      BifFit_func_NoBg[iPlane-1]->SetLineWidth(2);
+      BifFit_func_NoBg[iPlane-1]->SetNpx(10000);
+      
+      hHitSeedChargeBifFitNoBg[iPlane-1]->Fit(BifFit_func_NoBg[iPlane-1],"RQ");
+      
+      
+      
+      cout<<"\n================ BIFURCATED FIT WITHOUT BACKGROUND ===================="<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(0)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(1)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(2)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(2)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(2)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(3)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(3)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(3)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(4)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(4)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(4)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(5)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(5)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(5)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(6)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(6)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(6)<<endl;
+      cout<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<0.5*(BifFit_func_NoBg[iPlane-1]->GetParameter(2)+BifFit_func_NoBg[iPlane-1]->GetParameter(4))*2.355*calibrationEnergy*1000./BifFit_func_NoBg[iPlane-1]->GetParameter(0) <<" eV"<<endl;
+      cout<<"Energy Resolution at "<<secondPeak<<" keV: "<<0.5*(BifFit_func_NoBg[iPlane-1]->GetParameter(3)+BifFit_func_NoBg[iPlane-1]->GetParameter(5))*2.355*secondPeak*1000./BifFit_func_NoBg[iPlane-1]->GetParameter(1) <<" eV"<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(7)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(7)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(7)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(8)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(8)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(8)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(9)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(9)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(9)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(10)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(10)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(10)<<endl;
+      cout<<BifFit_func_NoBg[iPlane-1]->GetParName(11)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(11)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(11)<<endl;
+      cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeBifFitNoBg[iPlane-1]->Integral(BifFit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
+      
+      fitResultsFile<<"\n================ BIFURCATED FIT WITHOUT BACKGROUND ===================="<<endl;
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(0)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(1)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(2)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(2)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(2)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(3)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(3)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(3)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(4)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(4)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(4)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(5)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(5)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(5)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(6)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(6)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(6)<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<0.5*(BifFit_func_NoBg[iPlane-1]->GetParameter(2)+BifFit_func_NoBg[iPlane-1]->GetParameter(4))*2.355*calibrationEnergy*1000./BifFit_func_NoBg[iPlane-1]->GetParameter(0) <<" eV"<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<secondPeak<<" keV: "<<0.5*(BifFit_func_NoBg[iPlane-1]->GetParameter(3)+BifFit_func_NoBg[iPlane-1]->GetParameter(5))*2.355*secondPeak*1000./BifFit_func_NoBg[iPlane-1]->GetParameter(1) <<" eV"<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(7)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(7)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(7)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(8)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(8)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(8)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(9)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(9)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(9)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(10)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(10)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(10)<<"\n";
+      fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(11)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(11)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(11)<<"\n";
+      fitResultsFile<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeBifFitNoBg[iPlane-1]->Integral(BifFit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<"\n";
+      /*==========================================================================================================================
+       ============================================================================================================================
+       ==================================================== STANDARD FIT OF 55Fe ==================================================
+       ============================================================================================================================
+       ==========================================================================================================================*/
+      
+      
+      Fit_func[iPlane-1] = new TF1("fitCB", &fTool, &DGlobalTools::fpeaksCB55Fe, Rfit_ADC[0], Rfit_ADC[1], 10, "DGlobalTools", "fpeaksCB55Fe");
+      //Fit_func[iPlane-1] = new TF1("fitCB", fTool.fpeaksBifurcatedCB, Rfit_ADC[0], Rfit_ADC[1], 7);
+      
+      if (fitXray==1)
+      {
+        Fit_func[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        Fit_func[iPlane-1]->SetParName(1,"#mu K#beta (ADCu)");
+        Fit_func[iPlane-1]->SetParName(2,"#sigma_{K#alpha} (ADCu)");
+        Fit_func[iPlane-1]->SetParName(3,"#sigma_{K#beta} (ADCu)");
+        Fit_func[iPlane-1]->SetParName(4,"#alpha K#alpha");
+        Fit_func[iPlane-1]->SetParName(5,"#alpha K#beta");
+        Fit_func[iPlane-1]->SetParName(6,"n K#alpha");
+        Fit_func[iPlane-1]->SetParName(7,"n K#beta");
+        Fit_func[iPlane-1]->SetParName(8,"N_{K#alpha}");
+        Fit_func[iPlane-1]->SetParName(9,"N_{K#beta}");
+      }
+      else
+      {
+        Fit_func[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        Fit_func[iPlane-1]->SetParName(1,"#mu 2xK#alpha (ADCu)");
+        Fit_func[iPlane-1]->SetParName(2,"#sigma_{K#alpha} (ADCu)");
+        Fit_func[iPlane-1]->SetParName(3,"#sigma_{2xK#alpha} (ADCu)");
+        Fit_func[iPlane-1]->SetParName(4,"#alpha K#alpha");
+        Fit_func[iPlane-1]->SetParName(5,"#alpha 2xK#alpha");
+        Fit_func[iPlane-1]->SetParName(6,"n K#alpha");
+        Fit_func[iPlane-1]->SetParName(7,"n 2xK#alpha");
+        Fit_func[iPlane-1]->SetParName(8,"N_{K#alpha}");
+        Fit_func[iPlane-1]->SetParName(9,"N_{2xK#alpha}");
+      }
+      
+      
+      
+      
+      Fit_func[iPlane-1]->SetParameter(0,MyMean);
+      Fit_func[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
+      Fit_func[iPlane-1]->SetParameter(2,MySigma);
+      Fit_func[iPlane-1]->SetParameter(3,MySigma);
+      Fit_func[iPlane-1]->SetParameter(4,MyAlpha);
+      Fit_func[iPlane-1]->SetParameter(5,MyAlpha);
+      Fit_func[iPlane-1]->SetParameter(6,Myn);
+      Fit_func[iPlane-1]->SetParameter(7,Myn);
+      Fit_func[iPlane-1]->SetParameter(8,MyN1);
+      if (fitXray==4) //Forcing parameters for Mo where there is no second peak
+      {
+        Fit_func[iPlane-1]->FixParameter(9,0.0);
+      }
+      else
+      {
+        Fit_func[iPlane-1]->SetParameter(9,MyN2);
+      }
+      
+      Fit_func[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
+      Fit_func[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
+      Fit_func[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
+      Fit_func[iPlane-1]->SetParLimits(3,RMySigma[0],RMySigma[1]);
+      Fit_func[iPlane-1]->SetParLimits(4,RMyAlpha[0],RMyAlpha[1]);
+      Fit_func[iPlane-1]->SetParLimits(5,RMyAlpha[0],RMyAlpha[1]);
+      Fit_func[iPlane-1]->SetParLimits(6,RMyn[0],RMyn[1]);
+      Fit_func[iPlane-1]->SetParLimits(7,RMyn[0],RMyn[1]);
+      Fit_func[iPlane-1]->SetParLimits(8,RMyN1[0],RMyN1[1]);
+      Fit_func[iPlane-1]->SetParLimits(9,RMyN2[0],RMyN2[1]);
+      
+      Fit_func[iPlane-1]->SetLineColor(kBlue);
+      Fit_func[iPlane-1]->SetLineWidth(2);
+      Fit_func[iPlane-1]->SetNpx(10000);
+      
+      hHitSeedChargeFit[iPlane-1]->Fit(Fit_func[iPlane-1],"RQ");
+      
+      
+      
+      cout<<"\n================ WITH BACKGROUND ===================="<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(0)<<": "<<Fit_func[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func[iPlane-1]->GetParError(0)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(1)<<": "<<Fit_func[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func[iPlane-1]->GetParError(1)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(2)<<": "<<Fit_func[iPlane-1]->GetParameter(2)<<" +/- "<<Fit_func[iPlane-1]->GetParError(2)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(3)<<": "<<Fit_func[iPlane-1]->GetParameter(3)<<" +/- "<<Fit_func[iPlane-1]->GetParError(3)<<endl;
+      cout<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<Fit_func[iPlane-1]->GetParameter(2)*2.355*calibrationEnergy*1000./Fit_func[iPlane-1]->GetParameter(0) <<" eV"<<endl;
+      cout<<"Energy Resolution at "<<secondPeak<<" keV: "<<Fit_func[iPlane-1]->GetParameter(3)*2.355*secondPeak*1000./Fit_func[iPlane-1]->GetParameter(1) <<" eV"<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(4)<<": "<<Fit_func[iPlane-1]->GetParameter(4)<<" +/- "<<Fit_func[iPlane-1]->GetParError(4)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(5)<<": "<<Fit_func[iPlane-1]->GetParameter(5)<<" +/- "<<Fit_func[iPlane-1]->GetParError(5)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(6)<<": "<<Fit_func[iPlane-1]->GetParameter(6)<<" +/- "<<Fit_func[iPlane-1]->GetParError(6)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(7)<<": "<<Fit_func[iPlane-1]->GetParameter(7)<<" +/- "<<Fit_func[iPlane-1]->GetParError(7)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(8)<<": "<<Fit_func[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func[iPlane-1]->GetParError(8)<<endl;
+      cout<<Fit_func[iPlane-1]->GetParName(9)<<": "<<Fit_func[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func[iPlane-1]->GetParError(9)<<endl;
+      cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFit[iPlane-1]->Integral(Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
+      
+      fitResultsFile<<"\n================ WITH BACKGROUND ===================="<<endl;
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(0)<<": "<<Fit_func[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func[iPlane-1]->GetParError(0)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(1)<<": "<<Fit_func[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func[iPlane-1]->GetParError(1)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(2)<<": "<<Fit_func[iPlane-1]->GetParameter(2)<<" +/- "<<Fit_func[iPlane-1]->GetParError(2)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(3)<<": "<<Fit_func[iPlane-1]->GetParameter(3)<<" +/- "<<Fit_func[iPlane-1]->GetParError(3)<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<Fit_func[iPlane-1]->GetParameter(2)*2.355*calibrationEnergy*1000./Fit_func[iPlane-1]->GetParameter(0) <<" eV"<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<secondPeak<<" keV: "<<Fit_func[iPlane-1]->GetParameter(3)*2.355*secondPeak*1000./Fit_func[iPlane-1]->GetParameter(1) <<" eV"<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(4)<<": "<<Fit_func[iPlane-1]->GetParameter(4)<<" +/- "<<Fit_func[iPlane-1]->GetParError(4)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(5)<<": "<<Fit_func[iPlane-1]->GetParameter(5)<<" +/- "<<Fit_func[iPlane-1]->GetParError(5)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(6)<<": "<<Fit_func[iPlane-1]->GetParameter(6)<<" +/- "<<Fit_func[iPlane-1]->GetParError(6)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(7)<<": "<<Fit_func[iPlane-1]->GetParameter(7)<<" +/- "<<Fit_func[iPlane-1]->GetParError(7)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(8)<<": "<<Fit_func[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func[iPlane-1]->GetParError(8)<<"\n";
+      fitResultsFile<<Fit_func[iPlane-1]->GetParName(9)<<": "<<Fit_func[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func[iPlane-1]->GetParError(9)<<"\n";
+      fitResultsFile<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFit[iPlane-1]->Integral(Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<"\n";
+      
+      /*===================================================================================
+       ================================ FIT WITHOUT BACKGROUND =============================
+       =====================================================================================*/
+      Fit_func_NoBg[iPlane-1] = new TF1("fitCB_nobg", &fTool, &DGlobalTools::fpeaksCB55Fe, Rfit_ADC[0], Rfit_ADC[1], 10, "DGlobalTools", "fpeaksCB55Fe");
+      //Fit_func_NoBg[iPlane-1] = new TF1("fitCB", fTool.fpeaksBifurcatedCB, Rfit_ADC[0], Rfit_ADC[1], 7);
+      if (fitXray==1)
+      {
+        Fit_func_NoBg[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(1,"#mu K#beta (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(2,"#sigma_{K#alpha} (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(3,"#sigma_{K#beta} (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(4,"#alpha K#alpha");
+        Fit_func_NoBg[iPlane-1]->SetParName(5,"#alpha K#beta");
+        Fit_func_NoBg[iPlane-1]->SetParName(6,"n K#alpha");
+        Fit_func_NoBg[iPlane-1]->SetParName(7,"n K#beta");
+        Fit_func_NoBg[iPlane-1]->SetParName(8,"N_{K#alpha}");
+        Fit_func_NoBg[iPlane-1]->SetParName(9,"N_{K#beta}");
+      }
+      else
+      {
+        Fit_func_NoBg[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(1,"#mu 2xK#alpha (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(2,"#sigma_{K#alpha} (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(3,"#sigma_{2xK#alpha} (ADCu)");
+        Fit_func_NoBg[iPlane-1]->SetParName(4,"#alpha K#alpha");
+        Fit_func_NoBg[iPlane-1]->SetParName(5,"#alpha 2xK#alpha");
+        Fit_func_NoBg[iPlane-1]->SetParName(6,"n K#alpha");
+        Fit_func_NoBg[iPlane-1]->SetParName(7,"n 2xK#alpha");
+        Fit_func_NoBg[iPlane-1]->SetParName(8,"N_{K#alpha}");
+        Fit_func_NoBg[iPlane-1]->SetParName(9,"N_{2xK#alpha}");
+      }
+      
+      
+      Fit_func_NoBg[iPlane-1]->SetParameter(0,MyMean);
+      Fit_func_NoBg[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
+      Fit_func_NoBg[iPlane-1]->SetParameter(2,MySigma);
+      Fit_func_NoBg[iPlane-1]->SetParameter(3,MySigma);
+      Fit_func_NoBg[iPlane-1]->SetParameter(4,MyAlpha);
+      Fit_func_NoBg[iPlane-1]->SetParameter(5,MyAlpha);
+      Fit_func_NoBg[iPlane-1]->SetParameter(6,Myn);
+      Fit_func_NoBg[iPlane-1]->SetParameter(7,Myn);
+      Fit_func_NoBg[iPlane-1]->SetParameter(8,MyN1);
+      if (fitXray==4) //Forcing parameters for Mo where there is no second peak
+      {
+        Fit_func_NoBg[iPlane-1]->FixParameter(9,0.0);
+      }
+      else
+      {
+        Fit_func_NoBg[iPlane-1]->SetParameter(9,MyN2);
+      }
+      
+      Fit_func_NoBg[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(3,RMySigma[0],RMySigma[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(4,RMyAlpha[0],RMyAlpha[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(5,RMyAlpha[0],RMyAlpha[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(6,RMyn[0],RMyn[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(7,RMyn[0],RMyn[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(8,RMyN1[0],RMyN1[1]);
+      Fit_func_NoBg[iPlane-1]->SetParLimits(9,RMyN2[0],RMyN2[1]);
+      
+      Fit_func_NoBg[iPlane-1]->SetLineColor(kBlue);
+      Fit_func_NoBg[iPlane-1]->SetLineWidth(2);
+      Fit_func_NoBg[iPlane-1]->SetNpx(10000);
+      
+      hHitSeedChargeFitNoBg[iPlane-1]->Fit(Fit_func_NoBg[iPlane-1],"RQ");
+      
+      
+      
+      
+      cout<<"\n================ WITHOUT BACKGROUND ===================="<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(0)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(1)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(2)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(2)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(2)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(3)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(3)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(3)<<endl;
+      cout<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<Fit_func_NoBg[iPlane-1]->GetParameter(2)*2.355*calibrationEnergy*1000./Fit_func_NoBg[iPlane-1]->GetParameter(0) <<" eV"<<endl;
+      cout<<"Energy Resolution at "<<secondPeak<<" keV: "<<Fit_func_NoBg[iPlane-1]->GetParameter(3)*2.355*secondPeak*1000./Fit_func_NoBg[iPlane-1]->GetParameter(1) <<" eV"<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(4)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(4)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(4)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(5)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(5)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(5)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(6)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(6)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(6)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(7)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(7)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(7)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(8)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(8)<<endl;
+      cout<<Fit_func_NoBg[iPlane-1]->GetParName(9)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(9)<<endl;
+      cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFitNoBg[iPlane-1]->Integral(BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
+      
+      fitResultsFile<<"\n================ WITHOUT BACKGROUND ===================="<<endl;
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(0)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(1)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(2)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(2)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(2)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(3)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(3)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(3)<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<calibrationEnergy<<" keV: "<<Fit_func_NoBg[iPlane-1]->GetParameter(2)*2.355*calibrationEnergy*1000./Fit_func_NoBg[iPlane-1]->GetParameter(0) <<" eV"<<"\n";
+      fitResultsFile<<"Energy Resolution at "<<secondPeak<<" keV: "<<Fit_func_NoBg[iPlane-1]->GetParameter(3)*2.355*secondPeak*1000./Fit_func_NoBg[iPlane-1]->GetParameter(1) <<" eV"<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(4)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(4)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(4)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(5)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(5)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(5)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(6)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(6)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(6)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(7)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(7)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(7)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(8)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(8)<<"\n";
+      fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(9)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(9)<<"\n";
+      fitResultsFile<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFitNoBg[iPlane-1]->Integral(Fit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, Fit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<"\n";
+      
+      
+      
+      fitResultsFile.close();
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    }
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   // Save canvas and histos
   //cd to result dir
   // added JB 2011/03/14
+  
+  
   Char_t rootFile[300];
   sprintf(rootFile,"%sHitMap_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
   sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
@@ -9972,6 +10696,18 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         hHitSeedVsNeighbourSN[iPlane-1]->Write();
         hHitCharge[iPlane-1]->Write();
         hHitSeedCharge[iPlane-1]->Write();
+        if (fitXray!=0)
+        {
+          hb[iPlane-1]->Write();
+          Fit_func[iPlane-1]->Write();
+          Fit_func_NoBg[iPlane-1]->Write();
+          hHitSeedChargeFit[iPlane-1]->Write();
+          hHitSeedChargeFitNoBg[iPlane-1]->Write();;
+          BifFit_func[iPlane-1]->Write();
+          BifFit_func_NoBg[iPlane-1]->Write();
+          hHitSeedChargeBifFit[iPlane-1]->Write();
+          hHitSeedChargeBifFitNoBg[iPlane-1]->Write();
+        }
         hHitSeedCharge_CUT[iPlane-1]->Write();
         hHitNeighbourCharge[iPlane-1]->Write();
         hHitSeedVsNeighbourCharge[iPlane-1]->Write();
@@ -9991,7 +10727,6 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   fRoot.Close();  
   
 }
-
 //______________________________________________________________________________
 //
 void MRaw::SeedCuts(Int_t nEvents)

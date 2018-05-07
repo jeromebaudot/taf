@@ -44,6 +44,7 @@
 // Last Modified: JB, 2016/08/17 Updates for multiframe mode
 // Last Modified: JB, 2016/08/19 DPlane, allow fNoiserun option for mode 232
 // Last Modified: JB, 2016/10/17 DPlane::DPlane
+// Last Modified: JB, 2018/05/04 DPlane::Update
 
 /////////////////////////////////////////////////////////////
 // Class Description of DPlane                             //
@@ -1324,6 +1325,7 @@ Bool_t DPlane::Update(){
   // Last Modified, JB 2016/07/20 better management of fNoiseRun option
   // Last Modified, JB 2016/08/17 signed value in multiframe mode
   // Last Modified, JB 2016/08/19 allow NoieRun option for readmode 232
+  // Last Modified, JB 2018/05/04 new readout==3 mode for polarity inversion
   
   Bool_t goForAnalysis = kTRUE ;
   Bool_t planeReady = kTRUE ; // JB 2010/09/20
@@ -1430,6 +1432,30 @@ Bool_t DPlane::Update(){
       
     }    
   } //end readout==2
+
+  //======================
+  // Readout 3
+  // - same as Readout==1 BUT REVERESE POLARITY
+  //  JB, MK 2018/05/04
+  else if ( fReadout==3 ){
+    fPixelsN = fListOfPixels->size(); // update number of hit pixels
+    if( fDebugPlane>1 ) printf(" DPlane::Update: Plane %d has %d pixels\n", fPlaneNumber, fPixelsN);
+    for (Int_t tci = 0; tci < fPixelsN; tci++) { // loop over hit pixels
+      aPixel = fListOfPixels->at(tci);
+      st = aPixel->GetPixelIndex();
+      aPixel->SetPixelLine( st / fStripsNu);
+      aPixel->SetPixelColumn( st % fStripsNu);
+      
+      // reverse polarity here
+      aPixel->SetRawValue( -aPixel->GetRawValue());
+      
+      GetStrip(st)->SetPixelIndex( tci);
+      GetStrip(st)->SetRawValue( aPixel->GetRawValue() );
+      
+      if( fDebugPlane>3 ) printf("DPlane:Update  pixel %d with index %d, at (line,col)=(%d,%d) and raw value %.1f or %.1f\n", tci, st, st / fStripsNu, st & fStripsNu, aPixel->GetRawValue(), GetStrip(st)->GetRawValue());
+      
+    }
+  } //end readout==3
   
   //======================
   // Readout 102

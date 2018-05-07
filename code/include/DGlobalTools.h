@@ -159,6 +159,37 @@ class DGlobalTools {
   
   int        RoundOff(double a);
   
+  double fpeaks(double *x, double *par, int npeaks);
+  double CBfunction(double x, double mean, double sigma, double alpha, double n);
+  double BifurcatedCBfunction(double x, double mean, double sigmaL, double sigmaR, double alpha, double n);
+  double DoublePeakCBFitFunction55Fe(double x,
+                                     double mean1,
+                                     double mean2,
+                                     double sigma1,
+                                     double sigma2,
+                                     double alpha1,
+                                     double alpha2,
+                                     double n1,
+                                     double n2,
+                                     double N1,
+                                     double N2);
+  double DoublePeakBifurcatedCBFitFunction55Fe(double x,
+                                               double mean1,
+                                               double mean2,
+                                               double sigmaL1,
+                                               double sigmaL2,
+                                               double sigmaR1,
+                                               double sigmaR2,
+                                               double alpha1,
+                                               double alpha2,
+                                               double n1,
+                                               double n2,
+                                               double N1,
+                                               double N2);
+  double fpeaksCB55Fe(double *x, double *par);
+  double fpeaksBifurcatedCB55Fe(double *x, double *par);
+  
+
   static  DGlobalTools*& Instance() { 
     if (!fgInstance)  fgInstance = new  DGlobalTools(); 
     return fgInstance; 
