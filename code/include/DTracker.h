@@ -40,6 +40,7 @@ void FCNAlignVertex(Int_t &n, Double_t *gin, Double_t &f, Double_t *par , Int_t 
 class DTracker : public TObject {
 
  private:
+  Int_t            fTrackerId;         // Identifier of this tracker
   DAcq            *fAcq;               // pointer to acquisition
   DSetup          *fc;                 // pointer to the configuration
 
@@ -135,6 +136,7 @@ class DTracker : public TObject {
  public:
   DTracker();
   DTracker(DSetup& c, DAcq& aAcq);
+  DTracker( Int_t id, DSetup& c, DAcq& aAcq);
   ~DTracker();
 
   enum             {kSimpleChi2, kKalman, kChi2MS}; // QL 2016/06/06

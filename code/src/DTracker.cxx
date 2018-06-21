@@ -92,7 +92,16 @@ DTracker::DTracker()
 //
 DTracker::DTracker(DSetup& c, DAcq& aAcq)
 {
+  
+  DTracker( 1, c, aAcq);
 
+}
+
+//______________________________________________________________________________
+//
+DTracker::DTracker(Int_t id, DSetup& c, DAcq& aAcq)
+{
+  
   // -----------------------------------------------
   // -+-+- Constructs the DTracker with its Planes
   // -----------------------------------------------
@@ -111,12 +120,14 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
   // Modified: JB 2014/08/29 addition of fTrackCountPerPlane
   // Modified: JB 2014/12/15 all variable for subtracks introduced
   // Modified: VR 2014/12/18 Completely rebuild find_tracks2
+  // Modified: JB 2018/06/21 Add tracker ID
 
   if (fgInstance) Warning("MimosaAlignAnalysis", "object already instantiated");
   else fgInstance = this;
 
-  cout << endl << " -+-+- DTracker User Constructor starting -+-+- " << endl;
+  cout << endl << " -+-+- DTracker " << id << " User Constructor starting -+-+- " << endl;
 
+  fTrackerId = id;
   fAcq    = &aAcq;
   fc      = &c;
 
