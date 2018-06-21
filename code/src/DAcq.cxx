@@ -196,6 +196,7 @@ DAcq::DAcq(DSetup& c)
   fALI22 = new AliMIMOSA22RawStreamVASingle*[totalNmodules];
   fM18   = new DecoderM18*[totalNmodules];
   fGeant = new DecoderGeant*[totalNmodules];
+  fIHEP  = new BoardReaderIHEP*[totalNmodules];
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   // Loop on each acquisition module type to set its properties
@@ -417,6 +418,27 @@ DAcq::DAcq(DSetup& c)
 	  fIsMCBoardReader = true;
 	  
           break;
+          
+          // -+-+- IHEP modules
+        case 12:
+          
+//          fIHEPModule = new BoardReaderIHEP( iModule,
+//                                             fc->GetModulePar(mdt).Inputs,
+//                                             fc->GetAcqPar().TriggerMode,
+//                                             fc->GetModulePar(mdt).EventBuildingBoardMode);
+//          if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
+//            if( !strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
+//              sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
+//            } else {
+//              sprintf( aFileName, "%s/%d/RUN_%d_", fc->GetRunPar().DataPath, fRunNumber, fRunNumber);
+//            }
+//          } else {
+//            sprintf( aFileName, "%s/%d/RUN_%d_", fc->GetRunPar().DataPath, fRunNumber, fRunNumber);
+//          }
+//          initOK &= fIMG[iModule]->AddFile( aFileName );
+//          initOK &= fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension );
+          break;
+          
           
           // -+-+- Other modules
         default:

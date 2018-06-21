@@ -57,6 +57,7 @@
 #pragma link C++ class    DBeaster+; // DC : 2017/03/08
 #pragma link C++ class    DHelixFitter+; // DC : 2017/07
 #pragma link C++ class    DHelix+; // DC : 2017/09
+//#pragma link C++ class    BoardReaderIHEP+; // JB, 2018/06/20
 
 #ifdef UseROOFIT
 //#pragma link C++ class    DXRay2DPdf+;

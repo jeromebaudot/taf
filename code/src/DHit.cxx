@@ -1524,7 +1524,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       }
     }
 
-    vector<DPixel*> *aList = fPlane->GetListOfPixels();
+    std::vector<DPixel*> *aList = fPlane->GetListOfPixels();
     int diff = 0 - aList->at(0)->GetPixelIndex();
     //cout << "i = " << 0 << ", index = " << aList->at(0)->GetPixelIndex() << ", diff = " << diff << endl;
     //Hard-coded limit in the number of pixel in a cluster
@@ -1944,7 +1944,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
 }
 //______________________________________________________________________________
 //  
-Bool_t DHit::Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels)
+Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels)
 {
   // Valid for sparse data acquisition
   //
@@ -2528,7 +2528,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels)
 
 //______________________________________________________________________________
 //  
-Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels)
+Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels)
 {
   // Based on Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels) but 
   //     Compute the center of gravity with floating point value in "pixel unit"
@@ -3084,7 +3084,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPix
 //______________________________________________________________________________
 //  
 
-Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels, bool &IsBigCluster, int MaxClusterSize)
+Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels, bool &IsBigCluster, int MaxClusterSize)
 {
 
   // Valid for sparse data acquisition
@@ -3098,7 +3098,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, vector<DPixel*> *aListO
   //
   // Return a boolean: kTRUE if hit is selected, kFalse otherwise
   //
-  // Constructed from the original Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels ) by AP, 2014 July 01
+  // Constructed from the original Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels ) by AP, 2014 July 01
   // Modified: JB 2015/05/26 to introduce timestamps and TimeLimit
   // 
   
@@ -3984,7 +3984,7 @@ void  DHit::DoMCA(void)
     
     double  PixelU, PixelV, height;
     if(fPlane->GetReadout() > 100) {
-      vector<DPixel*> *aList = GetPlane()->GetListOfPixels();
+      std::vector<DPixel*> *aList = GetPlane()->GetListOfPixels();
       PixelU = aList->at(GetIndexInOriginalList(ipixInHit))->GetPosition()(0);
       PixelV = aList->at(GetIndexInOriginalList(ipixInHit))->GetPosition()(1);
       height = aList->at(GetIndexInOriginalList(ipixInHit))->GetPulseHeight();
@@ -4068,7 +4068,7 @@ void  DHit::CalcHitLimits(void)
   for(int ipix=0;ipix < GetStripsInCluster();ipix++) {
     int col,row;
     if(fPlane->GetReadout() > 100) {
-      vector<DPixel*> *aList = fPlane->GetListOfPixels();
+      std::vector<DPixel*> *aList = fPlane->GetListOfPixels();
       col = aList->at(GetIndexInOriginalList(ipix))->GetPixelColumn();
       row = aList->at(GetIndexInOriginalList(ipix))->GetPixelLine();
     }

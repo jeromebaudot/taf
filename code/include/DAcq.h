@@ -42,6 +42,7 @@
 #include "DecoderM18.h"
 #include "DecoderGeant.h"
 #include "DEventMC.h"
+#include "BoardReaderIHEP.h"
 #include "sup_exp.typ" // for time reference information
 
 class DAcq : public TObject {
@@ -63,7 +64,8 @@ class DAcq : public TObject {
       MCBoardReader   **fMC;               // pointer to MC boards, AP 2016/04/15
       AliMIMOSA22RawStreamVASingle  **fALI22; // pointer to ALI22 boards, JB 2014/05/14
       DecoderM18      **fM18;              // pointer to DecoderM18 boards, JB 2014/05/25, then 2014/08/26
-      DecoderGeant    **fGeant;              // pointer to DecoderGeant      
+      DecoderGeant    **fGeant;            // pointer to DecoderGeant
+      BoardReaderIHEP **fIHEP;             // pointer to IHEP boards, JB 2018/06/03
       Int_t          ***fRawData;          // pointer to Raw Values
       std::vector<DPixel*>  *fListOfPixels;     // pointer to list of hit pixel
       //std::vector<DMonteCarlo*> *fListOfMonteCarlo; // pointer to list of hit montecarlo

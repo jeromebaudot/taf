@@ -117,10 +117,10 @@ public:
   virtual           ~DHit();
   Bool_t             Analyse(DStrip *s);            // cluster charge, noise, hit position
   Bool_t             Analyse_Iterative(DStrip *s, bool &IsBigCluster, int MaxClusterSize);  //AP, 07/01/2014, Iterative clustering for digital output
-  Bool_t             Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels);   // cluster charge, noise, hit position
-  Bool_t             Analyse_2_cgo( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels); // make hit with pixels considering maximum search radius (in mm) from real center of gravity (in mm) to associate new pixels
-  Bool_t             Analyse_Iterative( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels, bool &IsBigCluster, int MaxClusterSize);   //AP, 07/01/2014, Iterative clustering for digital output
-  //Bool_t             AnalyseMC( vector<DMonteCarlo*> *aListOfPixelsMonteCarlo)                    //LC, 2014/12/15, Get MC Hit position
+  Bool_t             Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels);   // cluster charge, noise, hit position
+  Bool_t             Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels); // make hit with pixels considering maximum search radius (in mm) from real center of gravity (in mm) to associate new pixels
+  Bool_t             Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels, bool &IsBigCluster, int MaxClusterSize);   //AP, 07/01/2014, Iterative clustering for digital output
+  //Bool_t             AnalyseMC( std::vector<DMonteCarlo*> *aListOfPixelsMonteCarlo)                    //LC, 2014/12/15, Get MC Hit position
   Int_t              GetNumber()                      const { return  fHitNumber;            }
   void               SetNumber(Int_t aNb)                   { fHitNumber = aNb;}// VR 2014.08.28
   Bool_t             GetFound()                       const { return fFound; }

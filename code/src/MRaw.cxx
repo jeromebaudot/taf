@@ -77,7 +77,6 @@
 #include "DTracker.h"
 #include "DEventMC.h"
 #include "MCBoardReader.h"
-#include "../tmva/test/TMVARegGui.C"
 #include "DSetup.h"
 #include <algorithm>
 #include <TMinuit.h>
@@ -94,13 +93,17 @@
 #include <assert.h>
 #include <vector>
 
-//TMVA
+//#define USETMVA
+#ifdef USETMVA
 #include "TMVA/Factory.h"
 #include "TMVA/Tools.h"
 #include "TMVA/Reader.h"
 #include "TMVA/MethodCuts.h"
+#include "TMVA/TMVARegGui.h"
+//#include "../tmva/test/TMVARegGui.C"
 
 using namespace TMVA;
+#endif // USETMVA
 
 ClassImp(MRaw)
 
@@ -13874,6 +13877,7 @@ void MRaw::BeastCheckPosition(){
 }
 //______________________________________________________________________________
 //
+#ifdef USETMVA
 void MRaw::FillnTupleForTMVA(int    nEvents,
 			     double my_theta_mean,
 			     double my_phi_mean)
@@ -15076,6 +15080,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
   return;
   
 }
+#endif // USETMVA
 //______________________________________________________________________________
 //
 
