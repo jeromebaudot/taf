@@ -171,8 +171,12 @@ void DSession::InitSession()
   fAcq          = new DAcq(*fc);             // construct "DataAcquisition" object.
   if( fDebugSession<=0 ) fAcq->SetDebug( fDebugSession); // JB, 2010/11/25
 
-  fTracker      = new DTracker(*fc, *fAcq);  // construct the DTracker
-  if( fDebugSession>=0 ) fTracker->SetDebug( fDebugSession); // JB, 2010/11/25
+  fNbTrackers = 1;
+  fTracker = new (DTracker*)[fNbTrackers];
+  for (int it=0; it<fNbTrackers; it++) {
+    fTracker[it]      = new DTracker(it+1, *fc, *fAcq);  // construct the DTracker
+    if( fDebugSession>=0 ) fTracker->SetDebug( fDebugSession); // JB, 2010/11/25
+  }
 
   fEventsToDo = 0;
   fCurrentEventNumber = 0;
@@ -212,6 +216,21 @@ void DSession::InitSession()
 
 }
 
+
+//______________________________________________________________________________
+//
+DTracker* DSession::GetTracker( int id) {
+  
+  if( id <= fNbtrackers ) {
+    return  fTracker[id-1];
+  }
+  else {
+    cout << "WARNING: requesting tracker id " << id << " non-existent (max " << fNbtrackers << " !!" << endl;
+    return nullptr;
+  }
+
+}
+
 //______________________________________________________________________________
 //  
 void DSession::SetDebug(Int_t aDebug)
@@ -226,7 +245,9 @@ void DSession::SetDebug(Int_t aDebug)
   cout << "DSession debug updated to " << fDebugSession << endl;
 
   if( aDebug>=0 ) { // for positive level, update only the Tracker
-    if( fTracker ) { fTracker->SetDebug( aDebug); }
+    for (int it=0; it<fNbTrackers; it++) {
+      if( fTracker[it] ) { fTracker[it]->SetDebug( aDebug); }
+    }
   }
   if( aDebug<=0 ) { // for negative level, update only the Dacq
     if( fAcq ) { fAcq->SetDebug( aDebug); }
@@ -333,8 +354,8 @@ Bool_t DSession::NextRawEvent( Int_t aTrigger)
     cout << "WARNING: DSession, enough events " << fCurrentEventNumber << " / " << fEventsToDo << "!"<<endl; // improved comment, JB
   }                   
 
-  if (GetStatus()==0 && fTracker->GetPlanesStatus() ){ // Moved from Loop(), JB 2009/05/26
-    SetStatus(fTracker->GetPlanesStatus()) ;
+  if (GetStatus()==0 && fTracker[0]->GetPlanesStatus() ){ // Moved from Loop(), JB 2009/05/26
+    SetStatus(fTracker[0]->GetPlanesStatus()) ;
   }   
 
   // display current event number with variable frequency
@@ -384,9 +405,9 @@ Int_t DSession::GoToEvent(Int_t anEvent)
     
     fCurrentEventNumber = anEvent;
     
-    if (GetStatus()==0 && fTracker->GetPlanesStatus() )
+    if (GetStatus()==0 && fTracker[0]->GetPlanesStatus() )
     {
-      SetStatus(fTracker->GetPlanesStatus()) ;
+      SetStatus(fTracker[0]->GetPlanesStatus()) ;
     }
   
     return fCurrentEventNumber;
@@ -424,9 +445,9 @@ Int_t DSession::GoToNextEvent(void)
     
     fCurrentEventNumber ++;
     
-    if (GetStatus()==0 && fTracker->GetPlanesStatus() )
+    if (GetStatus()==0 && fTracker[0]->GetPlanesStatus() )
     {
-      SetStatus(fTracker->GetPlanesStatus()) ;
+      SetStatus(fTracker[0]->GetPlanesStatus()) ;
     }
     
     // display current event number with variable frequency

@@ -68,7 +68,7 @@ class DTracker : public TObject {
   Int_t            fAlignmentStatus;   // status of the alignement
 
   Int_t            fPlanesN;           // number of planes
-  TObjArray       *fPlaneArray;	      // pointer to array of planes
+  TObjArray       *fPlaneArray;	       // pointer to array of planes
   TObjArray       *fLadderArray;       // pointer to array of Ladders
   Int_t            fNumberOfLadders;   // LC 2013/01/15.
 

@@ -58,7 +58,8 @@ class DSession : public TObject {
   //TFile         *fWeightFile;                  // pointer to .root file, contains weights for accurate hit measurements
 
   Int_t          fPlaneNumber;                 // ... a specific planenumber to look at
-  DTracker      *fTracker;                     // pointer to the tracker
+  DTracker     **fTracker;                     // pointer to the list of trackers
+  Int_t          fNbTrackers;                  // nb of trackers in the setup
   DSetup        *fc;                           // pointer to configuration
   DAcq          *fAcq;                         // pointer to Acquisition
 /*   DReader       *fReader;                      // pointer to Run Reader */
@@ -100,7 +101,8 @@ class DSession : public TObject {
   DEvent        *GetEvent()                        { return  fEvent;      }   
   TTree         *GetEventTree()                    { return  fEventTree;  }
   TFile         *GetSummaryFile()                  { return  fSummaryFile;                 }
-  DTracker      *GetTracker()                      { return  fTracker;                     }
+  DTracker      *GetTracker()                      { return  fTracker[0];                  }
+  DTracker      *GetTracker( int id);
   DAcq          *GetDataAcquisition()              { return  fAcq;                         }
   DSetup        *GetSetup()                        { return  fc;                           }
   Int_t          GetStatus()                       { return  fStatus;                      }  
