@@ -49,6 +49,7 @@
 // Last Modified: JB+CB+PRL, 2015/03/24 new params for INFN ReadDAQBoard
 // Last Modified: LC, 2015/10/14 GlobalAlignment Parameter Reading : Now optional
 // Last Modified: JB 2017/11/20 ReadDAQBoardParameters for zero suppression option
+// Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
 
 ///////////////////////////////////////////////////////////////
 // Class Description of DSetup                               // 
@@ -83,6 +84,7 @@
 // StartIndex       = [MANDATORY for IMGBoardReader] (int) {0}
 // EndIndex         = [MANDATORY for IMGBoardReader] (int) {0}
 // NoiseRun         = [optional] (int) {0}  defines either the file with the noise for each pixel, or a specific method to remove noisy pixels (see DGlobalTools::VetoPixels)
+// PixelGainRun     = [optional] (int) {0}  if not 0, defines the file with individual pixel gain map
 // -----------------------------------------------------------------------------
 
 
@@ -606,6 +608,7 @@ void DSetup::ReadRunParameters()
   // Modified JB 2013/08/19: default parameters setup
   // Modified VR 2014/06/30: RunNumber is not read anymore, taken from DSession 
   // Modified VR 2014/06/30: Add the DataSubDirPrefix and test of mandatory config
+  // Modified JB 2018/07/04: Add PixelGainRun parameter
   
   cout << endl << " - Reading Run parameters" << endl;
 
@@ -625,6 +628,7 @@ void DSetup::ReadRunParameters()
   RunParameter.StartIndex = 0;// [MANDATORY for IMGBoardReader]
   RunParameter.EndIndex = 0;// [MANDATORY for IMGBoardReader]
   RunParameter.NoiseRun = 0;
+  RunParameter.PixelGainRun = 0;
   
 
   do {
@@ -670,6 +674,9 @@ void DSetup::ReadRunParameters()
     }
     else if( ! strcmp( fFieldName, "NoiseRun" ) ) {
       read_item(RunParameter.NoiseRun);       //YV 27/11/09
+    }
+    else if( ! strcmp( fFieldName, "PixelGainRun" ) ) {
+      read_item(RunParameter.PixelGainRun);   //JB 2018/07/04
     }
     else
     {

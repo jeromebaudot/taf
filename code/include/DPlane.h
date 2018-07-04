@@ -142,6 +142,12 @@ class DPlane : public TObject {
   Int_t        fNoiseRun;                 // Id of noise run
   TFile       *fNoiseFile;                // File containing histos with peds and noises
 
+  // JB 2018/07/01
+  TH2F        *fHPixelGain;               // 2d-histo map of pixel gains
+  Int_t        fPixelGainRun;             // Id of pixel gain file
+  TFile       *fGainFile;                 // File containing histos with gains
+
+  
   DR3         *fSize;                     // rectangular extensions
   DR3         *fTilt;                     // tilting angles [radian], three Euler angles, comes later
   DAcq        *fAcq;                      // pointer to Data Acquisition
@@ -158,6 +164,7 @@ class DPlane : public TObject {
   void         analyze_basics();          // do basic calculation on raw data:
   void         CalculateCommonMode();     // calculates common mode in regions of the plane
   void         SetPedandNoiseFromHisto( Int_t col, Int_t row, DPixel *aPixel); // set the pixel ped and noise
+  void         SetPixelGainFromHisto( Int_t col, Int_t row, DPixel *aPixel); // set the gain of each pixel
 
   Int_t        fInitialStatus;            // 0 before init, 1 after
   Int_t        fInitialCounter;           // counter for intialization of pedestal

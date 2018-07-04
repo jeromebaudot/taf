@@ -45,6 +45,7 @@
 // Last Modified: JB, 2016/08/19 DPlane, allow fNoiserun option for mode 232
 // Last Modified: JB, 2016/10/17 DPlane::DPlane
 // Last Modified: JB, 2018/05/04 DPlane::Update
+// Last Modified: JB, 2018/07/04 Dplane, Update, SetPixelGainFromHisto for pixel gain map usage
 
 /////////////////////////////////////////////////////////////
 // Class Description of DPlane                             //
@@ -118,7 +119,8 @@ DPlane::DPlane(DTracker& aTracker, const Int_t aPlaneNumber, const Int_t aLadder
   // Last Modified: JB 2015/05/26 handle time limit
   // Last Modified: JB 2015/10/31 pass deformation parameters to DPrecAlign
   // Last Modified: JB 2016/10/17 cope with Plane with no DAQ modules (simple material)
-  
+  // Last Modified: JB 2018/07/04 load pixel gain histo from file if required
+
   cout << endl << " -*-*- DPlane " << aPlaneNumber << " User Constructor -*-*- " << endl;
   
   fTracker = &aTracker;
@@ -369,12 +371,44 @@ DPlane::DPlane(DTracker& aTracker, const Int_t aPlaneNumber, const Int_t aLadder
     fHNoise = (TH2F*)fNoiseFile->Get(histoName);
     sprintf( histoName, "hPedestalpl%d", fPlaneNumber);
     fHPedestal = (TH2F*)fNoiseFile->Get(histoName);
+    if( fHPedestal!=nullptr  && fHNoise!=nullptr ) {
+      printf("  Dplane %d, noise map extracted properly from %s\n", fPlaneNumber, NoiseFileDataPath);
+    }
     //fHPedestal->Draw("colz");
   }
   else {
     fNoiseFile = 0;
     fHNoise = 0;
     fHPedestal = 0;
+  }
+  
+  //-+-+-+ If a pixel gain map has been specified
+  // If analysis mode corresponds to real binary output data,
+  //  force fPixelGainRun to 0
+  // JB 2018/07/01
+  
+  if( fAnalysisMode==3 && !fIfDigitize ) { // if real binary output
+    fPixelGainRun = 0;
+  }
+  else { // otherwise
+    fPixelGainRun = fc->GetRunPar().PixelGainRun;
+  }
+  
+  Char_t    gainFileDataPath[350];
+  sprintf(gainFileDataPath,"Results/%d/PixelGain_run%d.root",fPixelGainRun, fPixelGainRun);
+  sprintf(gainFileDataPath,"%s", fTool.LocalizeDirName( gainFileDataPath)); // JB 2011/07/07
+  if( fDebugPlane) printf("name of pixelgain file = %s \n",gainFileDataPath);
+  if( fPixelGainRun > 0 && fReadout!= 0 ) {
+    fGainFile = new TFile(gainFileDataPath,"read");
+    sprintf( histoName, "hpixelgainpl%d", fPlaneNumber);
+    fHPixelGain = (TH2F*)fGainFile->Get(histoName);
+    if( fHPixelGain!=nullptr ) {
+      printf("  Dplane %d, pixel gain map extracted properly from %s\n", fPlaneNumber, gainFileDataPath);
+    }
+  }
+  else {
+    fGainFile = 0;
+    fHPixelGain = 0;
   }
   
   
@@ -1356,7 +1390,7 @@ Bool_t DPlane::Update(){
   // - no need to re-order channel numbering wrt strip numbering
   // - no CDS required or CDS already performed in BoardReader class
   // - further analysis done with DStrip object
-  // - does not allow to take into account external noise file
+  // - does not allow to take into account external noise or gain file
   // Checked JB 2012/08/21
   else if ( fReadout==1 ){
     fPixelsN = fListOfPixels->size(); // update number of hit pixels
@@ -1393,7 +1427,7 @@ Bool_t DPlane::Update(){
   // - without zero suppression
   // - re-ordering of the channel numbering wrt strip numbering
   // - no CDS required or CDS already performed in BoardReader class
-  // - allows to take into account external noise file
+  // - allows to take into account external noise or gain file
   // - further analysis done with DPixel or DStrip objects
   // JB 2013/08/14
   else if ( fReadout==2 ){
@@ -1418,6 +1452,10 @@ Bool_t DPlane::Update(){
       if(180000 <= fSession->GetRunNumber() && fSession->GetRunNumber() <= 180500 && linPhys==0 && (colPhys==2 || colPhys==3) ) {
         aPixel->SetRawValue(1.0e-6);
         aPixel->SetPulseHeight(1.0e-6);
+      }
+      
+      if ( fPixelGainRun ) {
+        SetPixelGainFromHisto( colPhys, linPhys, aPixel);
       }
       
       if( fNoiseRun) {
@@ -3067,6 +3105,25 @@ void DPlane::SetPedandNoiseFromHisto( Int_t col, Int_t row, DPixel *aPixel) {
   aPixel->SetNoise( aNoise);
   aPixel->SetPedestal( aPedestal);
   aPixel->SetPulseHeight( aRawvalue - aPedestal);
+  
+}
+
+//______________________________________________________________________________
+//
+
+void DPlane::SetPixelGainFromHisto( Int_t col, Int_t row, DPixel *aPixel) {
+  
+  // Set the pixel gain from a previous computation
+  // This computation is valid if the following variables are true:
+  //  fPixelGainRun, fHPixelGain
+  //
+  // JB 2018/08/01
+  
+  if( !fPixelGainRun || fHPixelGain==NULL ) return;
+  
+  Float_t  aRawvalue = aPixel->GetRawValue() / fHPixelGain->GetBinContent( col+1, row+1);
+  aPixel->SetRawValue( aRawvalue);
+  if (fDebugPlane>3)  printf("SetPixelGainFromHisto:pixel c=%d, r=%d updated with raw=%.1f/%.1f=%.1f\n", col+1, row+1, aPixel->GetRawValue(), fHPixelGain->GetBinContent( col+1, row+1), aRawvalue);
   
 }
 

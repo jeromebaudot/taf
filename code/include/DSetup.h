@@ -443,6 +443,7 @@ class DSetup : public TObject {
     Int_t      StartIndex;           // start index of the file for processing
     Int_t      EndIndex;             // end index
     Int_t      NoiseRun;             // Run number of noise run YV 27/11/09
+    Int_t      PixelGainRun;         // Run number of gain calibration JB 2018/07/04
     //    Int_t      FileCountOut;         // maximum number of files possible
   } RunParameter; 
 
