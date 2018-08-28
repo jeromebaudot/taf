@@ -111,7 +111,8 @@ ClassImp(MRaw)
 void  MRaw::PrepareRaw()
 {
 
-  cout << "Run number is " << fSession->GetRunNumber() << "." << endl;
+  Char_t *goal = fSession->GetSetup()->GetAnalysisPar().AnalysisGoal;
+  cout << "Run number is " << fSession->GetRunNumber() << " with analysis goal = " << goal << "." << endl;
 
   if (!gROOT->IsBatch())
     {
@@ -123,30 +124,47 @@ void  MRaw::PrepareRaw()
 //      bar3->AddButton("INSPECT EVENT","gTAF->GetRaw()->InspectScan()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("INSPECT FAKES","gTAF->GetRaw()->Inspectfake()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("JUMP EVENTS","gTAF->GetRaw()->MimosaJump()", "RUN IT AFTER MIMOSA event display");
-      bar3->AddButton("RAW CHANNELS", "gTAF->GetRaw()->DisplayRawData(1.)", "Display raw channels per plane and event");
+//      bar3->AddButton("RAW CHANNELS", "gTAF->GetRaw()->DisplayRawData(1.)", "Display raw channels per plane and event");
       bar3->AddButton("RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayRawData2D()", "Display raw channels per plane and event in 2D");
       bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(500)", "Display raw data per plane cumulated over 500 events in 2D");
       bar3->AddButton("HITS 2D", "gTAF->GetRaw()->DisplayHits2D(2,1,0)", "Display hits per plane and event in 2D");
       bar3->AddButton("CUMULATE HITS 2D", "gTAF->GetRaw()->DisplayCumulatedHits2D(500)", "Display hits per plane cumulated over 500 events in 2D");
       bar3->AddButton("CUMUL HITS 2D LADDER (exp)", "gTAF->GetRaw()->DisplayLadderCumulatedHits2D(500)", "Display hits per ladder cumulated over 500 events in 2D");
-      bar3->AddButton("TRACKS", "gTAF->GetRaw()->DisplayTracks()", "Display tracks per event in several views");
-      bar3->AddButton("CUMULATE TRACKS", "gTAF->GetRaw()->DisplayCumulatedTracks()", "Display tracks cumulated over 500 events in several views");
-      bar3->AddButton("CUMULATE MONTE CARLO", "gTAF->GetRaw()->DisplayCumulatedMonteCarlo2D(500)", "Display Monte Carlo hits cumulated over 500 events in several views");
-      bar3->AddButton("CUMULATE LINE OVERFLOW", "gTAF->GetRaw()->DisplayCumulatedOverflow()", "Display line overflow cumulated over 500 events in several views");
-      bar3->AddButton("HITS-TRACKS HISTORY", "gTAF->GetRaw()->DisplayHistory()", "Display hits and tracks properties wrt event#");
       bar3->AddButton("NOISE MAP", "gTAF->GetRaw()->DisplayNoise()", "Display noise per pixel for each plane");
+
       bar3->AddButton("BINARY FAKE", "gTAF->GetRaw()->FakeRateBinaryFromRawData(100000, 100, 0.01)", "Compute the fake rate for binary output sensors");
+      bar3->AddButton("CUMULATE LINE OVERFLOW", "gTAF->GetRaw()->DisplayCumulatedOverflow()", "Display line overflow cumulated over 500 events in several views");
       bar3->AddButton("RAW SPECTRUM", "gTAF->GetRaw()->DisplaySpectrum( 1000, 3, 2048, 0)", "Display the spectrum from raw data");
-      bar3->AddButton("SKIP 100 EVENTS", "gTAF->GetRaw()->SkipEvent(100)", "Skip 100 events without analyzing them for hits");
-      bar3->AddButton("LASER STUDY", "gTAF->GetRaw()->LaserStudy( 125, 125, 100)", "Laser detection efficiency");
-      bar3->AddButton("VERTEX STUDY", "gTAF->GetRaw()->VertexStudy()","Vertices from tracks and a fixed beam line");
+      
+      bar3->AddButton("CUMULATE MONTE CARLO", "gTAF->GetRaw()->DisplayCumulatedMonteCarlo2D(500)", "Display Monte Carlo hits cumulated over 500 events in several views");
+      
+      
+      if( strstr(goal, "track") || strstr(goal, "Track") ) {
+        bar3->AddButton("TRACKS", "gTAF->GetRaw()->DisplayTracks()", "Display tracks per event in several views");
+        bar3->AddButton("CUMULATE TRACKS", "gTAF->GetRaw()->DisplayCumulatedTracks()", "Display tracks cumulated over 500 events in several views");
+        bar3->AddButton("HITS-TRACKS HISTORY", "gTAF->GetRaw()->DisplayHistory()", "Display hits and tracks properties wrt event#");
+        bar3->AddButton("Study Tracking Efficiency", "gTAF->GetRaw()->StudyTrackingEfficiency(10000)", "Study Tracking Efficiency for planes in the telescope");
+        bar3->AddButton("Study Beam Profile", "gTAF->GetRaw()->StudyBeamProfile(1000)", "Study Beam Profile");
+      }
+
+      if( strstr(goal, "vertex") || strstr(goal, "Vertex") ) {
+        bar3->AddButton("VERTEX STUDY", "gTAF->GetRaw()->VertexStudy()","Vertices from tracks and a fixed beam line");
+      }
+      
+      if( strstr(goal, "laser") || strstr(goal, "Laser") ) {
+        bar3->AddButton("LASER STUDY", "gTAF->GetRaw()->LaserStudy( 125, 125, 100)", "Laser detection efficiency");
+      }
+      
+      if( strstr(goal, "calib") || strstr(goal, "Calib") ) {
+        bar3->AddButton("X-ray", "gTAF->GetRaw()->XrayAnalysis(500)", "Analysis for X-ray source over 500 events");
+        bar3->AddButton("Gain Map", "gTAF->GetRaw()->BuildPixelGainMap( 100000)", "Build gain map for each pixel");
+      }
+      
       bar3->AddButton("DISPLAY IMAGE", "gTAF->GetRaw()->DisplayImage(100)","Build a GIF image with 100 events");
       bar3->AddButton("DISPLAY GEOMETRY", "gTAF->GetRaw()->DisplayGeometry()","Telescope geometry");
       bar3->AddButton("USER PLOT", "gTAF->GetRaw()->UserPlot()", "Plots built by user function");
       bar3->AddButton("TOGGLE VERBOSITY", "gTAF->GetRaw()->ToggleVerbosity()", "Switch On/Off messages");
-      bar3->AddButton("Study Tracking Efficiency", "gTAF->GetRaw()->StudyTrackingEfficiency(10000)", "Study Tracking Efficiency for planes in the telescope");
-      bar3->AddButton("Study Beam Profile", "gTAF->GetRaw()->StudyBeamProfile(1000)", "Study Beam Profile");
-      bar3->AddButton("X-ray", "gTAF->GetRaw()->XrayAnalysis(500)", "Analysis for X-ray source over 500 events");
+      bar3->AddButton("SKIP 100 EVENTS", "gTAF->GetRaw()->SkipEvent(100)", "Skip 100 events without analyzing them for hits");
       bar3->AddButton("Clear / Close","gTAF->GetRaw()->Clear()","Clear everything to start over");
       bar3->Show();
     }
@@ -10913,6 +10931,232 @@ void MRaw::SeedCuts(Int_t nEvents)
   
   
   fRoot.Close();  
+  
+}
+
+
+//______________________________________________________________________________
+//
+//*****************************************************************************
+double CBfunction(double *x, double *par) {
+  // Crystal ball function (https://en.wikipedia.org/wiki/Crystal_Ball_function)
+  
+  double mean     = par[0];
+  double sigma    = par[1];
+  double alpha    = par[2];
+  double n        = par[3];
+  double norm     = par[4];
+  double absalpha = TMath::Abs(alpha);
+  double frac     = (x[0]-mean)/sigma;
+  double A        = pow(n/absalpha,n)*exp(-pow(absalpha,2)/2);
+  double B        = (n/absalpha)-absalpha;
+  
+  double C        = sigma*(n/absalpha)*(1./(n-1))*exp(-0.5*pow(absalpha,2));
+  double D        = sigma*sqrt(0.5*TMath::Pi())*(TMath::Erf(absalpha/sqrt(2)) + 1);
+  double N        = norm/(C+D);
+  
+  double result = 0.0;
+  if(frac > -alpha) result = exp(-0.5*pow(frac,2));
+  else              result = A*pow(B-frac,-n);
+  result *= N;
+  
+  return result;
+  
+}
+//*****************************************************************************
+void MRaw::BuildPixelGainMap( Int_t nEvents, double minfit, double maxfit, double maxcharge)
+{
+  // Fit the seed charge distribution for all individual pixels of 1st plane
+  //    => spectrum is expected to come from a monochromatic source!
+  //    => cristal function is used for the fit
+  //    => the peak positions and widths are stored
+  // The correction factor is computed for each pixel as = peak position / average peak position
+  // A 2D map of the correction factors is created and saved
+  //
+  // Inputs:
+  //  o nevents = nb of events to analyse
+  //  o minfit, maxfit = range for the fit of the spectrum
+  //  o maxcharge = range (from 0) for the seed charge distribution (bin width = 1)
+  //
+  // JB 2018/07/04
+  
+  Int_t planeID = 1;
+  
+  DTracker *tTracker  =  fSession->GetTracker();
+  DPlane   *tPlane = tTracker->GetPlane(planeID);
+  DHit     *aHit;
+
+  Int_t npixels  = tPlane->GetStripsN();
+  Int_t ncolumns = tPlane->GetStripsNu();
+  Int_t nrows = tPlane->GetStripsNv();
+
+  // For seed charge distributions
+  TH1F **hHitSeedCharge = new TH1F*[npixels];
+  Char_t name[100], title[300];
+  for( int ipix=0; ipix<npixels; ipix++ ) {
+    sprintf( name, "hhitseedq%dpl%d", ipix, planeID);
+    sprintf( title, "Seed pixel charge for pixel %d - plane %d", ipix, planeID);
+    hHitSeedCharge[ipix] = new TH1F(name, title, maxcharge, 0, maxcharge);
+    hHitSeedCharge[ipix]->SetXTitle("charge (ADCu)");
+  }
+  sprintf( name, "hhitseedqallpl%d", planeID);
+  sprintf( title, "Seed pixel charge for all pixels - plane %d - %s", planeID, tPlane->GetPlanePurpose());
+  TH1F *hHitSeedChargeAll = new TH1F( name, title, maxcharge, 0, maxcharge);
+  
+  // For fit & statistics
+  double *means = new double[npixels];
+  double *sigmas = new double[npixels];
+  TF1 *ffit = new TF1("ffit",CBfunction, minfit, maxfit, 5);
+  ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
+  ffit->SetParNames( "mean", "#sigma", "#alpha", "n", "norm");
+  sprintf( name, "hmeanspl%d", planeID);
+  sprintf( title, "Distribution of calib peak positions - plane %d;peak position (ADCu)", planeID);
+  TH1F *hmeans = new TH1F( name, title, 4*(maxfit*1.3-minfit*.7), minfit*.7, maxfit*1.3);
+  sprintf( name, "hsigmaspl%d", planeID);
+  sprintf( title, "Distribution of std deviations - plane %d;std deviation (ADCu)", planeID);
+  TH1F *hsigmas = new TH1F( name, title, 200, 0, 100);
+  sprintf( name, "hpixelgainpl%d", planeID);
+  sprintf( title, "Map of individual pixel gain - plane %d;row index;column index", planeID);
+  TH2F *hpixelgain = new TH2F( name, title, ncolumns, 1, ncolumns+1, nrows, 1, nrows+1);
+
+  
+//  cout << "BuildPixelGainMap:: init done" << endl;
+  
+  // ================
+  // Loop over events
+  fSession->SetEvents(nEvents);
+  
+  for( Int_t iEvt=0; iEvt < nEvents; iEvt++) { // loop on events
+    fSession->NextRawEvent();
+    tTracker->Update();
+    //    cout << "BuildPixelGainMap:: event " << iEvt << endl;
+    
+    if( tPlane->GetHitsN()>0 ) { // If there are some hits
+      for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
+        aHit = (DHit*)tPlane->GetHit( iHit);
+        //printf("GettaHit->GetIndexSeed()ing seed index for hit %d (address %x) at plane %d: ", iHit, aHit, iPlane);
+        //printf( "%d\n", aHit->GetIndexSeed());
+        
+        hHitSeedChargeAll->Fill( aHit->GetPulseHeight(0));
+        
+        int ipix = (int)(aHit->GetIndexSeed());
+        if( 0<=ipix && ipix<npixels ) {
+          hHitSeedCharge[ipix]->Fill( aHit->GetPulseHeight(0));
+        }
+        
+      } //end loop on hits
+    } // end If there are some hits
+    
+  } // end loop on events
+  fSession->GetDataAcquisition()->PrintStatistics();
+  tTracker->PrintStatistics();
+
+  
+  // ================
+  // Fit individual histos
+  for ( int ipix=0; ipix<npixels; ipix++ ) {
+    cout << "getting histo nb " << ipix;
+    cout << " with " << hHitSeedCharge[ipix]->GetEntries() << " entries" << endl;
+    ffit->SetRange( minfit, maxfit);
+    ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
+    ffit->SetParLimits( 0, minfit, maxfit);
+    ffit->SetParLimits( 1, 0, maxfit-minfit);
+    ffit->SetParLimits( 2, 0.5, 1.5);
+    ffit->SetParLimits( 3, 0.1, 2.);
+    ffit->SetParLimits( 4, 0., 1.e8);
+    hHitSeedCharge[ipix]->Fit( ffit, "QR");
+    means[ipix] = ffit->GetParameter(0);
+    sigmas[ipix] = ffit->GetParameter(1);
+    printf( "   first estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));
+    hpixelgain->SetBinContent( ipix%ncolumns+1, ipix/ncolumns+1, means[ipix]);
+    
+    // Uncomment the following for a second fit
+    /*    ffit->SetRange( means[ipix]-6*sigmas[ipix], means[ipix]+3*sigmas[ipix]);
+     ffit->SetParLimits( 0, minfit, maxfit);
+     ffit->SetParLimits( 1, 0, maxfit-minfit);
+     ffit->SetParLimits( 2, 0, 2.);
+     ffit->SetParLimits( 3, 0, 2.);
+     ffit->SetParLimits( 4, 0., 1.e8);
+     histo->Fit( ffit, "QR");
+     means[ipix] = ffit->GetParameter(0);
+     sigmas[ipix] = ffit->GetParameter(1);
+     printf( "   second estimation mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));*/
+    
+    hmeans->Fill( means[ipix]);
+    hsigmas->Fill( sigmas[ipix]);
+  }
+
+  ffit->SetRange( minfit, maxfit);
+  ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
+  ffit->SetParLimits( 0, minfit, maxfit);
+  ffit->SetParLimits( 1, 0, maxfit-minfit);
+  ffit->SetParLimits( 2, 0.5, 1.5);
+  ffit->SetParLimits( 3, 0.1, 2.);
+  ffit->SetParLimits( 4, 0., 1.e8);
+  hHitSeedChargeAll->Fit( ffit, "QR");
+  double averageMean = ffit->GetParameter(0);
+  double averageSigma = ffit->GetParameter(1);
+  printf( "   average estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
+
+  hpixelgain->Scale(1./averageMean);
+  
+
+  // ================
+  // Display
+
+  TCanvas *c1 = new TCanvas("c1", "Distribution per pixels", 600, 800);
+  c1->Divide(1,3);
+  c1->cd(1);
+  hHitSeedChargeAll->Draw();
+  c1->cd(2);
+  hmeans->Draw();
+  hmeans->Fit("gaus");
+  c1->cd(3);
+  hsigmas->Draw();
+  hsigmas->Fit("gaus");
+
+  TCanvas *c2 = new TCanvas("c2", "Distribution of gain per pixels", 100, 100, 600, 600);
+  hpixelgain->Draw("colz");
+  
+  TCanvas *c3= new TCanvas("c3", "Distributions for individual pixels", 200, 200, 600, 600);
+  Int_t randpix=0;
+  for ( int ipix=0; ipix<TMath::Min(npixels,50); ipix++ ) {
+    if( npixels>50 ) {
+      randpix = (Int_t)(gRandom->Uniform(0,npixels));
+    } else {
+      randpix = ipix;
+    }
+    hHitSeedCharge[randpix]->Draw( (ipix==0?"":"same") );
+  }
+  
+  // ================
+  // Save canvas and histos
+  //cd to result dir
+  // added JB 2011/03/14
+  Char_t rootFile[300];
+  sprintf(rootFile,"%sPixelSpectrum_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
+  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile));
+  cout << "\n-- Saving histos and canvas into " << rootFile << endl;
+  TFile fRoot(rootFile,"RECREATE");
+  c1->Write();
+  c2->Write();
+  c3->Write();
+  for( int ipix=0; ipix<npixels; ipix++ ) {
+    hHitSeedCharge[ipix]->Write();
+  }
+  hHitSeedChargeAll->Write();
+  hmeans->Write();
+  hsigmas->Write();
+  hpixelgain->Write();
+  fRoot.Close();
+
+  sprintf(rootFile,"%sPixelGain_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
+  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile));
+  cout << "\n-- Saving gain map into " << rootFile << endl;
+  TFile fRoot2(rootFile,"RECREATE");
+  hmeans->Write();
+  hpixelgain->Write();
+  fRoot2.Close();
   
 }
 

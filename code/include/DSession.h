@@ -103,7 +103,7 @@ class DSession : public TObject {
   DTracker      *GetTracker()                      { return  fTracker;                     }
   DAcq          *GetDataAcquisition()              { return  fAcq;                         }
   DSetup        *GetSetup()                        { return  fc;                           }
-  Int_t          GetStatus()                       { return  fStatus;                      }  
+  Int_t          GetStatus()                       { return  fStatus;                      }
 
   TString        GetSummaryFileName()              { return  fSummaryFileName;             }
   TString        GetSummaryFileTitle()             { return  fSummaryFileTitle;            }

@@ -8,9 +8,9 @@
   gStyle->SetPadRightMargin(0.15);
   gStyle->SetTitleX(0.5);
   gStyle->SetTitleAlign(23);
-  gStyle->SetTitleSize(0.05,"xyz");
-  gStyle->SetTitleOffset(1.3,"y");
-  gStyle->SetLabelSize(0.05,"xyz");
+  gStyle->SetTitleSize(0.03,"xyz");
+  gStyle->SetTitleOffset(0.3,"y");
+  gStyle->SetLabelSize(0.03,"xyz");
   //  simply launch root instead of TAF
   gSystem->Load("libMinuit.so");
   gSystem->Load("libGeom.so");

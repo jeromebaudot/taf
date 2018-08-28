@@ -1,3 +1,8 @@
+//
+// This macros fits the individual seed charge distributions
+//  and
+//
+
 #include "Riostream.h"
 #include "TLegend.h"
 #include "math.h" 

@@ -151,6 +151,11 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
   Int_t planeStatus, planeReadout;
   //Int_t planeAnalysisMode; // usefull state of plane
 
+  fTracksMaximum = fc->GetTrackerPar().TracksMaximum;
+  fHitsMaximum   = fPlanesN;               // preliminary
+  fHitList       = new DHit*[fHitsMaximum];   // these are pointers to hits to make one track,
+  // hits itself are generated in the device constructor
+  
   fNumberOfLadders = fc->GetTrackerPar().Ladders;
 
   Int_t planesLadder = 0; // Number of planes in ladders.
@@ -361,11 +366,16 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
    cout << endl;
    }
    */
+  
+  fTracksFinder = fc->GetTrackerPar().TracksFinder; // JB 2013/07/17, then  VR 2014/06/29
+  
   fTrackSeedDevs = ts; // number of track seed planes
   fFixRefDevs = fx; // number of fixed reference planes
   fVarRefDevs = vr; // number of variable reference planes
   fTestDevs   = dut;// number of DUT planes
-  if( fTracksMaximum ) { // print only if tracking required
+
+  if( fTracksMaximum ) { // if tracking required
+    
     printf("DTracker, Track Seed         : %d:",ts);
     for( Int_t ip=0; ip<fTrackSeedDevs; ip++) { printf( " %d", fListTrackSeedDevs[ip]); }
     printf( ".\n");
@@ -378,144 +388,138 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
     printf("DTracker, Detector under Test: %d:",dut);
     for( Int_t ip=0; ip<fTestDevs; ip++) { printf( " %d", fListTestDevs[ip]); }
     printf( ".\n");
-  }
 
-  fHitsMaximum   = fPlanesN;               // preliminary
-  fHitList       = new DHit*[fHitsMaximum];   // these are pointers to hits to make one track,
-  // hits itself are generated in the device constructor
-
-  cout << endl << " ***** Tracking and vertexing configuration ***** " << endl << endl ;
-
-  fTracksMaximum = fc->GetTrackerPar().TracksMaximum;
-
-  fTracksFinder = fc->GetTrackerPar().TracksFinder; // JB 2013/07/17, then  VR 2014/06/29
-  switch(fTracksFinder)
-  {
-    case 0 :
-      cout << " -> The tracking method for pixel telescope is the original one : find_tracks()" << endl;
-      cout << "   -> Using " << fSearchHitDistance << " max um distance between hits to a track" << endl;
-      break;
-    case 1 :
-      cout << " -> The tracking method for pixel telescope is the one with more options : find_tracks_1_opt()" << endl;
-      cout << "   -> Using " << fSearchHitDistance <<     " um max distance between hits to do the pre-track" << endl;
-      cout << "   -> Using " << fSearchMoreHitDistance << " um max distance between hits and the pre-track to associate them" << endl;
-      cout << "   -> Using the TrackingPlaneOrderType type " << fTrackingPlaneOrderType << endl;
-      break;
-    case 2 :
-      cout << " -> The tracking method for pixel telescope is the IVI one : find_tracks_2_ivi()" << endl;
-      //---------------------------------
-      //   Tracking Pass
-      //---------------------------------
-      fTrackingPass           = fc->GetTrackerPar().TrackingPass;
-      fPreTrackHitsNbMinimum  = fc->GetTrackerPar().PreTrackHitsNbMinimum;
-      fPreTrackHitsTypeUsed   = fc->GetTrackerPar().PreTrackHitsTypeUsed;
-      fPreTrackHitsMaxDist    = fc->GetTrackerPar().PreTrackHitsMaxDist;
-      fExtTrackHitsNbMinimum  = fc->GetTrackerPar().ExtTrackHitsNbMinimum;
-      fExtTrackHitsTypeUsed   = fc->GetTrackerPar().ExtTrackHitsTypeUsed;
-      fExtTrackHitsMaxDist    = fc->GetTrackerPar().ExtTrackHitsMaxDist;
-      fFullTrackHitsNbMinimum = fc->GetTrackerPar().FullTrackHitsNbMinimum;
-
-      cout << "   -> Doing " << fTrackingPass << " pass : " << endl;
-      for (Int_t iPass = 1 ; iPass <= fTrackingPass ; iPass++)
-      {
-        cout << "     -> Pass " << iPass << " : " << endl ;
-        cout << "       -> Pre-tracks parameters :" << endl ;
-        cout << "         ->  PreTrackHitsNbMinimum  = " << fPreTrackHitsNbMinimum[iPass-1] << " hits" << endl ;
-        cout << "         ->  PreTrackHitsTypeUsed   = " << fPreTrackHitsTypeUsed[iPass-1];
-        switch(fPreTrackHitsTypeUsed[iPass-1])
+    cout << endl << " ***** Tracking and vertexing configuration ***** " << endl << endl ;
+    
+    switch(fTracksFinder)
+    {
+      case 0 :
+        cout << " -> The tracking method for pixel telescope is the original one : find_tracks()" << endl;
+        cout << "   -> Using " << fSearchHitDistance << " max um distance between hits to a track" << endl;
+        break;
+      case 1 :
+        cout << " -> The tracking method for pixel telescope is the one with more options : find_tracks_1_opt()" << endl;
+        cout << "   -> Using " << fSearchHitDistance <<     " um max distance between hits to do the pre-track" << endl;
+        cout << "   -> Using " << fSearchMoreHitDistance << " um max distance between hits and the pre-track to associate them" << endl;
+        cout << "   -> Using the TrackingPlaneOrderType type " << fTrackingPlaneOrderType << endl;
+        break;
+      case 2 :
+        cout << " -> The tracking method for pixel telescope is the IVI one : find_tracks_2_ivi()" << endl;
+        //---------------------------------
+        //   Tracking Pass
+        //---------------------------------
+        fTrackingPass           = fc->GetTrackerPar().TrackingPass;
+        fPreTrackHitsNbMinimum  = fc->GetTrackerPar().PreTrackHitsNbMinimum;
+        fPreTrackHitsTypeUsed   = fc->GetTrackerPar().PreTrackHitsTypeUsed;
+        fPreTrackHitsMaxDist    = fc->GetTrackerPar().PreTrackHitsMaxDist;
+        fExtTrackHitsNbMinimum  = fc->GetTrackerPar().ExtTrackHitsNbMinimum;
+        fExtTrackHitsTypeUsed   = fc->GetTrackerPar().ExtTrackHitsTypeUsed;
+        fExtTrackHitsMaxDist    = fc->GetTrackerPar().ExtTrackHitsMaxDist;
+        fFullTrackHitsNbMinimum = fc->GetTrackerPar().FullTrackHitsNbMinimum;
+        
+        cout << "   -> Doing " << fTrackingPass << " pass : " << endl;
+        for (Int_t iPass = 1 ; iPass <= fTrackingPass ; iPass++)
         {
-          case 0 :
-            cout << " : all hits can be used" << endl ;
-            break;
-          case 1 :
-            cout << " : only new hits can be used" << endl ;
-            break;
-          case 2 :
-            cout << " : only memorized hits can be used" << endl ;
-            break;
-          default :
-            cout << " : !!! UNKNOWN !!! All hits will be used instead" << endl ;
-            fPreTrackHitsTypeUsed[iPass-1] = 0 ;
-            break;
+          cout << "     -> Pass " << iPass << " : " << endl ;
+          cout << "       -> Pre-tracks parameters :" << endl ;
+          cout << "         ->  PreTrackHitsNbMinimum  = " << fPreTrackHitsNbMinimum[iPass-1] << " hits" << endl ;
+          cout << "         ->  PreTrackHitsTypeUsed   = " << fPreTrackHitsTypeUsed[iPass-1];
+          switch(fPreTrackHitsTypeUsed[iPass-1])
+          {
+            case 0 :
+              cout << " : all hits can be used" << endl ;
+              break;
+            case 1 :
+              cout << " : only new hits can be used" << endl ;
+              break;
+            case 2 :
+              cout << " : only memorized hits can be used" << endl ;
+              break;
+            default :
+              cout << " : !!! UNKNOWN !!! All hits will be used instead" << endl ;
+              fPreTrackHitsTypeUsed[iPass-1] = 0 ;
+              break;
+          }
+          cout << "         ->  PreTrackHitsMaxDist    = " << fPreTrackHitsMaxDist[iPass-1]   << " um" << endl ;
+          cout << "       -> Ext-tracks parameters :" << endl ;
+          cout << "         ->  ExtTrackHitsNbMinimum  = " << fExtTrackHitsNbMinimum[iPass-1] << " hits" << endl ;
+          cout << "         ->  PreTrackHitsTypeUsed   = " << fExtTrackHitsTypeUsed[iPass-1] ;
+          switch(fExtTrackHitsTypeUsed[iPass-1])
+          {
+            case 0 :
+              cout << " : all hits can be used" << endl ;
+              break;
+            case 1 :
+              cout << " : only new hits can be used" << endl ;
+              break;
+            case 2 :
+              cout << " : only memorized hits can be used" << endl ;
+              break;
+            default :
+              cout << " : !!! UNKNOWN !!! All hits will be used instead" << endl ;
+              fPreTrackHitsTypeUsed[iPass-1] = 0 ;
+              break;
+          }
+          cout << "         ->  ExtTrackHitsMaxDist    = " << fExtTrackHitsMaxDist[iPass-1] << " um" << endl ;
+          cout << "       -> Full-tracks parameters :" << endl ;
+          cout << "         ->  FullTrackHitsNbMinimum = " << fFullTrackHitsNbMinimum[iPass-1] << " hits" << endl ;
         }
-        cout << "         ->  PreTrackHitsMaxDist    = " << fPreTrackHitsMaxDist[iPass-1]   << " um" << endl ;
-        cout << "       -> Ext-tracks parameters :" << endl ;
-        cout << "         ->  ExtTrackHitsNbMinimum  = " << fExtTrackHitsNbMinimum[iPass-1] << " hits" << endl ;
-        cout << "         ->  PreTrackHitsTypeUsed   = " << fExtTrackHitsTypeUsed[iPass-1] ;
-        switch(fExtTrackHitsTypeUsed[iPass-1])
+        cout << endl;
+        
+        //---------------------------------
+        //   Tracking Scann pass
+        //---------------------------------
+        Int_t nbPlanes, PlaneNb;
+        fTrackingOrderLines     = fc->GetTrackerPar().TrackingOrderLines;
+        cout << "   -> Doing " << fTrackingOrderLines << " scans for each tracking pass : " << endl;
+        fTrackingOrderPreTrack  = new Int_t*[fTrackingOrderLines];
+        fTrackingOrderExtTrack  = new Int_t*[fTrackingOrderLines];
+        
+        for (Int_t iStrategy = 0 ; iStrategy < fTrackingOrderLines ; iStrategy++)
         {
-          case 0 :
-            cout << " : all hits can be used" << endl ;
-            break;
-          case 1 :
-            cout << " : only new hits can be used" << endl ;
-            break;
-          case 2 :
-            cout << " : only memorized hits can be used" << endl ;
-            break;
-          default :
-            cout << " : !!! UNKNOWN !!! All hits will be used instead" << endl ;
-            fPreTrackHitsTypeUsed[iPass-1] = 0 ;
-          break;
+          cout << "     -> Tracking scan " << iStrategy +1 << " :" << endl ;
+          //---------------------
+          // Pre tracks
+          //---------------------
+          nbPlanes = fc->GetTrackerPar().TrackingOrderPreTrack[iStrategy][0];
+          cout << "       -> First " << nbPlanes << " planes are scanned to try to build pre-tracks : "<< endl;
+          fTrackingOrderPreTrack[iStrategy] = new Int_t[nbPlanes+1];
+          fTrackingOrderPreTrack[iStrategy][0] = nbPlanes ;
+          
+          for (Int_t iPlane=1 ; iPlane <= nbPlanes ; iPlane++)
+          {
+            PlaneNb = fc->GetTrackerPar().TrackingOrderPreTrack[iStrategy][iPlane]-1;//WARNING take care with the -1 !
+            fTrackingOrderPreTrack[iStrategy][iPlane] = PlaneNb;
+            cout << "         -> " << iPlane << ") plane " << PlaneNb+1 << " : " << ((DPlane*)(fPlaneArray->At(PlaneNb)))->GetPlanePurpose() << endl;
+          }
+          
+          //---------------------
+          // Ext tracks
+          //---------------------
+          nbPlanes = fc->GetTrackerPar().TrackingOrderExtTrack[iStrategy][0];
+          cout << "       -> Then " << nbPlanes << " planes are scanned to try to extend each pre-track : "<< endl;
+          fTrackingOrderExtTrack[iStrategy] = new Int_t[nbPlanes+1];
+          fTrackingOrderExtTrack[iStrategy][0] = nbPlanes ;
+          
+          for (Int_t iPlane=1 ; iPlane <= nbPlanes ; iPlane++)
+          {
+            PlaneNb = fc->GetTrackerPar().TrackingOrderExtTrack[iStrategy][iPlane]-1;
+            fTrackingOrderExtTrack[iStrategy][iPlane] = PlaneNb;
+            cout << "         -> " << iPlane << ") plane " << PlaneNb+1 << " : " << ((DPlane*)(fPlaneArray->At(PlaneNb)))->GetPlanePurpose() << endl;
+          }
         }
-        cout << "         ->  ExtTrackHitsMaxDist    = " << fExtTrackHitsMaxDist[iPass-1] << " um" << endl ;
-        cout << "       -> Full-tracks parameters :" << endl ;
-        cout << "         ->  FullTrackHitsNbMinimum = " << fFullTrackHitsNbMinimum[iPass-1] << " hits" << endl ;
-      }
-      cout << endl;
+        break;
+      case 3 :
+        cout << " -> BEAST II Pattern recognition on PLUME Ladders " << endl;
+        fBeaster = new DBeaster(this);
+        break;
+      default :
+        cout << " -> The tracking method for pixel telescope is unknown !!!" << endl;
+        if(fTracksMaximum) gApplication->Terminate();
+        break;
+    }
 
-      //---------------------------------
-      //   Tracking Scann pass
-      //---------------------------------
-      Int_t nbPlanes, PlaneNb;
-      fTrackingOrderLines     = fc->GetTrackerPar().TrackingOrderLines;
-      cout << "   -> Doing " << fTrackingOrderLines << " scans for each tracking pass : " << endl;
-      fTrackingOrderPreTrack  = new Int_t*[fTrackingOrderLines];
-      fTrackingOrderExtTrack  = new Int_t*[fTrackingOrderLines];
-
-      for (Int_t iStrategy = 0 ; iStrategy < fTrackingOrderLines ; iStrategy++)
-      {
-        cout << "     -> Tracking scan " << iStrategy +1 << " :" << endl ;
-        //---------------------
-        // Pre tracks
-        //---------------------
-        nbPlanes = fc->GetTrackerPar().TrackingOrderPreTrack[iStrategy][0];
-        cout << "       -> First " << nbPlanes << " planes are scanned to try to build pre-tracks : "<< endl;
-        fTrackingOrderPreTrack[iStrategy] = new Int_t[nbPlanes+1];
-        fTrackingOrderPreTrack[iStrategy][0] = nbPlanes ;
-
-        for (Int_t iPlane=1 ; iPlane <= nbPlanes ; iPlane++)
-        {
-          PlaneNb = fc->GetTrackerPar().TrackingOrderPreTrack[iStrategy][iPlane]-1;//WARNING take care with the -1 !
-          fTrackingOrderPreTrack[iStrategy][iPlane] = PlaneNb;
-          cout << "         -> " << iPlane << ") plane " << PlaneNb+1 << " : " << ((DPlane*)(fPlaneArray->At(PlaneNb)))->GetPlanePurpose() << endl;
-        }
-
-        //---------------------
-        // Ext tracks
-        //---------------------
-        nbPlanes = fc->GetTrackerPar().TrackingOrderExtTrack[iStrategy][0];
-        cout << "       -> Then " << nbPlanes << " planes are scanned to try to extend each pre-track : "<< endl;
-        fTrackingOrderExtTrack[iStrategy] = new Int_t[nbPlanes+1];
-        fTrackingOrderExtTrack[iStrategy][0] = nbPlanes ;
-
-        for (Int_t iPlane=1 ; iPlane <= nbPlanes ; iPlane++)
-        {
-          PlaneNb = fc->GetTrackerPar().TrackingOrderExtTrack[iStrategy][iPlane]-1;
-          fTrackingOrderExtTrack[iStrategy][iPlane] = PlaneNb;
-          cout << "         -> " << iPlane << ") plane " << PlaneNb+1 << " : " << ((DPlane*)(fPlaneArray->At(PlaneNb)))->GetPlanePurpose() << endl;
-        }
-      }
-      break;
-    case 3 :
-      cout << " -> BEAST II Pattern recognition on PLUME Ladders " << endl;
-      fBeaster = new DBeaster(this);
-      break;
-    default :
-      cout << " -> The tracking method for pixel telescope is unknown !!!" << endl;
-      if(fTracksMaximum) gApplication->Terminate();
-      break;
-  }
+  } // end if tracking required
 
   fSearchHitDistance          = (Double_t)fc->GetTrackerPar().SearchHitDistance; // JB, 2009/05/25
   fSearchMoreHitDistance      = (Double_t)fc->GetTrackerPar().SearchMoreHitDistance; // VR, 2014/06/29

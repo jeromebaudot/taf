@@ -331,7 +331,7 @@
 //                     between the center of gravity and any other pixel in the hit
 // CommonRegions     = [optional] (int) {1} # regions to define 
 //                     for the common noise shift computation per event
-// Position Algorithm= [MANDATORY] (int) controls how the hit position 
+// HitPositionAlgorithm = [MANDATORY] (int) controls how the hit position 
 //                     is estimated from the pixels info
 //                 1 = Center of Gravity,
 //                 2 = eta, 
