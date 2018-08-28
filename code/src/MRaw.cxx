@@ -93,7 +93,6 @@
 #include <assert.h>
 #include <vector>
 
-//#define USETMVA
 #ifdef USETMVA
 #include "TMVA/Factory.h"
 #include "TMVA/Tools.h"

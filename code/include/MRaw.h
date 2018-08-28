@@ -220,6 +220,8 @@ void BeastCheckPosition();
   
   void CumulateTxtFrames( Int_t nEvents=1000, Int_t nCumulFrames=100);
   
+//#define USETMVA
+#ifdef USETMVA
   void FillnTupleForTMVA(int    nEvents       = 100,
 			 double my_theta_mean = 0.0,
 			 double my_phi_mean   = 0.0);
@@ -230,6 +232,7 @@ void BeastCheckPosition();
 		 TString OutputFile   = "TMVAReg.root",
 		 int Nevts_training   = 10000,
 		 int Nevts_testing    = 10000);
+#endif
 
  using TObject::Clear;
 
