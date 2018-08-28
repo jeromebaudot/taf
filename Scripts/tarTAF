@@ -18,7 +18,7 @@
 # Modified JB 2014/05/14 thistaf.sh added
 # Modified JB 2014/06/02 rootlogon.C added
 # Modified AP 2016/xx/xx config_TEST added
-# v 1.1
+# Modified JB 2018/08/28 config_VALIDATION added
 
 if [ $# -ne 1 ]
 
@@ -42,24 +42,26 @@ echo "Creating the structure for $tafname...";
 cd $DTDIR
 mkdir $tafname;
 cd $tafname;
-mkdir code config config_TEST doc Scripts Results datDSF;
+mkdir code config doc Scripts Results datDSF;
 
 
 # copy existing files
 echo "Copying existing files...";
 cp -p $DTDIR/README $DTDIR/rootlogon.C $DTDIR/$tafname/.;
 cp -p $DTDIR/doc/*oc.pdf $DTDIR/doc/*.html $DTDIR/$tafname/doc;
+cp -pr $DTDIR/config_TEST $DTDIR/$tafname/.;
+#cd $DTDIR/config_TEST;
+#cp -p run1040.cfg run18007.cfg run18400.cfg run20523.cfg run22704.cfg run22802.cfg run226031.cfg run26000.cfg run26519.cfg run26107.cfg run28510.cfg run28905.cfg run32003.cfg run32824.cfg run34539.cfg run286001.cfg $DTDIR/$tafname/config_TEST;
 cd $DTDIR/code;
 cp -pr src include macros $DTDIR/$tafname/code;
 cp -p Makefile Makefile.arch $DTDIR/$tafname/code;
-cd $DTDIR/config_TEST;
-cp -p run1040.cfg run18007.cfg run18400.cfg run20523.cfg run22704.cfg run22802.cfg run226031.cfg run26000.cfg run26519.cfg run26107.cfg run28510.cfg run28905.cfg run32003.cfg run32824.cfg run34539.cfg run286001.cfg $DTDIR/$tafname/config_TEST;
 cd $DTDIR/Scripts;
 cp -p batchTAFexemple.sh compiltaf.C copyConfig.sh dropit macroMRax.C makeHtmlDoc.C makeSynchroLink.sh maketaf renameRawData.sh TAF-config tarTAF thistaf.sh Update_conf_align Update_conf_align2D Update_conf_Ladders $DTDIR/$tafname/Scripts;
 
 
-# remove any .svn files
+# remove any .svn or .git files
 cd $DTDIR;
+rm -rf $tafname/.git
 rm -rf $tafname/.svn
 rm -rf $tafname/*/.svn
 rm -rf $tafname/*/*/.svn

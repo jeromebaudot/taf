@@ -207,6 +207,8 @@ void BeastCheckPosition();
   
   void SeedCuts(Int_t nEvents=1000);
 
+  void BuildPixelGainMap( Int_t nEvents=100000, double min=850, double max=960, double maxcharge=2500 ); // JB 2018/07/04
+
   void BetaSourceMultiFrameAnalysis(int     aPlane  = 0,
 				    int     nFrames = 0,
                                     Int_t   nEvents=1000,
@@ -231,6 +233,7 @@ void BeastCheckPosition();
 		 int Nevts_training   = 10000,
 		 int Nevts_testing    = 10000);
 
+  
  using TObject::Clear;
 
  static  MRaw*& InstanceRaw( DSession *aSession) {
