@@ -129,7 +129,10 @@ class MRaw : public TObject {
 			     double Xmin = -1.0e10,
 			     double Xmax = -1.0e10,
 			     double Ymin = -1.0e10,
-			     double Ymax = -1.0e10);
+			     double Ymax = -1.0e10,
+           Bool_t Define_QRange=kFALSE,
+           int qbins = 1000,
+           double qmax = 1000);
  void DisplayLadderCumulatedHits2D( Int_t nEvents=1000,
 				    Bool_t ifDrawTrack=kTRUE,
 				    Bool_t Define_Range=kTRUE,
@@ -207,7 +210,7 @@ void BeastCheckPosition();
   
   void SeedCuts(Int_t nEvents=1000);
 
-  void BuildPixelGainMap( Int_t nEvents=100000, double min=850, double max=960, double maxcharge=2500 ); // JB 2018/07/04
+  void BuildPixelGainMap( Int_t nEvents=100000, Double_t min=850, Double_t max=960, Double_t maxcharge=2500 ); // JB 2018/07/04
 
   void BetaSourceMultiFrameAnalysis(int     aPlane  = 0,
 				    int     nFrames = 0,
