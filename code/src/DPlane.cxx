@@ -567,25 +567,29 @@ DPlane::DPlane(DTracker& aTracker, const Int_t aPlaneNumber, const Int_t aLadder
   fTool.LocalizeDirName( &WeightFile);
   FileStat_t Fstat;
   TFile *tWeightFile = NULL;
-  if( fc->GetPlanePar(fPlaneNumber).HitPositionAlgorithm == 2 ) { // if eta algorithm required
-    if(gSystem->GetPathInfo(WeightFile.Data(),Fstat) == 0) {
-      tWeightFile = new TFile(WeightFile.Data(),"READ");
-      if( tWeightFile == NULL) {
-        fDigitalStripResponse = kTRUE;
+  if(gSystem->GetPathInfo(WeightFile.Data(),Fstat) == 0) {
+    tWeightFile = new TFile(WeightFile.Data(),"READ");
+    if( tWeightFile == NULL) {
+      fDigitalStripResponse = kTRUE;
+      if( fc->GetPlanePar(fPlaneNumber).HitPositionAlgorithm == 2 ) { // if eta algorithm required
         cout << "WARNING from DPlane::DPlane(), " << "file " << WeightFile.Data() << " Doesn't exits!!" << endl;
-      }
-      else if( tWeightFile->IsZombie() || !(tWeightFile->GetNkeys()) ) {
-        fDigitalStripResponse = kTRUE;
+      } //end if eta algorithm required
+    }
+    else if( tWeightFile->IsZombie() || !(tWeightFile->GetNkeys()) ) {
+      fDigitalStripResponse = kTRUE;
+      if( fc->GetPlanePar(fPlaneNumber).HitPositionAlgorithm == 2 ) { // if eta algorithm required
         if( tWeightFile->IsZombie())          cout << "WARNING from DPlane::DPlane(), " << "file " << WeightFile.Data() << " is Zombie!!!" << endl;
         else if(!(tWeightFile->GetNkeys()) )  cout << "WARNING from DPlane::DPlane(), " << "file " << WeightFile.Data() << " has no keys!!!" << endl;
-      }
+      } //end if eta algorithm required
     }
-    else {
-      fDigitalStripResponse = kTRUE;
+  }
+  else {
+    fDigitalStripResponse = kTRUE;
+    if( fc->GetPlanePar(fPlaneNumber).HitPositionAlgorithm == 2 ) { // if eta algorithm required
       cout << "WARNING from DPlane::DPlane(), " << "file " << WeightFile.Data() << " Doesn't exits!!" << endl;
-    }
-  } //end if eta algorithm required
-    
+    } //end if eta algorithm required
+  }
+  
   if (!fDigitalStripResponse && fAnalysisMode == 1){ // STRIPS
     // use only 2-strip clusters
     // now the loop over strips with decending pulseheights, start with seed, which has highest signal

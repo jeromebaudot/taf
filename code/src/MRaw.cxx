@@ -3449,10 +3449,25 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
 				   Bool_t Define_Range,
 				   int bins,
 				   double Xmin, double Xmax,
-				   double Ymin, double Ymax)
+           double Ymin, double Ymax,
+           Bool_t Define_QRange,
+           int qbins,
+           double qmax)
 {
   // Display the hit position for each plane cumulated over the requested number of events
+  //  and display hit properties
+  //
   // Call by gTAF->GetRaw()->DisplayCumulatedHits2D()
+  //
+  // Inputs:
+  //   o nEvents is the nb of events to analyse
+  //   o ifDrawTrack turns on the display of the track extrapolation map
+  //   o if Define_Range is true, use arguments bins and X/Y_min/max to define 2D range
+  //   o if Define_QRange is true, use arguments qbins and qmax to define charge range
+  //
+  // Outputs:
+  //   o HitMap_run%d.root with all plots
+  //
   // JB, 2009/05/12
   // Last Modified JB 2009/08/31 binning of histos and bin index in filling
   // Last Modified JB 2010/10/25 counter of reconstructed hits
@@ -3579,7 +3594,14 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     NbinsX = bins;
     NbinsY = bins;
   }
-
+  
+  int Qbins = 200;
+  double Qmax = 0.;
+  if(Define_QRange) {
+    Qmax  = qmax;
+    Qbins = qbins;
+  }
+  
   TH2F **hHitMap = new TH2F*[nPlanes];
   TH2F **hTrackMap = new TH2F*[nPlanes]; // JB 2011/11/02
   TH1F **hHitPixMult = new TH1F*[nPlanes];
@@ -3675,30 +3697,30 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     hHitSeedVsNeighbourSN[iPlane-1]->SetYTitle("neighbourgs S/N");
     sprintf( name, "hhitcharge%d", iPlane);
     sprintf( title, "Hit charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitCharge[iPlane-1] = new TH1F(name, title, 200, 0, 0);
+    hHitCharge[iPlane-1] = new TH1F(name, title, Qbins, 0, Qmax);
     hHitCharge[iPlane-1]->SetXTitle("ADC unit");
      // JB 2013/10/08
     sprintf( name, "hhitseedq%d", iPlane);
     sprintf( title, "Seed pixel charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitSeedCharge[iPlane-1] = new TH1F(name, title, 200, 0, 0);
+    hHitSeedCharge[iPlane-1] = new TH1F(name, title, Qbins, 0, Qmax);
     hHitSeedCharge[iPlane-1]->SetXTitle("charge (ADCu)");
     sprintf( name, "hhitneighbourq%d", iPlane);
     sprintf( title, "Neighbour pixels charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitNeighbourCharge[iPlane-1] = new TH1F(name, title, 100, 0, 0);
+    hHitNeighbourCharge[iPlane-1] = new TH1F(name, title, Qbins/2, 0, Qmax/2);
     hHitNeighbourCharge[iPlane-1]->SetXTitle("charge (ADCu)");
     sprintf( name, "hhitseedneighbourgq%d", iPlane);
     sprintf( title, "Neighbour pixels VS seed charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitSeedVsNeighbourCharge[iPlane-1] = new TH2F(name, title, 100, 0, 0, 50, 0, 0);
+    hHitSeedVsNeighbourCharge[iPlane-1] = new TH2F(name, title, Qbins/2, 0, Qmax, Qbins/4, 0, Qmax/2);
     hHitSeedVsNeighbourCharge[iPlane-1]->SetXTitle("seed charge (ADCu)");
     hHitSeedVsNeighbourCharge[iPlane-1]->SetYTitle("neighbourgs charge (ADCu)");
     sprintf( name, "hhitseedhitq%d", iPlane);
     sprintf( title, "Hit pixels VS seed charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitSeedVsHitCharge[iPlane-1] = new TH2F(name, title, 100, 0, 0, 100, 0, 0);
+    hHitSeedVsHitCharge[iPlane-1] = new TH2F(name, title, Qbins/2, 0, Qmax, Qbins/2, 0, Qmax);
     hHitSeedVsHitCharge[iPlane-1]->SetXTitle("seed charge (ADCu)");
     hHitSeedVsHitCharge[iPlane-1]->SetYTitle("hit charge (ADCu)");
     sprintf( name, "hhitseedsnseedq%d", iPlane);
     sprintf( title, "Seed pixel S/N VS seed charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitSeedSNVsSeedCharge[iPlane-1] = new TH2F(name, title, 100, 0, 0, 100, 0, 0);
+    hHitSeedSNVsSeedCharge[iPlane-1] = new TH2F(name, title, Qbins, 0, Qmax, 100, 0, 0);
     hHitSeedSNVsSeedCharge[iPlane-1]->SetXTitle("seed charge (ADCu)");
     hHitSeedSNVsSeedCharge[iPlane-1]->SetYTitle("seed S/N");
     sprintf( name, "hhitstonover2%d", iPlane);
@@ -10964,7 +10986,7 @@ double CBfunction(double *x, double *par) {
   
 }
 //*****************************************************************************
-void MRaw::BuildPixelGainMap( Int_t nEvents, double minfit, double maxfit, double maxcharge)
+void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, Double_t maxcharge )
 {
   // Fit the seed charge distribution for all individual pixels of 1st plane
   //    => spectrum is expected to come from a monochromatic source!
@@ -10977,6 +10999,10 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, double minfit, double maxfit, doubl
   //  o nevents = nb of events to analyse
   //  o minfit, maxfit = range for the fit of the spectrum
   //  o maxcharge = range (from 0) for the seed charge distribution (bin width = 1)
+  //
+  // Outputs:
+  //  o PixelSpectrum_runXXXX.root with all plots
+  //  o PixelGain_runXXXX.root with 2d map of correction factors
   //
   // JB 2018/07/04
   
@@ -11016,7 +11042,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, double minfit, double maxfit, doubl
   sprintf( title, "Distribution of std deviations - plane %d;std deviation (ADCu)", planeID);
   TH1F *hsigmas = new TH1F( name, title, 200, 0, 100);
   sprintf( name, "hpixelgainpl%d", planeID);
-  sprintf( title, "Map of individual pixel gain - plane %d;row index;column index", planeID);
+  sprintf( title, "Map of individual pixel correction factors - plane %d;row index;column index", planeID);
   TH2F *hpixelgain = new TH2F( name, title, ncolumns, 1, ncolumns+1, nrows, 1, nrows+1);
 
   
@@ -11053,7 +11079,21 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, double minfit, double maxfit, doubl
 
   
   // ================
-  // Fit individual histos
+  // Fit histos for all pixels and individual pixels
+
+  ffit->SetRange( minfit, maxfit);
+  ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
+  ffit->SetParLimits( 0, minfit, maxfit);
+  ffit->SetParLimits( 1, 0, maxfit-minfit);
+  ffit->SetParLimits( 2, 0.5, 1.5);
+  ffit->SetParLimits( 3, 0.1, 2.);
+  ffit->SetParLimits( 4, 0., 1.e8);
+  hHitSeedChargeAll->Fit( ffit, "QR");
+  double averageMean = ffit->GetParameter(0);
+  double averageSigma = ffit->GetParameter(1);
+  printf( "   average estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
+  
+
   for ( int ipix=0; ipix<npixels; ipix++ ) {
     cout << "getting histo nb " << ipix;
     cout << " with " << hHitSeedCharge[ipix]->GetEntries() << " entries" << endl;
@@ -11085,18 +11125,6 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, double minfit, double maxfit, doubl
     hmeans->Fill( means[ipix]);
     hsigmas->Fill( sigmas[ipix]);
   }
-
-  ffit->SetRange( minfit, maxfit);
-  ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
-  ffit->SetParLimits( 0, minfit, maxfit);
-  ffit->SetParLimits( 1, 0, maxfit-minfit);
-  ffit->SetParLimits( 2, 0.5, 1.5);
-  ffit->SetParLimits( 3, 0.1, 2.);
-  ffit->SetParLimits( 4, 0., 1.e8);
-  hHitSeedChargeAll->Fit( ffit, "QR");
-  double averageMean = ffit->GetParameter(0);
-  double averageSigma = ffit->GetParameter(1);
-  printf( "   average estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
 
   hpixelgain->Scale(1./averageMean);
   
@@ -11153,7 +11181,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, double minfit, double maxfit, doubl
   sprintf(rootFile,"%sPixelGain_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
   sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile));
   cout << "\n-- Saving gain map into " << rootFile << endl;
-  TFile fRoot2(rootFile,"RECREATE");
+  TFile fRoot2(rootFile,"UPDATE"); // note the file is updated, old maps are still there!
   hmeans->Write();
   hpixelgain->Write();
   fRoot2.Close();

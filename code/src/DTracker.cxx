@@ -374,7 +374,7 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
   fVarRefDevs = vr; // number of variable reference planes
   fTestDevs   = dut;// number of DUT planes
 
-  if( fTracksMaximum ) { // if tracking required
+  if( fTracksMaximum>0 ) { // if tracking required
     
     printf("DTracker, Track Seed         : %d:",ts);
     for( Int_t ip=0; ip<fTrackSeedDevs; ip++) { printf( " %d", fListTrackSeedDevs[ip]); }
@@ -564,8 +564,8 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
   // Variables to handle subtracks
   // JB 2014/12/15
   fSubTrackPlanesN = fc->GetTrackerPar().SubtrackNplanes; // 2
-  printf( "\nDTracker will make subtracks of %d hits out of full tracks (%d hits):\n  with planes ", fSubTrackPlanesN, fHitsMaximum);
-  if ( fSubTrackPlanesN>0 ) {
+  if ( fTracksMaximum>0 && fSubTrackPlanesN>0 ) {
+    printf( "\nDTracker will make subtracks of %d hits out of full tracks (%d hits):\n  with planes ", fSubTrackPlanesN, fHitsMaximum);
     fSubTrackPlaneIds = new Int_t[fSubTrackPlanesN];
     fSubTrack         = new DTrack*[fTracksMaximum];
 //    fSubTrackPlaneIds[0] = 3; // adapted to M34 analysis August 2013 DESY
