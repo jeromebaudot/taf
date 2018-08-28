@@ -9907,7 +9907,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       TSpectrum *s=new TSpectrum();
       
       Int_t nfound = s->Search(htmp,2,"",0.5);
-      Float_t *xpeaks = s->GetPositionX();//Find any peak position
+      Float_t *xpeaks = (Float_t*)s->GetPositionX();//Find any peak position
       Float_t xp = xpeaks[0];
       
       norm=HighestPeakPositionEv/xp;
@@ -9945,7 +9945,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       TSpectrum *s=new TSpectrum();
       
       Int_t nfound = s->Search(htmp,2,"",0.5);
-      Float_t *xpeaks = s->GetPositionX();//Find any peak position
+      Float_t *xpeaks = (Float_t*)s->GetPositionX();//Find any peak position
       Float_t xp = xpeaks[0];
       
       norm=5900/xp;
