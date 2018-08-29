@@ -47,7 +47,7 @@ private:
   /* 0/1/2   - Error, Status, Warning */
   /* 0/1/2/3 - Error, Warning */
   /* >3      - Error */
-  int vi_Verbose = 12; /* Recommend-4; Little-6; Less-10 */
+  int vi_Verbose; /* Recommend-4; Little-6; Less-10 */
   int fDebugLevel;
   
   /* Stream to input Raw Data file */
@@ -61,22 +61,24 @@ private:
   int               fNumberOfFiles;
   bool              NoMoreFile;
 
+#if 0
+
   /* Chip Parameters */
-  const unsigned long int N_COLUMN     = 960;
-  const unsigned long int N_ROW        = 928;
-  const unsigned long int N_BANK       = 4;
+//  const unsigned long int N_COLUMN     = 960;
+//  const unsigned long int N_ROW        = 928;
+//  const unsigned long int N_BANK       = 4;
 //  const unsigned long int N_BANKCOLUMN = N_COLUMN / N_BANK;
   
   /* Read binary data */
-  const unsigned long int BYTE  = 1; // 1Byte  = 8bits
-  const unsigned long int WORD  = 2; // 1Word  = 2Byte = 16bits (Mi28 default)
-  const unsigned long int DWORD = 4; // 1DWord = 2Word = 32bits
+//  const unsigned long int BYTE  = 1; // 1Byte  = 8bits
+//  const unsigned long int WORD  = 2; // 1Word  = 2Byte = 16bits (Mi28 default)
+//  const unsigned long int DWORD = 4; // 1DWord = 2Word = 32bits
   
   /* ------------------------------------------------------ */
   /* Marker for a Ladder */
-  const unsigned long int M_LADDER_HEADER  = 0xCCCCCC   ; /* Ladder Header  Marker 32 bits : 0xCCCCCCXX, Check the Big 24 bits */
-  const unsigned long int M_LADDER_CHIP    = 0x3333333  ; /* Ladder Trailer Marker 32 bits : 0x3333333X, Check the Big 28 bits */
-  const unsigned long int M_LADDER_TRAILER = 0x99999999 ; /* Ladder Trailer Marker 32 bits : 0xCCCCCCCC, Check all the 32 bits */
+//  const unsigned long int M_LADDER_HEADER  = 0xCCCCCC   ; /* Ladder Header  Marker 32 bits : 0xCCCCCCXX, Check the Big 24 bits */
+//  const unsigned long int M_LADDER_CHIP    = 0x3333333  ; /* Ladder Trailer Marker 32 bits : 0x3333333X, Check the Big 28 bits */
+//  const unsigned long int M_LADDER_TRAILER = 0x99999999 ; /* Ladder Trailer Marker 32 bits : 0xCCCCCCCC, Check all the 32 bits */
   
   /* Values for a Ladder */
   unsigned long int vi_Ladder_Header       = 0;
@@ -146,6 +148,7 @@ private:
   double vd_N_PixelBankC = 0;
   double vd_N_PixelBankD = 0;
 
+#endif
   
   bool  LookUpRawFile();
   bool  GetNextEvent();
