@@ -203,7 +203,7 @@ DAcq::DAcq(DSetup& c)
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   // this include completing the array structure for the data
 
-  Char_t aFileName[500];
+  Char_t aFileName[500], aBaseName[100];
   Int_t iModule=0; // module index, from 0 to totalNmodules
  
   //====================
@@ -243,16 +243,6 @@ DAcq::DAcq(DSetup& c)
         case 1:
           
           fUseTimestamp[mdt-1][mdl-1] = kFALSE; // JB 2015/05/26
-          if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
-            if( !strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
-              sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
-            } else {
-              sprintf( aFileName, "%s/%d/RUN_%d_", fc->GetRunPar().DataPath, fRunNumber, fRunNumber);
-            }
-          } else {
-            sprintf( aFileName, "%s/%d/RUN_%d_", fc->GetRunPar().DataPath, fRunNumber, fRunNumber);
-          }
-          cout << "filename = " << aFileName << endl;
           //fIMG[iModule] = new IMGBoardReader( iModule, fc->GetModulePar(mdt).Inputs, fc->GetModulePar(mdt).Channels, fc->GetAcqPar().EventBufferSize, fc->GetRunPar().EventsInFile, fc->GetAcqPar().FileHeaderLine, fc->GetModulePar(mdt).Bits, fc->GetModulePar(mdt).SigBits, fc->GetAcqPar().BinaryCoding, fc->GetAcqPar().TriggerMode, fc->GetModulePar(mdt).EventBuildingBoardMode /*(fc->GetModulePar(mdt).Type)%10*/);
           fIMG[iModule] = new IMGBoardReader( iModule,
 					      fc->GetModulePar(mdt).Inputs,
@@ -273,8 +263,39 @@ DAcq::DAcq(DSetup& c)
           }
           fIMG[iModule]->SetDebugLevel( fDebugAcq);
 	  //cout << "Setting number of columns to " << fc->GetPlanePar(1).Strips(0) << endl;
-          initOK &= fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension );
-          break;
+          if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
+	    cout << "DeviceData " << fc->GetModulePar(mdt).DeviceDataFile[mdl-1] << " test = " << strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") << endl;
+            if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
+              sprintf( aBaseName, "%s", fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
+            } else {
+              sprintf( aBaseName, "RUN_%d_", fRunNumber);
+            }
+          } else {
+              sprintf( aBaseName, "RUN_%d_", fRunNumber);
+          }
+          sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
+          cout << "tested filename = " << aFileName << endl;
+          if( !( fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
+            sprintf( aFileName, "%s/%d/%s", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
+            cout << "tested filename = " << aFileName << endl;
+            if( !( fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
+              sprintf( aBaseName, "%d", fRunNumber);
+              sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
+              cout << "tested filename = " << aFileName << endl;
+              if( !( fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
+                sprintf( aFileName, "%s/%d/%s", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
+                cout << "tested filename = " << aFileName << endl;
+		initOK &= fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension );
+  	      } else {
+	        initOK &= kTRUE; 
+	      }
+	    } else {
+	      initOK &= kTRUE; 
+	    }
+	  } else {
+	    initOK &= kTRUE; 
+	  }
+         break;
           
           
           // -+-+- TNT modules
