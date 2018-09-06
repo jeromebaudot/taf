@@ -13,6 +13,7 @@
 # Last update JB 2014/05/14: output specified first in exe creation
 # Last update LC 2014/12/15: Remove DMonteCarlo et DHitMonteCarlo
 # Last update LC 2014/15/19: Add DMiniVector.h DMiniVector.cxx
+# Last update JB 2018/09/06: remove dependencies to tcsh, switch to sh
 
 # ----------------------------------------
 #            Makefile.arch
@@ -95,9 +96,9 @@ PROGRAM		= $(BUILD_DIR)/$(PROGNAME)
 all:	$(PROGRAM)
 
 $(OBJ_DIR):
-		@/bin/tcsh -cf 'if(! -d $(BUILD_DIR)) mkdir -p  $(BUILD_DIR)'
-		@/bin/tcsh -cf 'if(! -d $(OBJ_DIR)) mkdir -p  $(OBJ_DIR)'
-		@/bin/tcsh -cf 'if(! -d $(LIB_DIR)) mkdir -p $(LIB_DIR)'
+		@/bin/sh -cf 'if [ ! -d $(BUILD_DIR) ]; then mkdir -p  $(BUILD_DIR); fi'
+		@/bin/sh -cf 'if [ ! -d $(OBJ_DIR) ]; then mkdir -p  $(OBJ_DIR); fi'
+		@/bin/sh -cf 'if [ ! -d $(LIB_DIR) ]; then mkdir -p $(LIB_DIR); fi'
 
 libTAF.$(DllSuf): Mdict.$(ObjSuf) $(MOBJS) $(MSRCS) $(MHDRS)
 		@echo ""
