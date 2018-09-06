@@ -17,6 +17,7 @@ ClassImp(BoardReaderIHEP);
 //------------------------------------------+-----------------------------------
 BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int runNumber, int numberOfSensors, int triggerMode, int eventBuildingMode) {
 
+  vi_Verbose = 12;
   fDebugLevel = 0;
   
   fBoardNumber = boardNumber;
