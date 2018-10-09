@@ -37,11 +37,11 @@ Int_t main(Int_t argc, Char_t **argv)
   //Verbose mode (display infos)
   Bool_t verbose=kTRUE;
   //Bool_t verbose=kFALSE;
-  
+
   // Debug :
   //cout << argc << endl;
   //for( Int_t i=0 ; i<argc ; i++) cout << argv[i] << endl;
-  
+
 // TAF arguments processing
   //--------------------------------------------------
   //        Declaration and default values:
@@ -65,16 +65,16 @@ Int_t main(Int_t argc, Char_t **argv)
   // Create [or NOT] a MimosaAnalysis *gTAF = new MimosaAnalysis() (made by default with kTRUE)
   TString tafinit_gtaf_cmd  = "-nogtaf";
   Bool_t  tafinit_gtaf_bool = kTRUE; // made by default, cancel with above arg
-  // Launch the MRax GUI 
+  // Launch the MRax GUI
   TString tafinit_mraxgui_cmd  = "-gui";
   //Bool_t  tafinit_mraxgui_bool = kFALSE; // not made by default
   //**********************************
   // mimosa analysis session initialisation
   //**********************************
   // for each arg:
-  //  -sessinit_XXX_cmd is the keyword that MUST start by "-", that describes the expected arg. (like -run 26110 for the run number)   
+  //  -sessinit_XXX_cmd is the keyword that MUST start by "-", that describes the expected arg. (like -run 26110 for the run number)
   //  -sessinit_XXX_arg is the value given that follows the keyword (if done), or "" if not given. MUST BE INITIALIZED to "" ! (see below)
-  //  -sessinit_XXX_def is the default value, used if the corresponding parameter is not given (ie if(sessinit_XXX_arg.IsNull())) 
+  //  -sessinit_XXX_def is the default value, used if the corresponding parameter is not given (ie if(sessinit_XXX_arg.IsNull()))
   //          - MUST BE DEFINED for the plane number and the eventBM (should be done with InitSession() default values) because InitSession prototype is fixed for compatibility
   //          - Can be ""(empty string, not nothing!) for others, then InitSession() uses its own default values. A value can be set.
   //**********************************
@@ -85,7 +85,7 @@ Int_t main(Int_t argc, Char_t **argv)
   // plane number
   TString sessinit_plane_cmd = "-plane";
   TString sessinit_plane_arg = "";
-  TString sessinit_plane_def = "0"; // MUST BE != "", SHOULD BE the same default value as InitSession() 
+  TString sessinit_plane_def = "0"; // MUST BE != "", SHOULD BE the same default value as InitSession()
   // event build mode
   TString sessinit_ebm_cmd = "-ebm";
   TString sessinit_ebm_arg = "";
@@ -121,10 +121,10 @@ Int_t main(Int_t argc, Char_t **argv)
   //**********************************
   // TAF analysis GUIs
   //**********************************
-  // Launch the MRaw GUI 
+  // Launch the MRaw GUI
   TString tafgui_mraw_cmd  = "-guiw";
   Bool_t  tafgui_mraw_bool = kFALSE; // not made by default
-  // Launch the MRax GUI 
+  // Launch the MRax GUI
   TString tafgui_mrax_cmd  = "-guix";
   Bool_t  tafgui_mrax_bool = kFALSE; // not made by default
 
@@ -149,10 +149,10 @@ Int_t main(Int_t argc, Char_t **argv)
       cout << "     [-l] : do not display welcome message" << endl;
       cout << "     [[/dir/]file.C] : execute the macro in interpreter <only one macro file>" << endl;
       cout << "     not yet supported args: [-n] [dir] [[file:]data.root]" << endl;
-      
+
       cout << "  * TAF initialisation:" << endl;
       cout << "     ["<<tafinit_gtaf_cmd<<"] : do NOT create a 'MimosaAnalysis* gTAF' (made by default)" << endl;
-      
+
       cout << "  * TAF debug (could be set after Init):" << endl;
       cout << "     ["<< sessinit_debugLevel_cmd <<"] debugLevel (ex.: 1, 2...), default is "<< sessinit_debugLevel_def << endl;
 
@@ -160,7 +160,7 @@ Int_t main(Int_t argc, Char_t **argv)
 //      cout << "     ex: $ TAF [...] " << sessinit_runnb_cmd << " 26112 [" << sessinit_mainResDirPath_cmd << " ./anexperiment/tafresults] [...]" << endl;//TODO
 	cout << "     ex: $ TAF [...] " << sessinit_runnb_cmd << " 26112" << endl;
         cout << "      "<< sessinit_runnb_cmd <<"  number of the run to analyse (integer>0), mandatory for auto init session"<<endl;
-        cout << "     ["<< sessinit_plane_cmd <<"] number of the plane to analyse (integer>0)" << endl; 
+        cout << "     ["<< sessinit_plane_cmd <<"] number of the plane to analyse (integer>0)" << endl;
         cout << "     ["<< sessinit_ebm_cmd <<"] Event Building Mode (integer)"<< endl;
         cout << "     ["<< sessinit_cfgFilePath_cmd <<"] specific config file (ex.: myconfig.cfg ./mydir/myconfig.cfg /mydir/myconfig.cfg ...)"<< endl;
         cout << "     ["<< sessinit_cfgDir_cmd <<"] specific config directory (ex.: mydir /another/mydir ../anotherdir/mydir/ ...)"<< endl;
@@ -168,18 +168,18 @@ Int_t main(Int_t argc, Char_t **argv)
         cout << "     ["<< sessinit_outFilesSuff_cmd <<"] output files suffix for MRax (ex.: RUNxx), default is "<<  sessinit_outFilesSuff_def << "#" << endl;
       //      cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
 //      cout << "     ["<< sessinit_dataDirPath_cmd <<"] path of run binary data in folders named 'RUNxxxxx'"<< endl;
-      
+
       cout << "  * TAF GUIs :" << endl;
       cout << "     ["<<tafgui_mraw_cmd<<"] : launch the MRaw GUI" << endl;
       cout << "     ["<<tafgui_mrax_cmd<<"] : launch the MRax GUI" << endl;
-	
-      cout << "  * Help:" << endl;
-      cout << "     [-h] [-?] [--help] : displays this help message" << endl; 
 
-      cout << endl;	
-      cout << "TAF Mimosa Analysis help:" << endl; 
-      cout << "     run 'gTAF->Help()' in TAF to display help" << endl; 
-      
+      cout << "  * Help:" << endl;
+      cout << "     [-h] [-?] [--help] : displays this help message" << endl;
+
+      cout << endl;
+      cout << "TAF Mimosa Analysis help:" << endl;
+      cout << "     run 'gTAF->Help()' in TAF to display help" << endl;
+
       return 0;
     }
     //**********************************
@@ -257,14 +257,14 @@ Int_t main(Int_t argc, Char_t **argv)
 	    sessinit_cfgFilePath_arg = argv[i+1];
 	    if(verbose) cout << "  * InitSession: a config file is given: "<< sessinit_cfgFilePath_arg << endl;
 	    i++;
-	  }	  
+	  }
 	  // config directory
 	  else if (!arg.CompareTo(sessinit_cfgDir_cmd) && ((i+1)<argc)) // if this arg is followed by another
 	  {
 	    sessinit_cfgDir_arg = argv[i+1];
 	    if(verbose) cout << "  * InitSession: a config directory is given: "<< sessinit_cfgDir_arg << endl;
 	    i++;
-	  }	  
+	  }
 	  // results path
 	  else if (!arg.CompareTo(sessinit_mainResDirPath_cmd) && ((i+1)<argc)) // if this arg is followed by another
 	  {
@@ -285,7 +285,7 @@ Int_t main(Int_t argc, Char_t **argv)
             sessinit_outFilesSuff_arg = argv[i+1];
             if(verbose) cout << "  * InitSession: an output file suffix is given: "<< sessinit_outFilesSuff_arg << endl;
             i++;
-          }          
+          }
           // output files prefix
           else if (!arg.CompareTo(sessinit_outFilesPref_cmd) && ((i+1)<argc)) // if this arg is followed by another
           {
@@ -299,7 +299,7 @@ Int_t main(Int_t argc, Char_t **argv)
             sessinit_debugLevel_arg = atoi(argv[i+1]);
             if(verbose) cout << "  * InitSession: a debug level is given: "<< sessinit_debugLevel_arg << endl;
             i++;
-          }	  
+          }
 	  //**********************************
 	  // taf analysis GUIs
 	  //**********************************
@@ -343,7 +343,7 @@ Int_t main(Int_t argc, Char_t **argv)
       if(verbose) cout << " ***</Reading arguments>*** " << endl << endl;
     }
   }
-  
+
   //--------------------------------------------------
   //        Create TAF Application
   //--------------------------------------------------
@@ -368,14 +368,14 @@ Int_t main(Int_t argc, Char_t **argv)
   gEnv->SetValue("Root.Stacktrace", 0);
   // syncronize X server to avoid prob
   //  gEnv->SetValue("X11.Sync", 1);
-  //  gEnv->SetValue("X11.FindBestVisual", 0);  
-  
+  //  gEnv->SetValue("X11.FindBestVisual", 0);
+
   //--------------------------------------------------
   //        Work that corrersponds to arguments
   //--------------------------------------------------
   Char_t *tafcommand = new Char_t [1000];
   Long_t rvalue;
-  
+
   if(verbose) cout << endl << " ***<TAF initialisation>*** "<<endl;
   //**********************************
   // 'classics' root arguments 'emulation'
@@ -398,7 +398,7 @@ Int_t main(Int_t argc, Char_t **argv)
     cout << " * Process command: "<< tafcommand ;
     rvalue = gROOT->ProcessLineSync(tafcommand);
   }
-  
+
   if(verbose) cout << " ***</TAF initialisation>*** "<<endl;
 
 
@@ -414,8 +414,8 @@ Int_t main(Int_t argc, Char_t **argv)
     {
       cout << "ERROR: hardcoded default values for plane number or event build mode can't be EMPTY !" << endl;
       return -1;
-    }    
-    
+    }
+
     if(verbose) cout << " Initialisation parameters :" << endl;
     if(verbose) cout << "  * run number    <given>:   " << sessinit_runnb_arg << endl;
     //------------------------------
@@ -423,16 +423,16 @@ Int_t main(Int_t argc, Char_t **argv)
     //------------------------------
     if (! sessinit_plane_arg.IsNull()) // if "plane" arg is given
     {
-      if(verbose) cout << "  * plane number  <given>:   " << sessinit_plane_arg << endl;	
-    }    
+      if(verbose) cout << "  * plane number  <given>:   " << sessinit_plane_arg << endl;
+    }
     else // if "plane" arg is NOT given
     {
       sessinit_plane_arg = sessinit_plane_def; // then use default one (defined before)
-      if(verbose) cout << "  * plane number  <default>: " << sessinit_plane_arg << endl;	
+      if(verbose) cout << "  * plane number  <default>: " << sessinit_plane_arg << endl;
     }
     //------------------------------
     // Event Build Mode
-    //------------------------------  
+    //------------------------------
     if (! sessinit_ebm_arg.IsNull())
     {
       if(verbose) cout << "  * Ev Build Mode <given>:   " << sessinit_ebm_arg << endl;
@@ -445,7 +445,7 @@ Int_t main(Int_t argc, Char_t **argv)
     //------------------------------
     // Config file
     //------------------------------
-    
+
     if (! sessinit_cfgFilePath_arg.IsNull())
     {
       if(verbose) cout << "  * config file   <given>:   " << sessinit_cfgFilePath_arg << endl;
@@ -453,17 +453,17 @@ Int_t main(Int_t argc, Char_t **argv)
     else
     {
       sessinit_cfgFilePath_arg = sessinit_cfgFilePath_def;
-      if(verbose) 
+      if(verbose)
       {
 	cout << "  * config file   <default>: ";
 	if (sessinit_cfgFilePath_arg.IsNull()) cout << "InitSession() default value (run"<<sessinit_runnb_arg<<".cfg)" << endl;
 	else                              cout << sessinit_cfgFilePath_arg << endl;
       }
-    }  
+    }
     //------------------------------
     // Config directory
     //------------------------------
-    
+
     if (! sessinit_cfgDir_arg.IsNull())
     {
       if(verbose) cout << "  * config directory   <given>:   " << sessinit_cfgDir_arg << endl;
@@ -471,16 +471,16 @@ Int_t main(Int_t argc, Char_t **argv)
     else
     {
       sessinit_cfgDir_arg = sessinit_cfgDir_def;
-      if(verbose) 
+      if(verbose)
       {
         cout << "  * config directory   <default>: ";
         if (sessinit_cfgDir_arg.IsNull()) cout << "InitSession() default value (config)" << endl;
         else                              cout << sessinit_cfgDir_arg << endl;
       }
-    }  
+    }
     //------------------------------
     // Output files prefix
-    //------------------------------  
+    //------------------------------
     if (! sessinit_outFilesPref_arg.IsNull())
     {
       if(verbose) cout << "  * Output files prefix <given>:   " << sessinit_outFilesPref_arg << endl;
@@ -489,10 +489,10 @@ Int_t main(Int_t argc, Char_t **argv)
     {
       sessinit_outFilesPref_arg = sessinit_outFilesPref_def;
       if(verbose) cout << "  * Output files prefix <default>: " << sessinit_outFilesPref_arg << endl;
-    }        
+    }
     //------------------------------
     // Output files suffix
-    //------------------------------  
+    //------------------------------
     if (! sessinit_outFilesSuff_arg.IsNull())
     {
       if(verbose) cout << "  * Output files suffix <given>:   " << sessinit_outFilesSuff_arg << endl;
@@ -502,7 +502,7 @@ Int_t main(Int_t argc, Char_t **argv)
       sessinit_outFilesSuff_arg = sessinit_outFilesSuff_def;
       sessinit_outFilesSuff_arg += sessinit_runnb_arg;
       if(verbose) cout << "  * Output files suffix <default>: " << sessinit_outFilesSuff_arg << endl;
-    }     
+    }
     //------------------------------
     // Debug level
     //------------------------------
@@ -517,7 +517,7 @@ Int_t main(Int_t argc, Char_t **argv)
     }
     //------------------------------
     // Result path //TODO
-    //------------------------------    
+    //------------------------------
     /*
     if (! sessinit_mainResDirPath_arg.IsNull())
     {
@@ -526,7 +526,7 @@ Int_t main(Int_t argc, Char_t **argv)
     else
     {
       sessinit_mainResDirPath_arg = sessinit_mainResDirPath_def;
-      if(verbose) 
+      if(verbose)
       {
 	cout << "  * result path   <default>: ";
 	if (sessinit_mainResDirPath_arg.IsNull()) cout << "InitSession() default value" << endl;
@@ -540,7 +540,7 @@ Int_t main(Int_t argc, Char_t **argv)
     /*
     if (! sessinit_dataDirPath_arg.IsNull()) // if "data path" arg is given
     {
-      if(verbose) cout << "  * data path     <given>:   " << sessinit_dataDirPath_arg << endl;	
+      if(verbose) cout << "  * data path     <given>:   " << sessinit_dataDirPath_arg << endl;
     }
     else // if "data path" arg is NOT given
     {
@@ -555,7 +555,7 @@ Int_t main(Int_t argc, Char_t **argv)
    */
     //------------------------------
     // InitSession
-    //------------------------------ 
+    //------------------------------
     /*
     sprintf(tafcommand, "gTAF->InitSession(%s,%s,%s,\"%s\",\"%s\",\"%s\")",\
 	  sessinit_runnb_arg          .Data(),\
@@ -577,15 +577,15 @@ Int_t main(Int_t argc, Char_t **argv)
     cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
     //cout << "  return " << rvalue << endl;
-    
+
     sprintf(tafcommand, "gTAF->GetSession()->SetOutputFilesPrefix(\"%s\")",sessinit_outFilesPref_arg.Data());
     cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
-    
+
     sprintf(tafcommand, "gTAF->GetSession()->SetOutputFilesSuffix(\"%s\")",sessinit_outFilesSuff_arg.Data());
     cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
-    
+
     if(verbose) cout << " ***</Automatic Mimosa Analysis Session Initialisation>*** " <<endl;
 
     //------------------------------
@@ -597,18 +597,18 @@ Int_t main(Int_t argc, Char_t **argv)
       sprintf(tafcommand, "gTAF->GetRaw()");
       cout << " * Process command: "<< tafcommand << endl << endl;
       rvalue = gROOT->ProcessLineSync(tafcommand);
-    } 
-    
+    }
+
     if (tafgui_mrax_bool)
     {
       if(verbose) cout << endl << " ***<Launching MRax GUI>*** "<<endl;
       sprintf(tafcommand, "gTAF->GetRax()");
       cout << " * Process command: "<< tafcommand << endl << endl;
       rvalue = gROOT->ProcessLineSync(tafcommand);
-    } 
+    }
   }
-  
-  
+
+
   //**********************************
   // execute the given macro
   //**********************************
@@ -620,9 +620,9 @@ Int_t main(Int_t argc, Char_t **argv)
     //cout << gROOT->GetMacroPath() << endl;
     returnmacro = (Int_t) gROOT->Macro(tafrootargs_execmacro_file.Data());
     //theApp->ProcessFile(tafrootargs_execmacro_file.Data());
-    
+
     if(verbose) cout << " ***</macro execution>*** "<<endl;
-  }  
+  }
 
   //****************************************
   // Exit taf when finished if asked
@@ -632,9 +632,9 @@ Int_t main(Int_t argc, Char_t **argv)
     if(verbose) cout << endl <<" TAF will now exit (asked with '-q' arg)" << endl;
     gSystem->Exit(0);
   }
-  
-  
-  
+
+
+
   theApp->Run();
   return 0;
 }
@@ -675,9 +675,9 @@ void PrintAlineWithStars(const TString &str, const Int_t & maxLength, const Bool
 //
 void TRint::PrintLogo(Bool_t lite)
 {
- 
+
   if(lite) return;
-    
+
 // Print the TAF logo on standard output.
   ///////////////////////////////////////////////////////////
   // Configuration
@@ -692,12 +692,12 @@ void TRint::PrintLogo(Bool_t lite)
   TString svnrev  = " SVN rev : ";
   //---------------------------------
   //    svn revision infos :
-  // If SVN_REVISION definition is made in the Makefile, choose Option 1; 
+  // If SVN_REVISION definition is made in the Makefile, choose Option 1;
   // If this definition is disabled in Makefile, choose Option 2;
   svnrev += SVN_REVISION; // Option 1
-  //svnrev += "??";       // Option 2 
+  //svnrev += "??";       // Option 2
   //---------------------------------
-  
+
   //  Authors by alphabetic order
  std::vector<TString> authors;
   authors.push_back("J.Baudot(1)");
@@ -797,11 +797,11 @@ void TRint::PrintLogo(Bool_t lite)
     PrintAlineWithStars(institutions.at(i),maxLength,kFALSE);
   }
   PrintAlineWithStars("",maxLength,kFALSE);
-  
+
   PrintAlineWithStars("Help/Tips:",maxLength,kFALSE);
   PrintAlineWithStars(" run '$TAF --help'",maxLength,kFALSE);
   PrintAlineWithStars("",maxLength,kFALSE);
-  
+
   cout << linestars << endl;
 
 
@@ -813,8 +813,3 @@ void TRint::PrintLogo(Bool_t lite)
 #endif
   #endif
 }
-
-
-
-
-

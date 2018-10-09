@@ -25,6 +25,7 @@
 #pragma link C++ class    BoardReaderPixel+;
 #pragma link C++ class    VMEBoardReader+;
 #pragma link C++ class    MCBoardReader+;
+#pragma link C++ class    BoardReaderIHEP+; // 2018/10/09
 #pragma link C++ class    AliMIMOSA22RawStreamVASingle+;
 #pragma link C++ class    DecoderM18+;
 #pragma link C++ class    DecoderGeant+;

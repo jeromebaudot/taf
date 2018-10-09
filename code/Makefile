@@ -114,7 +114,7 @@ libDTools.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS)
 		@echo " Creating shared lib" libDTools.$(DllSuf)
 		@echo " *********************************************"
 		$(LD) $(SOFLAGS)   $(LDFLAGS) $(OBJ_DIR)/D*.$(ObjSuf) \
-    $(OBJ_DIR)/*BoardReader.$(ObjSuf) \
+    $(OBJ_DIR)/*BoardReader.$(ObjSuf) $(OBJ_DIR)/BoardReaderIHEP.$(ObjSuf) \
     $(OBJ_DIR)/AliMIMOSA22RawStreamVASingle.$(ObjSuf) \
 		$(OutPutOpt) $(LIB_DIR)/libDTools.$(DllSuf)
 
