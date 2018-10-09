@@ -108,7 +108,11 @@ BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int triggerMode, int eventBuil
 
   fEventNumber = 0;
   fCurrentEvent = NULL;
-  fCurrentTriggerNumber = 0;
+  i_Trigger=0;
+  for (int it=0; it<6; it++) { Trigger[it] = 0; }
+  memset(Trigger_Framcount, 0, sizeof(Trigger_Framcount));
+
+  iFile = 0;
 
 }
 
@@ -176,7 +180,7 @@ bool BoardReaderIHEP::HasData( ) {
 
  if(vi_Verbose>0) {
    cout << endl ;
-   cout << "BoardReaderIHEP::HasData() BoardNumber " << fBoardNumber << " IMGBoardReader::HasData() - currentEvent " << fEventNumber << " currentTrigger " << fCurrentTriggerNumber << endl;
+   cout << "BoardReaderIHEP::HasData() BoardNumber " << fBoardNumber << " IMGBoardReader::HasData() - currentEvent " << fEventNumber << " currentTrigger " << i_Trigger << endl;
  }
 
  if( GetNextEvent() ) {
@@ -209,7 +213,11 @@ bool BoardReaderIHEP::HasData( ) {
 //------------------------------------------+-----------------------------------
 bool BoardReaderIHEP::GetNextEvent()
 {
+  // Set buffers to the next event
   //
+  // Code extracted from Mi28DecodeLadderDataToRoot.cc
+  //  provided IHEP group 2018/06
+  //  Author: juxd, juxd@ihep.ac.cn
 
   // If rawdata are good, decode
   bool ready = false;
@@ -370,6 +378,11 @@ void BoardReaderIHEP::AddPixel( int iSensor, int value, int aLine, int aColumn)
 // --------------------------------------------------------------------------------------
 bool BoardReaderIHEP::DecodeFrame()
 {
+  // Decode the frame
+  //
+  // Code extracted from Mi28DecodeLadderDataToRoot.cc
+  //  provided IHEP group 2018/06
+  //  Author: juxd, juxd@ihep.ac.cn
 
   if (vi_Verbose) printf("BoardReaderIHEP::DecodeFrame decoding event %d\n", fEventNumber);
 
@@ -695,44 +708,91 @@ bool BoardReaderIHEP::DecodeFrame()
     }
     vi_N_Ladder_Chip++;
 
-    /* ------------------------------------------------------ */
-    /* Ladder_Trailer */
-    ifs_DataRaw.read((char *)&vi_Ladder_Trailer, DWORD);
-    vi_Pointer_Data = ifs_DataRaw.tellg();
-    vi_Ladder_Trailer = SwitchDWordWords(vi_Ladder_Trailer);
-    if (vi_Ladder_Trailer != M_LADDER_TRAILER)
+  } // End of while ((ifs_DataRaw.tellg() - vi_Pointer_Ladder_DataLength) < vi_Ladder_DataLength)
+
+
+  /* ------------------------------------------------------ */
+  /* Ladder_Trailer */
+  ifs_DataRaw.read((char *)&vi_Ladder_Trailer, DWORD);
+  vi_Pointer_Data = ifs_DataRaw.tellg();
+  vi_Ladder_Trailer = SwitchDWordWords(vi_Ladder_Trailer);
+  if (vi_Ladder_Trailer != M_LADDER_TRAILER)
+  {
+    if (vi_Verbose < 11)
     {
-      if (vi_Verbose < 11)
-      {
-        cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Scannin Ladder_Trailer : "
-        << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer << "  VS  "
-        << std::setw(11) << std::setbase(16) << M_LADDER_TRAILER  << "\t@\t"
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
-      }
-      break;
+      cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Scannin Ladder_Trailer : "
+           << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer << "  VS  "
+           << std::setw(11) << std::setbase(16) << M_LADDER_TRAILER  << "\t@\t"
+           << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
     }
-    else
+    // break; // not needed here, not any more in a while loop
+  }
+  else // frame is good
+  {
+    if (vi_Verbose < 6)
     {
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Scanning Ladder_Trailer is     : "
-        << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer
-        << std::setw(15) << std::setbase(10) << vi_Ladder_Trailer
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
+      cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Scanning Ladder_Trailer is     : "
+           << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer
+           << std::setw(15) << std::setbase(10) << vi_Ladder_Trailer
+           << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
     }
 
     frameOK = true;
     vi_N_Frame_Good++;
+
     if (vi_Verbose < 11)
     {
       cout << "  SUCCESS : Mi28DecodeLadderDataToRoot(), Finish Good Ladder Frame " << vi_N_Frame_Good << " with Chips = " << vi_N_Ladder_Chip
-      << " @ "  << std::setw(15) << std::setbase(10) << ifs_DataRaw.tellg()
-      << " VS " << std::setw(15) << std::setbase(10) << vi_Pointer_FileEnd \
-      << endl;
+           << " @ "  << std::setw(15) << std::setbase(10) << ifs_DataRaw.tellg()
+           << " VS " << std::setw(15) << std::setbase(10) << vi_Pointer_FileEnd
+           << endl;
     }
 
-  } // End of while (ifs_DataRaw.tellg() < vi_Pointer_FileEnd + vi_Ladder_DataLength*WORD)
+    /*------------------------------------------Checking Framcount----------------------------------------------------------------------*/
+    if((i_Trigger)%2==0)
+    {
+     if(Trigger_Framcount[i_Trigger-1][2*iFile]==Trigger_Framcount[i_Trigger-2][2*iFile]&&(Trigger_Framcount[i_Trigger-1][2*iFile+1]==(Trigger_Framcount[i_Trigger-2][2*iFile+1]+1))&&Trigger_Framcount[i_Trigger-2][2*iFile]>0)
+     {
+     Trigger[iFile]=Trigger[iFile]+1;
+     Trigger_Framcount[i_Trigger-1][2*iFile]=0;
+     }
+     if(Trigger_Framcount[i_Trigger-1][2*iFile]==Trigger_Framcount[i_Trigger-2][2*iFile]&&Trigger_Framcount[i_Trigger-1][2*iFile+1]!=(Trigger_Framcount[i_Trigger-2][2*iFile+1]+1)&&Trigger_Framcount[i_Trigger-2][2*iFile]>0)
+     {
+      cout<<"ERR: Framcount is inconsecutive"<<setw(9)<<"trigger:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-1][2*iFile]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile]<<" "<<"framcount:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-1][2*iFile+1]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile+1]<<endl;
+     }
+     if(Trigger_Framcount[i_Trigger-2][2*iFile]<Trigger_Framcount[i_Trigger-1][2*iFile])
+     {
+     cout<<"ERR: Framcount is Dropped"<<setw(9)<<"trigger:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile]<<" "<<"framcount:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile+1]<<endl;
+     Trigger_Framcount[i_Trigger][2*iFile]=Trigger_Framcount[i_Trigger-1][2*iFile];
+     Trigger_Framcount[i_Trigger][2*iFile+1]=Trigger_Framcount[i_Trigger-1][2*iFile+1];
+     Trigger_Framcount[i_Trigger-1][2*iFile]=0;
+     Trigger_Framcount[i_Trigger-1][2*iFile+1]=0;
+     i_Trigger++;
+    Trigger_Framcount[i_Trigger-2][2*iFile]=0;
+      }
+    }
+    /*------------------------------------------Checking Trigger----------------------------------------------------------------------*/
+    int n_trigger=0;
+    if((i_Trigger)%4==0)
+    {
+      if(Trigger_Framcount[i_Trigger-2][2*iFile]>(Trigger_Framcount[i_Trigger-4][2*iFile]+1))
+      {
+        cout<<"ERR: Trigger is inconsecutive"<<setw(9)<<"trigger:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-4][2*iFile]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile]<<" "<<"framcount:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-4][2*iFile+1]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile+1]<<endl;
+        n_trigger=2*(Trigger_Framcount[i_Trigger-2][2*iFile]-Trigger_Framcount[i_Trigger-4][2*iFile]-1);
+        Trigger_Framcount[i_Trigger-2+n_trigger][2*iFile]=Trigger_Framcount[i_Trigger-2][2*iFile];
+        Trigger_Framcount[i_Trigger-2+n_trigger][2*iFile+1]=Trigger_Framcount[i_Trigger-2][2*iFile+1];
+        Trigger_Framcount[i_Trigger-1+n_trigger][2*iFile]=Trigger_Framcount[i_Trigger-1][2*iFile];
+        Trigger_Framcount[i_Trigger-1+n_trigger][2*iFile+1]=Trigger_Framcount[i_Trigger-1][2*iFile+1];
+        for(int m=1;m<(n_trigger+1);m++)
+        {
+        Trigger_Framcount[i_Trigger-3+m][2*iFile]=0;
+        Trigger_Framcount[i_Trigger-3+m][2*iFile+1]=0;
+        }
+        i_Trigger=i_Trigger+n_trigger;
+      }
+    }
+
+  } // end of else frame is good
 
   return frameOK;
 }

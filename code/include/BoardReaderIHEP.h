@@ -44,7 +44,12 @@ private:
   int             fEventsOverflow; // count total events with overflow
   int             fFramesReadFromFile; // count total # frames read
 
+  int i_Trigger;
+  int Trigger_Framcount[200000][10];
+  int Trigger[6];
 
+  int iFile;
+  
   /* Verbosity : >3-Little information */
   /* 0/1     - Error, Status, Warning */
   /* 0/1/2   - Error, Status, Warning */
@@ -142,7 +147,6 @@ private:
   double vd_N_PixelBankB;
   double vd_N_PixelBankC;
   double vd_N_PixelBankD;
-
 
   bool  GetNextEvent();
   bool  DecodeFrame();
