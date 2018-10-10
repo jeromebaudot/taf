@@ -211,8 +211,9 @@ DAcq::DAcq(DSetup& c)
   Bool_t synchroNeeded = false;
   if( fModuleTypes>1 ) synchroNeeded = true;
 
-
   for (mdt = 1; mdt <= fModuleTypes; mdt++){ // loop on module types
+
+    if(fDebugAcq) cout <<"  DAcq: Starting building modules for type nb " << mdt << endl;
 
     // ==========================
     //fRawData[mdt-1] = new Int_t*[fc->GetModulePar(mdt).Devices]; // Pointer to raw data for this module type, used for not zero-suppressed data
@@ -224,6 +225,8 @@ DAcq::DAcq(DSetup& c)
 
     for (mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
 
+      if (fDebugAcq)  cout << "    DAcq: building module " << mdl << " of type " << fc->GetModulePar(mdt).Type << endl;
+
       fMatchingPlane[mdt-1][mdl-1] = new Int_t*[fc->GetModulePar(mdt).Inputs];
       fIndexShift[mdt-1][mdl-1] = new Int_t*[fc->GetModulePar(mdt).Inputs];
       fInputSegments[mdt-1][mdl-1] = new vector<int>[fc->GetModulePar(mdt).Inputs];
@@ -231,8 +234,6 @@ DAcq::DAcq(DSetup& c)
         fMatchingPlane[mdt-1][mdl-1][iInp] = new Int_t[fMaxSegments];
         fIndexShift[mdt-1][mdl-1][iInp] = new Int_t[fMaxSegments];
       }
-
-      if (fDebugAcq)  cout << "  DAcq: building module " << mdl << " of type " << fc->GetModulePar(mdt).Type << endl;
 
 
       // The real module type is defined by Type/10
@@ -264,7 +265,6 @@ DAcq::DAcq(DSetup& c)
         fIMG[iModule]->SetDebugLevel( fDebugAcq);
         //cout << "Setting number of columns to " << fc->GetPlanePar(1).Strips(0) << endl;
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
-        cout << "DeviceData " << fc->GetModulePar(mdt).DeviceDataFile[mdl-1] << " test = " << strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") << endl;
           if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
             sprintf( aBaseName, "%s", fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
           } else {
@@ -274,17 +274,13 @@ DAcq::DAcq(DSetup& c)
           sprintf( aBaseName, "RUN_%d_", fRunNumber);
         }
         sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
-        cout << "tested filename = " << aFileName << endl;
         if( !( fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
           sprintf( aFileName, "%s/%d/%s", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
-          cout << "tested filename = " << aFileName << endl;
           if( !( fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
             sprintf( aBaseName, "%d", fRunNumber);
             sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
-            cout << "tested filename = " << aFileName << endl;
             if( !( fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
               sprintf( aFileName, "%s/%d/%s", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
-              cout << "tested filename = " << aFileName << endl;
               initOK &= fIMG[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension );
             } else {
               initOK &= kTRUE;
@@ -406,6 +402,8 @@ DAcq::DAcq(DSetup& c)
         break;
 
 
+        // -+-+- GEANT modules
+
         case 10:
         fUseTimestamp[mdt-1][mdl-1] = kFALSE; // JB 2015/05/26
         sprintf( aFileName, "%s/", fc->GetRunPar().DataPath);
@@ -443,10 +441,11 @@ DAcq::DAcq(DSetup& c)
         // -+-+- IHEP modules
         case 12:
 
+        fUseTimestamp[mdt-1][mdl-1] = kFALSE;
         fIHEP[iModule] = new BoardReaderIHEP( iModule, fc->GetAcqPar().TriggerMode, fc->GetModulePar(mdt).EventBuildingBoardMode);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
-          if( !strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
-            sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
+          if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
+            sprintf( aFileName, "%s/%s.%s", fc->GetRunPar().DataPath, fc->GetModulePar(mdt).DeviceDataFile[mdl-1], fc->GetRunPar().Extension);
           } else {
             sprintf( aFileName, "%s/1.%s", fc->GetRunPar().DataPath, fc->GetRunPar().Extension);
           }

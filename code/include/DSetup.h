@@ -5,7 +5,7 @@
 #define _DSetup_included_
 
   ////////////////////////////////////////////////////////////
-  // Class Description of DSetup                            // 
+  // Class Description of DSetup                            //
   //                                                        //
   // + Read Setup of the Acquisition, Telescope and Analysis//
   //        for a run.                                      //
@@ -43,13 +43,13 @@ class DSetup : public TObject {
       int R_col[2];
       int R_lin[2];
   };
-    
+
 
  private:
   void         copy(const DSetup& a);
 
   DSession    *fSession;             // pointer to the current session
-    
+
   void         ReadRunParameters(); // READ functions added JB 2012/12/21
   void         ReadTrackerParameters();
   void         ReadExperimentGeometryParameters();
@@ -96,19 +96,19 @@ class DSetup : public TObject {
   std::vector<TString>  _ResolutionFileList;
   std::vector<Float_t>  _FractionToMaskList;
   std::vector<Float_t>  _FakeRateCutList;
-  
+
   void InitializePerformancesParams(int aPlaneNumber);
-  
+
   void CheckRegionsOverlaps(int aPlaneNumber);
   void CheckForBadRegions(int aPlaneNumber);
-  
+
   void GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
 				           TString HotPixelMapFile);
   void GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
 				           TString HotPixelMapFile);
-  
+
   void PrintListOfHotPixelsToMask(int aPlaneNumber);
-  
+
  public:
 
   DSetup();
@@ -125,9 +125,9 @@ class DSetup : public TObject {
   void         SetDebug(Int_t aDebug)             { DSetupDebug = aDebug; cout << "DSetup debug updated to " << DSetupDebug << endl;}
   DSession    *GetSession()                       { return fSession;}
   Int_t        GetDebug()                         { return DSetupDebug;}
-  TString      GetConfigPath()                    { return fConfigPath; } 
+  TString      GetConfigPath()                    { return fConfigPath; }
 
-  void         ReadConfiguration();     
+  void         ReadConfiguration();
 
 
   struct AnalysisParameter_t {
@@ -141,7 +141,7 @@ class DSetup : public TObject {
     Float_t ResolutionScanInit;
     Float_t ResolutionScanEnd;
     Int_t   CacheSize;
-    Int_t   StatisticCells;  
+    Int_t   StatisticCells;
     Int_t   CmsNoiseCut;
     Int_t   MaxNbOfHits;
     Int_t   MinNbOfHits;
@@ -227,7 +227,7 @@ class DSetup : public TObject {
   TrackerParameter_t TrackerParameter;
   TrackerParameter_t& GetTrackerPar(){return TrackerParameter;}
 
-  struct IviGeometryParameter_t 
+  struct IviGeometryParameter_t
   {
     enum        {tpsz = 256};
     Char_t    GeometryName[tpsz];
@@ -239,28 +239,28 @@ class DSetup : public TObject {
     DR3       BeamDisplayMediumBegin;
     DR3       BeamDisplayMediumStop;
     DR3       BeamDisplayLightBegin;
-    DR3       BeamDisplayLightStop;   
+    DR3       BeamDisplayLightStop;
     Char_t    TargetType[tpsz];
     DR3       TargetSize;
     Float_t   TargetRadius;
     Float_t   TargetLength;
-    Char_t    TargetAxis[1];    
+    Char_t    TargetAxis[1];
     DR3       TargetCenter;
     DR3       TrackerOrigin;
     DR3       TrackerTilt;
     Char_t    VertexingMethod[tpsz];
   };
-  
+
   IviGeometryParameter_t IviGeometryParameter;
   IviGeometryParameter_t& GetIviGeometryParameter() {return IviGeometryParameter;}
-  
-  
+
+
   // Ladder information, added JB 2013/01/16
   struct LadderParameter_t {
     enum       {tpsz = 20};
     Int_t      LadderID;
     Int_t      Status;                // ladder status
-    Char_t     Name[tpsz];            // name of device    
+    Char_t     Name[tpsz];            // name of device
     Int_t      Planes;                // # planes in this ladder
     DR3        Position;              // center position of the device in x,y,z system
     DR3        Tilt;                  // tilting angles [degree] in x,y,z system
@@ -268,7 +268,7 @@ class DSetup : public TObject {
     DR3*       PlaneShift;            // array of shift vectors from plane center to ladder center
     DR3*       PlaneTilt;             // array of rotation vectors from plane orientation to ladder orientation
   };
-  
+
   LadderParameter_t *pLadderParameter;
   LadderParameter_t& GetLadderPar(Int_t anID){return pLadderParameter[anID];}
 
@@ -285,7 +285,7 @@ class DSetup : public TObject {
     Float_t      ResoFixPlaneRot;
     Float_t      ResoAlignParamZ;
   };
-  
+
   GlobalAlignmentParameter_t pGlobalAlignmentParameter;
   GlobalAlignmentParameter_t& GetGlobalAlignPar() {return pGlobalAlignmentParameter;}
 
@@ -300,22 +300,22 @@ class DSetup : public TObject {
     std::vector<Float_t> ResolutionU;
     std::vector<Float_t> ResolutionV;
   };
-  
+
   struct PlaneParameter_t {
     enum       {tpsz = 20};
     Int_t      Inputs;                // Number of inputs used for this plane max 4, JB 2009/05/07
     Int_t      ModuleType[fMaxModules];        // the Module (Sirocco type 1, or 2 or something else)
     Int_t      ModuleNumber[fMaxModules];      // connected to which acquisition module number
-    Int_t      InputNumber[fMaxModules];       // number of the input plug 
+    Int_t      InputNumber[fMaxModules];       // number of the input plug
     Int_t      ChannelNumber[fMaxModules];     // first strip nb associated to the first channel number for this input (start at 1)
     Int_t      ChannelOffset[fMaxModules];     // the number of the first channel related to the plane for this input (start at 1)
     Int_t      Channels[fMaxModules];          // Number of channels taken for this input
     Int_t      TimeLimit;             // limit in timestamp distance
     Char_t     Name[tpsz];            // name of device
     Char_t     Purpose[tpsz];         // purpose of device e.g. reference
-    Int_t      Readout;               // readout status Alice128c 
+    Int_t      Readout;               // readout status Alice128c
     Int_t      MimosaType;            // pitch of Mimo25 RDM210509
-    Int_t      AnalysisMode;          // normal 0 , read noise file 1... 
+    Int_t      AnalysisMode;          // normal 0 , read noise file 1...
     Int_t      HitFinder;             // method for the hit finder2
     Int_t      FixedGlobalAlign;      // To fix the plane for global alignment. // LC 2015/08/20.
     Int_t      InitialPedestal;       // nb of events required for pedestal
@@ -352,15 +352,15 @@ class DSetup : public TObject {
     Int_t      ParentLadderID;        // ID of parent ladder, -1 if none, JB 2013/01/16
     Int_t      HitPositionAlgorithm;  // 1= Center of Gravity, 2 = eta, 3 = kappa
     Int_t      EtaCoefficientsN;      // number of eta correction coefficients
-    Float_t    EtaCoefficient[tpsz];  // the coefficients 
+    Float_t    EtaCoefficient[tpsz];  // the coefficients
     Float_t    EtaLowLimit;           // use eta correction from lower limit
     Float_t    EtaHighLimit;          // .. to high limit
     Int_t      KappaCoefficientsN;    // number of kappa correction coefficients
-    Float_t    KappaCoefficient[tpsz];  // the coefficients 
+    Float_t    KappaCoefficient[tpsz];  // the coefficients
     Float_t    KappaLowLimit;         // use kappa correction from lower limit
     Float_t    KappaHighLimit;        // .. to high limi
     Int_t      GammaCoefficientsN;    // number of gamma correction coefficients
-    Float_t    GammaCoefficient[tpsz];// the coefficients 
+    Float_t    GammaCoefficient[tpsz];// the coefficients
     Float_t    GammaLowLimit;         // kappa-to-eta limit, low limit
     Float_t    GammaHighLimit;        // eta-to-kappa limit, high limit
     Int_t      NoisyStripsN;          // number of noisy strips
@@ -377,7 +377,7 @@ class DSetup : public TObject {
   };
 
   PlaneParameter_t  *pPlaneParameter;
-  PlaneParameter_t& GetPlanePar(Int_t aPN) {return pPlaneParameter[aPN-1];} 
+  PlaneParameter_t& GetPlanePar(Int_t aPN) {return pPlaneParameter[aPN-1];}
 
   Int_t**          ChannelUse;       //! pointer to bits on good channels
   Int_t*           ChannelAllUse;    //! use all channels in DAcq
@@ -394,9 +394,9 @@ class DSetup : public TObject {
     Int_t      EventBuildingMode;    // SS 2011.11.14
     Char_t     TimeRefFile[100];     // JB 2018/02/11
     Int_t      IfExternalTimeRef;
-  } AcqParameter; 
+  } AcqParameter;
 
-  AcqParameter_t& GetAcqPar(){return AcqParameter;} 
+  AcqParameter_t& GetAcqPar(){return AcqParameter;}
 
   struct AcqModuleParameter_t {
     enum       {tpsz = 100};
@@ -419,14 +419,14 @@ class DSetup : public TObject {
     Int_t      AmpOffset; // JB,CB,PLR 2015/03/24
     Float_t    AmpFactor; // JB,CB,PLR 2015/03/24
     UInt_t     Trailer; // JB,CB,PLR 2015/03/24
-    TString    MCTreeName; //AP 2016/05/18 
+    TString    MCTreeName; //AP 2016/05/18
     Int_t      IfZeroSuppress;        // >0 if to suppress rawdata values below a threshold
     Int_t      ThresholdZero;         // threshold for zero suppression
   };
 
   //Char_t*      GetModuleDataFile( Int_t aMod) { return pModuleDataFile[aMod]; }
 
-  AcqModuleParameter_t  *pAcqModuleParameter;  //! don''t put in Streamer 
+  AcqModuleParameter_t  *pAcqModuleParameter;  //! don''t put in Streamer
   AcqModuleParameter_t& GetModulePar(Int_t aMTN) { return pAcqModuleParameter[aMTN-1]; }
 
   struct RunParameter_t {
@@ -434,9 +434,9 @@ class DSetup : public TObject {
     Char_t     Affiliation[tpsz];    // your group
     Char_t     Signature[tpsz];      // whom to blame on this analysis result
     Char_t     BeamTime[tpsz];       // when this data was taken
-    Char_t     Confidence[tpsz];     // state of alignement or other comments
+    Char_t     Confidence[tpsz*2];     // state of alignement or other comments
     Char_t     DataPath[tpsz];       // Path to the data
-    Char_t     DataSubDirPrefix[tpsz];// Prefix of the subdir that contains data files, concatenated with run number 
+    Char_t     DataSubDirPrefix[tpsz];// Prefix of the subdir that contains data files, concatenated with run number
     Char_t     Extension[tpsz];      // Extension for a data file
     Int_t      Number;               // Run Number to be analysed as a String
     Int_t      EventsInFile;         // How many events are in a file
@@ -445,13 +445,13 @@ class DSetup : public TObject {
     Int_t      NoiseRun;             // Run number of noise run YV 27/11/09
     Int_t      PixelGainRun;         // Run number of gain calibration JB 2018/07/04
     //    Int_t      FileCountOut;         // maximum number of files possible
-  } RunParameter; 
+  } RunParameter;
 
   RunParameter_t& GetRunPar()         {return RunParameter;}
 
 
   ClassDef(DSetup,2)   // Configuration of the Telescope and Detectors under Test
-  
+
 };
 
 #endif

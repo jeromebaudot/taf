@@ -34,13 +34,13 @@
 //                               - A .root file name with the map of the fake rate
 //                               - A cut on the single pixel fake rate to identify a list of hot pixels
 // Last Modified: AP, 2014/07/16 Added a list of hotpixels (two lists, one for line and one for column)
-//                               This list is filled whenever the .root file is espesified/exist, and the 
+//                               This list is filled whenever the .root file is espesified/exist, and the
 //                               FakeRateCut is in (0,1)
 //                               At the end print out the list of hot pixels per plane
-// Last Modified: VR, 2014/08/28 add mecanism to keep untracked hits from last event 
+// Last Modified: VR, 2014/08/28 add mecanism to keep untracked hits from last event
 // Last Modified: VR, 2014/08/29 add TrackingOrderLines, TrackingOrderPreTrack and TrackingOrderExtTrack : defines planes scan order during tracking for TracksFinder 2
-// Last Modified: VR, 2014/10/30 add the PreTrackHitsNbMinimum and HitsNbMinForFullTrack parameters 
-// Last Modified: VR, 2014/12/18 modify parameters for TracksFinder 2 
+// Last Modified: VR, 2014/10/30 add the PreTrackHitsNbMinimum and HitsNbMinForFullTrack parameters
+// Last Modified: VR, 2014/12/18 modify parameters for TracksFinder 2
 // Last Modified: JB, 2014/12/23 add Subtrack parameters in ReadTrackerParameters
 // Last Modified: AP, 2015/03/10 add to parameters to the plane parameters block: PlaneThickness and PlaneMaterial.
 //                               To be used for MC studies of telescope resolution.
@@ -52,33 +52,33 @@
 // Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
 
 ///////////////////////////////////////////////////////////////
-// Class Description of DSetup                               // 
+// Class Description of DSetup                               //
 //                                                           //
 // Read Setup of the Acquisition, Telescope and Analysis
-//  from the configuration file (text format), 
+//  from the configuration file (text format),
 //  defined from the run number.
 //
 // All the parameters need not to be present in the text
-//  file, but if they are indeed needed to run 
+//  file, but if they are indeed needed to run
 //  they should be initialized !
 // ** WARNING ** currently (June 2013) the situation is not cleaned
 //  and many paramameters are not initialized.
-// 
+//
 // This is the list of all known parameters by category: (in construction)
 //  MANDATORY means this parameter has to be in the config file
 //  1st parameter means this parameter shall be the first in the list
 //  --> if one of these 2 rules is broken, the file parsing will crash!
 //
 // #############################################################################
-//                              Run Parameters 
+//                              Run Parameters
 // #############################################################################
-// Affiliation      = [optional] (char) {""}
-// Signature        = [optional] (char) {""}
-// BeamTime         = [optional] (char) {""}
-// Confidence       = [optional] (char) {""}
+// Affiliation      = [optional] (char) {""} Labs involved in the data taking
+// Signature        = [optional] (char) {""} One or several names
+// BeamTime         = [optional] (char) {""} A date, any format
+// Confidence       = [optional] (char) {""} Possibly a brief description of the data taking
 // DataPath         = [MANDATORY](char)      directory of the raw data
 // DataSubDirPrefix = [optional] (char) {""} sub directory for data files, stored in DataPath/DataSubDirPrefixXXX/ with XXX the run number
-// Extension        = [optional] (char) {""}   
+// Extension        = [optional] (char) {""}
 // RunNumber        = [OBSOLETE]   RunNumber is get from DSession, set via gTAF->InitSession(...)
 // EventsInFile     = [MANDATORY for IMGBoardReader] (int) {0}
 // StartIndex       = [MANDATORY for IMGBoardReader] (int) {0}
@@ -107,8 +107,8 @@
 //     Clustering in planes
 // ----------------------------------
 // HitsInPlaneMaximum      = [MANDATORY] (int)       the nb hits which will be reconstruted in each plane, 0 : not clustering
-// KeepUnTrackedHitsBetw2evts =[optional]   (int) {0} 
-//                                                  1 memorise untracked hits between 2 evenements 
+// KeepUnTrackedHitsBetw2evts =[optional]   (int) {0}
+//                                                  1 memorise untracked hits between 2 evenements
 //
 // ----------------------------------
 //     Tracking parameters
@@ -119,7 +119,7 @@
 //                           1 for more options: find_tracks_1_opt() allows to order plane
 //                           2 for the one adapted for Interaction Vertex Imaging: find_tracks_2_ivi()
 // TrackFittingAlg         = [optional]  (int) {0}: if 0, Use the default chi-square fitting; if 1, Enable MKalmanFilter fitting; if >1, not defined, use default
-// HitsInPlaneTrackMaximum = [MANDATORY if TracksMaximum!=0 && TracksFinder==0] (int) 
+// HitsInPlaneTrackMaximum = [MANDATORY if TracksMaximum!=0 && TracksFinder==0] (int)
 // PlanesForTrackMinimum   = [MANDATORY if TracksMaximum!=0 && TracksFinder==0 ] (int)
 //                                                   the min nb hits required to make a track
 //                                                   the max nb hits in a plane allowed to consider using its hits for tracking
@@ -127,24 +127,24 @@
 //                                                   the search distance to associate a hit to a track
 // UseSlopeInTrackFinder   = [optional for TracksFinder=0]  (int) {1}
 // SearchMoreHitDistance   = [MANDATORY if TracksMaximum<2]   (float,um)
-//                                                   the search distance to associate a hit to a pre-track 
-//                                                   if 1, use the track slope to extrapolate track or if 0, use "flat" slope 
+//                                                   the search distance to associate a hit to a pre-track
+//                                                   if 1, use the track slope to extrapolate track or if 0, use "flat" slope
 // TrackingPlaneOrderType  = [optional for TracksFinder=1]  (int) {0} Try to make a track with looking on planes ...
 //                                                   0 in the same order than in the config file
 //                                                   1 ordered with the status (0,1,2)
 // SubtrackNplanes         = [optional] {0}: if non-zero indicates that each track will be refitted with a subset of the planes
 // SubtrackPlanes          = [MANDATORY if SubtrackNplanes!=0] list of planes (separated by ":" to be used by subtrack
-// HitMonteCarlo           = [optional] (int) {0}: 
+// HitMonteCarlo           = [optional] (int) {0}:
 // DPrecAlignMethod        = [optional] (int) {0} 0=Old DPrecAlign, 1=New DrecAlign -> Redifinitions of Matrices, Rotations and Plane Equations.
 //
 // ----------------------------------
 //     Tracking parameters specifics for TracksFinder=2, all MANDATORY
 // ----------------------------------
 // context : PreTrack  = config. of algo. to build the start track (=pre-track) only made with hits in pre-track'planes
-// context : ExtTrack  = config. of algo. to try to extend the pre-track with hits in ext-track'planes 
+// context : ExtTrack  = config. of algo. to try to extend the pre-track with hits in ext-track'planes
 // context : FullTrack = config. of algo. for the full track (can be a pre-track not extended !)
 // -----------------------
-//     Tracking pass 
+//     Tracking pass
 // -----------------------
 // context : HitsNbMinimum = minimum number of hits to create/extend/save a pre/ext/full track
 // context : HitsTypeUsed  = 0:any kind ; 1:only new hits ; 2:only memorized hits
@@ -152,20 +152,20 @@
 // context : [Pre/Ext]TrackPARAM = {valuePass1 valuePass2 ...}
 //
 // TrackingPass            = (int) number of pass of the tracking algo
-// PreTrackHitsNbMinimum   = {(int)} 
+// PreTrackHitsNbMinimum   = {(int)}
 // PreTrackHitsTypeUsed    = {(int)}
 // PreTrackHitsMaxDist     = {(float)}
-// ExtTrackHitsNbMinimum   = {(int)} 
+// ExtTrackHitsNbMinimum   = {(int)}
 // ExtTrackHitsTypeUsed    = {(int)}
 // ExtTrackHitsMaxDist     = {(float)}
 // FullTrackHitsNbMinimum  = {(int)}
 //
 // -----------------------
-// Tracking Planes Order 
+// Tracking Planes Order
 // -----------------------
 // context : TrackingOrderLineX:   [NbPlanesPreTrack]{PTpl1 PTpl2 ...} [NbPlanesExtTrack]{ETpl1 ETpl2 ETpl3 ...}
 //
-// TrackingOrderLines      = (int) number of lines like TrackingOrderLine1, ..., 
+// TrackingOrderLines      = (int) number of lines like TrackingOrderLine1, ...,
 // TrackingOrderLineN      = definition : TrackingOrderLineN:   [P#] {P1 P2 P3 ...} [P#] {P6 P7 P8 ...}
 //                               example : TrackingOrderLine1:   [3] {5 6 7} [4] {1 2 3 4}
 //                               means   : There is [3] planes to build a pre-track    : 5,6 and 7
@@ -174,8 +174,8 @@
 // ----------------------------------
 //     Vertexing parameters
 // ----------------------------------
-// VertexMaximum           = [optional]  (int) {0}   
-//                          0 : no vertexing, 
+// VertexMaximum           = [optional]  (int) {0}
+//                          0 : no vertexing,
 //                          1 : vertices will be searched with method find_tracks_and_vertex
 // VertexConstraint        = [optional]  (int) {0}   use a vertex constraint to start track
 //
@@ -203,8 +203,8 @@
 //  PlaneTiltU,V,W  = [MANDATORY if "Custom"] (float,deg) relative tilts of this plane wrt ladder center
 //
 // NOTE:
-//  The positions/tilts of planes belonging to a ladder are defined 
-//   by the ladder definition. Any position settings of these planes 
+//  The positions/tilts of planes belonging to a ladder are defined
+//   by the ladder definition. Any position settings of these planes
 //   in the configuration files are superseeded.
 //
 
@@ -215,7 +215,7 @@
 // Added : LC 31/08/2015
 // Track constraints : to fix the telescope geometry
 // "FixTrackParamX" has to be the first field
-// FixTrackParamX = value  // value = 0 for telescope case !=0 if tilted telescope  
+// FixTrackParamX = value  // value = 0 for telescope case !=0 if tilted telescope
 // FixTrackParamY = value  // value = 0 for telescope case !=0 if titled telescope
 // ResoTrackParamX = value // SPS  : value = 10-5 || DESY : value = 10-3
 // ResoTrackParamY = value // SPS  : value = 10-5 || DESY : value = 10-3
@@ -233,13 +233,13 @@
 // ----------------------------------
 // Inputs          = [MANDATORY] (int), 1st parameter = number of inputs needed to build all the channels,
 //    -> for each input, specify in the following order:
-//      ModuleType    = [MANDATORY] (int) index for the desired type of modules 
+//      ModuleType    = [MANDATORY] (int) index for the desired type of modules
 //                      according to the declaration order in Acquisition module
 //      ModuleNumber  = [MANDATORY] (int) id in the set of modules of this type
 //      InputNumber   = [MANDATORY] (int) id of the input of this module used
-//      ChannelNumber = [MANDATORY] (int) channel shift so that 
+//      ChannelNumber = [MANDATORY] (int) channel shift so that
 //                      plane_channel_nb = input_channel_nb + ChannelNumber
-//      ChannelOffset = [optional] (int) {1} first channel in the input related 
+//      ChannelOffset = [optional] (int) {1} first channel in the input related
 //                       to the plane
 //      Channels      = [MANDATORY] (int) number of channels to read from this input
 // StripselUse     = [obsolete] used to define dead strips
@@ -266,8 +266,8 @@
 //                   # events to analyze before the first computation
 // InitialNoise    = [MANDATORY only if Readout<100] (int)
 //                   # events to analyze before the first computation
-// CacheSize       = [MANDATORY only if Readout<100] (int) 
-//                   size of the set of events from which one is picked 
+// CacheSize       = [MANDATORY only if Readout<100] (int)
+//                   size of the set of events from which one is picked
 //                   for computing the noise and pedestal
 // HotPixelMapFile = [optional] (char) ROOT file name with fake rate map
 //   FakeRateCut     = [MANDATORY if HotPixelMapFile] (float) Single pixel fake rate cut
@@ -279,20 +279,20 @@
 // ----------------------------------
 //     Position and size
 // ----------------------------------
-// PositionsXYZ    = [MANDATORY] (3 float,mm) position of the center of the plane, 
+// PositionsXYZ    = [MANDATORY] (3 float,mm) position of the center of the plane,
 //                    changed by the alignment procedure
-// TiltZYX         = [MANDATORY] (3 float,deg) 
-//                    rotation angles defining plane orientation, 
+// TiltZYX         = [MANDATORY] (3 float,deg)
+//                    rotation angles defining plane orientation,
 //                    changed by the alignment procedure
-// PitchUVW        = [MANDATORY] (3 float,um) pitch in all directions 
+// PitchUVW        = [MANDATORY] (3 float,um) pitch in all directions
 //                   (pitchW=sensitive layer thickness, not used yet)
 // StripsUVW       = [MANDATORY] (3 int) # collecting noted in all directions
-// StripSizeUVW    = [obsolete] computed from PitchUVW and StripsUVW
+// SizeUVW         = [obsolete] computed from PitchUVW and StripsUVW
 //                    size of the sensitive area, set to PitchUVW if not provided
 // StripSizeUVW    = [optional] (3 float,um) not used yet
 // AlignementU/V   = [obsolete] (float,mm) old alignment shift parameter
 // AlignementTilt  = [obsolete] (float,deg) old alignment angle parameter
-// Deformed        = [optional] (int) {0} if 0 then no deformation applied, 
+// Deformed        = [optional] (int) {0} if 0 then no deformation applied,
 //                     if 1 then deformation applied from following coeff.
 //  coeffLegendreU = [MANDATORY if Deformed==1] (6 floats) values (separated by ":")
 //                     coeff of the 6 first Legendre polynomials
@@ -300,7 +300,7 @@
 //  coeffLegendreV = [MANDATORY if Deformed==1] (6 floats) 6 values (separated by ":")
 //                     coeff of the 6 first Legendre polynomials
 //                    used to parametrize delat_W with respect to V coordinate
-// Mapping         = [MANDATORY] (int) drives pixel position computation, 
+// Mapping         = [MANDATORY] (int) drives pixel position computation,
 //                   1 -> position at pixel center,
 //                   2 -> position considers staggering
 //                   3,4,5 -> ?
@@ -313,28 +313,28 @@
 // ----------------------------------
 //     Cluster (=Hit) finder
 // ----------------------------------
-// HitFinder       = [optional] (int) {0} select the hit finder method, 
-//                   0 -> standard 
+// HitFinder       = [optional] (int) {0} select the hit finder method,
+//                   0 -> standard
 //                   1 -> connected pixel
 //                   2 -> cog based with search radius, requires additional parameter
-// ThreshNeighbourSN = [MANDATORY] (float) S/N or S cut on all the pixels 
+// ThreshNeighbourSN = [MANDATORY] (float) S/N or S cut on all the pixels
 //                     (seed excluded) in the cluster for the hit finding
-// ThreshSeedSN      = [MANDATORY] (float) S/N or S cut on the seed pixel 
+// ThreshSeedSN      = [MANDATORY] (float) S/N or S cut on the seed pixel
 //                     for the hit finding
-// MaxNStrips        = [optional] (int) {1000} maximal #strips allowed in cluster 
-//                     (corrected or set automaticaly by DCut depending on HitFinder) 
-// MinNStrips        = [optional] (int) {1} minimal #strips required in cluster 
-//                     (corrected or set automaticaly by DCut depending on HitFinder) 
-// ClusterLimitU     = [MANDATORY if HitFinder!=2] (float,um) maximal distance 
+// MaxNStrips        = [optional] (int) {1000} maximal #strips allowed in cluster
+//                     (corrected or set automaticaly by DCut depending on HitFinder)
+// MinNStrips        = [optional] (int) {1} minimal #strips required in cluster
+//                     (corrected or set automaticaly by DCut depending on HitFinder)
+// ClusterLimitU     = [MANDATORY if HitFinder!=2] (float,um) maximal distance
 //                     between the seed pixel and any other pixel in the hit
-// ClusterLimitRadius= [MANDATORY if HitFinder==2] (float,um) maximal distance 
+// ClusterLimitRadius= [MANDATORY if HitFinder==2] (float,um) maximal distance
 //                     between the center of gravity and any other pixel in the hit
-// CommonRegions     = [optional] (int) {1} # regions to define 
+// CommonRegions     = [optional] (int) {1} # regions to define
 //                     for the common noise shift computation per event
 // HitPositionAlgorithm = [MANDATORY] (int) controls how the hit position
 //                     is estimated from the pixels info
 //                 1 = Center of Gravity,
-//                 2 = eta, 
+//                 2 = eta,
 //                 3 = kappa (not implemented yet)
 // PlaneResolution   = [optional] (float,um) expected plane resolution in both direction
 // PlaneResolutionU  = [optional] (float,um) expected plane resolution in U direction
@@ -372,18 +372,18 @@
 // "Name" has to be the first field
 // Name                  = [MANDATORY] (char) generic name of such modules
 //                        known types: "IMG", "TNT", "PXI", "PXIe", "GIG", "VME"
-//                                     "DecoderM18", "ALI22", "DecoderGeant"
+//                                     "DecoderM18", "ALI22", "DecoderGeant", "IHEP"
 // Type                  = [MANDATORY] (int) unique identifier for the module type
 // Devices               = [MANDATORY] (int) # module instances of this type,
 //                        typically, one instance decode one file
-// Inputs                = [optional] (int) # identical data block (one per sensor typically) 
+// Inputs                = [optional] (int) # identical data block (one per sensor typically)
 // Channels              = [optional] (int) # channels in one input (data block)
 // EventBuildingBoardMode= [optional] (int) used to pass a flag
 // Bits                  = [optional] (int) size in bits of words to read from file
 // SignificantBits       = [optional] (int) # significant bits per word
 // NColumns              = [optional] (int) # number of columns of sensor
-// FirstTriggerChannel   = [optional] (int)  
-// LastTriggerChannel    = [optional] (int) 
+// FirstTriggerChannel   = [optional] (int)
+// LastTriggerChannel    = [optional] (int)
 // NbOfFramesPerChannel  = [optional] (int) # frames stored for each trigger/event
 // DataFile or DataFile1 = [optional] (char) core name of data file
 //                          if not provided, TAF will look for files like:
@@ -395,7 +395,7 @@
 //
 // --- Name: "IMG"
 //  Type = 10 for pixels / 11 for strips / 12 for pixels with multi-frame
-//         13 for pixels with 
+//         13 for pixels with
 //  Inputs             = [MANDATORY] (int) # identical data block (one per sensor typically)
 //  EventsInFile       = [MANDATORY] (int) expected # events in a file
 //  StartIndex         = [MANDATORY] (int) index of first data file
@@ -406,7 +406,7 @@
 //  EventBufferSize    = [MANDATORY] (int)
 //  FileHeaderLine     = [MANDATORY] (int)
 //  Bits: [MANDATORY] (int) if negative
-//  SignificantBits: [MANDATORY] (int) if negative 
+//  SignificantBits: [MANDATORY] (int) if negative
 //  NColumns:        [MANDATORY] (int)
 //  NMultiFrames:    [MANDATORY] (int) nb of frames registered when multiFraming
 //  DataFile: [MANDATORY] (char) typically "RUN_32844_"
@@ -427,7 +427,7 @@
 //  EventBuildingBoardMode -> unused
 //  FirstTriggerChannel, LastTriggerChannel, NbOfFramesPerChannel -> unused
 //
-// --- Name: "PXI"    
+// --- Name: "PXI"
 //  Type = 40
 //  TriggerMode        = [MANDATORY] (int) method to deal with trigger info
 //  BinaryCoding       = [MANDATORY] (int)
@@ -436,7 +436,7 @@
 //  Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
 //  FirstTriggerChannel, LastTriggerChannel, NbOfFramesPerChannel -> unused
 //
-// --- Name: "PXIe"    
+// --- Name: "PXIe"
 //  Type = 50
 //  TriggerMode        = [MANDATORY] (int) method to deal with trigger info
 //  BinaryCoding       = [MANDATORY] (int)
@@ -445,13 +445,13 @@
 //  Channels, Bits, SignificantBits -> unused
 //  FirstTriggerChannel, LastTriggerChannel, NbOfFramesPerChannel, DataFile -> unused
 //
-// --- Name: "GIG"    
+// --- Name: "GIG"
 //  Type = 60
 //  TriggerMode, BinaryCoding, EventBufferSize, FileHeaderLine -> unused
 //  Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
 //  FirstTriggerChannel, LastTriggerChannel NbOfFramesPerChannel, DataFile -> unused
 //
-// --- Name: "VME"    
+// --- Name: "VME"
 //  Type = 70
 //  Extension        = [MANDATORY] (char) {"rz"} extension of data file
 //  Inputs           = [MANDATORY] (int) # identical data block (one per sensor typically)
@@ -460,7 +460,7 @@
 //  Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
 //  FirstTriggerChannel, LastTriggerChannel NbOfFramesPerChannel -> unused
 //
-// --- Name: "ALI22"    
+// --- Name: "ALI22"
 //  Type = 80
 //  DataFile         = [MANDATORY] (char) typically "FIFOdata_M22"
 //  NbOfFramesPerChannel = [MANDATORY] (int) # frames stored for each trigger/event
@@ -468,7 +468,7 @@
 //  Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
 // FirstTriggerChannel, LastTriggerChannel, NbOfFramesPerChannel -> unused
 //
-// --- Name: "DecoderM18"    
+// --- Name: "DecoderM18"
 //  Type = 90
 //  Extension       = [MANDATORY] (char) {"dat"} extension of data file
 //  DataFile        = [MANDATORY] (char) typically "SIS3301dataZS_ch"
@@ -477,22 +477,22 @@
 // FirstTriggerChannel, LastTriggerChannel, NbOfFramesPerChannel -> unused
 // PixelShift       = [Optional] (int) {3} (in)famous kShift
 // PixelShiftMod    = [Optional] (int) {3} (in)famous kShift defined per Module
-// AmpOffset        = [Optional] (int) {32768} values subtracted to pulseheight 
+// AmpOffset        = [Optional] (int) {32768} values subtracted to pulseheight
 // AmpFactor        = [Optional] (float) {1.} multiplier of the pulseheight
 // Trailer          = [Optional] {int) {0xfafafafa} expected frame tailer
 
 //
-// --- Name: "DecoderGeant"    
+// --- Name: "DecoderGeant"
 //  Type = 100
 //  DataFile        = [MANDATORY] (char) typically "FILEdata_Geant_RUN1_ch"
 //  TriggerMode, BinaryCoding, EventBufferSize, FileHeaderLine -> unused
-//  Inputs, Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused 
+//  Inputs, Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
 //  FirstTriggerChannel, LastTriggerChannelNbOfFramesPerChannel -> unused
 //
 
 
 // #############################################################################
-//                      Parameter for Final Analysis 
+//                      Parameter for Final Analysis
 // #############################################################################
 // "AnalysisGoal" or "MaxNbOfHits" or "StatisticCells" or "CmsNoiseCut" has to be the first field
 // AnalysisGoal     = [optional] (char) {""} drives type of histograms created, could be:
@@ -512,7 +512,7 @@
 // HistoNoiseRange  = [optional] (int) {40} max noise displayed in histo
 // Submatrices      = [MANDATORY] (int)  # submatrices defined below, at least 1 shall be specified
 //
-// Then for each submatrix declared 
+// Then for each submatrix declared
 //   PixelSizeU     = [MANDATORY] (float)
 //   PixelSizeV     = [MANDATORY] (float)
 //   PixelsInRaw    = [MANDATORY] (int)
@@ -566,11 +566,11 @@ DSetup::DSetup() {
 
 }
 //______________________________________________________________________________
-//  
+//
 DSetup::DSetup(DSession& aSession)
-{ 
+{
   // Modified JB 2012/12/20 new member data "fieldName"
-  
+
   fSession = &aSession;
 
   fFieldMaxLength = 100;
@@ -578,42 +578,42 @@ DSetup::DSetup(DSession& aSession)
 
 }
 //______________________________________________________________________________
-//  
-void  DSetup::SetConfigPath(TString aCP) 
+//
+void  DSetup::SetConfigPath(TString aCP)
 {
-  
+
   fConfigPath = aCP;
   if(DSetupDebug) cout << "DSetup::SetConfigPath "<< aCP << endl;
-  
+
 }
 //______________________________________________________________________________
-//  
-void DSetup::SetConfigFileName(TString aCFN) 
+//
+void DSetup::SetConfigFileName(TString aCFN)
 {
-  
-  fConfigFileName = aCFN;     
+
+  fConfigFileName = aCFN;
   if(DSetupDebug) cout << "DSetup::SetConfigFileName "<< aCFN << endl;
-  
+
 }
 //______________________________________________________________________________
-//  
+//
 void DSetup::ReadRunParameters()
-{  
-  
+{
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Run Parameter 
+  // Run Parameter
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // JB 2013/01/16
   // Modified JB 2013/08/19: default parameters setup
-  // Modified VR 2014/06/30: RunNumber is not read anymore, taken from DSession 
+  // Modified VR 2014/06/30: RunNumber is not read anymore, taken from DSession
   // Modified VR 2014/06/30: Add the DataSubDirPrefix and test of mandatory config
   // Modified JB 2018/07/04: Add PixelGainRun parameter
-  
+
   cout << endl << " - Reading Run parameters" << endl;
 
   // ################################################
-  //            Set default values 
+  //            Set default values
   // ################################################
   // Set default values for optional or mandatory parameters
   RunParameter.Number = -1;
@@ -629,12 +629,12 @@ void DSetup::ReadRunParameters()
   RunParameter.EndIndex = 0;// [MANDATORY for IMGBoardReader]
   RunParameter.NoiseRun = 0;
   RunParameter.PixelGainRun = 0;
-  
+
 
   do {
-    
+
     nextField();
-    
+
     if ( ! strcmp( fFieldName, "Affiliation" ) ) {
       read_strings( RunParameter.Affiliation, RunParameter.tpsz);
     }
@@ -652,7 +652,7 @@ void DSetup::ReadRunParameters()
       DGlobalTools aTool; // JB 2011/07/18
       sprintf( RunParameter.DataPath, "%s", aTool.LocalizeDirName( RunParameter.DataPath)); // JB 2011/07/07
     }
-    else if( ! strcmp( fFieldName, "DataSubDirPrefix" ) ) { // VR 2014/06/30 
+    else if( ! strcmp( fFieldName, "DataSubDirPrefix" ) ) { // VR 2014/06/30
       read_strings( RunParameter.DataSubDirPrefix, RunParameter.tpsz);
     }
     else if( ! strcmp( fFieldName, "Extension" ) ) {
@@ -687,10 +687,10 @@ void DSetup::ReadRunParameters()
       }
     }
   } while ( strcmp( fFieldName, "Planes") && strcmp( fFieldName, "Ladders") );
-  
-  
+
+
   // Test of MANDATORY field settings
-  // VR 20014/06/30 
+  // VR 20014/06/30
   if ( !strcmp(RunParameter.DataPath,"-1"))
   {
     cout << " ERROR: The field 'DataPath' is MANDATORY in config file (section run parameters)" << endl;
@@ -699,12 +699,12 @@ void DSetup::ReadRunParameters()
 
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadTrackerParameters() 
+//
+void DSetup::ReadTrackerParameters()
 {
-  
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameters of the Tracker 
+  // Parameters of the Tracker
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // JB 2013/01/16
@@ -713,16 +713,16 @@ void DSetup::ReadTrackerParameters()
   // Modified: JB 2013/07/17 new parameters to select track_finder method
   // Modified: VR 2014/06/29 add the SearchMoreHitDistance parameter and test of mandatory config
   // Modified: VR 2014/10/30 add the PreTrackHitsNbMinimum and HitsNbMinForFullTrack parameters and test of mandatory config
-  // Modified: VR 2014/12/18 modify all parameters for track_finder 2 (IVI) 
+  // Modified: VR 2014/12/18 modify all parameters for track_finder 2 (IVI)
   // Modified: JB 2014/12/23 add Subtrack parameters
   // Modified: LC 2015/01/?? add HitMonteCarlo
   // Modified: LC 2015/01/31 add DprecAlignMethod
-   
+
   cout << endl << " - Reading Parameters of the Tracker" << endl;
 
 
   // ################################################
-  //            Set default values 
+  //            Set default values
   // ################################################
   // *****************************
   //       Planes config
@@ -737,11 +737,11 @@ void DSetup::ReadTrackerParameters()
   TrackerParameter.HitsInPlaneMaximum = -1 ;//[MANDATORY]
 
   TrackerParameter.TracksMaximum = 0;
-  TrackerParameter.TracksFinder = 0; 
+  TrackerParameter.TracksFinder = 0;
   TrackerParameter.TrackFittingAlg = 0; // QL 2016/05/26
-  TrackerParameter.PlanesForTrackMinimum = -1;//[MANDATORY if TracksMaximum!=0 && TracksFinder==0 ]  
+  TrackerParameter.PlanesForTrackMinimum = -1;//[MANDATORY if TracksMaximum!=0 && TracksFinder==0 ]
   TrackerParameter.HitsInPlaneTrackMaximum = -1;//[MANDATORY if TracksMaximum!=0 && TracksFinder==0 ]
-  TrackerParameter.SearchHitDistance = -1.;//[MANDATORY if TracksMaximum<2] 
+  TrackerParameter.SearchHitDistance = -1.;//[MANDATORY if TracksMaximum<2]
   TrackerParameter.SearchMoreHitDistance = -1.;//[MANDATORY if TracksMaximum<2]
   TrackerParameter.UseSlopeInTrackFinder = 1;
   TrackerParameter.TrackingPlaneOrderType = 0;
@@ -759,16 +759,16 @@ void DSetup::ReadTrackerParameters()
   TrackerParameter.PreTrackHitsMaxDist    = NULL;
   TrackerParameter.ExtTrackHitsNbMinimum  = NULL;
   TrackerParameter.ExtTrackHitsTypeUsed   = NULL;
-  TrackerParameter.ExtTrackHitsMaxDist    = NULL; 
+  TrackerParameter.ExtTrackHitsMaxDist    = NULL;
   TrackerParameter.FullTrackHitsNbMinimum = NULL;
-  
+
   TrackerParameter.TrackingOrderLines     = -1;
   TrackerParameter.TrackingOrderPreTrack = NULL;
   TrackerParameter.TrackingOrderExtTrack = NULL;
 
   TrackerParameter.SubtrackNplanes = 0; // JB 2014/12/23
   TrackerParameter.SubtrackPlanes = NULL;
-  
+
   // *****************************
   //          Vertexing
   // *****************************
@@ -778,23 +778,23 @@ void DSetup::ReadTrackerParameters()
   //         Alignment
   // *****************************
   TrackerParameter.EventsForAlignmentFit = 0;
-  
-  
+
+
   do {
     // ----------------------------------
     //     Planes and their parameters
     // ----------------------------------
     if ( ! strcmp( fFieldName, "Planes") ) {
-      read_item(TrackerParameter.Planes);  
+      read_item(TrackerParameter.Planes);
     }
     else if ( ! strcmp( fFieldName, "Ladders") ) {
-      read_item(TrackerParameter.Ladders);  
+      read_item(TrackerParameter.Ladders);
     }
     else if( ! strcmp( fFieldName, "TimeLimit" ) ) {
-      read_item(TrackerParameter.TimeLimit); //RDM260609  
+      read_item(TrackerParameter.TimeLimit); //RDM260609
     }
     else if( ! strcmp( fFieldName, "Resolution" ) ) {
-      read_item(TrackerParameter.Resolution); // RDM250809  
+      read_item(TrackerParameter.Resolution); // RDM250809
     }
     else if( ! strcmp( fFieldName, "BeamMomentum" ) ) {
       read_item(TrackerParameter.BeamMomentum); // 2015/03/10, AP Beam momentum in GeV/c
@@ -805,51 +805,51 @@ void DSetup::ReadTrackerParameters()
     else if( ! strcmp( fFieldName, "MediumMaterial" ) ) {  // 2015/06/01, AP Material of the medium containing the sensors: e.g. Dry air, or Vacuum
       read_TStrings( TrackerParameter.MediumMaterial, 350);
     }
-    
+
     // ----------------------------------
     //     Clustering in planes
     // ----------------------------------
     else if( ! strcmp( fFieldName, "HitsInPlaneMaximum" ) ) {
-      read_item(TrackerParameter.HitsInPlaneMaximum);  
+      read_item(TrackerParameter.HitsInPlaneMaximum);
     }
     // ----------------------------------
     //     Tracking parameters
     // ----------------------------------
     else if( ! strcmp( fFieldName, "TracksMaximum" ) ) {
-      read_item(TrackerParameter.TracksMaximum);  
+      read_item(TrackerParameter.TracksMaximum);
     }
     else if( ! strcmp( fFieldName, "TracksFinder" ) ) { // JB 2013/07/17
-      read_item(TrackerParameter.TracksFinder);  
+      read_item(TrackerParameter.TracksFinder);
     }
     else if( ! strcmp( fFieldName, "TrackFittingAlg" ) ) { // QL 2016/05/26
-      read_item(TrackerParameter.TrackFittingAlg);  
+      read_item(TrackerParameter.TrackFittingAlg);
     }
     else if( ! strcmp( fFieldName, "PlanesForTrackMinimum" ) ) {
-      read_item(TrackerParameter.PlanesForTrackMinimum);  
+      read_item(TrackerParameter.PlanesForTrackMinimum);
     }
     else if( ! strcmp( fFieldName, "HitsInPlaneTrackMaximum" ) ) {
       read_item(TrackerParameter.HitsInPlaneTrackMaximum);
     }
     else if( ! strcmp( fFieldName, "SearchHitDistance" ) ) {
-      read_item(TrackerParameter.SearchHitDistance);    
+      read_item(TrackerParameter.SearchHitDistance);
     }
     else if( ! strcmp( fFieldName, "SearchMoreHitDistance" ) ) {
-      read_item(TrackerParameter.SearchMoreHitDistance);    
+      read_item(TrackerParameter.SearchMoreHitDistance);
     }
     else if( ! strcmp( fFieldName, "UseSlopeInTrackFinder" ) ) { // JB 2013/06/21
-      read_item(TrackerParameter.UseSlopeInTrackFinder);  
+      read_item(TrackerParameter.UseSlopeInTrackFinder);
     }
     else if( ! strcmp( fFieldName, "TrackingPlaneOrderType" ) ) { // VR 2014/07/14
-      read_item(TrackerParameter.TrackingPlaneOrderType);  
+      read_item(TrackerParameter.TrackingPlaneOrderType);
     }
     else if( ! strcmp( fFieldName, "KeepUnTrackedHitsBetw2evts" ) ) { // VR 2014/08/26
-      read_item(TrackerParameter.KeepUnTrackedHitsBetw2evts);  
+      read_item(TrackerParameter.KeepUnTrackedHitsBetw2evts);
     }
     else if( ! strcmp( fFieldName, "HitMonteCarlo" ) ) {
-      read_item(TrackerParameter.HitMonteCarlo);    
+      read_item(TrackerParameter.HitMonteCarlo);
     }
     else if( ! strcmp( fFieldName, "DPrecAlignMethod" ) ) {
-      read_item(TrackerParameter.DPrecAlignMethod);    
+      read_item(TrackerParameter.DPrecAlignMethod);
     }
     // -------------------------------------------
     //     Tracking parameters for track_finder 2
@@ -876,7 +876,7 @@ void DSetup::ReadTrackerParameters()
 	    cout << "      -> Reading finished ! " << endl ;
 	    break;
 	  }
-          
+
           if(nbOfReadingLoop > 20) {
             cout << "      -> ERROR: There is (a) missing parameter(s) : " << endl;
             if(! TrackerParameter.PreTrackHitsNbMinimum)  cout << "          * PreTrackHitsNbMinimum  list is not defined !" << endl ;
@@ -886,17 +886,17 @@ void DSetup::ReadTrackerParameters()
             if(! TrackerParameter.ExtTrackHitsTypeUsed)   cout << "          * ExtTrackHitsTypeUsed   list is not defined !" << endl ;
             if(! TrackerParameter.ExtTrackHitsMaxDist)    cout << "          * ExtTrackHitsMaxDist    list is not defined !" << endl ;
             if(! TrackerParameter.FullTrackHitsNbMinimum) cout << "          * FullTrackHitsNbMinimum list is not defined !" << endl ;
-          
+
             gApplication->Terminate();
           }
 
           nextField();
           nbOfReadingLoop++;
-	  
-          if ( ! strcmp( fFieldName, "PreTrackHitsNbMinimum") ) 
+
+          if ( ! strcmp( fFieldName, "PreTrackHitsNbMinimum") )
           {
             TrackerParameter.PreTrackHitsNbMinimum  = new Int_t[TrackerParameter.TrackingPass];
-            cout << "      -> PreTrackHitsNbMinimum {" ; 
+            cout << "      -> PreTrackHitsNbMinimum {" ;
             nextItem('{');
             for(Int_t iPass=1 ; iPass <=TrackerParameter.TrackingPass ; iPass++)
             {
@@ -906,10 +906,10 @@ void DSetup::ReadTrackerParameters()
             cout << "}" << endl;
             nextItem('}');
           }
-          else if ( ! strcmp( fFieldName, "PreTrackHitsTypeUsed") ) 
+          else if ( ! strcmp( fFieldName, "PreTrackHitsTypeUsed") )
           {
             TrackerParameter.PreTrackHitsTypeUsed   = new Int_t[TrackerParameter.TrackingPass];
-            cout << "      -> PreTrackHitsTypeUsed {" ; 
+            cout << "      -> PreTrackHitsTypeUsed {" ;
             nextItem('{');
             for(Int_t iPass=1 ; iPass <=TrackerParameter.TrackingPass ; iPass++)
             {
@@ -919,10 +919,10 @@ void DSetup::ReadTrackerParameters()
             cout << "}" << endl;
             nextItem('}');
           }
-          else if ( ! strcmp( fFieldName, "PreTrackHitsMaxDist") ) 
+          else if ( ! strcmp( fFieldName, "PreTrackHitsMaxDist") )
           {
             TrackerParameter.PreTrackHitsMaxDist    = new Float_t[TrackerParameter.TrackingPass];
-            cout << "      -> PreTrackHitsMaxDist {" ; 
+            cout << "      -> PreTrackHitsMaxDist {" ;
             nextItem('{');
             for(Int_t iPass=1 ; iPass <=TrackerParameter.TrackingPass ; iPass++)
             {
@@ -932,10 +932,10 @@ void DSetup::ReadTrackerParameters()
             cout << "}" << endl;
             nextItem('}');
           }
-          else if ( ! strcmp( fFieldName, "ExtTrackHitsNbMinimum") ) 
+          else if ( ! strcmp( fFieldName, "ExtTrackHitsNbMinimum") )
           {
             TrackerParameter.ExtTrackHitsNbMinimum  = new Int_t[TrackerParameter.TrackingPass];
-            cout << "      -> ExtTrackHitsNbMinimum {" ; 
+            cout << "      -> ExtTrackHitsNbMinimum {" ;
             nextItem('{');
             for(Int_t iPass=1 ; iPass <=TrackerParameter.TrackingPass ; iPass++)
             {
@@ -945,10 +945,10 @@ void DSetup::ReadTrackerParameters()
             cout << "}" << endl;
             nextItem('}');
           }
-          else if ( ! strcmp( fFieldName, "ExtTrackHitsTypeUsed") ) 
+          else if ( ! strcmp( fFieldName, "ExtTrackHitsTypeUsed") )
           {
             TrackerParameter.ExtTrackHitsTypeUsed   = new Int_t[TrackerParameter.TrackingPass];
-            cout << "      -> ExtTrackHitsTypeUsed {" ; 
+            cout << "      -> ExtTrackHitsTypeUsed {" ;
             nextItem('{');
             for(Int_t iPass=1 ; iPass <=TrackerParameter.TrackingPass ; iPass++)
             {
@@ -958,10 +958,10 @@ void DSetup::ReadTrackerParameters()
             cout << "}" << endl;
             nextItem('}');
           }
-          else if ( ! strcmp( fFieldName, "ExtTrackHitsMaxDist") ) 
+          else if ( ! strcmp( fFieldName, "ExtTrackHitsMaxDist") )
           {
             TrackerParameter.ExtTrackHitsMaxDist    = new Float_t[TrackerParameter.TrackingPass];
-            cout << "      -> ExtTrackHitsMaxDist {" ; 
+            cout << "      -> ExtTrackHitsMaxDist {" ;
             nextItem('{');
             for(Int_t iPass=1 ; iPass <=TrackerParameter.TrackingPass ; iPass++)
             {
@@ -971,10 +971,10 @@ void DSetup::ReadTrackerParameters()
             cout << "}" << endl;
             nextItem('}');
           }
-          else if ( ! strcmp( fFieldName, "FullTrackHitsNbMinimum") ) 
+          else if ( ! strcmp( fFieldName, "FullTrackHitsNbMinimum") )
           {
             TrackerParameter.FullTrackHitsNbMinimum = new Int_t[TrackerParameter.TrackingPass];
-            cout << "      -> FullTrackHitsNbMinimum {" ; 
+            cout << "      -> FullTrackHitsNbMinimum {" ;
             nextItem('{');
             for(Int_t iPass=1 ; iPass <=TrackerParameter.TrackingPass ; iPass++)
             {
@@ -990,10 +990,10 @@ void DSetup::ReadTrackerParameters()
       {
         cout << "      -> ERROR: The field 'TrackingPass' must be >0 ! " << endl;
         gApplication->Terminate();
-      }    
+      }
     } // end if tracking pass
-    
-    
+
+
     // -*-*-*- Tracking Order -*-*-*-
     else if( ! strcmp( fFieldName, "TrackingOrderLines" ) )
     {
@@ -1003,7 +1003,7 @@ void DSetup::ReadTrackerParameters()
       {
         TrackerParameter.TrackingOrderPreTrack = new Int_t*[TrackerParameter.TrackingOrderLines];
         TrackerParameter.TrackingOrderExtTrack = new Int_t*[TrackerParameter.TrackingOrderLines];
-        
+
         Char_t field[100];
         Int_t  aNbOfPlanes;
         for(Int_t iOrder=1 ; iOrder <=TrackerParameter.TrackingOrderLines ; iOrder++)
@@ -1019,7 +1019,7 @@ void DSetup::ReadTrackerParameters()
             cout << "        -> Planes for pre-track = " << aNbOfPlanes << " : { ";
             TrackerParameter.TrackingOrderPreTrack[iOrder-1] = new Int_t[aNbOfPlanes+1];
             TrackerParameter.TrackingOrderPreTrack[iOrder-1][0] = aNbOfPlanes;
-            
+
             nextItem('{');// pre-track planes enumeration starts
             for (Int_t iOrder2=1 ; iOrder2<=aNbOfPlanes ; iOrder2++)
             {
@@ -1028,22 +1028,22 @@ void DSetup::ReadTrackerParameters()
             }
             nextItem('}');// pre-track planes enumeration finished
             cout << "}" << endl;
-            
+
             nextItem('[');// ful-track planes #
             read_item(aNbOfPlanes);
             nextItem(']');
             cout << "        -> Planes for ext-track = " << aNbOfPlanes << " : { ";
             TrackerParameter.TrackingOrderExtTrack[iOrder-1] = new Int_t[aNbOfPlanes+1];
             TrackerParameter.TrackingOrderExtTrack[iOrder-1][0] = aNbOfPlanes;
-            
+
             nextItem('{');// ful-track planes enumeration starts
             for (Int_t iOrder2=1 ; iOrder2<=aNbOfPlanes ; iOrder2++)
             {
               read_item(TrackerParameter.TrackingOrderExtTrack[iOrder-1][iOrder2]);
               cout << TrackerParameter.TrackingOrderExtTrack[iOrder-1][iOrder2] << " ";
             }
-            nextItem('}');// pre-track planes enumeration finished            
-            cout << "}" << endl ;           
+            nextItem('}');// pre-track planes enumeration finished
+            cout << "}" << endl ;
           }
           else
           {
@@ -1057,14 +1057,14 @@ void DSetup::ReadTrackerParameters()
       {
         cout << "      -> ERROR: The field 'TrackingOrderLines' must be >0 ! " << endl;
         gApplication->Terminate();
-      }   
+      }
     } // end if tracking order
 
-    
+
     // -*-*-*- Subtrack -*-*-*-
     // JB 2014/12/23
     else if( ! strcmp( fFieldName, "SubtrackNplanes" ) || ! strcmp( fFieldName, "SubtrackNPlanes" ) ) { // if subtrack
-      read_item(TrackerParameter.SubtrackNplanes);  
+      read_item(TrackerParameter.SubtrackNplanes);
       if ( TrackerParameter.SubtrackNplanes>0 ) {
         TrackerParameter.SubtrackPlanes = new Int_t[TrackerParameter.SubtrackNplanes];
         cout << "  Creating subtrack with " << TrackerParameter.SubtrackNplanes << " planes requested" << endl << "   -> list of planes for subtrack: ";
@@ -1090,16 +1090,16 @@ void DSetup::ReadTrackerParameters()
     // ----------------------------------
     else if( ! strcmp( fFieldName, "VertexMaximum" ) ) { // JB 2013/06/11
       std::cout<<fFieldName<<std::endl;
-      read_item(TrackerParameter.VertexMaximum);  
+      read_item(TrackerParameter.VertexMaximum);
     }
     else if( ! strcmp( fFieldName, "VertexConstraint" ) ) { // JB 2013/06/21
-      read_item(TrackerParameter.VertexConstraint);  
+      read_item(TrackerParameter.VertexConstraint);
     }
     // ----------------------------------
     //     Alignement parameters
     // ----------------------------------
     else if( ! strcmp( fFieldName, "EventsForAlignmentFit" ) ) {
-      read_item(TrackerParameter.EventsForAlignmentFit);  
+      read_item(TrackerParameter.EventsForAlignmentFit);
     }
     else
     {
@@ -1108,9 +1108,9 @@ void DSetup::ReadTrackerParameters()
         cout << "WARNING : parameter '" << fFieldName << "' in config file is not understood !" << endl;
         getRidOfLine();
       }
-    }    
+    }
     nextField();
-    
+
   } while ( strcmp( fFieldName, "Inputs") &&  strcmp( fFieldName, "LadderID" ) &&  strcmp( fFieldName, "GeometryName" ) &&  strcmp( fFieldName, "FixTrackParamX" ) );
 
   if(TrackerParameter.BeamType == TString("")) {
@@ -1127,7 +1127,7 @@ void DSetup::ReadTrackerParameters()
   else {
     cout << "    BeamMomentum    parameter set to user value: " << TrackerParameter.BeamMomentum << " GeV/c" << endl;
   }
-  
+
   if(TrackerParameter.MediumMaterial == TString("")) {
     TrackerParameter.MediumMaterial = TString("Vacuum");
     cout << "    MediumMaterial  parameter not specified. Setting it to defaul value:  " << TrackerParameter.MediumMaterial.Data() << endl;
@@ -1135,18 +1135,18 @@ void DSetup::ReadTrackerParameters()
   else {
     cout << "    MediumMaterial  parameter set to user value: " << TrackerParameter.MediumMaterial.Data() << endl;
   }
-  
+
   cout << "    -> Reading finished ! " << endl ;
-  
+
   // *******************************************************
-  // Test of MANDATORY fields settings // VR 20014/06/30 
+  // Test of MANDATORY fields settings // VR 20014/06/30
   // *******************************************************
   if (TrackerParameter.HitsInPlaneMaximum == -1)
   {
     cout << " ERROR: The field 'HitsInPlaneMaximum' is MANDATORY in config file (section tracker parameters)" << endl;
     gApplication->Terminate();
   }
-  
+
   if(TrackerParameter.TracksMaximum > 0)
   {
     if (TrackerParameter.TracksFinder == 0)
@@ -1160,12 +1160,12 @@ void DSetup::ReadTrackerParameters()
       {
         cout << " ERROR: The field 'PlanesForTrackMinimum' is MANDATORY in config file (section tracker parameters)" << endl;
         gApplication->Terminate();
-      }  
+      }
       if (TrackerParameter.HitsInPlaneTrackMaximum == -1)
       {
         cout << " ERROR: The field 'HitsInPlaneTrackMaximum' is MANDATORY in config file (section tracker parameters)" << endl;
         gApplication->Terminate();
-      }  
+      }
     }
     else if (TrackerParameter.TracksFinder == 1)
     {
@@ -1173,17 +1173,17 @@ void DSetup::ReadTrackerParameters()
       {
         cout << " ERROR: The field 'PlanesForTrackMinimum' is MANDATORY in config file (section tracker parameters)" << endl;
         gApplication->Terminate();
-      }  
+      }
       if (TrackerParameter.HitsInPlaneTrackMaximum == -1)
       {
         cout << " ERROR: The field 'HitsInPlaneTrackMaximum' is MANDATORY in config file (section tracker parameters)" << endl;
         gApplication->Terminate();
-      }  
+      }
       if (TrackerParameter.SearchHitDistance == -1)
       {
 	cout << " ERROR: The field 'SearchHitDistance' is MANDATORY in config file (section tracker parameters)" << endl;
 	gApplication->Terminate();
-      }      
+      }
       if (TrackerParameter.SearchMoreHitDistance == -1)
       {
         cout << " ERROR: The field 'SearchMoreHitDistance' is MANDATORY in config file (section tracker parameters) when using TracksFinder: 1" << endl;
@@ -1206,7 +1206,7 @@ void DSetup::ReadTrackerParameters()
   }
 
   if(DSetupDebug) {
-    cout << " #planes = " << TrackerParameter.Planes << endl;      
+    cout << " #planes = " << TrackerParameter.Planes << endl;
     if ( TrackerParameter.Ladders>0 ) {
       cout << " #ladders = " << TrackerParameter.Ladders << endl;
     }
@@ -1215,23 +1215,23 @@ void DSetup::ReadTrackerParameters()
 
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadExperimentGeometryParameters() 
+//
+void DSetup::ReadExperimentGeometryParameters()
 {
-  
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //  Experiment Geometrical Parameters
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // VR 2015/01/16
-  
+
   cout << endl << " - Reading Experiment Geometrical Parameters " << endl;
-  
+
   // ################################################
-  //            Set default values 
+  //            Set default values
   // ################################################
   Float_t initValue[3] = {-666.0, -666.0, -666.0};
-  
+
   sprintf(IviGeometryParameter.GeometryName,"not defined");
   sprintf(IviGeometryParameter.GeometryVersion,"-1");
   IviGeometryParameter.BeamOrigin.SetValue(initValue);
@@ -1264,147 +1264,147 @@ void DSetup::ReadExperimentGeometryParameters()
   // ----------------------------------
   cout << "    -> IVI geometry : " << endl ;
   do
-  {  
-    if ( ! strcmp( fFieldName, "GeometryName") ) 
+  {
+    if ( ! strcmp( fFieldName, "GeometryName") )
     {
-      read_strings(IviGeometryParameter.GeometryName, IviGeometryParameter.tpsz);  
-      cout << "      -> GeometryName:          " << IviGeometryParameter.GeometryName << endl ;      
+      read_strings(IviGeometryParameter.GeometryName, IviGeometryParameter.tpsz);
+      cout << "      -> GeometryName:          " << IviGeometryParameter.GeometryName << endl ;
     }
-    else if ( ! strcmp( fFieldName, "GeometryVersion") ) 
+    else if ( ! strcmp( fFieldName, "GeometryVersion") )
     {
-      read_strings(IviGeometryParameter.GeometryVersion, IviGeometryParameter.tpsz);  
-      cout << "      -> GeometryVersion:       " << IviGeometryParameter.GeometryVersion << endl ;      
+      read_strings(IviGeometryParameter.GeometryVersion, IviGeometryParameter.tpsz);
+      cout << "      -> GeometryVersion:       " << IviGeometryParameter.GeometryVersion << endl ;
     }
-    else if ( ! strcmp( fFieldName, "BeamOriginI") ) 
+    else if ( ! strcmp( fFieldName, "BeamOriginI") )
     {
-      read_r3(IviGeometryParameter.BeamOrigin); 
+      read_r3(IviGeometryParameter.BeamOrigin);
       cout << "      -> BeamOrigin [mm]:    I: " << IviGeometryParameter.BeamOrigin(0) << endl ;
       cout << "                             J: " << IviGeometryParameter.BeamOrigin(1) << endl ;
       cout << "                             K: " << IviGeometryParameter.BeamOrigin(2) << endl ;
     }
-    else if ( ! strcmp( fFieldName, "BeamSlopeI") ) 
+    else if ( ! strcmp( fFieldName, "BeamSlopeI") )
     {
-      read_r3(IviGeometryParameter.BeamSlope); 
+      read_r3(IviGeometryParameter.BeamSlope);
       cout << "      -> BeamSlope [/K]  :   I: " << IviGeometryParameter.BeamSlope(0) << endl ;
       cout << "                             J: " << IviGeometryParameter.BeamSlope(1) << endl ;
       cout << "                             K: " << IviGeometryParameter.BeamSlope(2) << endl ;
     }
-    else if ( ! strcmp( fFieldName, "BeamDisplayStrongBeginI") ) 
+    else if ( ! strcmp( fFieldName, "BeamDisplayStrongBeginI") )
     {
-      read_r3(IviGeometryParameter.BeamDisplayStrongBegin); 
+      read_r3(IviGeometryParameter.BeamDisplayStrongBegin);
       cout << "      -> BeamDisplayStrongBegin [mm]: I: " << IviGeometryParameter.BeamDisplayStrongBegin(0) << endl ;
       cout << "                                      J: " << IviGeometryParameter.BeamDisplayStrongBegin(1) << endl ;
       cout << "                                      K: " << IviGeometryParameter.BeamDisplayStrongBegin(2) << endl ;
-    }  
-    else if ( ! strcmp( fFieldName, "BeamDisplayStrongStopI") ) 
+    }
+    else if ( ! strcmp( fFieldName, "BeamDisplayStrongStopI") )
     {
-      read_r3(IviGeometryParameter.BeamDisplayStrongStop); 
+      read_r3(IviGeometryParameter.BeamDisplayStrongStop);
       cout << "      -> BeamDisplayStrongStop [mm]:  I: " << IviGeometryParameter.BeamDisplayStrongStop(0) << endl ;
       cout << "                                      J: " << IviGeometryParameter.BeamDisplayStrongStop(1) << endl ;
       cout << "                                      K: " << IviGeometryParameter.BeamDisplayStrongStop(2) << endl ;
-    } 
-    else if ( ! strcmp( fFieldName, "BeamDisplayMediumBeginI") ) 
+    }
+    else if ( ! strcmp( fFieldName, "BeamDisplayMediumBeginI") )
     {
-      read_r3(IviGeometryParameter.BeamDisplayMediumBegin); 
+      read_r3(IviGeometryParameter.BeamDisplayMediumBegin);
       cout << "      -> BeamDisplayMediumBegin [mm]: I: " << IviGeometryParameter.BeamDisplayMediumBegin(0) << endl ;
       cout << "                                      J: " << IviGeometryParameter.BeamDisplayMediumBegin(1) << endl ;
       cout << "                                      K: " << IviGeometryParameter.BeamDisplayMediumBegin(2) << endl ;
-    }  
-    else if ( ! strcmp( fFieldName, "BeamDisplayMediumStopI") ) 
+    }
+    else if ( ! strcmp( fFieldName, "BeamDisplayMediumStopI") )
     {
-      read_r3(IviGeometryParameter.BeamDisplayMediumStop); 
+      read_r3(IviGeometryParameter.BeamDisplayMediumStop);
       cout << "      -> BeamDisplayMediumStop [mm]:  I: " << IviGeometryParameter.BeamDisplayMediumStop(0) << endl ;
       cout << "                                      J: " << IviGeometryParameter.BeamDisplayMediumStop(1) << endl ;
       cout << "                                      K: " << IviGeometryParameter.BeamDisplayMediumStop(2) << endl ;
-    }   
-    else if ( ! strcmp( fFieldName, "BeamDisplayLightBeginI") ) 
+    }
+    else if ( ! strcmp( fFieldName, "BeamDisplayLightBeginI") )
     {
-      read_r3(IviGeometryParameter.BeamDisplayLightBegin); 
+      read_r3(IviGeometryParameter.BeamDisplayLightBegin);
       cout << "      -> BeamDisplayLightBegin [mm]:  I: " << IviGeometryParameter.BeamDisplayLightBegin(0) << endl ;
       cout << "                                      J: " << IviGeometryParameter.BeamDisplayLightBegin(1) << endl ;
       cout << "                                      K: " << IviGeometryParameter.BeamDisplayLightBegin(2) << endl ;
-    }  
-    else if ( ! strcmp( fFieldName, "BeamDisplayLightStopI") ) 
+    }
+    else if ( ! strcmp( fFieldName, "BeamDisplayLightStopI") )
     {
-      read_r3(IviGeometryParameter.BeamDisplayLightStop); 
+      read_r3(IviGeometryParameter.BeamDisplayLightStop);
       cout << "      -> BeamDisplayLightStop [mm]:   I: " << IviGeometryParameter.BeamDisplayLightStop(0) << endl ;
       cout << "                                      J: " << IviGeometryParameter.BeamDisplayLightStop(1) << endl ;
       cout << "                                      K: " << IviGeometryParameter.BeamDisplayLightStop(2) << endl ;
-    }  
-    else if ( ! strcmp( fFieldName, "TargetType") ) 
-    {
-      read_strings(IviGeometryParameter.TargetType, IviGeometryParameter.tpsz);  
-      cout << "      -> TargetType:            " << IviGeometryParameter.TargetType << endl ;      
     }
-    else if ( ! strcmp( fFieldName, "TargetSizeI") ) 
+    else if ( ! strcmp( fFieldName, "TargetType") )
     {
-      read_r3(IviGeometryParameter.TargetSize); 
+      read_strings(IviGeometryParameter.TargetType, IviGeometryParameter.tpsz);
+      cout << "      -> TargetType:            " << IviGeometryParameter.TargetType << endl ;
+    }
+    else if ( ! strcmp( fFieldName, "TargetSizeI") )
+    {
+      read_r3(IviGeometryParameter.TargetSize);
       cout << "      -> TargetSize [mm]  :  I: " << IviGeometryParameter.TargetSize(0) << endl ;
       cout << "                             J: " << IviGeometryParameter.TargetSize(1) << endl ;
       cout << "                             K: " << IviGeometryParameter.TargetSize(2) << endl ;
     }
-    else if ( ! strcmp( fFieldName, "TargetRadius") ) 
+    else if ( ! strcmp( fFieldName, "TargetRadius") )
     {
-      read_item(IviGeometryParameter.TargetRadius); 
+      read_item(IviGeometryParameter.TargetRadius);
       cout << "      -> TargetRadius [mm] :    " << IviGeometryParameter.TargetRadius << endl ;
     }
-    else if ( ! strcmp( fFieldName, "TargetLength") ) 
+    else if ( ! strcmp( fFieldName, "TargetLength") )
     {
-      read_item(IviGeometryParameter.TargetLength); 
+      read_item(IviGeometryParameter.TargetLength);
       cout << "      -> TargetLength [mm] :    " << IviGeometryParameter.TargetLength << endl ;
     }
-    else if ( ! strcmp( fFieldName, "TargetAxis") ) 
+    else if ( ! strcmp( fFieldName, "TargetAxis") )
     {
-      read_strings(IviGeometryParameter.TargetAxis,1); 
+      read_strings(IviGeometryParameter.TargetAxis,1);
       cout << "      -> TargetAxis :           " << IviGeometryParameter.TargetAxis << endl ;
     }
-    else if ( ! strcmp( fFieldName, "TargetCenterI") ) 
+    else if ( ! strcmp( fFieldName, "TargetCenterI") )
     {
-      read_r3(IviGeometryParameter.TargetCenter); 
+      read_r3(IviGeometryParameter.TargetCenter);
       cout << "      -> TargetCenter [mm]:  I: " << IviGeometryParameter.TargetCenter(0) << endl ;
       cout << "                             J: " << IviGeometryParameter.TargetCenter(1) << endl ;
       cout << "                             K: " << IviGeometryParameter.TargetCenter(2) << endl ;
     }
-    else if ( ! strcmp( fFieldName, "TrackerOriginI") ) 
+    else if ( ! strcmp( fFieldName, "TrackerOriginI") )
     {
-      read_r3(IviGeometryParameter.TrackerOrigin); 
+      read_r3(IviGeometryParameter.TrackerOrigin);
       cout << "      -> TrackerOrigin [mm]: I: " << IviGeometryParameter.TrackerOrigin(0) << endl ;
       cout << "                             J: " << IviGeometryParameter.TrackerOrigin(1) << endl ;
       cout << "                             K: " << IviGeometryParameter.TrackerOrigin(2) << endl ;
     }
-    else if ( ! strcmp( fFieldName, "TrackerTiltI") ) 
+    else if ( ! strcmp( fFieldName, "TrackerTiltI") )
     {
-      read_r3(IviGeometryParameter.TrackerTilt); 
+      read_r3(IviGeometryParameter.TrackerTilt);
       cout << "      -> TrackerTilt [deg]:  I: " << IviGeometryParameter.TrackerTilt(0) << endl ;
       cout << "                             J: " << IviGeometryParameter.TrackerTilt(1) << endl ;
       cout << "                             K: " << IviGeometryParameter.TrackerTilt(2) << endl ;
-    }  
-    else if ( ! strcmp( fFieldName, "VertexingMethod") ) 
-    {
-      read_strings(IviGeometryParameter.VertexingMethod, IviGeometryParameter.tpsz);  
-      cout << "      -> VertexingMethod:       " << IviGeometryParameter.VertexingMethod << endl ;      
     }
-    
+    else if ( ! strcmp( fFieldName, "VertexingMethod") )
+    {
+      read_strings(IviGeometryParameter.VertexingMethod, IviGeometryParameter.tpsz);
+      cout << "      -> VertexingMethod:       " << IviGeometryParameter.VertexingMethod << endl ;
+    }
+
     nextField();
   } while ( strcmp(fFieldName,"Inputs") &&  strcmp(fFieldName,"LadderID") );
-  
+
   cout << "    -> Reading finished ! (next item is '" << fFieldName << "')" << endl ;
-  
-}  
-  
+
+}
+
 //______________________________________________________________________________
-//  
-void DSetup::ReadLadderParameters( Int_t aLadderNumber) 
+//
+void DSetup::ReadLadderParameters( Int_t aLadderNumber)
 {
-  
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameters of a Ladder 
+  // Parameters of a Ladder
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // JB 2013/01/16
 
   // ################################################
-  //            Set default values 
+  //            Set default values
   // ################################################
   pLadderParameter[aLadderNumber].LadderID   = -1;
   pLadderParameter[aLadderNumber].Status     = -1;
@@ -1415,7 +1415,7 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
   pLadderParameter[aLadderNumber].PlaneList  = NULL;
   pLadderParameter[aLadderNumber].PlaneShift = NULL;
   pLadderParameter[aLadderNumber].PlaneTilt  = NULL;
-  
+
   if ( aLadderNumber<0 || TrackerParameter.Ladders<=aLadderNumber ) {
     printf( "WARNING in ReadLadderParameters: trying to add ladder number %d, outside the limits [1 - %d]\n  --> nothing done!\n", aLadderNumber+1, TrackerParameter.Ladders);
     return;
@@ -1423,19 +1423,19 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
   else {
     cout << endl << " - Reading Parameters of the Ladder " << aLadderNumber+1 << endl;
   }
-  
+
   // Init
   Int_t nbOfPlanesAssociated = 0;
 
   do {
-    
+
     if ( ! strcmp( fFieldName, "LadderID" ) ) {
       read_item(pLadderParameter[aLadderNumber].LadderID);
       if (DSetupDebug) cout << " ID = " << pLadderParameter[aLadderNumber].LadderID << endl;
     }
     else if( ! strcmp( fFieldName, "LadderName" ) ) {
       read_strings( pLadderParameter[aLadderNumber].Name, pLadderParameter[aLadderNumber].tpsz);
-      if (DSetupDebug) cout << " Name = " << pLadderParameter[aLadderNumber].Name << endl;    
+      if (DSetupDebug) cout << " Name = " << pLadderParameter[aLadderNumber].Name << endl;
     }
     else if( ! strcmp( fFieldName, "Status" ) ) {
       read_item( pLadderParameter[aLadderNumber].Status);
@@ -1465,7 +1465,7 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
       else { // if planes can still be associated
         read_item(pLadderParameter[aLadderNumber].PlaneList[nbOfPlanesAssociated]);
         if(DSetupDebug) cout << "    Associated plane " << nbOfPlanesAssociated << " is " << pLadderParameter[aLadderNumber].PlaneList[nbOfPlanesAssociated] << endl;
-        
+
         // Force the reading of the two next info
         nextField();
         if ( ! strcmp( fFieldName, "PlaneShiftU" ) ) {
@@ -1476,7 +1476,7 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
         else {
           printf( "WARNING in ReadLadderParameters: expecting Plane %d Shift information!\n", nbOfPlanesAssociated);
         }
-        
+
         nextField();
         if ( ! strcmp( fFieldName, "PlaneTiltU" ) ) {
           read_r3(pLadderParameter[aLadderNumber].PlaneTilt[nbOfPlanesAssociated]);
@@ -1486,7 +1486,7 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
         else {
           printf( "WARNING in ReadLadderParameters: expecting Plane %d Tilt information!\n", nbOfPlanesAssociated);
         }
-        
+
         nbOfPlanesAssociated++;
       }  // end if planes can still be associated
     } // end if field is IncludedPlane
@@ -1497,16 +1497,16 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
         cout << "WARNING : parameter '" << fFieldName << "' in config file is not understood !" << endl;
         getRidOfLine();
       }
-    }    
-        
+    }
+
     nextField();
-    
+
   } while (  strcmp( fFieldName, "Inputs") && strcmp( fFieldName, "LadderID") && strcmp( fFieldName, "FileHeaderSize") &&  strcmp( fFieldName, "FixTrackParamX") );
-  
+
   if( nbOfPlanesAssociated < pLadderParameter[aLadderNumber].Planes ) {
     printf( "WARNING in ReadLadderParameters: only %d planes have been associated to ladder %d while %d were expected!\n", nbOfPlanesAssociated, pLadderParameter[aLadderNumber].LadderID, pLadderParameter[aLadderNumber].Planes);
   }
-  
+
   fAddedLadders++;
 
   /*
@@ -1519,15 +1519,15 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
       printf ("   relative tilt : %.2f %.2f %.2f \n"
               , pLadderParameter[aLadderNumber].PlaneTilt[iplane](0)
               , pLadderParameter[aLadderNumber].PlaneTilt[iplane](1)
-              , pLadderParameter[aLadderNumber].PlaneTilt[iplane](2)); 
+              , pLadderParameter[aLadderNumber].PlaneTilt[iplane](2));
       printf ("   relative shift : %.2f %.2f %.2f \n"
               , pLadderParameter[aLadderNumber].PlaneShift[iplane](0)
               , pLadderParameter[aLadderNumber].PlaneShift[iplane](1)
-              , pLadderParameter[aLadderNumber].PlaneShift[iplane](2)); 
+              , pLadderParameter[aLadderNumber].PlaneShift[iplane](2));
     }
   }
    */
-  
+
   if ( ! strcmp( fFieldName, "LadderID") ) { // new ladder
     ReadLadderParameters( fAddedLadders );
   } //end if new plane
@@ -1537,12 +1537,12 @@ void DSetup::ReadLadderParameters( Int_t aLadderNumber)
 
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadGlobalAlignmentParameters() 
+//
+void DSetup::ReadGlobalAlignmentParameters()
 {
-  
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Global Alignment Parameters 
+  // Global Alignment Parameters
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // Added : LC 31/08/2015
@@ -1559,15 +1559,15 @@ void DSetup::ReadGlobalAlignmentParameters()
   pGlobalAlignmentParameter.ResoFixPlaneTr = 1e-6;
   pGlobalAlignmentParameter.ResoFixPlaneRot = 1e-4;
 
-  
+
   if ( strcmp(fFieldName,"FixTrackParamX") )
   {
     cout << "    -> No Global Alignment Parameters to read (next item is '" << fFieldName << "')" << endl ;
     return ;
   }
-  
+
   do {
-    
+
     if ( ! strcmp( fFieldName, "FixTrackParamX" ) ) {
       read_item(pGlobalAlignmentParameter.FixTrackParamX);
       /*if (DSetupDebug)*/ cout << " Track parametrers X fixed to value " << pGlobalAlignmentParameter.FixTrackParamX << endl;
@@ -1582,7 +1582,7 @@ void DSetup::ReadGlobalAlignmentParameters()
     }
     else if ( ! strcmp( fFieldName, "ResoTrackParamY" ) ) {
       read_item(pGlobalAlignmentParameter.ResoTrackParamY);
-      /*if (DSetupDebug)*/ cout << " Track parameters Y resolution = " << pGlobalAlignmentParameter.ResoTrackParamY << endl;  
+      /*if (DSetupDebug)*/ cout << " Track parameters Y resolution = " << pGlobalAlignmentParameter.ResoTrackParamY << endl;
     }
     else if( ! strcmp( fFieldName, "ResoAlignParamTr" ) ) {
       read_item(pGlobalAlignmentParameter.ResoAlignParamTr);
@@ -1608,30 +1608,30 @@ void DSetup::ReadGlobalAlignmentParameters()
     }
 
     nextField();
-  
+
   } while ( strcmp( fFieldName, "Inputs") && strcmp( fFieldName, "FileHeaderSize") && strcmp( fFieldName, "GeometryName" ) && strcmp( fFieldName, "LadderID" ) );
 
   cout << "    -> Reading finished ! (next item is '" << fFieldName << "')" << endl ;
 
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadPlaneParameters( Int_t aPlaneNumber) 
+//
+void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
 {
- 
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameters of the Planes 
+  // Parameters of the Planes
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // JB 2013/01/16
   // Modified JB 2013/07/17 new parameters HitFinder, IfDigitize, ...
   // Modified JB 2013/08/13 set default valus for MimosaType, Max/MinNStrips
-  // Modified JB 2013/08/15 new ChannelOffset, PlaneResolution parameters 
+  // Modified JB 2013/08/15 new ChannelOffset, PlaneResolution parameters
   // Modified JB 2013/08/29 new Digitizer parameters
   // Modified JB 2014/01/07 default for InitialPedestal and InitialNoise
   // Modified JB 2014/04/21 new deformation parameters
   // Modified AP 2014/07/31 new variables for hot pixel list: file name and fake rate cut
-  // Modified AP 2014/12 ?  new Resolution options (U,V or by histograms) 
+  // Modified AP 2014/12 ?  new Resolution options (U,V or by histograms)
 
   if ( aPlaneNumber<0 || TrackerParameter.Planes<=aPlaneNumber ) {
     printf( "WARNING in ReadPlaneParameters: trying to add plane number %d, outside the limits [1 - %d]\n  --> nothing done!\n", aPlaneNumber+1, TrackerParameter.Planes);
@@ -1747,7 +1747,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
   _ResolutionFileList.clear();
 
   do {
-    
+
     if ( ! strcmp( fFieldName, "Inputs" ) ) {
       read_item(pPlaneParameter[aPlaneNumber].Inputs);
       if (DSetupDebug) cout << "   " << pPlaneParameter[aPlaneNumber].Inputs << " inputs:" << endl;
@@ -1770,18 +1770,18 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
           pPlaneParameter[aPlaneNumber].ChannelOffset[tl] = 1;
         }
         read_item(pPlaneParameter[aPlaneNumber].Channels[tl]);
-        if (DSetupDebug) cout << "    input " << tl 
-			      << " of type " << pPlaneParameter[aPlaneNumber].ModuleType[tl] 
-			      << " number " << pPlaneParameter[aPlaneNumber].ModuleNumber[tl] 
-			      << " input " << pPlaneParameter[aPlaneNumber].InputNumber[tl] 
-			      << " channel " << pPlaneParameter[aPlaneNumber].ChannelNumber[tl] 
-			      << " channels " << pPlaneParameter[aPlaneNumber].Channels[tl] 
+        if (DSetupDebug) cout << "    input " << tl
+			      << " of type " << pPlaneParameter[aPlaneNumber].ModuleType[tl]
+			      << " number " << pPlaneParameter[aPlaneNumber].ModuleNumber[tl]
+			      << " input " << pPlaneParameter[aPlaneNumber].InputNumber[tl]
+			      << " channel " << pPlaneParameter[aPlaneNumber].ChannelNumber[tl]
+			      << " channels " << pPlaneParameter[aPlaneNumber].Channels[tl]
 			      << endl;
       }
     }
     else if( ! strcmp( fFieldName, "StripselUse" ) ) {
       // do nothing but need to exclude it because of later field "Strips"
-//      Int_t ALL = 64; 
+//      Int_t ALL = 64;
 //      ChannelAllUse = new Int_t[ALL];
 //      for (Int_t a = 0; a < ALL; a++)    ChannelAllUse[a] = 0xFFFF;
       getRidOfLine();
@@ -1833,7 +1833,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
     }
     else if( ! strcmp( fFieldName, "CacheSize" ) ) {
       read_item(pPlaneParameter[aPlaneNumber].CacheSize);
-      if(DSetupDebug) printf("  CacheSize : %d     InitialPedestal : %d      InitialNoise : %d\n", 
+      if(DSetupDebug) printf("  CacheSize : %d     InitialPedestal : %d      InitialNoise : %d\n",
                              pPlaneParameter[aPlaneNumber].CacheSize,
                              pPlaneParameter[aPlaneNumber].InitialPedestal,
                              pPlaneParameter[aPlaneNumber].InitialNoise);
@@ -1880,17 +1880,17 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
     else if( ! strcmp( fFieldName, "SizeU" ) ) {
       read_r3(pPlaneParameter[aPlaneNumber].Size);
       pPlaneParameter[aPlaneNumber].Size *= 1000;
-      if(DSetupDebug) printf ("  Size : %f %f %f \n",pPlaneParameter[aPlaneNumber].Size(0),pPlaneParameter[aPlaneNumber].Size(1),pPlaneParameter[aPlaneNumber].Size(2)); 
+      if(DSetupDebug) printf ("  Size : %f %f %f \n",pPlaneParameter[aPlaneNumber].Size(0),pPlaneParameter[aPlaneNumber].Size(1),pPlaneParameter[aPlaneNumber].Size(2));
       printf( "WARNING: you specify a Size for your strips, which is now ignored.\n The sensitive area is now computed from the Pitch and the nb of strips.\n");
     }
     else if( ! strcmp( fFieldName, "StripsU" ) ) {
       read_r3(pPlaneParameter[aPlaneNumber].Strips);
-      if(DSetupDebug) printf ("  #strips : %f %f %f \n",pPlaneParameter[aPlaneNumber].Strips(0),pPlaneParameter[aPlaneNumber].Strips(1),pPlaneParameter[aPlaneNumber].Strips(2)); 
+      if(DSetupDebug) printf ("  #strips : %f %f %f \n",pPlaneParameter[aPlaneNumber].Strips(0),pPlaneParameter[aPlaneNumber].Strips(1),pPlaneParameter[aPlaneNumber].Strips(2));
     }
     else if( ! strcmp( fFieldName, "PitchU" ) ) {
       read_r3(pPlaneParameter[aPlaneNumber].Pitch);
       pPlaneParameter[aPlaneNumber].Pitch *= 1000;
-      if(DSetupDebug) printf ("  strip pitch : %f %f %f \n",pPlaneParameter[aPlaneNumber].Pitch(0),pPlaneParameter[aPlaneNumber].Pitch(1),pPlaneParameter[aPlaneNumber].Pitch(2)); 
+      if(DSetupDebug) printf ("  strip pitch : %f %f %f \n",pPlaneParameter[aPlaneNumber].Pitch(0),pPlaneParameter[aPlaneNumber].Pitch(1),pPlaneParameter[aPlaneNumber].Pitch(2));
       // If Strip Size is not defined yet, set to Pitch, JB 2014/04/21
       if( pPlaneParameter[aPlaneNumber].StripSize(0)<1. ) {
         pPlaneParameter[aPlaneNumber].StripSize = pPlaneParameter[aPlaneNumber].Pitch;
@@ -1899,13 +1899,13 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
     else if( ! strcmp( fFieldName, "StripSize" ) || ! strcmp( fFieldName, "StripSizeU" )) {
       read_r3(pPlaneParameter[aPlaneNumber].StripSize);
       pPlaneParameter[aPlaneNumber].StripSize *= 1000;
-      if(DSetupDebug) printf ("  strip size : %f %f %f \n",pPlaneParameter[aPlaneNumber].StripSize(0),pPlaneParameter[aPlaneNumber].StripSize(1),pPlaneParameter[aPlaneNumber].StripSize(2)); 
+      if(DSetupDebug) printf ("  strip size : %f %f %f \n",pPlaneParameter[aPlaneNumber].StripSize(0),pPlaneParameter[aPlaneNumber].StripSize(1),pPlaneParameter[aPlaneNumber].StripSize(2));
     }
     else if( ! strcmp( fFieldName, "Mapping" ) ) {
       read_item(pPlaneParameter[aPlaneNumber].Mapping);
-      if(DSetupDebug) cout << "  Mapping = " << pPlaneParameter[aPlaneNumber].Mapping << endl;      
+      if(DSetupDebug) cout << "  Mapping = " << pPlaneParameter[aPlaneNumber].Mapping << endl;
     }
-    else if( ! strcmp( fFieldName, "ThreshNeighbourSN" ) || ! strcmp( fFieldName, "ThresNeighbourSN" ) ) { // additional condition (typo), JB 2013/08/19 
+    else if( ! strcmp( fFieldName, "ThreshNeighbourSN" ) || ! strcmp( fFieldName, "ThresNeighbourSN" ) ) { // additional condition (typo), JB 2013/08/19
       read_item(pPlaneParameter[aPlaneNumber].ThreshNeighbourSN);
     }
     else if( ! strcmp( fFieldName, "ThreshSeedSN" ) ) {
@@ -1981,7 +1981,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
       read_item(TheRegion.R_col[1]);
       read_item(TheRegion.R_lin[0]);
       read_item(TheRegion.R_lin[1]);
-      
+
       if(TheRegion.R_col[0] == -1 ||
          TheRegion.R_col[1] == -1 ||
          TheRegion.R_lin[0] == -1 ||
@@ -1991,7 +1991,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
         cout << endl;
         assert(false);
       }
-      
+
       _RegionList.push_back(TheRegion);
 
     }
@@ -2046,22 +2046,22 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
         cout << "WARNING : parameter '" << fFieldName << "' in config file is not understood !" << endl;
         getRidOfLine();
       }
-    }    
+    }
 
     nextField();
-    
-  } while ( strcmp( fFieldName, "Inputs") &&  
-            strcmp( fFieldName, "LadderID") &&  
-            strcmp( fFieldName, "FileHeaderSize") && 
-            strcmp( fFieldName, "ModuleTypes" ) && 
-            strcmp( fFieldName, "AcqModuleTypes" ) && 
+
+  } while ( strcmp( fFieldName, "Inputs") &&
+            strcmp( fFieldName, "LadderID") &&
+            strcmp( fFieldName, "FileHeaderSize") &&
+            strcmp( fFieldName, "ModuleTypes" ) &&
+            strcmp( fFieldName, "AcqModuleTypes" ) &&
             strcmp( fFieldName, "FixTrackParamX")
 	  );
 
-  
+
   // Set specific parameters for HitFinder=2
   // AP ?
-  
+
   if (pPlaneParameter[aPlaneNumber].HitFinder == 2) {
     if(pPlaneParameter[aPlaneNumber].ClusterLimitRadius == -1)
     {
@@ -2131,7 +2131,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
   else if ( ! strcmp( fFieldName, "LadderID") ) { // new ladder
     ReadLadderParameters( fAddedLadders );
   } //end if new plane
-  
+
   /*
    // Old parameters not used anymore
    // JB 2013/01/15
@@ -2143,7 +2143,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
   if (DSetupDebug) cout << endl;
   read_item(pPlaneParameter[aPlaneNumber].EtaLowLimit);
   read_item(pPlaneParameter[aPlaneNumber].EtaHighLimit);
-  
+
   read_item(pPlaneParameter[aPlaneNumber].KappaCoefficientsN);
   nextItem(':');
   for (j = 0; j < pPlaneParameter[aPlaneNumber].KappaCoefficientsN; j++) {
@@ -2152,7 +2152,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
   if (DSetupDebug)  cout << endl;
   read_item(pPlaneParameter[aPlaneNumber].KappaLowLimit);
   read_item(pPlaneParameter[aPlaneNumber].KappaHighLimit);
-  
+
   read_item(pPlaneParameter[aPlaneNumber].GammaCoefficientsN);
   nextItem(':');
   for (j = 0; j < pPlaneParameter[aPlaneNumber].GammaCoefficientsN; j++) {
@@ -2161,8 +2161,8 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
   if (DSetupDebug)  cout << endl;
   read_item(pPlaneParameter[aPlaneNumber].GammaLowLimit);
   read_item(pPlaneParameter[aPlaneNumber].GammaHighLimit);
-  
-  
+
+
   read_item(pPlaneParameter[aPlaneNumber].NoisyStripsN);
   nextItem(':');
   for (j = 0; j < pPlaneParameter[aPlaneNumber].NoisyStripsN; j++) {
@@ -2170,15 +2170,15 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
     if (DSetupDebug) cout << pPlaneParameter[aPlaneNumber].NoisyStripsIndex[j] << " ";
   }
   */
-  
+
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadDAQParameters() 
+//
+void DSetup::ReadDAQParameters()
 {
-  
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameter of the Data Acquisition 
+  // Parameter of the Data Acquisition
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // JB 2013/01/16
@@ -2187,7 +2187,7 @@ void DSetup::ReadDAQParameters()
   cout << endl << " - Reading  Parameter of the Data Acquisition " << endl;
 
   // ################################################
-  //            Set default values 
+  //            Set default values
   // ################################################
   AcqParameter.FileHeaderSize    = -1;
   AcqParameter.EventBufferSize   = -1;
@@ -2201,7 +2201,7 @@ void DSetup::ReadDAQParameters()
   AcqParameter.IfExternalTimeRef = 0;
 
   do {
-    
+
     if( ! strcmp( fFieldName, "FileHeaderSize" ) ) {
       read_item(AcqParameter.FileHeaderSize);
     }
@@ -2237,12 +2237,12 @@ void DSetup::ReadDAQParameters()
         cout << "WARNING : parameter '" << fFieldName << "' in config file is not understood !" << endl;
         getRidOfLine();
       }
-    }      
+    }
     nextField();
-    
+
   } while (  strcmp( fFieldName, "Name") );
-  
-  
+
+
   if( DSetupDebug) {
     cout << "   header file size " << AcqParameter.FileHeaderSize << endl;
     cout << "   event buffer size " << AcqParameter.EventBufferSize << endl;
@@ -2257,8 +2257,8 @@ void DSetup::ReadDAQParameters()
 
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber) 
+//
+void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
 {
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
@@ -2272,7 +2272,7 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
   // Modified: JB+CB+PLR 2015/03/24 additional parameter for INFN decoder
   // Modified: JB 2016/09/20 new nMultiFrames param
   // Modified: JB 2017/11/20 new IfZeroSuppress mode available
-  
+
   sprintf(pAcqModuleParameter[aBoardNumber].Name,"");
   pAcqModuleParameter[aBoardNumber].Devices                   = -1;
   pAcqModuleParameter[aBoardNumber].Type                      = -1;
@@ -2297,12 +2297,12 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
   pAcqModuleParameter[aBoardNumber].MCTreeName                = TString("");
   pAcqModuleParameter[aBoardNumber].IfZeroSuppress            =  0;
   pAcqModuleParameter[aBoardNumber].ThresholdZero             = -1000000;
-  
+
 
   // ################################################
-  //            Set default values 
-  // ################################################  
-  
+  //            Set default values
+  // ################################################
+
   if ( aBoardNumber<0 || AcqParameter.ModuleTypes<=aBoardNumber ) {
     printf( "WARNING in ReadDAQBoardParameters: trying to add a board type %d, outside the limits [1 - %d]\n  --> nothing done!\n", aBoardNumber+1, AcqParameter.ModuleTypes);
     return;
@@ -2328,7 +2328,7 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
   Int_t inputCounter = -1; // starting value for inputs, updated at the next "channels" field
 
   do {
-    
+
     if ( ! strcmp( fFieldName, "Name") ) {
       read_strings( pAcqModuleParameter[aBoardNumber].Name, pAcqModuleParameter[aBoardNumber].tpsz);
     }
@@ -2347,7 +2347,7 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
     }
     else if( ! strcmp( fFieldName, "Channels" ) ) {
       if( inputCounter<=fMaxModules) {
-        inputCounter++;  
+        inputCounter++;
       }
       else {
         printf("WARNING in DSetup:, trying to add more than %d inputs, ignored\n", fMaxModules);
@@ -2396,7 +2396,7 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
     }
     else if( ! strcmp( fFieldName, "MCTreeName" ) ) {  // 2016/04/18, AP MC tree name. Only for MCBoardReader to read MC simulation
       read_TStrings( pAcqModuleParameter[aBoardNumber].MCTreeName, 350);
-    }    
+    }
     else if( ! strcmp( fFieldName, "DataFile" ) || ! strcmp( fFieldName, "DataFile1" )) {
       // reading data file name for each device of this type, JB 2009/05/25
       for( Int_t iMod=0; iMod<pAcqModuleParameter[aBoardNumber].Devices; iMod++) {
@@ -2444,12 +2444,12 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
         cout << "WARNING : parameter '" << fFieldName << "' in config file is not understood !" << endl;
         getRidOfLine();
       }
-    }      
+    }
     nextField();
-    
+
   } while (  strcmp( fFieldName, "StatisticCells") &&  strcmp( fFieldName, "CmsNoiseCut") &&  strcmp( fFieldName, "MaxNbOfHits") &&  strcmp( fFieldName, "Name") &&  strcmp( fFieldName, "AnalysisGoal") );
-  
-  // Copy the parameters of the last specified input to the inputs 
+
+  // Copy the parameters of the last specified input to the inputs
   //  for which they were not specified.
   // This mechanism allows to declare N inputs while providing info just for one.
   // JB 2013/08/16
@@ -2460,13 +2460,13 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
     pAcqModuleParameter[aBoardNumber].SigBits[aInp]              = pAcqModuleParameter[aBoardNumber].SigBits[inputCounter];
     pAcqModuleParameter[aBoardNumber].NbOfFramesPerChannel[aInp] = pAcqModuleParameter[aBoardNumber].NbOfFramesPerChannel[inputCounter];
   }
-  
+
   if( DSetupDebug) {
-    cout << "  Using " << pAcqModuleParameter[aBoardNumber].Devices << " " << pAcqModuleParameter[aBoardNumber].Name << " with " << pAcqModuleParameter[aBoardNumber].Inputs << " inputs and " << pAcqModuleParameter[aBoardNumber].Bits << " bits(signif. " << pAcqModuleParameter[aBoardNumber].SigBits << ") and data files ";
+    cout << "  Using " << pAcqModuleParameter[aBoardNumber].Devices << " " << pAcqModuleParameter[aBoardNumber].Name << " with " << pAcqModuleParameter[aBoardNumber].Inputs << " inputs and " << pAcqModuleParameter[aBoardNumber].Bits[0] << " bits(signif. " << pAcqModuleParameter[aBoardNumber].SigBits[0] << ") and data files ";
     for( Int_t iMod=0; iMod<pAcqModuleParameter[aBoardNumber].Devices; iMod++) {
       if( pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod] != NULL ) cout << " (" << iMod+1 << ")" << pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod];
     }
-    cout << ", and PixelShift "; 
+    cout << ", and PixelShift ";
     for( Int_t iMod=0; iMod<pAcqModuleParameter[aBoardNumber].Devices; iMod++) {
       cout << " (" << iMod+1 << ")" << pAcqModuleParameter[aBoardNumber].PixelShiftMod[iMod];
     }
@@ -2475,19 +2475,19 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
       cout << "   ==> Zero suppression required with threshold = " << pAcqModuleParameter[aBoardNumber].ThresholdZero << endl;
     }
   }
-    
-  if ( ! strcmp( fFieldName, "Name") ) { // new board    
+
+  if ( ! strcmp( fFieldName, "Name") ) { // new board
     ReadDAQBoardParameters( aBoardNumber+1 );
   } //end if new board
 
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadAnalysisParameters() 
+//
+void DSetup::ReadAnalysisParameters()
 {
-  
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameter for Analysis 
+  // Parameter for Analysis
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // JB 2013/01/16
@@ -2495,11 +2495,11 @@ void DSetup::ReadAnalysisParameters()
   // Modified: JB 2013/07/17 new UserFlag param
   // Modified: JB 2013/09/21 new histoRange param
   // Modified: JB 2014/01/17 new AnalysisGoal param
-  
+
   cout << endl << " - Reading Parameter for analysis" << endl;
 
   // ################################################
-  //            Set default values 
+  //            Set default values
   // ################################################
   // Default values in case those parameters are set in the config file
   AnalysisParameter.SavePlots           = false;
@@ -2537,7 +2537,7 @@ void DSetup::ReadAnalysisParameters()
     AnalysisParameter.MinSeedCol[i]            = -1;
     AnalysisParameter.MaxSeedCol[i]            = -1;
     AnalysisParameter.MinSeedRow[i]            = -1;
-    AnalysisParameter.MaxSeedRow[i]            = -1;    
+    AnalysisParameter.MaxSeedRow[i]            = -1;
     AnalysisParameter.MaxNofPixelsInCluster[i] = 1000;
     AnalysisParameter.MinNofPixelsInCluster[i] = 1;
     AnalysisParameter.MinSeedCharge[i]         = -1.0e+6;
@@ -2546,7 +2546,7 @@ void DSetup::ReadAnalysisParameters()
     AnalysisParameter.NoiseScope[i]            = 0.0;
     AnalysisParameter.Calibration[i]           = 1.0;
     AnalysisParameter.Geomatrices[i]           = 0;
-    
+
     for(int j=0;j<fMaxGeomatrices;j++) {
       AnalysisParameter.Umin[i][j] = -1.0e+20;
       AnalysisParameter.Umax[i][j] = +1.0e+20;
@@ -2554,14 +2554,14 @@ void DSetup::ReadAnalysisParameters()
       AnalysisParameter.Vmax[i][j] = +1.0e+20;
     }
   }
-  
+
   AnalysisParameter.UserFlag = 0;
 
   sprintf( AnalysisParameter.AnalysisGoal, ""); // Jb 2014/01/17
-  
+
 
   do {
-    
+
     if ( ! strcmp( fFieldName, "StatisticCells") ) {
       read_item(AnalysisParameter.StatisticCells);
     }
@@ -2662,9 +2662,9 @@ void DSetup::ReadAnalysisParameters()
         cout << "WARNING : parameter '" << fFieldName << "' in config file is not understood !" << endl;
         getRidOfLine();
       }
-    }         
+    }
     nextField();
-    
+
   } while (  strcmp( fFieldName, "PixelSizeU" ) && !fConfigFileStream.eof() );
 
   if( DSetupDebug) {
@@ -2682,12 +2682,12 @@ void DSetup::ReadAnalysisParameters()
 
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadSubmatrixParameters( Int_t aSubmatrixNumber) 
+//
+void DSetup::ReadSubmatrixParameters( Int_t aSubmatrixNumber)
 {
-  
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameter for Submatrix 
+  // Parameter for Submatrix
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   //
   // JB 2013/01/16
@@ -2704,7 +2704,7 @@ void DSetup::ReadSubmatrixParameters( Int_t aSubmatrixNumber)
   else {
     cout << "  * adding submatrix " << aSubmatrixNumber << endl;
   }
-  
+
   // some initialization
   AnalysisParameter.Matrixtype[aSubmatrixNumber] = 1;
   AnalysisParameter.Calibration[aSubmatrixNumber] = 1.;
@@ -2798,9 +2798,9 @@ void DSetup::ReadSubmatrixParameters( Int_t aSubmatrixNumber)
         getRidOfLine();
       }
     }
-  
+
     nextField();
-  
+
   } while (  strcmp( fFieldName, "PixelSizeU" ) && !fConfigFileStream.eof() );
 
   if( DSetupDebug )  {
@@ -2809,7 +2809,7 @@ void DSetup::ReadSubmatrixParameters( Int_t aSubmatrixNumber)
     cout << "    matrix type " << AnalysisParameter.Matrixtype[aSubmatrixNumber] << endl;
     cout << "    # pixels " << AnalysisParameter.PixelsInRaw[aSubmatrixNumber] << " in raw, " << AnalysisParameter.PixelsInColumn[aSubmatrixNumber] << " in column" << endl;
     cout << "    min - max # pixels in hit " << AnalysisParameter.MinNofPixelsInCluster[aSubmatrixNumber] << " - " << AnalysisParameter.MaxNofPixelsInCluster[aSubmatrixNumber] << endl;
-    cout << "    range of seed index: " << AnalysisParameter.MinSeedIndex[aSubmatrixNumber] << " to " << AnalysisParameter.MaxSeedIndex[aSubmatrixNumber] << endl; 
+    cout << "    range of seed index: " << AnalysisParameter.MinSeedIndex[aSubmatrixNumber] << " to " << AnalysisParameter.MaxSeedIndex[aSubmatrixNumber] << endl;
     cout << "    calibration " << AnalysisParameter.Calibration[aSubmatrixNumber] << endl;
     cout << "    noiseScope " << AnalysisParameter.NoiseScope[aSubmatrixNumber] << endl;
     cout << "    # Geomatrices " << AnalysisParameter.Geomatrices[aSubmatrixNumber] << endl;
@@ -2821,11 +2821,11 @@ void DSetup::ReadSubmatrixParameters( Int_t aSubmatrixNumber)
   if ( ! strcmp( fFieldName, "PixelSizeU" ) ) {
     ReadSubmatrixParameters( aSubmatrixNumber+1);
   }
-  
+
 }
 //______________________________________________________________________________
-//  
-void DSetup::ReadConfiguration() 
+//
+void DSetup::ReadConfiguration()
 {
   // Reads telescope plane and detector configuration from configuration file
   // The call order of each method matters!
@@ -2839,10 +2839,10 @@ void DSetup::ReadConfiguration()
   //
   // Modified: JB 2013/01/16, use new parsing methods
   // Modified: VR 2016/06/30, run number is get from DSession and DataSubDirPrefixXXX (XXX = run #) concatenated to DataPath if set
-  
+
   //DSetupDebug = 2;
-  
-  cout << endl << " -*-*- DSetup User Constructor -*-*- " << endl;  
+
+  cout << endl << " -*-*- DSetup User Constructor -*-*- " << endl;
 
   // -+-+-+-+-+--+-+-
   // --- Initialization
@@ -2852,7 +2852,7 @@ void DSetup::ReadConfiguration()
 
   fAddedPlanes = 0;
   fAddedLadders = 0;
-  
+
   // -+-+-+-+-+--+-+-
   // --- open config file:
   // -+-+-+-+-+--+-+-
@@ -2873,33 +2873,33 @@ void DSetup::ReadConfiguration()
   }
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Run Parameter 
+  // Run Parameter
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   ReadRunParameters();
   RunParameter.Number = fSession->GetRunNumber();// VR 20014/06/30 Set the run number from DSession(fRunNumber), which is set by MimosaAnalysis::InitSession(const Int_t TheRun)
-  if ( strcmp(RunParameter.DataSubDirPrefix,""))// VR 20014/06/30 
+  if ( strcmp(RunParameter.DataSubDirPrefix,""))// VR 20014/06/30
   {
     //if DataSubDirPrefix is given, concatenate it with the run number to the DataPath
     sprintf( RunParameter.DataPath, "%s/%s%d/", RunParameter.DataPath,RunParameter.DataSubDirPrefix, RunParameter.Number ); // VR 2014/06/30
   }
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameters of the Tracker 
+  // Parameters of the Tracker
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   ReadTrackerParameters();
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameters For Global Alignement 
+  // Parameters For Global Alignement
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   ReadGlobalAlignmentParameters();
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   // Parameters of the Experiment Geometry
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  //ReadExperimentGeometryParameters(); //Valerian 2015/02/02@18h50 : if this method causes bug, tell me so I can correct bug (In a previous commit it was comment ?!) 
- 
+  //ReadExperimentGeometryParameters(); //Valerian 2015/02/02@18h50 : if this method causes bug, tell me so I can correct bug (In a previous commit it was comment ?!)
+
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameters of the Planes 
+  // Parameters of the Planes
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   pPlaneParameter = NULL;
   ChannelUse      = NULL;
@@ -2909,7 +2909,7 @@ void DSetup::ReadConfiguration()
   if ( ! strcmp( fFieldName, "Inputs" ) ) ReadPlaneParameters(fAddedPlanes); // contains iterative call to subsequent planes
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameters of the Ladders 
+  // Parameters of the Ladders
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   pLadderParameter  = NULL;
   pLadderParameter  = new LadderParameter_t[TrackerParameter.Ladders];
@@ -2917,7 +2917,7 @@ void DSetup::ReadConfiguration()
   if ( ! strcmp( fFieldName, "LadderID" ) ) ReadLadderParameters(fAddedLadders); // contains iterative call to subsequent ladders
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameter of the Data Acquisition 
+  // Parameter of the Data Acquisition
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   ReadDAQParameters();
 
@@ -2929,21 +2929,21 @@ void DSetup::ReadConfiguration()
   ReadDAQBoardParameters(0); // contains iterative call to subsequent Module
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
-  // Parameter for Analysis 
+  // Parameter for Analysis
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   ReadAnalysisParameters();
   if ( ! strcmp( fFieldName, "PixelSizeU" ) ) {
     ReadSubmatrixParameters( 0); // contains iterative call to subsequent submatrices
   }
   else {
-    printf( "WARNING in ReadAnalysisParameter: Missing submatrix parameters (PixelSize, ...)!\n");  
+    printf( "WARNING in ReadAnalysisParameter: Missing submatrix parameters (PixelSize, ...)!\n");
   }
 
   // -+-+-+-+-+--+-+-
   // --- closing config file:
   // -+-+-+-+-+--+-+-
   //if(fConfigFileStream) fConfigFileStream.close();  // TAF stop here : the file will be closed in the destructor call, so I comment this line
-  
+
   /*
   Char_t    tWeightFileName[200];
   Int_t     tRunIndex = GetRunPar().Number;
@@ -2953,26 +2953,26 @@ void DSetup::ReadConfiguration()
 
   if (gSystem->AccessPathName(tWeightFileName)) {
     Info("ReadConfiguration","%s  doesn't exist you have to make a new one (Make New Eta Function gTAF->MakeEta())! ",tWeightFileName);
-    fWeightFile = new TFile(tWeightFileName,"CREATE");  
+    fWeightFile = new TFile(tWeightFileName,"CREATE");
   }
   else {
-    fWeightFile = new TFile(tWeightFileName);  
+    fWeightFile = new TFile(tWeightFileName);
   }
   //fWeightFile->Close(); // JB, Sept 2008
   */
 
   cout << endl << " -*-*- DSetup User Constructor DONE -*-*- " << endl;
-  
+
 }
 //______________________________________________________________________________
-//  
+//
 DSetup::DSetup(const DSetup& c)
 {
   copy(c);
 }
 
 //______________________________________________________________________________
-//  
+//
 DSetup& DSetup::operator=(const DSetup& a)
 {
   copy(a);
@@ -2985,11 +2985,11 @@ void DSetup::copy(const DSetup& a)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSetup::nextItem(Char_t delimiter)
 {
   // Move the file parsing pointer to the character "delimiter"
-  
+
   Char_t c;
   do {
     fConfigFileStream >> c;
@@ -2998,16 +2998,16 @@ void DSetup::nextItem(Char_t delimiter)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSetup::nextField()
 {
   // Move the file parsing pointer to the character "delimiter"
-  // store in fFieldName the previous chain of characters 
+  // store in fFieldName the previous chain of characters
   //  (skipping spaces, new lines and the delimiter)
   //
   // Modified JB 2012/12/20 include recording of fieldName
   // Modified JB 2013/01/16 skip comment lines
-  
+
   Char_t delimiter = ':';
   Int_t k = 0;
   Char_t c, previousC;
@@ -3036,22 +3036,22 @@ void DSetup::nextField()
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSetup::read_r3(DR3 &arg)
 {
   // Modified BH 2013/08/21 memory leak removed
-  
+
   Double_t co[3] = {0., 0., 0.}; // BH 2013/08/21
   for (Int_t k = 0; k < 3; k++) {
     if( k>0 ) nextItem(':'); // already positionned for 1st value
     fConfigFileStream >> co[k];
-    if (DSetupDebug>1) cout << co[k] << endl;      
-    arg.SetValue(co); 
+    if (DSetupDebug>1) cout << co[k] << endl;
+    arg.SetValue(co);
   }
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSetup::read_item(Int_t &arg)
 {
   //nextItem(':');
@@ -3062,18 +3062,18 @@ void DSetup::read_item(Int_t &arg)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSetup::read_item(UInt_t &arg)
 {
   //nextItem(':');
   fConfigFileStream >> arg;
   if (DSetupDebug>1){
-    printf("value =%d/%x\n",arg,arg); 
+    printf("value =%d/%x\n",arg,arg);
    }
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSetup::read_item(Float_t &arg)
 {
 
@@ -3085,7 +3085,7 @@ void DSetup::read_item(Float_t &arg)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSetup::read_strings(Char_t *aString, Int_t aLength)
 {
 
@@ -3100,7 +3100,7 @@ void DSetup::read_strings(Char_t *aString, Int_t aLength)
   do {
     fConfigFileStream >> c;
     //cout << c;
-  } while (c != '"');  
+  } while (c != '"');
   // Now, read the value up to the next " delimiter
   do {
     fConfigFileStream >> c;
@@ -3112,7 +3112,7 @@ void DSetup::read_strings(Char_t *aString, Int_t aLength)
   } while (c != '"');
   aString[k]='\0'; // end properly the string when it is shorter than max length
   if (DSetupDebug>1) cout << "value = " << aString << endl;
-  
+
 }
 //______________________________________________________________________________
 //
@@ -3131,7 +3131,7 @@ void DSetup::read_TStrings(TString& TheString, Int_t aLength)
   do {
     fConfigFileStream >> c;
     //cout << c;
-  } while (c != '"');  
+  } while (c != '"');
   // Now, read the value up to the next " delimiter
   do {
     fConfigFileStream >> c;
@@ -3145,18 +3145,18 @@ void DSetup::read_TStrings(TString& TheString, Int_t aLength)
   if (DSetupDebug>1) cout << "value = " << aString << endl;
 
   TheString = TString(aString);
-  
+
 }
 //______________________________________________________________________________
-//  
+//
 void DSetup::getRidOfLine()
 {
-  
+
   // Simply get rid of all character till the line ends,
   // line is not expected to exceeds 200 charaters.
-  // 
+  //
   // JB, 2013/01/16
-  
+
   Char_t line[250];
   fConfigFileStream.getline( line, 250);
 
@@ -3165,9 +3165,9 @@ void DSetup::getRidOfLine()
 //
 void DSetup::InitializePerformancesParams(int aPlaneNumber)
 {
-  
+
   pPlaneParameter[aPlaneNumber].PlanePerformancesList.clear();
-  
+
   if(_ResolutionFileList.size() > 0) {
     pPlaneParameter[aPlaneNumber].UsingTrackerResolution = false;
 
@@ -3189,7 +3189,7 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
           hMultiplicity = (TH1F*)ResolutionVsMultFile.Get(TheHistoName.Data());
           if(hMultiplicity == NULL) {
             cout << endl;
-            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data() 
+            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data()
                  << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!" << endl;
             cout << endl;
             assert(false);
@@ -3200,17 +3200,17 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
           hResolutionU = (TH1F*)ResolutionVsMultFile.Get(TheHistoName.Data());
           if(hResolutionU == NULL) {
             cout << endl;
-            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data() 
+            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data()
                  << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!" << endl;
             cout << endl;
             assert(false);
           }
-          
+
           TheHistoName = TheHistoName_ResolV;
           hResolutionV = (TH1F*)ResolutionVsMultFile.Get(TheHistoName.Data());
           if(hResolutionV == NULL) {
             cout << endl;
-            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data() 
+            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data()
                  << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!" << endl;
             cout << endl;
             assert(false);
@@ -3221,7 +3221,7 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
           AResolutionVsMult.Region.R_col[1] = pPlaneParameter[aPlaneNumber].Strips(0);
           AResolutionVsMult.Region.R_lin[0] = 0;
           AResolutionVsMult.Region.R_lin[1] = pPlaneParameter[aPlaneNumber].Strips(1);
-          
+
           AResolutionVsMult.GlobalPlaneResolution  = -1.0;
           AResolutionVsMult.GlobalPlaneResolutionU = -1.0;
           AResolutionVsMult.GlobalPlaneResolutionV = -1.0;
@@ -3256,12 +3256,12 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
             AResolutionVsMult.MultProbCumul.push_back(prob_cumul);
           }
           pPlaneParameter[aPlaneNumber].PlanePerformancesList.push_back(AResolutionVsMult);
-          
+
           ResolutionVsMultFile.Close();
         } // end if of ROOT file exists
         else {
           cout << endl;
-          cout << "Resolution vs multiplicity ROOT file " << _ResolutionFileList[ireg].Data() 
+          cout << "Resolution vs multiplicity ROOT file " << _ResolutionFileList[ireg].Data()
                << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!"
 	       << endl;
           cout << endl;
@@ -3290,7 +3290,7 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
           }
         }
       }
-      
+
       for(int ireg=0;ireg<int(_ResolutionFileList.size());ireg++) {
         TH1F* hMultiplicity = NULL;
         TH1F* hResolutionU  = NULL;
@@ -3303,28 +3303,28 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
           hMultiplicity = (TH1F*)ResolutionVsMultFile.Get(TheHistoName.Data());
           if(hMultiplicity == NULL) {
             cout << endl;
-            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data() 
+            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data()
                  << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!" << endl;
             cout << endl;
             assert(false);
           }
           hMultiplicity->Scale(1.0/hMultiplicity->GetEntries());
-          
+
           TheHistoName = TheHistoName_ResolU;
           hResolutionU = (TH1F*)ResolutionVsMultFile.Get(TheHistoName.Data());
           if(hResolutionU == NULL) {
             cout << endl;
-            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data() 
+            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data()
                  << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!" << endl;
             cout << endl;
             assert(false);
           }
-          
+
           TheHistoName = TheHistoName_ResolV;
           hResolutionV = (TH1F*)ResolutionVsMultFile.Get(TheHistoName.Data());
           if(hResolutionV == NULL) {
             cout << endl;
-            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data() 
+            cout << "Histogram with name " << TheHistoName.Data() << " is not found in ROOT file " << _ResolutionFileList[ireg].Data()
                  << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!" << endl;
             cout << endl;
             assert(false);
@@ -3335,11 +3335,11 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
           AResolutionVsMult.Region.R_col[1] = _RegionList[ireg].R_col[1];
           AResolutionVsMult.Region.R_lin[0] = _RegionList[ireg].R_lin[0];
           AResolutionVsMult.Region.R_lin[1] = _RegionList[ireg].R_lin[1];
-          
+
           AResolutionVsMult.GlobalPlaneResolution  = -1.0;
           AResolutionVsMult.GlobalPlaneResolutionU = -1.0;
           AResolutionVsMult.GlobalPlaneResolutionV = -1.0;
-          
+
           AResolutionVsMult.MultProb.clear();
           AResolutionVsMult.MultProbCumul.clear();
           AResolutionVsMult.ResolutionU.clear();
@@ -3370,17 +3370,17 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
             AResolutionVsMult.MultProbCumul.push_back(prob_cumul);
           }
           pPlaneParameter[aPlaneNumber].PlanePerformancesList.push_back(AResolutionVsMult);
-          
+
           ResolutionVsMultFile.Close();
         } // end if of ROOT file exists
         else {
           cout << endl;
-          cout << "Resolution vs multiplicity ROOT file " << _ResolutionFileList[ireg].Data() 
+          cout << "Resolution vs multiplicity ROOT file " << _ResolutionFileList[ireg].Data()
                << " for plane " << aPlaneNumber << " and region " << ireg+1 << "doesn't exits. Check your inputs. Exiting now!!!" << endl;
           cout << endl;
           assert(false);
         }
-        
+
       }
     }
   }
@@ -3388,7 +3388,7 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
     pPlaneParameter[aPlaneNumber].UsingTrackerResolution = false;
     if(_ResolutionUList.size() != _ResolutionVList.size()) {
       cout << endl;
-      cout << "Need to specify both the same number of PlaneResolutionU and PlaneResolutionV parameters for Plane " << aPlaneNumber+1 
+      cout << "Need to specify both the same number of PlaneResolutionU and PlaneResolutionV parameters for Plane " << aPlaneNumber+1
            << ". Check your inputs. Exiting now!!!"
            << endl;
       cout << endl;
@@ -3401,11 +3401,11 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
       AResolutionVsMult.Region.R_col[1] = pPlaneParameter[aPlaneNumber].Strips(0);
       AResolutionVsMult.Region.R_lin[0] = 0;
       AResolutionVsMult.Region.R_lin[1] = pPlaneParameter[aPlaneNumber].Strips(1);
-      
+
       AResolutionVsMult.GlobalPlaneResolution  = -1.0;
       AResolutionVsMult.GlobalPlaneResolutionU = _ResolutionUList[0];
       AResolutionVsMult.GlobalPlaneResolutionV = _ResolutionVList[0];
-      
+
       AResolutionVsMult.MultProb.clear();
       AResolutionVsMult.MultProbCumul.clear();
       AResolutionVsMult.ResolutionU.clear();
@@ -3421,22 +3421,22 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
         cout << endl;
         assert(false);
       }
-      
+
       //Check that the regions defined agree with the sensor limits and that they not overlap with each others
       CheckRegionsOverlaps(aPlaneNumber);
       CheckForBadRegions(aPlaneNumber);
-      
+
       for(int ireg=0;ireg<int(_ResolutionUList.size());ireg++) {
         PlanePerformances_t AResolutionVsMult;
         AResolutionVsMult.Region.R_col[0] = _RegionList[ireg].R_col[0];
         AResolutionVsMult.Region.R_col[1] = _RegionList[ireg].R_col[1];
         AResolutionVsMult.Region.R_lin[0] = _RegionList[ireg].R_lin[0];
         AResolutionVsMult.Region.R_lin[1] = _RegionList[ireg].R_lin[1];
-        
+
         AResolutionVsMult.GlobalPlaneResolution  = -1.0;
         AResolutionVsMult.GlobalPlaneResolutionU = _ResolutionUList[ireg];
         AResolutionVsMult.GlobalPlaneResolutionV = _ResolutionVList[ireg];
-        
+
         AResolutionVsMult.MultProb.clear();
         AResolutionVsMult.MultProbCumul.clear();
         AResolutionVsMult.ResolutionU.clear();
@@ -3453,11 +3453,11 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
       AResolutionVsMult.Region.R_col[1] = pPlaneParameter[aPlaneNumber].Strips(0);
       AResolutionVsMult.Region.R_lin[0] = 0;
       AResolutionVsMult.Region.R_lin[1] = pPlaneParameter[aPlaneNumber].Strips(1);
-      
+
       AResolutionVsMult.GlobalPlaneResolution  = _ResolutionList[0];
       AResolutionVsMult.GlobalPlaneResolutionU = -1;
       AResolutionVsMult.GlobalPlaneResolutionV = -1;
-      
+
       AResolutionVsMult.MultProb.clear();
       AResolutionVsMult.MultProbCumul.clear();
       AResolutionVsMult.ResolutionU.clear();
@@ -3477,18 +3477,18 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
       //Check that the regions defined agree with the sensor limits and that they not overlap with each others
       CheckRegionsOverlaps(aPlaneNumber);
       CheckForBadRegions(aPlaneNumber);
-      
+
       for(int ireg=0;ireg<int(_ResolutionList.size());ireg++) {
         PlanePerformances_t AResolutionVsMult;
         AResolutionVsMult.Region.R_col[0] = _RegionList[ireg].R_col[0];
         AResolutionVsMult.Region.R_col[1] = _RegionList[ireg].R_col[1];
         AResolutionVsMult.Region.R_lin[0] = _RegionList[ireg].R_lin[0];
         AResolutionVsMult.Region.R_lin[1] = _RegionList[ireg].R_lin[1];
-        
+
         AResolutionVsMult.GlobalPlaneResolution  = _ResolutionList[ireg];
         AResolutionVsMult.GlobalPlaneResolutionU = -1.0;
         AResolutionVsMult.GlobalPlaneResolutionV = -1.0;
-        
+
         AResolutionVsMult.MultProb.clear();
         AResolutionVsMult.MultProbCumul.clear();
         AResolutionVsMult.ResolutionU.clear();
@@ -3504,11 +3504,11 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
     AResolutionVsMult.Region.R_col[1] = pPlaneParameter[aPlaneNumber].Strips(0);
     AResolutionVsMult.Region.R_lin[0] = 0;
     AResolutionVsMult.Region.R_lin[1] = pPlaneParameter[aPlaneNumber].Strips(1);
-    
+
     AResolutionVsMult.GlobalPlaneResolution  = TrackerParameter.Resolution;
     AResolutionVsMult.GlobalPlaneResolutionU = -1.0;
     AResolutionVsMult.GlobalPlaneResolutionV = -1.0;
-    
+
     AResolutionVsMult.MultProb.clear();
     AResolutionVsMult.MultProbCumul.clear();
     AResolutionVsMult.ResolutionU.clear();
@@ -3527,19 +3527,19 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
 	//Using same resolution for U and V
 	if(pPlaneParameter[aPlaneNumber].UsingTrackerResolution) {
 	  //Using same resolution as the one defined on tracker block
-	  cout << "Using global TrakerResolution for PlaneResolution for Plane " << aPlaneNumber+1 
+	  cout << "Using global TrakerResolution for PlaneResolution for Plane " << aPlaneNumber+1
 	       << ". Resolution = " << pPlaneParameter[aPlaneNumber].PlanePerformancesList[0].GlobalPlaneResolution << "um" << endl;
 	  cout << "Using the same resolution for U and V directions!!!" << endl;
 	}
 	else {
 	  //Using user defined global resolution
-	  cout << "Using user defined global PlaneResolution for Plane " << aPlaneNumber+1 
+	  cout << "Using user defined global PlaneResolution for Plane " << aPlaneNumber+1
 	       << ". Resolution = " << pPlaneParameter[aPlaneNumber].PlanePerformancesList[0].GlobalPlaneResolution << "um" << endl;
 	  cout << "Using the same resolution for U and V directions!!!" << endl;
 	}
       }
       else {
-	//Using different global resolutions for U and 
+	//Using different global resolutions for U and
 	cout << "Using different PlaneResolutions for Plane " << aPlaneNumber+1 << " for U and V directions." << endl;
 	cout << "ResolutionU = " << pPlaneParameter[aPlaneNumber].PlanePerformancesList[0].GlobalPlaneResolutionU << "um" << endl;
 	cout << "ResolutionV = " << pPlaneParameter[aPlaneNumber].PlanePerformancesList[0].GlobalPlaneResolutionV << "um" << endl;
@@ -3620,13 +3620,13 @@ void DSetup::InitializePerformancesParams(int aPlaneNumber)
   }
 
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 void DSetup::CheckRegionsOverlaps(int aPlaneNumber)
 {
-  
+
   bool RegionsOverlap = false;
   for(int ireg=0;ireg<int(_RegionList.size());ireg++) {
     for(int jreg=ireg+1;jreg<int(_RegionList.size());jreg++) {
@@ -3635,9 +3635,9 @@ void DSetup::CheckRegionsOverlaps(int aPlaneNumber)
       Corners[1][0] = _RegionList[jreg].R_col[1]; Corners[1][1] = _RegionList[jreg].R_lin[0];
       Corners[2][0] = _RegionList[jreg].R_col[0]; Corners[2][1] = _RegionList[jreg].R_lin[1];
       Corners[3][0] = _RegionList[jreg].R_col[1]; Corners[3][1] = _RegionList[jreg].R_lin[1];
-      
+
       for(int icorners=0;icorners<4;icorners++) {
-	if((Corners[icorners][0] >= _RegionList[ireg].R_col[0] && Corners[icorners][0] <= _RegionList[ireg].R_col[1]) && 
+	if((Corners[icorners][0] >= _RegionList[ireg].R_col[0] && Corners[icorners][0] <= _RegionList[ireg].R_col[1]) &&
            (Corners[icorners][1] >= _RegionList[ireg].R_lin[0] && Corners[icorners][1] <= _RegionList[ireg].R_lin[1])) {
 	  RegionsOverlap = true;
 	  cout << "region " << ireg+1 << " overlaps with region " << jreg+1 << endl;
@@ -3654,25 +3654,25 @@ void DSetup::CheckRegionsOverlaps(int aPlaneNumber)
     cout << endl;
     assert(false);
   }
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 void DSetup::CheckForBadRegions(int aPlaneNumber)
 {
-  
+
   bool BadRegion = false;
   for(int ireg=0;ireg<int(_RegionList.size());ireg++) {
-    if(_RegionList[ireg].R_col[0] < 0 || 
-       _RegionList[ireg].R_col[1] > pPlaneParameter[aPlaneNumber].Strips(0)-1 || 
+    if(_RegionList[ireg].R_col[0] < 0 ||
+       _RegionList[ireg].R_col[1] > pPlaneParameter[aPlaneNumber].Strips(0)-1 ||
        _RegionList[ireg].R_lin[0] < 0 ||
        _RegionList[ireg].R_lin[1] > pPlaneParameter[aPlaneNumber].Strips(1)-1
        ) {
       BadRegion = true;
       cout << "Region " << ireg+1 << " has limits outside sensor limits!. Region col = (" << _RegionList[ireg].R_col[0] << "," << _RegionList[ireg].R_col[1] << "), lin = ("
-           << _RegionList[ireg].R_lin[0] << "," << _RegionList[ireg].R_lin[1] << "). Sensor col = (" << 0 << "," << pPlaneParameter[aPlaneNumber].Strips(0)-1 
+           << _RegionList[ireg].R_lin[0] << "," << _RegionList[ireg].R_lin[1] << "). Sensor col = (" << 0 << "," << pPlaneParameter[aPlaneNumber].Strips(0)-1
            << "), lin = (" << 0 << "," << pPlaneParameter[aPlaneNumber].Strips(1)-1 << ")"
            << endl;
       break;
@@ -3684,23 +3684,23 @@ void DSetup::CheckForBadRegions(int aPlaneNumber)
     cout << endl;
     assert(false);
   }
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
                                                  TString HotPixelMapFile)
 {
-  
+
   pPlaneParameter[aPlaneNumber].HotPixelList_lin.clear();
   pPlaneParameter[aPlaneNumber].HotPixelList_col.clear();
   pPlaneParameter[aPlaneNumber].HotPixelList_index.clear();
-  
+
   //Do nothing if hot pixel list for masking is not requested
   if(_FractionToMaskList.size() == 0 || HotPixelMapFile == TString("")) return;
-  
+
   TH2F* h2HotPixelMap    = NULL;
   TH1F* h1HotPixelList   = NULL;
   TFile FakeRateMapFile(HotPixelMapFile.Data(),"READ");
@@ -3711,7 +3711,7 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
     << " with fake rate map for plane " << aPlaneNumber+1
     << " doesn't exist. Doing nothing, list of hot is left empty." << endl;
     cout << endl;
-    
+
     return;
   }
   /*
@@ -3722,7 +3722,7 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
    cout << endl;
    }
    */
-  
+
   h2HotPixelMap = (TH2F*)FakeRateMapFile.Get("h2HotPixelMap");
   if(h2HotPixelMap == NULL) { // if occupancy h2 map doest not exists
     //Warning message when ROOT file exists, but fake rate map histogram is not found. Do nothing.
@@ -3736,7 +3736,7 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
     //h2HotPixelMap->SetDirectory(0);
     cout << "Looping over the fake-rate map to find hot pixels. Plane " << aPlaneNumber+1 << endl;
     //Loop over the fake rate map to identify the hot pixels
-    
+
     if(_FractionToMaskList.size() == 1) {
       cout << "Specified a single Fraction to Mask of " << _FractionToMaskList[0]*100 << "% for whole matrix of plane " << aPlaneNumber+1 << endl;
       //If only specified a singl FakeRateCut, then apply the cut over the full matrix of pixels
@@ -3746,7 +3746,7 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
       double RV_tmp[2];
       RV_tmp[0] = h2HotPixelMap->GetYaxis()->GetXmin()+0.5;
       RV_tmp[1] = h2HotPixelMap->GetYaxis()->GetXmax()+0.5;
-      
+
       if(!(RU_tmp[0] == 0 && RU_tmp[1] == pPlaneParameter[aPlaneNumber].Strips(0) &&
            RV_tmp[0] == 0 && RV_tmp[1] == pPlaneParameter[aPlaneNumber].Strips(1))) {
         cout << "WARNING: the range of the hot pixels map histrograms don't agree with the number of pixels of the matrix:" << endl;
@@ -3754,7 +3754,7 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
         cout << "WARNING: V-range = (" << RV_tmp[0] << "," << RV_tmp[1] << "), and expects (0," << pPlaneParameter[aPlaneNumber].Strips(1) << ")" << endl;
         cout << "WARNING: Maybe need to check your inputs!!!" << endl;
       }
-      
+
       //Put the pixels in a map which is ordered from the lowest to the highest fake-rate
       std::vector<APixel_t> _fake_map;
       _fake_map.clear();
@@ -3763,7 +3763,7 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
         for(Int_t ix=0;ix<h2HotPixelMap->GetXaxis()->GetNbins();ix++) {
           Int_t col = Int_t(h2HotPixelMap->GetXaxis()->GetBinCenter(ix+1));
           double fake_rate = h2HotPixelMap->GetBinContent(ix+1,iy+1)/100.0;
-          
+
           if(fake_rate > 0.0) {
             APixel_t Mypixel;
             Mypixel.col  = col;
@@ -3771,14 +3771,14 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
             Mypixel.fake = fake_rate;
             _fake_map.push_back(Mypixel);
           }
-          
+
         }
       }
       for(int iii=2;iii<=int(_fake_map.size());iii++) {
         for(int jjj=0;jjj<=int(_fake_map.size())-iii;jjj++) {
           double fake_jjj   = _fake_map[jjj].fake;
           double fake_jjjp1 = _fake_map[jjj+1].fake;
-          
+
           if(fake_jjj < fake_jjjp1) {
             APixel_t aux_pixel  = _fake_map[jjj];
             _fake_map[jjj]      = _fake_map[jjj+1];
@@ -3786,11 +3786,11 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
           }
         }
       }
-      
+
       //Define the number of pixels to mask based on mask fraction
       int Npixels = h2HotPixelMap->GetXaxis()->GetNbins()*h2HotPixelMap->GetYaxis()->GetNbins();
       int NtoMask = int(Npixels*_FractionToMaskList[0]);
-      
+
       int counter = 0;
       for(int i=0;i<int(_fake_map.size());i++) {
         counter++;
@@ -3799,32 +3799,32 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
         int lin     = _fake_map[i].lin;
         //double fake = _fake_map[i].fake;
         //cout << "(col,lin) = (" << col << "," << lin << "), value = " << fake << endl;
-        
+
         pPlaneParameter[aPlaneNumber].HotPixelList_lin.push_back(lin);
         pPlaneParameter[aPlaneNumber].HotPixelList_col.push_back(col);
       }
-      
+
       _fake_map.clear();
     }
     else if(_FractionToMaskList.size() > 1) {
       //Specified more than one FakeRateCut
-      
+
       if(_FractionToMaskList.size() != _RegionList.size()) {
         //Check that the FakeRateCut list has the same size as the Region list. If not exit and do nothing.
         cout << endl;
         cout << "WARNING: FractionToMaskList size (" << _FractionToMaskList.size() << ") if different from region list size (" << _RegionList.size() << ")" << endl;
         cout << "WARNING: no attempt to build hot pixels list. Check your inputs!!!" << endl;
         cout << endl;
-        
+
 //        FakeRateMapFile.Close();
-        
+
 //        return;
       }
       else {
         //Check that the regions defined agree with the sensor limits and that they not overlap with each others
         CheckRegionsOverlaps(aPlaneNumber);
         CheckForBadRegions(aPlaneNumber);
-        
+
         cout << "List of Fraction to Mask for different regions:" << endl;
         for(int ireg=0;ireg<int(_RegionList.size());ireg++) {
           cout << "Region " << ireg+1 << ": col = ("
@@ -3836,22 +3836,22 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
           << endl;
         }
         cout << endl;
-        
+
         for(int ireg=0;ireg<int(_RegionList.size());ireg++) { //Loop over regions
           int Npixels = 0;
           std::vector<APixel_t> _fake_map;
           _fake_map.clear();
-          
+
           //Apply the fake rate cut depending on the regions defined
           for(Int_t iy=0;iy<h2HotPixelMap->GetYaxis()->GetNbins();iy++) {
             Int_t lin = Int_t(h2HotPixelMap->GetYaxis()->GetBinCenter(iy+1));
             for(Int_t ix=0;ix<h2HotPixelMap->GetXaxis()->GetNbins();ix++) {
               Int_t col = Int_t(h2HotPixelMap->GetXaxis()->GetBinCenter(ix+1));
-              
+
               if((col >= _RegionList[ireg].R_col[0] && col <= _RegionList[ireg].R_col[1]) && (lin >= _RegionList[ireg].R_lin[0] && lin <= _RegionList[ireg].R_lin[1])) {
                 double fake_rate = h2HotPixelMap->GetBinContent(ix+1,iy+1)/100.0;
                 Npixels++;
-                
+
                 if(fake_rate > 0.0) {
                   APixel_t Mypixel;
                   Mypixel.col  = col;
@@ -3860,14 +3860,14 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
                   _fake_map.push_back(Mypixel);
                 }
               }
-              
+
             }
           }
           for(int iii=2;iii<=int(_fake_map.size());iii++) {
             for(int jjj=0;jjj<=int(_fake_map.size())-iii;jjj++) {
               double fake_jjj   = _fake_map[jjj].fake;
               double fake_jjjp1 = _fake_map[jjj+1].fake;
-              
+
               if(fake_jjj < fake_jjjp1) {
                 APixel_t aux_pixel  = _fake_map[jjj];
                 _fake_map[jjj]      = _fake_map[jjj+1];
@@ -3875,9 +3875,9 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
               }
             }
           }
-          
+
           int NtoMask = int(Npixels*_FractionToMaskList[ireg]);
-          
+
           int counter = 0;
           for(int i=0;i<int(_fake_map.size());i++) {
             counter++;
@@ -3890,18 +3890,18 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
             pPlaneParameter[aPlaneNumber].HotPixelList_col.push_back(col);
           }
           _fake_map.clear();
-          
+
         } //end of loop over regions
-        
+
       } // end of if fake-rate list size is equal to ragion list size
-      
+
     } // end of if fake-rate list size is higher than one
 //    FakeRateMapFile.Close();
-    
+
 //    return;
-    
+
   } // end if occupancy h2 map exists
-  
+
   if(_FractionToMaskList.size() == 1) {
     cout << "Looping over the fake-rate list to find hot pixels. Plane " << aPlaneNumber+1 << endl;
     cout << "Specified a single Fraction to Mask of " << _FractionToMaskList[0]*100 << "% for whole matrix of plane " << aPlaneNumber+1 << endl;
@@ -3909,14 +3909,14 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
     h1HotPixelList = (TH1F*)FakeRateMapFile.Get(Form("h1HotPixelListPl%d",aPlaneNumber+1));
     if(h1HotPixelList != NULL) { // if occupancy h1 list exists
       //h1HotPixelList->SetDirectory(0);
-      
+
       int Npixels = 0;
       std::vector<APixel_t> _fake_map;
       _fake_map.clear();
       for(Int_t iindex=0;iindex<h1HotPixelList->GetXaxis()->GetNbins();iindex++) {
         double fake_rate = h1HotPixelList->GetBinContent(iindex+1)/100.0;
         Npixels++;
-        
+
         if(fake_rate > 0.0) {
           //Use the col variable of APixel_t object to store the value of the pixels index
           //Set always the lin varianle to -1
@@ -3931,7 +3931,7 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
         for(int jjj=0;jjj<=int(_fake_map.size())-iii;jjj++) {
           double fake_jjj   = _fake_map[jjj].fake;
           double fake_jjjp1 = _fake_map[jjj+1].fake;
-          
+
           if(fake_jjj < fake_jjjp1) {
             APixel_t aux_pixel  = _fake_map[jjj];
             _fake_map[jjj]      = _fake_map[jjj+1];
@@ -3939,9 +3939,9 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
           }
         }
       }
-      
+
       int NtoMask = int(Npixels*_FractionToMaskList[0]);
-      
+
       int counter = 0;
       for(int i=0;i<int(_fake_map.size());i++) {
         counter++;
@@ -3952,33 +3952,33 @@ void DSetup::GetListOfHotPixelsToMask_FracToMask(int aPlaneNumber,
         pPlaneParameter[aPlaneNumber].HotPixelList_index.push_back(index);
       }
       _fake_map.clear();
-      
+
 //      FakeRateMapFile.Close();
-      
+
 //      return;
-      
+
     } // end if occupancy h1 list exists
   } // end if FakeRateCut list is == 1
-  
+
   FakeRateMapFile.Close();
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
                                                   TString HotPixelMapFile)
 {
-  
-  
+
+
   pPlaneParameter[aPlaneNumber].HotPixelList_lin.clear();
   pPlaneParameter[aPlaneNumber].HotPixelList_col.clear();
   pPlaneParameter[aPlaneNumber].HotPixelList_index.clear();
-  
+
   //Do nothing if hot pixel list for masking is not requested
   if(_FakeRateCutList.size() == 0 || HotPixelMapFile == TString("")) return;
-  
+
   TH2F* h2HotPixelMap    = NULL;
   TH1F* h1HotPixelList   = NULL;
   TFile FakeRateMapFile(HotPixelMapFile.Data(),"READ");
@@ -3989,7 +3989,7 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
     << " with fake rate map for plane " << aPlaneNumber+1
     << " doesn't exist. Doing nothing, list of hot is left empty." << endl;
     cout << endl;
-    
+
     return;
   }
   /*
@@ -4000,7 +4000,7 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
    cout << endl;
    }
    */
-  
+
   h2HotPixelMap = (TH2F*)FakeRateMapFile.Get("h2HotPixelMap");
   if(h2HotPixelMap == NULL) { // if occupancy h2 map doest not exists
     //Warning message when ROOT file exists, but fake rate map histogram is not found. Do nothing.
@@ -4014,7 +4014,7 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
     //h2HotPixelMap->SetDirectory(0);
     cout << "Looping over the fake-rate map to find hot pixels. Plane " << aPlaneNumber+1 << endl;
     //Loop over the fake rate map to identify the hot pixels
-    
+
     if(_FakeRateCutList.size() == 1) {
       cout << "Specified a single FakeRateCut of " << _FakeRateCutList[0]*100 << "% for whole matrix of plane " << aPlaneNumber+1 << endl;
       //If only specified a singl FakeRateCut, then apply the cut over the full matrix of pixels
@@ -4024,7 +4024,7 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
       double RV_tmp[2];
       RV_tmp[0] = h2HotPixelMap->GetYaxis()->GetXmin()+0.5;
       RV_tmp[1] = h2HotPixelMap->GetYaxis()->GetXmax()+0.5;
-      
+
       if(!(RU_tmp[0] == 0 && RU_tmp[1] == pPlaneParameter[aPlaneNumber].Strips(0) &&
            RV_tmp[0] == 0 && RV_tmp[1] == pPlaneParameter[aPlaneNumber].Strips(1))) {
         cout << "WARNING: the range of the hot pixels map histrograms don't agree with the number of pixels of the matrix:" << endl;
@@ -4032,42 +4032,42 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
         cout << "WARNING: V-range = (" << RV_tmp[0] << "," << RV_tmp[1] << "), and expects (0," << pPlaneParameter[aPlaneNumber].Strips(1) << ")" << endl;
         cout << "WARNING: Maybe need to check your inputs!!!" << endl;
       }
-      
+
       //Put the pixels in a map which is ordered from the lowest to the highest fake-rate
       for(Int_t iy=0;iy<h2HotPixelMap->GetYaxis()->GetNbins();iy++) {
         Int_t lin = Int_t(h2HotPixelMap->GetYaxis()->GetBinCenter(iy+1));
         for(Int_t ix=0;ix<h2HotPixelMap->GetXaxis()->GetNbins();ix++) {
           Int_t col = Int_t(h2HotPixelMap->GetXaxis()->GetBinCenter(ix+1));
           double fake_rate = h2HotPixelMap->GetBinContent(ix+1,iy+1)/100.0;
-          
+
           if(fake_rate >= _FakeRateCutList[0]) {
             pPlaneParameter[aPlaneNumber].HotPixelList_lin.push_back(lin);
             pPlaneParameter[aPlaneNumber].HotPixelList_col.push_back(col);
           }
-          
+
         }
       }
-      
+
     }
     else if(_FakeRateCutList.size() > 1) {
       //Specified more than one FakeRateCut
-      
+
       if(_FakeRateCutList.size() != _RegionList.size()) {
         //Check that the FakeRateCut list has the same size as the Region list. If not exit and do nothing.
         cout << endl;
         cout << "WARNING: FakeRateCutList size (" << _FakeRateCutList.size() << ") if different from region list size (" << _RegionList.size() << ")" << endl;
         cout << "WARNING: no attempt to build hot pixels list. Check your inputs!!!" << endl;
         cout << endl;
-        
+
 //        FakeRateMapFile.Close();
-        
+
 //        return;
       }
       else {
         //Check that the regions defined agree with the sensor limits and that they not overlap with each others
         CheckRegionsOverlaps(aPlaneNumber);
         CheckForBadRegions(aPlaneNumber);
-        
+
         cout << "List of fake-rate cuts for different regions:" << endl;
         for(int ireg=0;ireg<int(_RegionList.size());ireg++) {
           cout << "Region " << ireg+1 << ": col = ("
@@ -4079,15 +4079,15 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
           << endl;
         }
         cout << endl;
-        
+
         for(int ireg=0;ireg<int(_RegionList.size());ireg++) { //Loop over regions
-          
+
           //Apply the fake rate cut depending on the regions defined
           for(Int_t iy=0;iy<h2HotPixelMap->GetYaxis()->GetNbins();iy++) {
             Int_t lin = Int_t(h2HotPixelMap->GetYaxis()->GetBinCenter(iy+1));
             for(Int_t ix=0;ix<h2HotPixelMap->GetXaxis()->GetNbins();ix++) {
               Int_t col = Int_t(h2HotPixelMap->GetXaxis()->GetBinCenter(ix+1));
-              
+
               if((col >= _RegionList[ireg].R_col[0] && col <= _RegionList[ireg].R_col[1]) && (lin >= _RegionList[ireg].R_lin[0] && lin <= _RegionList[ireg].R_lin[1])) {
                 double fake_rate = h2HotPixelMap->GetBinContent(ix+1,iy+1)/100.0;
                 if(fake_rate >= _FakeRateCutList[ireg]) {
@@ -4095,21 +4095,21 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
                   pPlaneParameter[aPlaneNumber].HotPixelList_col.push_back(col);
                 }
               }
-              
+
             }
           }
-          
+
         } //end of loop over regions
-        
+
       } // end of if fake-rate list size is equal to ragion list size
     } // end of if fake-rate list size is higher than one
-    
+
 //    FakeRateMapFile.Close();
-    
+
 //    return;
-    
+
   } // end if occupancy h2 map exists
-  
+
   if(_FakeRateCutList.size() == 1) {
     cout << "Looping over the fake-rate list to find hot pixels. Plane " << aPlaneNumber+1 << endl;
     cout << "Specified a single Fake-rate cut of " << _FakeRateCutList[0]*100 << "% for whole matrix of plane " << aPlaneNumber+1 << endl;
@@ -4120,28 +4120,28 @@ void DSetup::GetListOfHotPixelsToMask_FakeRateCut(int aPlaneNumber,
 
       for(Int_t iindex=0;iindex<h1HotPixelList->GetXaxis()->GetNbins();iindex++) {
         double fake_rate = h1HotPixelList->GetBinContent(iindex+1)/100.0;
-        
+
 //        cout << "Testing index " << iindex << "in list with " << fake_rate << " against " << _FakeRateCutList[0] << endl;
         if(fake_rate >= _FakeRateCutList[0]) pPlaneParameter[aPlaneNumber].HotPixelList_index.push_back(iindex);
       }
-      
+
 //      FakeRateMapFile.Close();
-      
+
 //      return;
-      
+
     } // end if occupancy h1 list exists
   } // end if FakeRateCut list is == 1
-  
+
   FakeRateMapFile.Close();
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 void DSetup::PrintListOfHotPixelsToMask(int aPlaneNumber)
 {
-  
+
   if(pPlaneParameter[aPlaneNumber].HotPixelList_lin.size() > 0) {
     cout << endl;
     cout << "Hot pixels for Plane " << aPlaneNumber+1 << ": The " << pPlaneParameter[aPlaneNumber].HotPixelList_lin.size()
@@ -4159,27 +4159,26 @@ void DSetup::PrintListOfHotPixelsToMask(int aPlaneNumber)
       cout << endl;
     }
   }
-  
+
   if(pPlaneParameter[aPlaneNumber].HotPixelList_index.size() > 0) {
     cout << endl;
     cout << "  --> same list ordered by 1D index with " << pPlaneParameter[aPlaneNumber].HotPixelList_index.size() << " pixels." << endl;
   }
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 DSetup::~DSetup()
-{ 
-  
+{
+
   delete pPlaneParameter;
-  
+
   delete pLadderParameter;
- 
+
   delete pAcqModuleParameter;
-  
+
 }
 //______________________________________________________________________________
 //
-
