@@ -17,8 +17,7 @@ ClassImp(BoardReaderIHEP);
 //------------------------------------------+-----------------------------------
 BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int triggerMode, int eventBuildingMode) {
 
-  vi_Verbose = 12;
-  vi_Verbose = 0;
+  vi_Verbose = 100;
 
   N_COLUMN     = 960;
   N_ROW        = 928;
@@ -32,7 +31,14 @@ BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int triggerMode, int eventBuil
   M_LADDER_HEADER  = 0xCCCCCC   ; // Ladder Header  Marker 32 bits : 0xCCCCCCXX, Check the Big 24 bits
   M_LADDER_CHIP    = 0x3333333  ; // Ladder Trailer Marker 32 bits : 0x3333333X, Check the Big 28 bits
   M_LADDER_TRAILER = 0x99999999 ; // Ladder Trailer Marker 32 bits : 0xCCCCCCCC, Check all the 32 bits
+  M_LADDER_TriggerHeader  = 0xDDDDDDDD ; // Ladder Trigger Header  Marker 32 bits : 0x55555555, Check all the 32 bits
+  M_LADDER_TriggerTRAILER = 0x66666666 ; // Ladder Trigger Trailer Marker 32 bits : 0x66666666, Check all the 32 bits
 
+  vi_Trigger_Header      = 0;
+  vi_Trigger_ID          = 0;
+  vi_Pack_Length         = 0;
+  vi_Pack_State          = 0;
+  vi_Trigger_Trailer     = 0;
   vi_Ladder_Header       = 0;
   vi_Ladder_Header_1     = 0;
   vi_Ladder_DataLength   = 0;
@@ -80,6 +86,7 @@ BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int triggerMode, int eventBuil
 
   /* Pointers */
   vi_Pointer_Data              = 0;
+  vi_Pointer_Pack_DataLength   = 0;
   vi_Pointer_Ladder_DataLength = 0;
   vi_Pointer_Chip_DataLength   = 0;
 
@@ -183,21 +190,15 @@ bool BoardReaderIHEP::HasData( ) {
    cout << "BoardReaderIHEP::HasData() BoardNumber " << fBoardNumber << " IMGBoardReader::HasData() - currentEvent " << fEventNumber << " currentTrigger " << i_Trigger << endl;
  }
 
- if( GetNextEvent() ) {
+ if( DecodeNextEvent() ) {
 
    if( vi_Verbose>1 ) PrintEventHeader();
 
-   if( DecodeFrame() ) {
-     fCurrentEvent = new BoardReaderEvent( fEventNumber, fBoardNumber, 0, &ListOfPixels); // run number set to 0 for now
-     fCurrentEvent->SetListOfTriggers( &ListOfTriggers);
-     fCurrentEvent->SetListOfFrames( &ListOfFrames);
-     if( vi_Verbose>1 ) cout << " BoardNumber " << fBoardNumber << " create new event " << fEventNumber << " with " << ListOfPixels.size() << " pixels" << " from " << ListOfTriggers.size() << " and " << ListOfFrames.size() << "frames." << endl;
-     fEventNumber++;
-   } // decoding frame was OK
-   else {
-     eventOK = false;
-     cout<<"BoardReaderIHEP::HasData() - Can't decode frame !"<<endl;
-   }
+   fCurrentEvent = new BoardReaderEvent( fEventNumber, fBoardNumber, 0, &ListOfPixels); // run number set to 0 for now
+   fCurrentEvent->SetListOfTriggers( &ListOfTriggers);
+   fCurrentEvent->SetListOfFrames( &ListOfFrames);
+   if( vi_Verbose>1 ) cout << " BoardNumber " << fBoardNumber << " create new event " << fEventNumber << " with " << ListOfPixels.size() << " pixels" << " from " << ListOfTriggers.size() << " and " << ListOfFrames.size() << "frames." << endl;
+   fEventNumber++;
 
  } // getting next buffer was OK
  else{
@@ -211,149 +212,676 @@ bool BoardReaderIHEP::HasData( ) {
 }
 
 //------------------------------------------+-----------------------------------
-bool BoardReaderIHEP::GetNextEvent()
+bool BoardReaderIHEP::DecodeNextEvent()
 {
   // Set buffers to the next event
   //
   // Code extracted from Mi28DecodeLadderDataToRoot.cc
   //  provided IHEP group 2018/06
   //  Author: juxd, juxd@ihep.ac.cn
+  //  Updated 2018/10/12
 
-  // If rawdata are good, decode
+  // Decoding status
   bool ready = false;
 
-  while (ifs_DataRaw.tellg() != vi_Pointer_FileEnd && ready != true)
+  cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Data format  is                : "
+       << std::setw(15) << "hex"
+       << std::setw(15) << "dec"
+       << std::setw(15) << "Pointer" << endl;
+  cout << "......................................................................................................................" << endl;
+
+  /* ------------------------------------------------------ */
+  /* DWORD Data format */
+  /* Hex in VIM                    : 5678 1234 */
+  /* Hex in stream                 : 3412 7856 */
+  /* Hex after SwitchDWordBytes2() : 1234 5678 */
+  //while (!ifs_DataRaw.eof())
+  while (ifs_DataRaw.tellg() != vi_Pointer_FileEnd && !ready)
   {
-  /* Input raw binary data */
+    /* Input raw binary data */
     if (ifs_DataRaw.good())
     {
-      /* Check file size */
-      /* The minimum case : Ladder_Header/Ladder_FrameCounter/Ladder_DataLength/Ladder_Trailer */
-      vi_Pointer_Data = ifs_DataRaw.tellg();
-      if ((vi_Pointer_Data + 4*DWORD) > vi_Pointer_FileEnd)
-      {
-        cout << "  ERROR : Mi28DecodeLadderDataToRoot(), file is incomplete at !! Ladder_Header !!, STOP DECODING!" << endl;
-        break;
-      }
-
-      /* ------------------------------------------------------ */
-      /* Ladder_Header */
-      ifs_DataRaw.read((char *)&vi_Ladder_Header, DWORD);
-      vi_Pointer_Data    = ifs_DataRaw.tellg();
-      vi_Ladder_Header_1 = SwitchDWordWords(vi_Ladder_Header);
-      vi_ID_Ladder       = vi_Ladder_Header_1 & 0xFF;
-      vi_Ladder_Header   = vi_Ladder_Header_1 >> 8;
-      if (vi_Ladder_Header != M_LADDER_HEADER)
-      {
-        if (vi_Verbose < 11)
+        /* Check file size */
+        /* The minimum case : Ladder_Header/Ladder_FrameCounter/Ladder_DataLength/Ladder_Trailer */
+        vi_Pointer_Data = ifs_DataRaw.tellg();
+        if ((vi_Pointer_Data + 4*DWORD) > vi_Pointer_FileEnd)
         {
-          cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Ladder_Header : "
-               << std::setw(15) << std::setbase(16) << vi_Ladder_Header << "  VS  "
-               << std::setw(11) << std::setbase(16) << M_LADDER_HEADER  << "\t@\t"
-               << std::setw(15) << std::setbase(10) << vi_Pointer_Data  << endl;
+          cout << "  ERROR : Mi28DecodeLadderDataToRoot(), file is incomplete at !! Ladder_Header !!, STOP DECODING!" << endl;
+          break;
         }
 
-        /* Pass the first BYTE, and Continue to Check Ladder_Header */
-        ifs_DataRaw.seekg(BYTE - DWORD, ios::cur); /* Return the Pointer */
-        continue; /* Continue to Check Ladder_Header */
-      }
-      else
-      {
+        /* ------------------------------------------------------ */
+        /* Trigger_Header*/
+        ifs_DataRaw.read((char *)&vi_Trigger_Header, DWORD);
+        vi_Pointer_Data         = ifs_DataRaw.tellg();
+        vi_Trigger_Header = SwitchDWordWords(vi_Trigger_Header);
+        if (vi_Trigger_Header != M_LADDER_TriggerHeader)
+        {
+          if (vi_Verbose < 11)
+          {
+            cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Checking Trigger_Header : "
+                 << std::setw(15) << std::setbase(16) << vi_Trigger_Header << "  VS  "
+                 << std::setw(11) << std::setbase(16) << M_LADDER_TriggerHeader  << "\t@\t"
+                 << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
+          }
+          ifs_DataRaw.seekg(BYTE -DWORD, ios::cur); /* Return the Pointer */
+         continue; /* Continue to Check Trigger_Header */
+         }
+         else
+        {
+          if (vi_Verbose < 6)
+          {
+            cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Checking Trigger_Header is     : "
+                 << std::setw(15) << std::setbase(16) << vi_Trigger_Header
+                 << std::setw(15) << std::setbase(10) << vi_Trigger_Header
+                 << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+          }
+        }
+        /*-------------------------------------------------------*/
+        /* Trigger ID */
+        ifs_DataRaw.read((char *)&vi_Trigger_ID, DWORD);
+        vi_Pointer_Data        = ifs_DataRaw.tellg();
+        vi_Trigger_ID = SwitchDWordWords(vi_Trigger_ID);
         if (vi_Verbose < 6)
         {
-          cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_Header is               : "
-               << std::setw(15) << std::setbase(16) << vi_Ladder_Header_1
-               << std::setw(15) << std::setbase(10) << vi_Ladder_Header_1
+          cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Trigger_ID is         : "
+               << std::setw(15) << std::setbase(16) << vi_Trigger_ID
+               << std::setw(15) << std::setbase(10) << vi_Trigger_ID
                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
         }
-      }
-
-      /* ------------------------------------------------------ */
-
-       /* ------------------------------------------------------ */
-      /* Ladder_Trigger */
-      ifs_DataRaw.read((char *)&vi_Ladder_Trigger, DWORD);
-      vi_Pointer_Data        = ifs_DataRaw.tellg();
-      vi_Ladder_Trigger = SwitchDWordWords(vi_Ladder_Trigger);
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_Trigger is         : "
-             << std::setw(15) << std::setbase(16) << vi_Ladder_Trigger
-             << std::setw(15) << std::setbase(10) << vi_Ladder_Trigger
-             << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-
-      /* Ladder_FrameCounter */
-      ifs_DataRaw.read((char *)&vi_Ladder_FrameCounter, DWORD);
-      vi_Pointer_Data        = ifs_DataRaw.tellg();
-      vi_Ladder_FrameCounter = SwitchDWordWords(vi_Ladder_FrameCounter);
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_FrameCounter is         : "
-             << std::setw(15) << std::setbase(16) << vi_Ladder_FrameCounter
-             << std::setw(15) << std::setbase(10) << vi_Ladder_FrameCounter
-             << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-
-      /* ------------------------------------------------------ */
-      /* Ladder_DataLength */
-      ifs_DataRaw.read((char *)&vi_Ladder_DataLength, DWORD);
-      vi_Pointer_Data      = ifs_DataRaw.tellg();
-      //vi_Ladder_DataLength = SwitchDWordWords(vi_Ladder_DataLength);
-      vi_Pointer_Ladder_DataLength = vi_Pointer_Data;
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_DataLength is           : "
-             << std::setw(15) << std::setbase(16) << vi_Ladder_DataLength
-             << std::setw(15) << std::setbase(10) << vi_Ladder_DataLength
-             << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-
-      /* Check the the file size */
-      if ((vi_Pointer_Data + vi_Ladder_DataLength*WORD + DWORD) > vi_Pointer_FileEnd)
-      {
-        cout << "  ERROR : Mi28DecodeLadderDataToRoot(), file is incomplete at !! Ladder_Trailer !!, STOP DECODING!" << endl;
-        vi_N_Frame_Bad++;
-        break;
-      }
-
-      /* ------------------------------------------------------ */
-      /* Ladder_Trailer */
-      ifs_DataRaw.seekg(vi_Ladder_DataLength*WORD, ios::cur);
-      ifs_DataRaw.read((char *)&vi_Ladder_Trailer, DWORD);
-      vi_Pointer_Data = ifs_DataRaw.tellg();
-      ifs_DataRaw.seekg(-vi_Ladder_DataLength*WORD - DWORD, ios::cur); /* Return the Pointer */
-      vi_Ladder_Trailer = SwitchDWordWords(vi_Ladder_Trailer);
-      if (vi_Ladder_Trailer != M_LADDER_TRAILER)
-      {
-        if (vi_Verbose < 11)
-        {
-          cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Checking Ladder_Trailer : "
-               << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer << "  VS  "
-               << std::setw(11) << std::setbase(16) << M_LADDER_TRAILER  << "\t@\t"
-               << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
-        }
-
-        /* Return to Pointer Ladder_DataLength, Continue a new Ladder_Frame */
-        ifs_DataRaw.seekg(BYTE - 3*DWORD, ios::cur); /* Return the Pointer */
-        continue; /* Continue to Check Ladder_Header */
-      }
-      else
-      {
-        ready = true;
+        /*--------------------------------------------------------*/
+        /*PackLength*/
+        ifs_DataRaw.read((char *)&vi_Pack_Length, DWORD);
+        vi_Pointer_Data      = ifs_DataRaw.tellg();
+        vi_Pack_Length = SwitchDWordWords(vi_Pack_Length);
+        vi_Pointer_Pack_DataLength = vi_Pointer_Data;
         if (vi_Verbose < 6)
         {
-          cout << " BoardReaderIHEP::GetNextEvent ready to decode frame" << endl;
-          cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Checking Ladder_Trailer is     : "
-               << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer
-               << std::setw(15) << std::setbase(10) << vi_Ladder_Trailer
+          cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Pack_Length is           : "
+               << std::setw(15) << std::setbase(16) << vi_Pack_Length
+               << std::setw(15) << std::setbase(10) << vi_Pack_Length
                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
         }
-      }
 
-    } // end of if ifs_DataRaw.good()
 
-  } // end of while ifs_DataRaw.tellg() != vi_Pointer_FileEnd
+        /* Check the the file size */
+        if ((vi_Pointer_Data + vi_Pack_Length*BYTE + DWORD) > vi_Pointer_FileEnd)
+        {
+          cout << "  ERROR : Mi28DecodeLadderDataToRoot(), file is incomplete at !! Trigger Trailer !!, STOP DECODING!" << endl;
+          vi_N_Frame_Bad++;
+          break;
+        }
+        /*-----------------------------------------------------------*/
+        /* Pack State*/
+          ifs_DataRaw.seekg(WORD, ios::cur);
+        /*------------------------------------------------------------*/
+         /* ------------------------------------------------------ */
+        /*-------------------------------------------------------*/
+        /* Trigger Trailer*/
+        ifs_DataRaw.seekg(vi_Pack_Length*BYTE, ios::cur);
+        ifs_DataRaw.read((char *)&vi_Trigger_Trailer, DWORD);
+        vi_Pointer_Data = ifs_DataRaw.tellg();
+        ifs_DataRaw.seekg(-vi_Pack_Length*BYTE - DWORD, ios::cur); /* Return the Pointer */
+        vi_Trigger_Trailer = SwitchDWordWords(vi_Trigger_Trailer);
+        if (vi_Trigger_Trailer != M_LADDER_TriggerTRAILER)
+        {
+          if (vi_Verbose < 11)
+          {
+            cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Checking Trigger_Trailer : "
+                 << std::setw(15) << std::setbase(16) << vi_Trigger_Trailer << "  VS  "
+                 << std::setw(11) << std::setbase(16) << M_LADDER_TriggerTRAILER  << "\t@\t"
+                 << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
+          }
+
+          /* Return to Pointer Ladder_DataLength, Continue a new Ladder_Frame */
+          ifs_DataRaw.seekg(BYTE - 3*DWORD, ios::cur); /* Return the Pointer */
+          continue; /* Continue to Check Trigger_Header */
+        }
+        else
+        {
+          if (vi_Verbose < 6)
+          {
+            cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Checking Trigger_Trailer is     : "
+                 << std::setw(15) << std::setbase(16) << vi_Trigger_Trailer
+                 << std::setw(15) << std::setbase(10) << vi_Trigger_Trailer
+                 << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+          }
+        }
+        /*-----------------------------------------------------------*/
+        /* Recycling decode the data for less than 5 Ladder */
+        /*-----------------------------------------------------------*/
+        int  vi_N_Ladder      = 0;
+        int vi_N_Ladder_Chip = 0;
+        while (ifs_DataRaw.tellg() < (vi_Pointer_Pack_DataLength + vi_Pack_Length*BYTE))
+        {
+          /*-----------------------------------------------------------*/
+          /* Pack State*/
+
+          /*------------------------------------------------------------*/
+          /* ------------------------------------------------------ */
+          /* Ladder_Header */
+          ifs_DataRaw.read((char *)&vi_Ladder_Header, DWORD);
+          vi_Pointer_Data    = ifs_DataRaw.tellg();
+          vi_Ladder_Header_1 = SwitchDWordWords(vi_Ladder_Header);
+          vi_ID_Ladder       = vi_Ladder_Header_1 & 0xFF;
+          vi_Ladder_Header   = vi_Ladder_Header_1 >> 8;
+          if (vi_Ladder_Header != M_LADDER_HEADER)
+          {
+            if (vi_Verbose < 11)
+            {
+              cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Ladder_Header : "
+              << std::setw(15) << std::setbase(16) << vi_Ladder_Header << "  VS  "
+              << std::setw(11) << std::setbase(16) << M_LADDER_HEADER  << "\t@\t"
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data  << endl;
+            }
+
+            /* Pass the first BYTE, and Continue to Check Ladder_Header */
+            ifs_DataRaw.seekg(BYTE - DWORD, ios::cur); /* Return the Pointer */
+            continue; /* Continue to Check Ladder_Header */
+          }
+          else
+          {
+            if (vi_Verbose < 6)
+            {
+              cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_Header is               : "
+              << std::setw(15) << std::setbase(16) << vi_Ladder_Header_1
+              << std::setw(15) << std::setbase(10) << vi_Ladder_Header_1
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+            }
+          }
+          /* ------------------------------------------------------ */
+          /* Ladder_Trigger */
+          ifs_DataRaw.read((char *)&vi_Ladder_Trigger, DWORD);
+          vi_Pointer_Data        = ifs_DataRaw.tellg();
+          vi_Ladder_Trigger = SwitchDWordWords(vi_Ladder_Trigger);
+          if (vi_Verbose < 6)
+          {
+            cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_Trigger is         : "
+            << std::setw(15) << std::setbase(16) << vi_Ladder_Trigger
+            << std::setw(15) << std::setbase(10) << vi_Ladder_Trigger
+            << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+          }
+
+          /* ------------------------------------------------------ */
+
+          /* ------------------------------------------------------ */
+          /* Ladder_FrameCounter */
+          ifs_DataRaw.read((char *)&vi_Ladder_FrameCounter, DWORD);
+          vi_Pointer_Data        = ifs_DataRaw.tellg();
+          vi_Ladder_FrameCounter = SwitchDWordWords(vi_Ladder_FrameCounter);
+          if (vi_Verbose < 6)
+          {
+            cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_FrameCounter is         : "
+            << std::setw(15) << std::setbase(16) << vi_Ladder_FrameCounter
+            << std::setw(15) << std::setbase(10) << vi_Ladder_FrameCounter
+            << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+          }
+
+          /* ------------------------------------------------------ */
+          /* Ladder_DataLength */
+          ifs_DataRaw.read((char *)&vi_Ladder_DataLength, DWORD);
+          vi_Pointer_Data      = ifs_DataRaw.tellg();
+          vi_Ladder_DataLength = SwitchDWordWords(vi_Ladder_DataLength);
+          vi_Pointer_Ladder_DataLength = vi_Pointer_Data;
+          if (vi_Verbose < 6)
+          {
+            cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_DataLength is           : "
+            << std::setw(15) << std::setbase(16) << vi_Ladder_DataLength
+            << std::setw(15) << std::setbase(10) << vi_Ladder_DataLength
+            << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+          }
+
+          /* Check the the file size */
+          if ((vi_Pointer_Data + vi_Ladder_DataLength*WORD + DWORD) > vi_Pointer_FileEnd)
+          {
+            cout << "  ERROR : Mi28DecodeLadderDataToRoot(), file is incomplete at !! Ladder_Trailer !!, STOP DECODING!" << endl;
+            vi_N_Frame_Bad++;
+            break;
+          }
+
+          /* ------------------------------------------------------ */
+          /* Ladder_Trailer */
+          ifs_DataRaw.seekg(vi_Ladder_DataLength*WORD, ios::cur);
+          ifs_DataRaw.read((char *)&vi_Ladder_Trailer, DWORD);
+          vi_Pointer_Data = ifs_DataRaw.tellg();
+          ifs_DataRaw.seekg(-vi_Ladder_DataLength*WORD - DWORD, ios::cur); /* Return the Pointer */
+          vi_Ladder_Trailer = SwitchDWordWords(vi_Ladder_Trailer);
+          if (vi_Ladder_Trailer != M_LADDER_TRAILER)
+          {
+            if (vi_Verbose < 11)
+            {
+              cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Checking Ladder_Trailer : "
+              << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer << "  VS  "
+              << std::setw(11) << std::setbase(16) << M_LADDER_TRAILER  << "\t@\t"
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
+            }
+
+            /* Return to Pointer Ladder_DataLength, Continue a new Ladder_Frame */
+            ifs_DataRaw.seekg(BYTE - 4*DWORD, ios::cur); /* Return the Pointer */
+            continue; /* Continue to Check Ladder_Header */
+          }
+          else
+          {
+            if (vi_Verbose < 6)
+            {
+              cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Checking Ladder_Trailer is     : "
+              << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer
+              << std::setw(15) << std::setbase(10) << vi_Ladder_Trailer
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+            }
+          }
+
+          /* ------------------------------------------------------ */
+          /* Recycling decode the data for less than 10 chips */
+          /* ------------------------------------------------------ */
+
+          while (ifs_DataRaw.tellg() < (vi_Pointer_Ladder_DataLength + vi_Ladder_DataLength*WORD))
+          {
+            /* ------------------------------------------------------ */
+            /* Ladder_Chip */
+            ifs_DataRaw.read((char *)&vi_Ladder_Chip, DWORD);
+            vi_Pointer_Data   = ifs_DataRaw.tellg();
+            vi_Ladder_Chip_1  = SwitchDWordWords(vi_Ladder_Chip);
+            vi_ID_Ladder_Chip = vi_Ladder_Chip_1 & 0xF;
+            vi_Ladder_Chip    = vi_Ladder_Chip_1 >> 4;
+            if (vi_Ladder_Chip != M_LADDER_CHIP)
+            {
+              if (vi_Verbose < 11)
+              {
+                cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Ladder_Chip : "
+                << std::setw(15) << std::setbase(16) << vi_Ladder_Chip  << "  VS  "
+                << std::setw(11) << std::setbase(16) << M_LADDER_CHIP   << "\t@\t"
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+              }
+
+              /* Return to Pointer Ladder_Chip, Continue a new Ladder_Chip */
+              ifs_DataRaw.seekg(BYTE - DWORD, ios::cur); /* Return the Pointer */
+              continue; /* Continue to Check Ladder_Chip */
+            }
+            else
+            {
+              if (vi_Verbose < 6)
+              {
+                cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_Chip is                 : "
+                << std::setw(15) << std::setbase(16) << vi_Ladder_Chip_1
+                << std::setw(15) << std::setbase(10) << vi_Ladder_Chip_1
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+              }
+            }
+
+            /* ------------------------------------------------------ */
+            /* Chip_Header */
+            ifs_DataRaw.read((char *)&vi_Chip_Header, DWORD);
+            vi_Pointer_Data = ifs_DataRaw.tellg();
+            vi_Chip_Header  = SwitchDWordWords(vi_Chip_Header);
+            if (vi_Chip_Header != M_CHIP_HEADER)
+            {
+              if (vi_Verbose < 11)
+              {
+                cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Chip_Header : "
+                << std::setw(15) << std::setbase(16) << vi_Chip_Header   << "  VS  "
+                << std::setw(11) << std::setbase(16) << M_CHIP_HEADER    << "\t@\t"
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data  << endl;
+              }
+
+              /* Return to Pointer Ladder_Chip, Continue a new Ladder_Chip */
+              ifs_DataRaw.seekg(BYTE - 2*DWORD, ios::cur); /* Return the Pointer */
+              continue; /* Continue to Check Ladder_Chip */
+            }
+            else
+            {
+              if (vi_Verbose < 6)
+              {
+                cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Chip_Header is                 : "
+                << std::setw(15) << std::setbase(16) << vi_Chip_Header
+                << std::setw(15) << std::setbase(10) << vi_Chip_Header
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+              }
+            }
+
+            /* ------------------------------------------------------ */
+            /* Chip_FrameCounter */
+            ifs_DataRaw.read((char *)&vi_Chip_FrameCounter, DWORD);
+            vi_Pointer_Data      = ifs_DataRaw.tellg();
+            vi_Chip_FrameCounter = SwitchDWordWords(vi_Chip_FrameCounter);
+            if (vi_Verbose < 6)
+            {
+              cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Chip_FrameCounter is           : "
+              << std::setw(15) << std::setbase(16) << vi_Chip_FrameCounter
+              << std::setw(15) << std::setbase(10) << vi_Chip_FrameCounter
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+            }
+
+            /* ------------------------------------------------------ */
+            /* Chip_DataLength */
+            ifs_DataRaw.read((char *)&vi_Chip_DataLength_1, WORD);
+            ifs_DataRaw.read((char *)&vi_Chip_DataLength_2, WORD);
+            vi_Chip_DataLength_1       = SwitchWordBytes(vi_Chip_DataLength_1);
+            vi_Chip_DataLength_2       = SwitchWordBytes(vi_Chip_DataLength_2);
+            vi_Chip_DataLength         = vi_Chip_DataLength_1 + vi_Chip_DataLength_2;
+            vi_Pointer_Data = ifs_DataRaw.tellg();
+            vi_Pointer_Chip_DataLength = vi_Pointer_Data;
+            if (vi_Verbose < 6)
+            {
+              cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Chip_DataLength is             : "
+              << std::setw(15) << std::setbase(16) << vi_Chip_DataLength
+              << std::setw(15) << std::setbase(10) << vi_Chip_DataLength
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+            }
+
+            /* Check the the file size */
+            if ((vi_Chip_DataLength*WORD + DWORD) > vi_Ladder_DataLength*WORD)
+            {
+              cout << "  ERROR : Mi28DecodeLadderDataToRoot(), file frame is incomplete at !! Chip_Trailer !!, STOP DECODING!" << endl;
+              vi_N_Frame_Bad++;
+              break;
+            }
+
+            /* ------------------------------------------------------ */
+            /* Chip_Trailer */
+            ifs_DataRaw.seekg(vi_Chip_DataLength*WORD, ios::cur);
+            ifs_DataRaw.read((char *)&vi_Chip_Trailer, DWORD);
+            vi_Pointer_Data = ifs_DataRaw.tellg();
+            ifs_DataRaw.seekg(-vi_Chip_DataLength*WORD - DWORD, ios::cur); /* Return the Pointer */
+            vi_Chip_Trailer = SwitchDWordWords(vi_Chip_Trailer);
+            if (vi_Chip_Trailer != M_CHIP_TRAILER)
+            {
+              if (vi_Verbose < 11)
+              {
+                cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Checking Chip_Trailer : "
+                << std::setw(15) << std::setbase(16) << vi_Chip_Trailer << "  VS  "
+                << std::setw(11) << std::setbase(16) << M_CHIP_TRAILER  << "\t@\t"
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+              }
+
+              /* Return to Pointer Ladder_Chip, Continue a new Ladder_Chip */
+              ifs_DataRaw.seekg(BYTE - 4*DWORD, ios::cur); /* Return the Pointer */
+              continue; /* Continue to Check Ladder_Chip */
+            }
+            else
+            {
+              if (vi_Verbose < 6)
+              {
+                cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Checking Chip_Trailer is       : "
+                << std::setw(15) << std::setbase(16) << vi_Chip_Trailer
+                << std::setw(15) << std::setbase(10) << vi_Chip_Trailer
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+              }
+            }
+
+            /* ------------------------------------------------------ */
+            /*                   Deal with useful data                */
+            /* ------------------------------------------------------ */
+            while (ifs_DataRaw.tellg() < (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD))
+            {
+              /* Chip_Status */
+              ifs_DataRaw.read((char *)&vi_DataRaw, WORD);
+              vi_Pointer_Data = ifs_DataRaw.tellg();
+
+              vi_Chip_Status          = SwitchWordBytes(vi_DataRaw);
+              vi_Chip_N_State         = vi_Chip_Status  & M_CHIP_N_STATE;
+              vi_Chip_Address_Line    = (vi_Chip_Status & M_CHIP_ADDRESS_LINE)    >> 4;
+              vi_Chip_Flag_Residual_1 = (vi_Chip_Status & M_CHIP_FLAG_RESIDUAL_1) >> 14;
+              vi_Chip_Flag_OverFlow   = (vi_Chip_Status & M_CHIP_FLAG_OVERFLOW)   >> 15;
+
+              if (vi_Verbose < 3)
+              {
+                vi_Pointer_Data = ifs_DataRaw.tellp();
+                cout << "  SSSSS" << endl;
+                cout << "  INFO : Status / Pointer_Status / N_State / Address_Line   is : "
+                << std::setw(12) << std::setbase(16) << vi_Chip_Status
+                << std::setw(12) << std::setbase(10) << vi_Pointer_Data
+                << std::setw(12) << std::setbase(10) << vi_Chip_N_State
+                << std::setw(12) << std::setbase(10) << vi_Chip_Address_Line   << endl;
+              }
+
+              /* Check the status word */
+              if ((vi_Chip_Address_Line>N_ROW) || (vi_Chip_Address_Line<0))
+              {
+                if (vi_Verbose < 11)
+                {
+                  cout << "  ERROR : Mi28DecodeLadderDataToRoot(), Line counter is wrong, which is "
+                  << std::setbase(10) << vi_Chip_Address_Line << " VS "
+                  << std::setbase(10) << N_ROW << endl;
+                }
+                vi_N_Frame_Bad++;
+                break;
+              }
+              if (vi_Chip_Flag_Residual_1 != 0)
+              {
+                if (vi_Verbose < 4)
+                {
+                  cout << "  Warning : Mi28DecodeLadderDataToRoot(), Status is wrong! The status residual bit should be 0, not should be "
+                  << std::setbase(10) << vi_Chip_Flag_Residual_1 << endl;
+                }
+              }
+              if (vi_Chip_Flag_OverFlow == 1)
+              {
+                if (vi_Verbose < 4)
+                {
+                  cout << "  Warning : Mi28DecodeLadderDataToRoot(), The status is overflow, the bit is "
+                  << std::setbase(10) << vi_Chip_Flag_OverFlow << " @ line "
+                  << std::setbase(10) << vi_Chip_Address_Line  << endl;
+                }
+              }
+
+              /* Skip the last data word, if not, will lead to read more one word for this frame */
+              if ((vi_Pointer_Data + vi_Chip_N_State*WORD) > (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD))
+              {
+                unsigned long int Checking_Stata=0;
+                unsigned long int M_AAAA=0xAAAA;
+                for(int i_word=0;i_word<100;i_word++)
+                {
+                  ifs_DataRaw.read((char *)&Checking_Stata, WORD);
+                  Checking_Stata=SwitchWordBytes(Checking_Stata);
+                  if(Checking_Stata == M_AAAA)
+                  {
+                    cout << "  Warning : Mi28DecodeLadderDataToRoot(), The useful word exceeds the data length, skip this Stata which is @ "
+                    << std::setbase(10) << vi_Pointer_Data    << " + "
+                    << std::setbase(10) << vi_Chip_N_State    << " + "<< std::setbase(10) <<i_word<<" VS "
+                    << std::setbase(10) << (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)
+                    << endl;
+                    ifs_DataRaw.seekg( - WORD, ios::cur);
+                    break;
+                  }
+                }
+                vi_N_Frame_Bad++;
+                break;
+              }
+              /* Skip the last data word, if not, will lead to read more word for this frame */
+              if (vi_Pointer_Data == (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)&&vi_Chip_N_State==0)
+              {
+                //if (vi_Verbose < 11)
+                //{
+                cout << "  Warning : Mi28DecodeLadderDataToRoot(), The useful word  exceeds the data length, skip this word which is @ "
+                << std::setbase(10) << vi_Pointer_Data    << " + "
+                << std::setbase(10) << vi_Chip_N_State    << " + "<< std::setbase(10) <<0<<" VS "
+                << std::setbase(10) << (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)
+                << endl;
+                // }
+                vi_N_Frame_Bad++;
+                break;
+              }
+
+
+              for (unsigned long int iState=0; iState<vi_Chip_N_State; iState++)
+              {
+                /* Chip_State */
+                ifs_DataRaw.read((char *)&vi_DataRaw, WORD);
+                vi_Pointer_Data = ifs_DataRaw.tellp();
+
+                vi_Chip_State           = SwitchWordBytes(vi_DataRaw);
+                vi_Chip_N_Pixel         = vi_Chip_State  & M_CHIP_N_PIXEL;
+                vi_Chip_Address_Column  = (vi_Chip_State & M_CHIP_ADDRESS_COLUMN)  >> 2;
+                vi_Chip_Flag_Residual_2 = (vi_Chip_State & M_CHIP_FLAG_RESIDUAL_2) >> 12;
+
+                if (vi_Verbose < 3)
+                {
+                  cout << "  INFO : State  / Pointer_State  / N_Pixel / Address_Column is : "
+                  << std::setw(12) << std::setbase(16) << vi_Chip_State
+                  << std::setw(12) << std::setbase(10) << vi_Pointer_Data
+                  << std::setw(12) << std::setbase(10) << vi_Chip_N_Pixel
+                  << std::setw(12) << std::setbase(10) << vi_Chip_Address_Column << endl;
+                }
+
+                /* Check the state word */
+                if ((vi_Chip_Address_Column>N_COLUMN) || (vi_Chip_Address_Column<0))
+                {
+                  if (vi_Verbose < 11)
+                  {
+                    cout << "  ERROR : Mi28DecodeLadderDataToRoot(), Column counter is wrong, which is "
+                    << std::setbase(10) << vi_Chip_Address_Column << " VS "
+                    << std::setbase(10) << N_COLUMN << endl;
+                  }
+                  vi_N_Frame_Bad++;
+                  break;
+                }
+                if (vi_Chip_Flag_Residual_2 != 0)
+                {
+                  if (vi_Verbose < 4)
+                  {
+                    cout << "  Warning : Mi28DecodeLadderDataToRoot(), state is wrong! The state residual bits should be 0, not should be "
+                    << std::setbase(10) << vi_Chip_Flag_Residual_2 << endl;
+                  }
+                }
+
+                /* +1 means that vi_Chip_N_Pixel is the number of pixels after the first column */
+                for (unsigned long int iPixel=0; iPixel<vi_Chip_N_Pixel+1; iPixel++)
+                {
+                  vi_Column_Temp = vi_Chip_Address_Column+iPixel;
+                  vd_N_PixelTotal++;
+
+                  AddPixel( vi_ID_Ladder_Chip+vi_ID_Ladder, 1, vi_Chip_Address_Line, vi_Column_Temp);
+
+                  if ((vi_Column_Temp >= N_BANKCOLUMN*0) && (vi_Column_Temp < N_BANKCOLUMN*1))
+                  {
+                    vd_N_PixelBankA++;
+                  }
+                  if ((vi_Column_Temp >= N_BANKCOLUMN*1) && (vi_Column_Temp < N_BANKCOLUMN*2))
+                  {
+                    vd_N_PixelBankB++;
+                  }
+                  if ((vi_Column_Temp >= N_BANKCOLUMN*2) && (vi_Column_Temp < N_BANKCOLUMN*3))
+                  {
+                    vd_N_PixelBankC++;
+                  }
+                  if ((vi_Column_Temp >= N_BANKCOLUMN*3) && (vi_Column_Temp < N_BANKCOLUMN*4))
+                  {
+                    vd_N_PixelBankD++;
+                  }
+                } // End of 'for (unsigned long int iPixel=0; iPixel<vi_Chip_N_Pixel+1; iPixel++)'
+
+              } /* End of 'for (int iState=0; iState<vi_Chip_N_State; iState++)' */
+            } /* End of 'while ((ifs_DataRaw.tellg() - vi_Pointer_Chip_DataLength) < vi_Chip_DataLength)' */
+
+            /* ------------------------------------------------------ */
+            /* Chip_Trailer */
+            ifs_DataRaw.read((char *)&vi_Chip_Trailer, DWORD);
+            vi_Pointer_Data = ifs_DataRaw.tellg();
+            vi_Chip_Trailer = SwitchDWordWords(vi_Chip_Trailer);
+            if (vi_Chip_Trailer != M_CHIP_TRAILER)
+            {
+              if (vi_Verbose < 11)
+              {
+                cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Scanning Chip_Trailer  : "
+                << std::setw(15) << std::setbase(16) << vi_Chip_Trailer << "  VS  "
+                << std::setw(11) << std::setbase(16) << M_CHIP_TRAILER  << "\t@\t"
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+              }
+              break;
+            }
+            else
+            {
+              if (vi_Verbose < 6)
+              {
+                cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Scanning Chip_Trailer is       : "
+                << std::setw(15) << std::setbase(16) << vi_Chip_Trailer
+                << std::setw(15) << std::setbase(10) << vi_Chip_Trailer
+                << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+              }
+            }
+            vi_N_Ladder_Chip++;
+          } /* End of 'while ((ifs_DataRaw.tellg() - vi_Pointer_Ladder_DataLength) < vi_Ladder_DataLength)' */
+
+          /* ------------------------------------------------------ */
+          /* Ladder_Trailer */
+          ifs_DataRaw.read((char *)&vi_Ladder_Trailer, DWORD);
+          vi_Pointer_Data = ifs_DataRaw.tellg();
+          vi_Ladder_Trailer = SwitchDWordWords(vi_Ladder_Trailer);
+          if (vi_Ladder_Trailer != M_LADDER_TRAILER)
+          {
+            // if (vi_Verbose < 11)
+            {
+              cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Scannin Ladder_Trailer : "
+              << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer << "  VS  "
+              << std::setw(11) << std::setbase(16) << M_LADDER_TRAILER  << "\t@\t"
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
+            }
+            break;
+          }
+          else
+          {
+            if (vi_Verbose < 6)
+            {
+              cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Scanning Ladder_Trailer is     : "
+              << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer
+              << std::setw(15) << std::setbase(10) << vi_Ladder_Trailer
+              << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+            }
+          }
+          if (vi_Verbose < 11)
+          {
+            cout << "  SUCCESS : Mi28DecodeLadderDataToRoot(), Finish Good Ladder Frame " << vi_N_Frame_Good << " with Chips = " << vi_N_Ladder_Chip
+            << " @ "  << std::setw(15) << std::setbase(10) << ifs_DataRaw.tellg()
+            << " VS " << std::setw(15) << std::setbase(10) << vi_Pointer_FileEnd
+            << endl;
+          }
+
+          vi_N_Ladder++;
+        }/* End of 'while (ifs_DataRaw.tellg() < (vi_Pointer_Ladder_PackLength + vi_Ladder_PackLength*WORD))'*/
+
+        /* ------------------------------------------------------ */
+        /* Trigger_Trailer */
+        ifs_DataRaw.read((char *)&vi_Trigger_Trailer, DWORD);
+        vi_Pointer_Data = ifs_DataRaw.tellg();
+        vi_Trigger_Trailer = SwitchDWordWords(vi_Trigger_Trailer);
+        if (vi_Trigger_Trailer != M_LADDER_TriggerTRAILER)
+        {
+          //if (vi_Verbose < 11)
+          {
+            cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Checking Trigger_Trailer : "
+                 << std::setw(15) << std::setbase(16) << vi_Trigger_Trailer << "  VS  "
+                 << std::setw(11) << std::setbase(16) << M_LADDER_TriggerTRAILER  << "\t@\t"
+                 << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
+          }
+
+         break;
+        }
+        else
+        {
+          if (vi_Verbose < 6)
+          {
+            cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Checking Trigger_Trailer is     : "
+                 << std::setw(15) << std::setbase(16) << vi_Trigger_Trailer
+                 << std::setw(15) << std::setbase(10) << vi_Trigger_Trailer
+                 << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
+          }
+         vi_N_Frame_Good++;
+         ready = true;
+        }
+       /*---------------------------------------------------------------*/
+
+        if (vi_Verbose < 11)
+        {
+          cout << "  SUCCESS : Mi28DecodeLadderDataToRoot(), Finish Good Ladder Frame " << vi_N_Frame_Good << " with Chips = " << vi_N_Ladder
+               << " @ "  << std::setw(15) << std::setbase(10) << ifs_DataRaw.tellg()
+               << " VS " << std::setw(15) << std::setbase(10) << vi_Pointer_FileEnd \
+               << endl;
+        }
+
+    } /* End of 'if (ifs_DataRaw.good())' */
+  } /* End of 'while (!ifs_DataRaw.eof())' */
+
 
   return ready;
 
@@ -373,428 +901,6 @@ void BoardReaderIHEP::AddPixel( int iSensor, int value, int aLine, int aColumn)
 
   ListOfPixels.push_back( BoardReaderPixel( iSensor+1, value, aLine, aColumn, 0) );
 
-}
-
-// --------------------------------------------------------------------------------------
-bool BoardReaderIHEP::DecodeFrame()
-{
-  // Decode the frame
-  //
-  // Code extracted from Mi28DecodeLadderDataToRoot.cc
-  //  provided IHEP group 2018/06
-  //  Author: juxd, juxd@ihep.ac.cn
-
-  if (vi_Verbose) printf("BoardReaderIHEP::DecodeFrame decoding event %d\n", fEventNumber);
-
-  bool frameOK = false;
-
-  /* ------------------------------------------------------ */
-  /* Recycling decode the data for less than 10 chips */
-  /* ------------------------------------------------------ */
-  vi_N_Ladder_Chip = 0;
-  while (ifs_DataRaw.tellg() < (vi_Pointer_Ladder_DataLength + vi_Ladder_DataLength*WORD) && frameOK!=true)
-  {
-    /* ------------------------------------------------------ */
-    /* Ladder_Chip */
-    ifs_DataRaw.read((char *)&vi_Ladder_Chip, DWORD);
-    vi_Pointer_Data   = ifs_DataRaw.tellg();
-    vi_Ladder_Chip_1  = SwitchDWordWords(vi_Ladder_Chip);
-    vi_ID_Ladder_Chip = vi_Ladder_Chip_1 & 0xF;
-    vi_Ladder_Chip    = vi_Ladder_Chip_1 >> 4;
-    if (vi_Ladder_Chip != M_LADDER_CHIP)
-    {
-      if (vi_Verbose < 11)
-      {
-        cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Ladder_Chip : "
-        << std::setw(15) << std::setbase(16) << vi_Ladder_Chip  << "  VS  "
-        << std::setw(11) << std::setbase(16) << M_LADDER_CHIP   << "\t@\t"
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-
-      /* Return to Pointer Ladder_Chip, Continue a new Ladder_Chip */
-      ifs_DataRaw.seekg(BYTE - DWORD, ios::cur); /* Return the Pointer */
-      continue; /* Continue to Check Ladder_Chip */
-    }
-    else
-    {
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Ladder_Chip is                 : "
-        << std::setw(15) << std::setbase(16) << vi_Ladder_Chip_1
-        << std::setw(15) << std::setbase(10) << vi_Ladder_Chip_1
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-    }
-
-    /* ------------------------------------------------------ */
-    /* Chip_Header */
-    ifs_DataRaw.read((char *)&vi_Chip_Header, DWORD);
-    vi_Pointer_Data = ifs_DataRaw.tellg();
-    vi_Chip_Header  = SwitchDWordWords(vi_Chip_Header);
-    if (vi_Chip_Header != M_CHIP_HEADER)
-    {
-      if (vi_Verbose < 11)
-      {
-        cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Chip_Header : "
-        << std::setw(15) << std::setbase(16) << vi_Chip_Header   << "  VS  "
-        << std::setw(11) << std::setbase(16) << M_CHIP_HEADER    << "\t@\t"
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data  << endl;
-      }
-
-      /* Return to Pointer Ladder_Chip, Continue a new Ladder_Chip */
-      ifs_DataRaw.seekg(BYTE - 2*DWORD, ios::cur); /* Return the Pointer */
-      continue; /* Continue to Check Ladder_Chip */
-    }
-    else
-    {
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Chip_Header is                 : "
-        << std::setw(15) << std::setbase(16) << vi_Chip_Header
-        << std::setw(15) << std::setbase(10) << vi_Chip_Header
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-    }
-
-    /* ------------------------------------------------------ */
-    /* Chip_FrameCounter */
-    ifs_DataRaw.read((char *)&vi_Chip_FrameCounter, DWORD);
-    vi_Pointer_Data      = ifs_DataRaw.tellg();
-    vi_Chip_FrameCounter = SwitchDWordWords(vi_Chip_FrameCounter);
-    if (vi_Verbose < 6)
-    {
-      cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Chip_FrameCounter is           : "
-      << std::setw(15) << std::setbase(16) << vi_Chip_FrameCounter
-      << std::setw(15) << std::setbase(10) << vi_Chip_FrameCounter
-      << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-    }
-
-    /* ------------------------------------------------------ */
-    /* Chip_DataLength */
-    ifs_DataRaw.read((char *)&vi_Chip_DataLength_1, WORD);
-    ifs_DataRaw.read((char *)&vi_Chip_DataLength_2, WORD);
-    vi_Chip_DataLength_1       = SwitchWordBytes(vi_Chip_DataLength_1);
-    vi_Chip_DataLength_2       = SwitchWordBytes(vi_Chip_DataLength_2);
-    vi_Chip_DataLength         = vi_Chip_DataLength_1 + vi_Chip_DataLength_2;
-    vi_Pointer_Data = ifs_DataRaw.tellg();
-    vi_Pointer_Chip_DataLength = vi_Pointer_Data;
-    if (vi_Verbose < 6)
-    {
-      cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Chip_DataLength is             : "
-      << std::setw(15) << std::setbase(16) << vi_Chip_DataLength
-      << std::setw(15) << std::setbase(10) << vi_Chip_DataLength
-      << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-    }
-
-    /* Check the the file size */
-    if ((vi_Chip_DataLength*WORD + DWORD) > vi_Ladder_DataLength*WORD)
-    {
-      cout << "  ERROR : Mi28DecodeLadderDataToRoot(), file frame is incomplete at !! Chip_Trailer !!, STOP DECODING!" << endl;
-      vi_N_Frame_Bad++;
-      break;
-    }
-
-    /* ------------------------------------------------------ */
-    /* Chip_Trailer */
-    ifs_DataRaw.seekg(vi_Chip_DataLength*WORD, ios::cur);
-    ifs_DataRaw.read((char *)&vi_Chip_Trailer, DWORD);
-    vi_Pointer_Data = ifs_DataRaw.tellg();
-    ifs_DataRaw.seekg(-vi_Chip_DataLength*WORD - DWORD, ios::cur); /* Return the Pointer */
-    vi_Chip_Trailer = SwitchDWordWords(vi_Chip_Trailer);
-    if (vi_Chip_Trailer != M_CHIP_TRAILER)
-    {
-      if (vi_Verbose < 11)
-      {
-        cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Checking Chip_Trailer : "
-        << std::setw(15) << std::setbase(16) << vi_Chip_Trailer << "  VS  "
-        << std::setw(11) << std::setbase(16) << M_CHIP_TRAILER  << "\t@\t"
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-
-      /* Return to Pointer Ladder_Chip, Continue a new Ladder_Chip */
-      ifs_DataRaw.seekg(BYTE - 4*DWORD, ios::cur); /* Return the Pointer */
-      continue; /* Continue to Check Ladder_Chip */
-    }
-    else
-    {
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Checking Chip_Trailer is       : "
-        << std::setw(15) << std::setbase(16) << vi_Chip_Trailer
-        << std::setw(15) << std::setbase(10) << vi_Chip_Trailer
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-    }
-
-    /* ------------------------------------------------------ */
-    /*                   Deal with useful data                */
-    /* ------------------------------------------------------ */
-    while (ifs_DataRaw.tellg() < (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD))
-    {
-      /* Chip_Status */
-      ifs_DataRaw.read((char *)&vi_DataRaw, WORD);
-      vi_Pointer_Data = ifs_DataRaw.tellg();
-
-      vi_Chip_Status          = SwitchWordBytes(vi_DataRaw);
-      vi_Chip_N_State         = vi_Chip_Status  & M_CHIP_N_STATE;
-      vi_Chip_Address_Line    = (vi_Chip_Status & M_CHIP_ADDRESS_LINE)    >> 4;
-      vi_Chip_Flag_Residual_1 = (vi_Chip_Status & M_CHIP_FLAG_RESIDUAL_1) >> 14;
-      vi_Chip_Flag_OverFlow   = (vi_Chip_Status & M_CHIP_FLAG_OVERFLOW)   >> 15;
-
-      if (vi_Verbose < 3)
-      {
-        vi_Pointer_Data = ifs_DataRaw.tellp();
-        cout << "  SSSSS" << endl;
-        cout << "  INFO : Status / Pointer_Status / N_State / Address_Line   is : "
-        << std::setw(12) << std::setbase(16) << vi_Chip_Status
-        << std::setw(12) << std::setbase(10) << vi_Pointer_Data
-        << std::setw(12) << std::setbase(10) << vi_Chip_N_State
-        << std::setw(12) << std::setbase(10) << vi_Chip_Address_Line   << endl;
-      }
-
-      /* Check the status word */
-      if ((vi_Chip_Address_Line>N_ROW) || (vi_Chip_Address_Line<0))
-      {
-        if (vi_Verbose < 11)
-        {
-          cout << "  ERROR : Mi28DecodeLadderDataToRoot(), Line counter is wrong, which is "
-          << std::setbase(10) << vi_Chip_Address_Line << " VS "
-          << std::setbase(10) << N_ROW << endl;
-        }
-        vi_N_Frame_Bad++;
-        break;
-      }
-      if (vi_Chip_Flag_Residual_1 != 0)
-      {
-        if (vi_Verbose < 4)
-        {
-          cout << "  Warning : Mi28DecodeLadderDataToRoot(), Status is wrong! The status residual bit should be 0, not should be "
-          << std::setbase(10) << vi_Chip_Flag_Residual_1 << endl;
-        }
-      }
-      if (vi_Chip_Flag_OverFlow == 1)
-      {
-        if (vi_Verbose < 4)
-        {
-          cout << "  Warning : Mi28DecodeLadderDataToRoot(), The status is overflow, the bit is "
-          << std::setbase(10) << vi_Chip_Flag_OverFlow << " @ line "
-          << std::setbase(10) << vi_Chip_Address_Line  << endl;
-        }
-      }
-      /* Skip the last data word, if not, will lead to read more word for this frame */
-      //if ((vi_Pointer_Data + vi_Chip_N_State) >= (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD))
-      if (vi_Pointer_Data == (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD))
-      {
-        if (vi_Verbose < 11)
-        {
-          cout << "  Warning : Mi28DecodeLadderDataToRoot(), The useful word exceeds the data length, skip this word which is @ "
-          << std::setbase(10) << vi_Pointer_Data    << " + "
-          << std::setbase(10) << vi_Chip_N_State    << " VS "
-          << std::setbase(10) << (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)
-          << endl;
-        }
-        vi_N_Frame_Bad++;
-        break;
-      }
-
-      for (unsigned long int iState=0; iState<vi_Chip_N_State; iState++)
-      {
-        /* Chip_State */
-        ifs_DataRaw.read((char *)&vi_DataRaw, WORD);
-        vi_Pointer_Data = ifs_DataRaw.tellp();
-
-        vi_Chip_State           = SwitchWordBytes(vi_DataRaw);
-        vi_Chip_N_Pixel         = vi_Chip_State  & M_CHIP_N_PIXEL;
-        vi_Chip_Address_Column  = (vi_Chip_State & M_CHIP_ADDRESS_COLUMN)  >> 2;
-        vi_Chip_Flag_Residual_2 = (vi_Chip_State & M_CHIP_FLAG_RESIDUAL_2) >> 12;
-
-        if (vi_Verbose < 3)
-        {
-          cout << "  INFO : State  / Pointer_State  / N_Pixel / Address_Column is : "
-          << std::setw(12) << std::setbase(16) << vi_Chip_State
-          << std::setw(12) << std::setbase(10) << vi_Pointer_Data
-          << std::setw(12) << std::setbase(10) << vi_Chip_N_Pixel
-          << std::setw(12) << std::setbase(10) << vi_Chip_Address_Column << endl;
-        }
-
-        /* Check the state word */
-        if ((vi_Chip_Address_Column>N_COLUMN) || (vi_Chip_Address_Column<0))
-        {
-          if (vi_Verbose < 11)
-          {
-            cout << "  ERROR : Mi28DecodeLadderDataToRoot(), Column counter is wrong, which is "
-            << std::setbase(10) << vi_Chip_Address_Column << " VS "
-            << std::setbase(10) << N_COLUMN << endl;
-          }
-          vi_N_Frame_Bad++;
-          break;
-        }
-        if (vi_Chip_Flag_Residual_2 != 0)
-        {
-          if (vi_Verbose < 4)
-          {
-            cout << "  Warning : Mi28DecodeLadderDataToRoot(), state is wrong! The state residual bits should be 0, not should be "
-            << std::setbase(10) << vi_Chip_Flag_Residual_2 << endl;
-          }
-        }
-
-        /* +1 means that vi_Chip_N_Pixel is the number of pixels after the first column */
-        for (unsigned long int iPixel=0; iPixel<vi_Chip_N_Pixel+1; iPixel++)
-        {
-
-          AddPixel( vi_ID_Ladder_Chip+vi_ID_Ladder, 1, vi_Chip_Address_Line, vi_Column_Temp);
-          // vi_Column_Temp = vi_Chip_Address_Column+iPixel;
-          // vi_Tree_N_Trigger              = vi_Ladder_Trigger;
-          // vi_Tree_N_Ladder_Frame         = vi_N_Frame_Good + 1;
-          // vi_Tree_N_Ladder_Chip          = 2;
-          // vi_Tree_ID_Ladder              = vi_ID_Ladder;
-          // vi_Tree_ID_Ladder_FrameCounter = vi_Ladder_FrameCounter;
-          // vi_Tree_ID_Ladder_Chip         = vi_ID_Ladder_Chip;
-          // vi_Tree_ID_Chip_FrameCounter   = vi_Chip_FrameCounter;
-          // vi_Tree_ID_Chip_Column         = vi_Column_Temp;
-          // vi_Tree_ID_Chip_Row            = vi_Chip_Address_Line;
-          //
-          // Tree_FiredPixel->Fill();
-
-          vd_N_PixelTotal++;
-
-          if ((vi_Column_Temp >= N_BANKCOLUMN*0) && (vi_Column_Temp < N_BANKCOLUMN*1))
-          {
-            vd_N_PixelBankA++;
-          }
-          if ((vi_Column_Temp >= N_BANKCOLUMN*1) && (vi_Column_Temp < N_BANKCOLUMN*2))
-          {
-            vd_N_PixelBankB++;
-          }
-          if ((vi_Column_Temp >= N_BANKCOLUMN*2) && (vi_Column_Temp < N_BANKCOLUMN*3))
-          {
-            vd_N_PixelBankC++;
-          }
-          if ((vi_Column_Temp >= N_BANKCOLUMN*3) && (vi_Column_Temp < N_BANKCOLUMN*4))
-          {
-            vd_N_PixelBankD++;
-          }
-        } // End of for (unsigned long int iPixel
-
-      } // End of for (int iState=0; iState<vi_Chip_N_State; iState++)
-
-    } // End of 'while ((ifs_DataRaw.tellg() - vi_Pointer_Chip_DataLength) < vi_Chip_DataLength)'
-
-    /* ------------------------------------------------------ */
-    /* Chip_Trailer */
-    ifs_DataRaw.read((char *)&vi_Chip_Trailer, DWORD);
-    vi_Pointer_Data = ifs_DataRaw.tellg();
-    vi_Chip_Trailer = SwitchDWordWords(vi_Chip_Trailer);
-    if (vi_Chip_Trailer != M_CHIP_TRAILER)
-    {
-      if (vi_Verbose < 11)
-      {
-        cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Scanning Chip_Trailer  : "
-        << std::setw(15) << std::setbase(16) << vi_Chip_Trailer << "  VS  "
-        << std::setw(11) << std::setbase(16) << M_CHIP_TRAILER  << "\t@\t"
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-      break;
-    }
-    else
-    {
-      if (vi_Verbose < 6)
-      {
-        cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Scanning Chip_Trailer is       : "
-        << std::setw(15) << std::setbase(16) << vi_Chip_Trailer
-        << std::setw(15) << std::setbase(10) << vi_Chip_Trailer
-        << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-      }
-    }
-    vi_N_Ladder_Chip++;
-
-  } // End of while ((ifs_DataRaw.tellg() - vi_Pointer_Ladder_DataLength) < vi_Ladder_DataLength)
-
-
-  /* ------------------------------------------------------ */
-  /* Ladder_Trailer */
-  ifs_DataRaw.read((char *)&vi_Ladder_Trailer, DWORD);
-  vi_Pointer_Data = ifs_DataRaw.tellg();
-  vi_Ladder_Trailer = SwitchDWordWords(vi_Ladder_Trailer);
-  if (vi_Ladder_Trailer != M_LADDER_TRAILER)
-  {
-    if (vi_Verbose < 11)
-    {
-      cout << "  ERROR : Mi28DecodeLadderDataToRoot(), find a bad Scannin Ladder_Trailer : "
-           << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer << "  VS  "
-           << std::setw(11) << std::setbase(16) << M_LADDER_TRAILER  << "\t@\t"
-           << std::setw(15) << std::setbase(10) << vi_Pointer_Data   << endl;
-    }
-    // break; // not needed here, not any more in a while loop
-  }
-  else // frame is good
-  {
-    if (vi_Verbose < 6)
-    {
-      cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Scanning Ladder_Trailer is     : "
-           << std::setw(15) << std::setbase(16) << vi_Ladder_Trailer
-           << std::setw(15) << std::setbase(10) << vi_Ladder_Trailer
-           << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
-    }
-
-    frameOK = true;
-    vi_N_Frame_Good++;
-
-    if (vi_Verbose < 11)
-    {
-      cout << "  SUCCESS : Mi28DecodeLadderDataToRoot(), Finish Good Ladder Frame " << vi_N_Frame_Good << " with Chips = " << vi_N_Ladder_Chip
-           << " @ "  << std::setw(15) << std::setbase(10) << ifs_DataRaw.tellg()
-           << " VS " << std::setw(15) << std::setbase(10) << vi_Pointer_FileEnd
-           << endl;
-    }
-
-    /*------------------------------------------Checking Framcount----------------------------------------------------------------------*/
-    if((i_Trigger)%2==0)
-    {
-     if(Trigger_Framcount[i_Trigger-1][2*iFile]==Trigger_Framcount[i_Trigger-2][2*iFile]&&(Trigger_Framcount[i_Trigger-1][2*iFile+1]==(Trigger_Framcount[i_Trigger-2][2*iFile+1]+1))&&Trigger_Framcount[i_Trigger-2][2*iFile]>0)
-     {
-     Trigger[iFile]=Trigger[iFile]+1;
-     Trigger_Framcount[i_Trigger-1][2*iFile]=0;
-     }
-     if(Trigger_Framcount[i_Trigger-1][2*iFile]==Trigger_Framcount[i_Trigger-2][2*iFile]&&Trigger_Framcount[i_Trigger-1][2*iFile+1]!=(Trigger_Framcount[i_Trigger-2][2*iFile+1]+1)&&Trigger_Framcount[i_Trigger-2][2*iFile]>0)
-     {
-      cout<<"ERR: Framcount is inconsecutive"<<setw(9)<<"trigger:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-1][2*iFile]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile]<<" "<<"framcount:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-1][2*iFile+1]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile+1]<<endl;
-     }
-     if(Trigger_Framcount[i_Trigger-2][2*iFile]<Trigger_Framcount[i_Trigger-1][2*iFile])
-     {
-     cout<<"ERR: Framcount is Dropped"<<setw(9)<<"trigger:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile]<<" "<<"framcount:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile+1]<<endl;
-     Trigger_Framcount[i_Trigger][2*iFile]=Trigger_Framcount[i_Trigger-1][2*iFile];
-     Trigger_Framcount[i_Trigger][2*iFile+1]=Trigger_Framcount[i_Trigger-1][2*iFile+1];
-     Trigger_Framcount[i_Trigger-1][2*iFile]=0;
-     Trigger_Framcount[i_Trigger-1][2*iFile+1]=0;
-     i_Trigger++;
-    Trigger_Framcount[i_Trigger-2][2*iFile]=0;
-      }
-    }
-    /*------------------------------------------Checking Trigger----------------------------------------------------------------------*/
-    int n_trigger=0;
-    if((i_Trigger)%4==0)
-    {
-      if(Trigger_Framcount[i_Trigger-2][2*iFile]>(Trigger_Framcount[i_Trigger-4][2*iFile]+1))
-      {
-        cout<<"ERR: Trigger is inconsecutive"<<setw(9)<<"trigger:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-4][2*iFile]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile]<<" "<<"framcount:"<<setw(9)<<hex<<Trigger_Framcount[i_Trigger-4][2*iFile+1]<<setw(5)<<hex<<Trigger_Framcount[i_Trigger-2][2*iFile+1]<<endl;
-        n_trigger=2*(Trigger_Framcount[i_Trigger-2][2*iFile]-Trigger_Framcount[i_Trigger-4][2*iFile]-1);
-        Trigger_Framcount[i_Trigger-2+n_trigger][2*iFile]=Trigger_Framcount[i_Trigger-2][2*iFile];
-        Trigger_Framcount[i_Trigger-2+n_trigger][2*iFile+1]=Trigger_Framcount[i_Trigger-2][2*iFile+1];
-        Trigger_Framcount[i_Trigger-1+n_trigger][2*iFile]=Trigger_Framcount[i_Trigger-1][2*iFile];
-        Trigger_Framcount[i_Trigger-1+n_trigger][2*iFile+1]=Trigger_Framcount[i_Trigger-1][2*iFile+1];
-        for(int m=1;m<(n_trigger+1);m++)
-        {
-        Trigger_Framcount[i_Trigger-3+m][2*iFile]=0;
-        Trigger_Framcount[i_Trigger-3+m][2*iFile+1]=0;
-        }
-        i_Trigger=i_Trigger+n_trigger;
-      }
-    }
-
-  } // end of else frame is good
-
-  return frameOK;
 }
 
 // --------------------------------------------------------------------------------------

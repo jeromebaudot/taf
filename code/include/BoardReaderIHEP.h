@@ -49,7 +49,7 @@ private:
   int Trigger[6];
 
   int iFile;
-  
+
   /* Verbosity : >3-Little information */
   /* 0/1     - Error, Status, Warning */
   /* 0/1/2   - Error, Status, Warning */
@@ -78,6 +78,15 @@ private:
   unsigned long int M_LADDER_HEADER;
   unsigned long int M_LADDER_CHIP; // Ladder Trailer Marker 32 bits : 0x3333333X, Check the Big 28 bits
   unsigned long int M_LADDER_TRAILER; // Ladder Trailer Marker 32 bits : 0xCCCCCCCC, Check all the 32 bits
+  unsigned long int M_LADDER_TriggerHeader; // Ladder Trigger Header  Marker 32 bits : 0x55555555, Check all the 32 bits
+  unsigned long int M_LADDER_TriggerTRAILER; // Ladder Trigger Trailer Marker 32 bits : 0x66666666, Check all the 32 bits
+
+  /* Values for a Pack */
+  unsigned long int vi_Trigger_Header;
+  unsigned long int vi_Trigger_ID;
+  unsigned long int vi_Pack_Length;
+  unsigned long int vi_Pack_State;
+  unsigned long int vi_Trigger_Trailer;
 
   /* Values for a Ladder */
   unsigned long int vi_Ladder_Header;
@@ -136,6 +145,7 @@ private:
 
   /* Pointers */
   unsigned long int vi_Pointer_Data;
+  unsigned long int vi_Pointer_Pack_DataLength;
   unsigned long int vi_Pointer_Ladder_DataLength;
   unsigned long int vi_Pointer_Chip_DataLength;
 
@@ -148,8 +158,7 @@ private:
   double vd_N_PixelBankC;
   double vd_N_PixelBankD;
 
-  bool  GetNextEvent();
-  bool  DecodeFrame();
+  bool  DecodeNextEvent();
   void  AddPixel( int iSensor, int value, int aLine, int aColumn);
   unsigned long int SwitchWordBytes(unsigned long int fi_Word);
   unsigned long int SwitchDWordBytes(unsigned long int fi_DWord);
@@ -162,7 +171,7 @@ public:
   BoardReaderIHEP(int boardNumber, int triggerMode=0, int eventBuildingMode=0);
   ~BoardReaderIHEP();
 
-  void  SetDebugLevel( int aLevel) { vi_Verbose = aLevel; }
+  void  SetDebugLevel( int aLevel) { vi_Verbose = min(10-aLevel*2, 0); }
   bool  AddFile(const char *inputFileName);
   bool  HasData();
   int   GetBoardNumber() { return fBoardNumber; }
