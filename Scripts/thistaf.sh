@@ -9,10 +9,12 @@
 #
 # Author: Valerian.REITHINGER@ipnl.in2p3.fr , 07/01/2014
 # Adapted from "thisroot.sh" from CERN ROOT software, by Fons Rademakers, 18/8/2006
+# Modifications:
+#  17/10/2018, JB, new variable ROOT_INCLUDE_PATH
 
 ##################################################
 #                CONFIGURATION
-#  Configuration for script behavior 
+#  Configuration for script behavior
 ##################################################
 # change directory to DTDIR when source this script ?
 #GoToDTDIR=TRUE #Comment this line to disable
@@ -28,7 +30,7 @@ PrintInfos=TRUE #Comment this line to disable
 # CERN ROOT software location
 # If you can run 'root' or 'root-config' from your terminal, skip this optionnal configuration step
 #   ROOT is normally ready to use after sourcing the 'thisroot.sh' script in it's bin folder (ROOT recommendation)
-#     (you can add this line to your ~/.bashrc : source /where/root/is/bin/thisroot.sh to do it automatically )  
+#     (you can add this line to your ~/.bashrc : source /where/root/is/bin/thisroot.sh to do it automatically )
 #     Then, some environment variables are set : ROOTSYS PATH LD_LIBRARY_PATH MANPATH DYLD_LIBRARY_PATH PYTHONPATH SHLIB_PATH ...
 #     Those env. var. are needed to run root (PATH) and to compile TAF (LD_LIBRARY_PATH, ...)
 #   This script will detect if this step is made
@@ -76,7 +78,7 @@ if [ -z "${ROOTSYS}" ] ; then #if ROOTSYS is not defined
       else # thisroot.sh is NOT finded
          echo "<ERROR> Can't find thisroot.sh in $ROOTLOCATION/bin, please check ROOTLOCATION in thistaf.sh"
          return 1
-      fi  
+      fi
    fi
 fi
 
@@ -90,18 +92,18 @@ fi
 # If this script is direclty executed, without arguments (this is not the normal way !)
 if [ "x${BASH_ARGV[0]}" = "x" ]; then
     echo "<WARNING> this is not the normal way to configure taf !"
-    # If this script is not called from the proper path 
+    # If this script is not called from the proper path
     if [ ! -f Scripts/thistaf.sh ]; then
        echo "<ERROR> must $ cd where/taf/is before calling $ source Scripts/thistaf.sh"
        DTDIR=;  export DTDIR
        return 1
     fi
-    # If this script is called from the proper path 
+    # If this script is called from the proper path
     DTDIR="$PWD"; export DTDIR
 
 # If this script is called with argument, ie via $ source /opt/taf/scripts/thistaf.sh (normal way)
 else
-    thistaf=$(dirname ${BASH_ARGV[0]}) #get the directory of this file from the last argument of source or "." 
+    thistaf=$(dirname ${BASH_ARGV[0]}) #get the directory of this file from the last argument of source or "."
     DTDIR=$(cd ${thistaf}/..;pwd); export DTDIR #remove the "Scripts/thistaf.sh" part of argument to get the main path of TAF
 fi
 
@@ -110,13 +112,13 @@ fi
 if [ -n "${old_dtdir}" ] ; then
    echo "<INFO> $old_dtdir taf version settings are cleaned"
    # clean PATH
-   if [ -n "${PATH}" ]; then 
+   if [ -n "${PATH}" ]; then
       drop_from_path "$PATH" ${old_dtdir}/bin/bin;
       drop_from_path "$newpath" ${old_dtdir}/Scripts;
       PATH=$newpath
    fi
    # clean LD_LIBRARY_PATH
-   if [ -n "${LD_LIBRARY_PATH}" ]; then 
+   if [ -n "${LD_LIBRARY_PATH}" ]; then
       drop_from_path "$LD_LIBRARY_PATH" ${old_dtdir}/bin/lib;
       LD_LIBRARY_PATH=$newpath
    fi
@@ -142,6 +144,15 @@ else
    export LD_LIBRARY_PATH
 fi
 
+# set $ROOT_INCLUDE_PATH
+if [ -z "${ROOT_INCLUDE_PATH}" ]; then
+   ROOT_INCLUDE_PATH=$DTDIR/code/include;
+   export ROOT_INCLUDE_PATH
+else
+   ROOT_INCLUDE_PATH=$DTDIR/code/include:$ROOT_INCLUDE_PATH;
+   export ROOT_INCLUDE_PATH
+fi
+
 export TMVASYS=$ROOTSYS/tmva/
 
 # Print infos on terminal : environment variables, ...
@@ -151,6 +162,7 @@ if [ -n "${PrintInfos}" ] ; then
 	echo "<INFO> Environment variables :"
 	echo " DTDIR           = $DTDIR"
 	echo " ROOTSYS         = $ROOTSYS"
+  echo " ROOT_INCLUDE_PATH = $ROOT_INCLUDE_PATH"
 	echo " LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
         echo " TMVASYS         = $TMVASYS"
 	echo ""
@@ -161,7 +173,7 @@ if [ -n "${PrintInfos}" ] ; then
 fi
 
 
-# go to DTDIR 
+# go to DTDIR
 if [ -n "${GoToDTDIR}" ] ; then
 	cd $DTDIR;
 	echo "<INFO> Current directory changed to TAF directory !"
@@ -179,4 +191,3 @@ unset old_dtdir
 unset thistaf
 unset GoToDTDIR
 unset PrintInfos
-

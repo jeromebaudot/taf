@@ -171,7 +171,7 @@ public:
   BoardReaderIHEP(int boardNumber, int triggerMode=0, int eventBuildingMode=0);
   ~BoardReaderIHEP();
 
-  void  SetDebugLevel( int aLevel) { vi_Verbose = min(10-aLevel*2, 0); }
+  void  SetDebugLevel( int aLevel) { vi_Verbose = abs(12-aLevel*2); cout << "IHEP board debug set to " << vi_Verbose << endl; }
   bool  AddFile(const char *inputFileName);
   bool  HasData();
   int   GetBoardNumber() { return fBoardNumber; }

@@ -2,23 +2,24 @@
 #set -x #echo on
 #
 # This script compress the essential part of TAF
-# into a tar.gz archive which can then be used to 
+# into a tar.gz archive which can then be used to
 # install the software elsewhere
 #
 # Requires configuration first with TAF-config
 #
-# Usage: source tarTAF <myTAFname> 
+# Usage: source tarTAF <myTAFname>
 #
 # J.Baudot 2010/05/28
 # Modified JB 2011/04/15 to allow tafname as argument
 # Modified JB 2011/07/07 include compiltaf.C in tar archive
 # Modified JB 2011/07/18 include maf_doc.C and html doc in tar archive
 # Modified JB 2013/02/11 try to exclude .svn files
-# Modified JB 2014/02/07 copyConfig added and new config examples 
+# Modified JB 2014/02/07 copyConfig added and new config examples
 # Modified JB 2014/05/14 thistaf.sh added
 # Modified JB 2014/06/02 rootlogon.C added
 # Modified AP 2016/xx/xx config_TEST added
 # Modified JB 2018/08/28 config_VALIDATION added
+# Modified JB 2018/10/17 droping out TAF-config
 
 if [ $# -ne 1 ]
 
@@ -28,10 +29,10 @@ echo "Usage: source tarTAF <myTAFname>"
 else
 
 unset echo
-alias echo='echo -e' 
+alias echo='echo -e'
 
 # Check the configuration
-if [ -d $DTDIR ] ; then cd  $DTDIR;  
+if [ -d $DTDIR ] ; then cd  $DTDIR;
 else echo "WARNING DTDIR: $DTDIR  doesn't set.."; return ;
 fi
 
@@ -56,7 +57,7 @@ cd $DTDIR/code;
 cp -pr src include macros $DTDIR/$tafname/code;
 cp -p Makefile Makefile.arch $DTDIR/$tafname/code;
 cd $DTDIR/Scripts;
-cp -p batchTAFexemple.sh compiltaf.C copyConfig.sh dropit macroMRax.C makeHtmlDoc.C makeSynchroLink.sh maketaf renameRawData.sh TAF-config tarTAF thistaf.sh Update_conf_align Update_conf_align2D Update_conf_Ladders $DTDIR/$tafname/Scripts;
+cp -p batchTAFexemple.sh compiltaf.C copyConfig.sh dropit macroMRax.C makeHtmlDoc.C makeSynchroLink.sh maketaf renameRawData.sh tarTAF thistaf.sh Update_conf_align Update_conf_align2D Update_conf_Ladders $DTDIR/$tafname/Scripts;
 
 
 # remove any .svn or .git files

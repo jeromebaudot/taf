@@ -434,8 +434,8 @@ class DSetup : public TObject {
     Char_t     Affiliation[tpsz];    // your group
     Char_t     Signature[tpsz];      // whom to blame on this analysis result
     Char_t     BeamTime[tpsz];       // when this data was taken
-    Char_t     Confidence[tpsz*2];     // state of alignement or other comments
-    Char_t     DataPath[tpsz];       // Path to the data
+    Char_t     Confidence[tpsz*3];     // state of alignement or other comments
+    Char_t     DataPath[tpsz*3];       // Path to the data
     Char_t     DataSubDirPrefix[tpsz];// Prefix of the subdir that contains data files, concatenated with run number
     Char_t     Extension[tpsz];      // Extension for a data file
     Int_t      Number;               // Run Number to be analysed as a String

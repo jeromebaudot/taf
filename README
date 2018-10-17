@@ -15,7 +15,7 @@ BASIC RECIPES & DOC
 Before doing anything, set the configuration:
 - cd to the taf directory
 - source Scripts/thistaf.sh (no configuration needed, except if asked during sourcing)
-  or use the old method: source Script/TAF-config (pay attention to paths and compiler settings, check they make sense)
+      (note the old method: source Script/TAF-config is not available anymore)
 
 Documentation is avalibale under the 'doc" directory
 - taf_shortDoc.pdf : provides basic help on TAF
@@ -33,14 +33,18 @@ gTAF->Help();
 
 Note that TAF accepts arguments:
 - run TAF --help to know more
+- run TAF on a specific run, use
+  TAF -run runNumber
 - run TAF on a specific run but a generic config file, use
-  TAF -run runNumber -cfg configFile
+  TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg
+- run TAF on a specific run and with config file in a specific directory, used
+  TAF -run runNumber -cfgdir myConfigDir
 
 To compile the software:
 The prefered way is to use the command (from anywhere): maketaf
 - Method 1) (equivalent to maketaf script)
 > cd code; make
-- Method 2) only since v2.6.1
+- Method 2) only since v2.6.1 <== deprecated, not checked since ages!!!
 > root Scripts/compiltaf.C
 
 To copy the software
@@ -48,9 +52,10 @@ To copy the software
 - it creates a ttaf_new.tar.gzip with all what you need to export elsewhere
 
 *********************************************************************************************************
-DEV - 2016/11/29
+Master - 2018/10/17
 *********************************************************************************************************
 
+- New reader (BoarReaderIHEP) to read data from IHEP acquisition system
 - Possibility to declare dummy plane, with no data associated, just for multiple scattering
 - New methods in MRaw for X-rays and image production
 - New method Mraw::StudyBeamProfile for beam profile application (thanks Q.Liu)
@@ -68,7 +73,7 @@ VERSION 2.10.0 - 2015/01/07
 
 
 - Possibility to get the fit from a subset of hits within a track (SubTrack)
-- Track fit now exploits fully the plane resolution, 
+- Track fit now exploits fully the plane resolution,
   which can be set in the configuration file
 - Propagate flag to TTree to indicate if hit used in track fit
 - A number of corrections in classes to decode E.Spiriti's DAQ output
@@ -87,20 +92,20 @@ VERSION 2.10.0 - 2015/01/07
 -  MRax class, inspired from MRaw is added
 -  Tracking method configurable via config file
 -  The RunNumber in config file is obsolet, the value from InitSession is now used
--  A configFile can be set via an argument when launching TAF 
--  TAF can be launched and work at any place 
+-  A configFile can be set via an argument when launching TAF
+-  TAF can be launched and work at any place
 -  DataSubDirPrefix parameter added to config file reader for data file in subdirs like DataPath/RUN26001/
 -  Some Mandatory fields are tested inconfig file, if not present, print an error and quit
 - rootlogon.C the explicit loading of TAF & Minuit libraries is configurable
 *****************************
 
 
-- New method for the history of some hits & tracks properties wrt event# 
+- New method for the history of some hits & tracks properties wrt event#
   in MRaw.cxx (gTAF->GetRaw()->DisplayHistory())
 - rootlogon.C updated with explicit loading of TAF & Minuit libraries
 - New method to generate image with MRaw.cxx (gTAF->GetRaw()->DisplayImage())
 - New classes to decode more formats related to E.Spiriti DAQ
-- Possibility to parametrize plane deformation 
+- Possibility to parametrize plane deformation
    through Legendre polynomials (see DPlane.cxx)
    with new parameters in config files (see DSetup.cxx)
 - Possibility to customize ladder (instead of fixed types)
@@ -115,7 +120,7 @@ VERSION 2.9.7 - 2013/11/12
 
 - One variable (HsN) for seed SNR replaced in the TTRee (DAuthenticHit)
 - New plots for cluster properties, reshuffled in separate method (CheckCluster)
-- New methods for alignement with Minivectors from Loic, 
+- New methods for alignement with Minivectors from Loic,
   class DPrecAlign has new parameters (CorPar file format is hence changed)
 - Possibility to set the DSF file name to any name, not just a number
 - Bug fix in file list management
@@ -135,7 +140,7 @@ VERSION 2.9.4 - 2013/08/21
 
 - additional analysis cut introduced in config file and used in MimosaPro
   for selecting a range for the seed index (usefull for MIMOSA 22 sensors)
-- protections in the eta correction mechanism to prevent crashes 
+- protections in the eta correction mechanism to prevent crashes
   when the correction is not applicable
 - corrections for warning observed when compiled with clang
 
@@ -159,7 +164,7 @@ VERSION 2.9.0 - 2013/08/19
 VERSION 2.8.1 - 2013/02/11
 *********************************************************************************************************
 
-- Addition of DLadder class to represent multi-sensor planes 
+- Addition of DLadder class to represent multi-sensor planes
   (like double-sided ladders)
 - Upgrade of DSetup class to allow additions of new fields in the config file
    while keeping backward compatibility with old formats
@@ -174,7 +179,7 @@ VERSION 2.8.1 - 2013/02/11
 - Bug fixed in DPrecAlign::DataPoint saving
 - Check for different pitch in U & V in final analysis
 - New decoding of trigger information for PXIeBoardReader
-- Management of strip-telescope data (not yet fully efficient) 
+- Management of strip-telescope data (not yet fully efficient)
 - Addition of MonteCarlo Display.
 - Fitting vertex per event with chi2 minimisation.
 
@@ -183,7 +188,7 @@ VERSION 2.8.0 - 2012/08/21
 *********************************************************************************************************
 
 - Improved displays in the MRaw class.
-- Addition of an IMGBoardReader to read analog non-sparsified data 
+- Addition of an IMGBoardReader to read analog non-sparsified data
   from either PXI or Imager boards.
 - Addition of a GIGBoardReader to read GEANT4 simulated data.
 
@@ -211,13 +216,13 @@ VERSION 2.7.0 - 2011/11/24
 
 - PXIeBoardReader event stop condition corrected (when trigger arrives at last line)
 - Hot pixel suppression mechanism revived for method MimosaPro
-- new method FakeRateBinaryFromRawData in MRaw.cxx to compute the fake hit rate from raw data 
+- new method FakeRateBinaryFromRawData in MRaw.cxx to compute the fake hit rate from raw data
   when the sensor has binary output
 - new plot to display the efficiency with respect to the position on the sensor
 - new method DisplayGeometry to display the telescope geometry in MRaw()
 - pxi_daq_lib library (almost) ready for 64 bits
 - Some corrections for the MiniVector methods
-- all global variables removed for compilation under WINDOWS 
+- all global variables removed for compilation under WINDOWS
 
 *********************************************************************************************************
 VERSION 2.6.3 - 2011/10/26
@@ -236,7 +241,7 @@ VERSION 2.6.2 - 2011/06/19
 
 - update of the pxi_daq library
 - mechanism for backward compatibility with previous pxi_daw libraries
-  and old PXIBoardReader class (< v.2.6) 
+  and old PXIBoardReader class (< v.2.6)
 - some fix to the management of CorPar file in MimosaAnalysis
 
 *********************************************************************************************************
@@ -254,16 +259,16 @@ VERSION 2.6.1 - 2011/04/13
   * all outputs from Dxxx classes (data reconstruction) go to Results/<run number>
   * TTree still goes to datDSF
   * all outputs from Mxxx classes (final analysis) go to results_M<mimosa type>
-- 
+-
 - the code does not compile under 64 bits (i.e. with -m64 option)
 - the code does not yet manage WINDOWS-like directory names
 
- 
+
 *********************************************************************************************************
 VERSION 2.6 - 2010/10/07
 *********************************************************************************************************
 
-- MAnalysis class completely re-arranged in many generic functions. 
+- MAnalysis class completely re-arranged in many generic functions.
   and a new class MCommands for MimosaPro, MimosaCalibration, MimosaFakeRate, MimosaMiniVectors...
 - Latest TNT format incorporated in TNTBoardReader.
   => configuration file format changed!
@@ -316,7 +321,7 @@ VERSION 2.1 - 2009/05/22
 - Use Timestamp in TNTBoarReader
 - New variable in config file for plane type
 - Decode Mimosa24 data
-- Track reconstruction allows now multi-hits, so several tracks can be reconstructed. The number of 
+- Track reconstruction allows now multi-hits, so several tracks can be reconstructed. The number of
 tracks reconstructed is set in the config file by TracksMaximum.
 
 
@@ -365,9 +370,9 @@ VERSION 1.0 - 2009/05/20
 EXAMPLES
 *********************************************************************************************************
 
-A number of configuration files are provided as examples inside the config_TEST directory. They shall work anywhere, 
-provided you have the raw data, contact us to get a sample of them. In order to test them you just need to copy the 
-corresponding file inside your config directory, and change the DataPath variable to the Path where the raw data is 
+A number of configuration files are provided as examples inside the config_TEST directory. They shall work anywhere,
+provided you have the raw data, contact us to get a sample of them. In order to test them you just need to copy the
+corresponding file inside your config directory, and change the DataPath variable to the Path where the raw data is
 located
 
 - RUN 1040, June 2014
@@ -391,16 +396,16 @@ located
 - RUN 28510, July 2011
  6 MIMOSA 28 (ULTIMATE) sensors in a telescope (4 as references and 2 as DUT), SPS beam 120 GeV pions, normal incidence
  acquisition = new PXIexpress system where only triggered frames are written
- 
+
 - RUN 28905, July 2011
  6 MIMOSA 28 (ULTIMATE) sensors in a telescope but data taken without beam,
- this run is to estimate the fake hit rate 
+ this run is to estimate the fake hit rate
   acquisition = new PXIexpress system where only triggered frames are written
- 
+
 - RUN 26519, August 2010
  6 MIMOSA 26 sensors in a telescope (4 as references and 2 as DUT), SPS beam 120 GeV pions, normal incidence
  acquisition = old PXI system where all frames are written
- 
+
 - RUN 22704,
  1 MIMOSA 22 AHR sensor in a telescope of 8 strip planes, SPS beam 120 GeV pions, normal incidence
  acquisition = Imager-USB system
@@ -412,27 +417,27 @@ located
 - RUN 18007,
  1 MIMOSA 18 sensor exposed to a Rutenium source
  acquisition = IMAGER board
- 
+
  - RUN 226020
    PLUME Beam test @ CERN-SPS on Oct. 2011: 8 Mi26 chips.
    acquisition PXIe
-   
+
  - RUN 28822 and 28848
    SALAT test beam @ DESY on Feb 2014: 8 Mi28 chips
    acquisition PXIe
-   
+
  - RUN 18538
    Mi18 Beam test @ CERN-SPS on Sep. 2007: Telescope with 4 planes of Mi18 chips.
    acquisition IMG
- 
+
  - RUN 35507 and 35604
    FSBB-M0 test beam @ CERN-SPS (Oct. 2014) and DESY (Mar. 2015): Telescope of 6 planes of FSBB-M0 chips.
    Acquisition PIXe
-   
+
  - RUN 35705 and 35604
    FSBB-M0-bis test beam @ DESY (Jun. 2015) and CERN-SPS (Oct. 2015): Telescope of 6 planes of FSBB-M0-bis chips.
    Acquisition PIXe
-   
+
 
 
 *********************************************************************************************************
@@ -449,8 +454,8 @@ COMMENTS
   * In the method find_tracks() of the class DTracker.cxx, you choose by commenting
     the method to extrapolate the track to the next plane.
     --> not true anymore since v2.8.1
-    
-  * In DTrack.cxx, method Analyze, you choose to use a vertex point 
+
+  * In DTrack.cxx, method Analyze, you choose to use a vertex point
     to start your track or not by commenting/uncommenting the proper lines.
     --> not true anymore since v2.8.1
 
@@ -492,14 +497,14 @@ TO DO LIST FOR DEVELOPERS
 - Reshape MRaw to have histos booked and filled separately from the display
   => might be useless since the introduction of the MRax class
 
-- Reshape the classes DHit and DTrack to allow easy switching between different 
+- Reshape the classes DHit and DTrack to allow easy switching between different
    clustering and tracking algorithm.
   => Currently managed with flags in the config file to switch to different find_xxx methods (JB July 2013)
 
 - Insure all variables are stable against 64bits CPU (especially in BoardReader classes)
   => Currently work with a patch...(JB+LC, May 2012)
 
-- Provide a Digitizer that simulates the pixel response to a list of energy 
+- Provide a Digitizer that simulates the pixel response to a list of energy
   depositions read from an input file
 
 - Add some statistics computation on the noise distribution
@@ -527,7 +532,7 @@ TO DO LIST FOR DEVELOPERS
 
 - Improve the MimosaFakerate command to get rate for each submatrix and per column and line
 
-- change the computation of the geoMatrix limit 
+- change the computation of the geoMatrix limit
 	from position in microns
 	to index (row and column) of pixels
 
@@ -547,7 +552,7 @@ TO DO LIST FOR DEVELOPERS
 - Add fit of residual (DV/DU) vs (V/U) in Minuit Alignment procedure
   => done, JB August 2013
 
-- Change the reading method for the configuration file in DSetup 
+- Change the reading method for the configuration file in DSetup
   to allow for new variables BUT keeping the compatibility with old files
   => done, JB January 2013
 
@@ -577,7 +582,7 @@ TO DO LIST FOR DEVELOPERS
 
 - Move the Hot Hit Map mechanism used in MimosaPro method as a generic methods usable by others MCommands.cxx methods.
   => done JB, 2011/11/23
-  
+
 - Provide a method to deal with clusters containing several occurenres of the same pixel. This happens when several frames are merged to produce a single physical event.
   => done JB+SS, 2011/11/07
 

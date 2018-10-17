@@ -185,19 +185,19 @@ bool BoardReaderIHEP::HasData( ) {
   ListOfFrames.clear();
   ListOfPixels.clear();
 
- if(vi_Verbose>0) {
+ if(vi_Verbose<10) {
    cout << endl ;
    cout << "BoardReaderIHEP::HasData() BoardNumber " << fBoardNumber << " IMGBoardReader::HasData() - currentEvent " << fEventNumber << " currentTrigger " << i_Trigger << endl;
  }
 
  if( DecodeNextEvent() ) {
 
-   if( vi_Verbose>1 ) PrintEventHeader();
+   if( vi_Verbose<10 ) PrintEventHeader();
 
    fCurrentEvent = new BoardReaderEvent( fEventNumber, fBoardNumber, 0, &ListOfPixels); // run number set to 0 for now
    fCurrentEvent->SetListOfTriggers( &ListOfTriggers);
    fCurrentEvent->SetListOfFrames( &ListOfFrames);
-   if( vi_Verbose>1 ) cout << " BoardNumber " << fBoardNumber << " create new event " << fEventNumber << " with " << ListOfPixels.size() << " pixels" << " from " << ListOfTriggers.size() << " and " << ListOfFrames.size() << "frames." << endl;
+   if( vi_Verbose<10 ) cout << " BoardNumber " << fBoardNumber << " create new event " << fEventNumber << " with " << ListOfPixels.size() << " pixels" << " from " << ListOfTriggers.size() << " and " << ListOfFrames.size() << "frames." << endl;
    fEventNumber++;
 
  } // getting next buffer was OK
@@ -224,11 +224,13 @@ bool BoardReaderIHEP::DecodeNextEvent()
   // Decoding status
   bool ready = false;
 
-  cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Data format  is                : "
-       << std::setw(15) << "hex"
-       << std::setw(15) << "dec"
-       << std::setw(15) << "Pointer" << endl;
-  cout << "......................................................................................................................" << endl;
+  if (vi_Verbose < 3) {
+    cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Data format  is                : "
+    << std::setw(15) << "hex"
+    << std::setw(15) << "dec"
+    << std::setw(15) << "Pointer" << endl;
+    cout << "......................................................................................................................" << endl;
+  }
 
   /* ------------------------------------------------------ */
   /* DWORD Data format */
@@ -676,11 +678,11 @@ bool BoardReaderIHEP::DecodeNextEvent()
                   Checking_Stata=SwitchWordBytes(Checking_Stata);
                   if(Checking_Stata == M_AAAA)
                   {
-                    cout << "  Warning : Mi28DecodeLadderDataToRoot(), The useful word exceeds the data length, skip this Stata which is @ "
-                    << std::setbase(10) << vi_Pointer_Data    << " + "
-                    << std::setbase(10) << vi_Chip_N_State    << " + "<< std::setbase(10) <<i_word<<" VS "
-                    << std::setbase(10) << (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)
-                    << endl;
+                      // cout << "  Warning : Mi28DecodeLadderDataToRoot(), The useful word exceeds the data length, skip this Stata which is @ "
+                      // << std::setbase(10) << vi_Pointer_Data    << " + "
+                      // << std::setbase(10) << vi_Chip_N_State    << " + "<< std::setbase(10) <<i_word<<" VS "
+                      // << std::setbase(10) << (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)
+                      // << endl;
                     ifs_DataRaw.seekg( - WORD, ios::cur);
                     break;
                   }
@@ -691,14 +693,14 @@ bool BoardReaderIHEP::DecodeNextEvent()
               /* Skip the last data word, if not, will lead to read more word for this frame */
               if (vi_Pointer_Data == (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)&&vi_Chip_N_State==0)
               {
-                //if (vi_Verbose < 11)
-                //{
-                cout << "  Warning : Mi28DecodeLadderDataToRoot(), The useful word  exceeds the data length, skip this word which is @ "
-                << std::setbase(10) << vi_Pointer_Data    << " + "
-                << std::setbase(10) << vi_Chip_N_State    << " + "<< std::setbase(10) <<0<<" VS "
-                << std::setbase(10) << (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)
-                << endl;
-                // }
+                if (vi_Verbose < 11)
+                {
+                  cout << "  Warning : Mi28DecodeLadderDataToRoot(), The useful word  exceeds the data length, skip this word which is @ "
+                  << std::setbase(10) << vi_Pointer_Data    << " + "
+                  << std::setbase(10) << vi_Chip_N_State    << " + "<< std::setbase(10) <<0<<" VS "
+                  << std::setbase(10) << (vi_Pointer_Chip_DataLength + vi_Chip_DataLength*WORD)
+                  << endl;
+                }
                 vi_N_Frame_Bad++;
                 break;
               }
@@ -751,7 +753,10 @@ bool BoardReaderIHEP::DecodeNextEvent()
                   vi_Column_Temp = vi_Chip_Address_Column+iPixel;
                   vd_N_PixelTotal++;
 
-                  AddPixel( vi_ID_Ladder_Chip+vi_ID_Ladder, 1, vi_Chip_Address_Line, vi_Column_Temp);
+                  AddPixel( vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*2, 1, vi_Chip_Address_Line, vi_Column_Temp);
+                  if (vi_Verbose < 7) {
+                    printf( "  Adding pixel from ladder %d, Chip %d -> input %d, line %d column %d\n", vi_ID_Ladder, vi_ID_Ladder_Chip, vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*2, vi_Chip_Address_Line, vi_Column_Temp);
+                  }
 
                   if ((vi_Column_Temp >= N_BANKCOLUMN*0) && (vi_Column_Temp < N_BANKCOLUMN*1))
                   {
@@ -893,13 +898,13 @@ void BoardReaderIHEP::AddPixel( int iSensor, int value, int aLine, int aColumn)
 {
    // Add a pixel to the vector of pixels
    // require the following info
-   // - input = number of the sensors (start at 1 !!!!!)
+   // - input = number of the sensors
    // - value = analog value of this pixel
    // - line & column = position of the pixel in the matrix
 
-  if (vi_Verbose>2) printf("BoardReaderIHEP::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn);
+//  if (vi_Verbose<2) printf("BoardReaderIHEP::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn);
 
-  ListOfPixels.push_back( BoardReaderPixel( iSensor+1, value, aLine, aColumn, 0) );
+  ListOfPixels.push_back( BoardReaderPixel( iSensor, value, aLine, aColumn, 0) );
 
 }
 
