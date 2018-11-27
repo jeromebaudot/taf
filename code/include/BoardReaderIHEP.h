@@ -159,7 +159,7 @@ private:
   double vd_N_PixelBankD;
 
   bool  DecodeNextEvent();
-  void  AddPixel( int iSensor, int value, int aLine, int aColumn);
+  void  AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime=0);
   unsigned long int SwitchWordBytes(unsigned long int fi_Word);
   unsigned long int SwitchDWordBytes(unsigned long int fi_DWord);
   unsigned long int SwitchDWordBytes2(unsigned long int fi_DWord);

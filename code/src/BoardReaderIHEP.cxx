@@ -100,6 +100,7 @@ BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int triggerMode, int eventBuil
   vd_N_PixelBankD = 0;
 
   fBoardNumber = boardNumber;
+  fEventBuildingMode = eventBuildingMode;
 
   cout << "*****************************************" << endl;
   cout << "    < BoardReaderIHEP constructor >      " << endl;
@@ -107,6 +108,7 @@ BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int triggerMode, int eventBuil
   cout << "Creating a BoardReaderIHEP" << endl;
   cout << " * for board : " << fBoardNumber << endl;
   cout << " * for sensor type : MIMOSA-28" << endl;
+  cout << " * with eventBuildingMode : " << fEventBuildingMode << endl;
 
   cout << " INFO BoardReaderIHEP the Data format  is                : "
   << std::setw(15) << "hex"
@@ -121,6 +123,7 @@ BoardReaderIHEP::BoardReaderIHEP(int boardNumber, int triggerMode, int eventBuil
 
   iFile = 0;
 
+  cout << "    < BoardReaderIHEP constructor DONE >      " << endl;
 }
 
 //------------------------------------------+-----------------------------------
@@ -175,6 +178,7 @@ bool BoardReaderIHEP::HasData( ) {
   // Otherwise returns "true"
   //
   // JB, 2018/07/16
+  // Modified, JB, 2018/10/08
 
   // -+-+- Initialization
 
@@ -197,7 +201,7 @@ bool BoardReaderIHEP::HasData( ) {
    fCurrentEvent = new BoardReaderEvent( fEventNumber, fBoardNumber, 0, &ListOfPixels); // run number set to 0 for now
    fCurrentEvent->SetListOfTriggers( &ListOfTriggers);
    fCurrentEvent->SetListOfFrames( &ListOfFrames);
-   if( vi_Verbose<10 ) cout << " BoardNumber " << fBoardNumber << " create new event " << fEventNumber << " with " << ListOfPixels.size() << " pixels" << " from " << ListOfTriggers.size() << " and " << ListOfFrames.size() << "frames." << endl;
+   if( vi_Verbose<10 ) cout << " BoardNumber " << fBoardNumber << " create new event " << fEventNumber << " with " << ListOfPixels.size() << " pixels" << " from " << ListOfTriggers.size() << " and " << ListOfFrames.size() << " frames." << endl;
    fEventNumber++;
 
  } // getting next buffer was OK
@@ -223,6 +227,11 @@ bool BoardReaderIHEP::DecodeNextEvent()
 
   // Decoding status
   bool ready = false;
+  int timestamp = 0; // it will be 1 or 2
+  int frameID2setTime = 0;
+  int ladderID2setTime = 0;
+  int chipID2setTime = 0;
+
 
   if (vi_Verbose < 3) {
     cout << "  INFO : Mi28DecodeLadderDataToRoot(), the Data format  is                : "
@@ -418,6 +427,30 @@ bool BoardReaderIHEP::DecodeNextEvent()
             << std::setw(15) << std::setbase(10) << vi_Ladder_FrameCounter
             << std::setw(15) << std::setbase(10) << vi_Pointer_Data << endl;
           }
+
+          // if the timestamp has not be set yet,
+          // => start with 1
+          // => new trigger
+          if( timestamp==0 ) {
+            ListOfTriggers.push_back( vi_Ladder_FrameCounter);
+            timestamp = 1;
+            frameID2setTime = vi_Ladder_FrameCounter;
+            ladderID2setTime = vi_ID_Ladder;
+          }
+          // if the ladder ID is different,
+          // => this is the 1st timestamp of a new ladder
+          else if( ladderID2setTime!=vi_ID_Ladder ) {
+            timestamp = 1;
+            frameID2setTime = vi_Ladder_FrameCounter;
+            ladderID2setTime = vi_ID_Ladder;
+          }
+          // if the timestamp is already 1 for the same ladder.
+          // => this is the second frame
+          else if( timestamp==1 && ladderID2setTime==vi_ID_Ladder ){
+            timestamp = 2;
+          }
+          ListOfFrames.push_back(vi_Ladder_FrameCounter);
+
 
           /* ------------------------------------------------------ */
           /* Ladder_DataLength */
@@ -753,9 +786,27 @@ bool BoardReaderIHEP::DecodeNextEvent()
                   vi_Column_Temp = vi_Chip_Address_Column+iPixel;
                   vd_N_PixelTotal++;
 
-                  AddPixel( vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*2, 1, vi_Chip_Address_Line, vi_Column_Temp);
+                  // AddPixel( vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*2, 1, vi_Chip_Address_Line, vi_Column_Temp, timestamp);
+                  // if (vi_Verbose < 7) {
+                  //   printf( "  Adding pixel from ladder %d, Chip %d -> input %d, line %d column %d, timestamp %d\n", vi_ID_Ladder, vi_ID_Ladder_Chip, vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*2, vi_Chip_Address_Line, vi_Column_Temp, timestamp);
+                  // }
+
+                  int input;
+                  switch ( fEventBuildingMode ) {
+                    case 1:
+                      input = vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*10;
+                      break;
+
+                    case 2:
+                        input = vi_ID_Ladder;
+                        break;
+
+                    default:
+                    input = vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*2;
+                  }
+                  AddPixel( input, 1, vi_Chip_Address_Line, vi_Column_Temp, timestamp);
                   if (vi_Verbose < 7) {
-                    printf( "  Adding pixel from ladder %d, Chip %d -> input %d, line %d column %d\n", vi_ID_Ladder, vi_ID_Ladder_Chip, vi_ID_Ladder_Chip+(vi_ID_Ladder-1)*2, vi_Chip_Address_Line, vi_Column_Temp);
+                    printf( "  Adding pixel from ladder %d, Chip %d -> input %d, line %d column %d, timestamp %d\n", vi_ID_Ladder, vi_ID_Ladder_Chip, input, vi_Chip_Address_Line, vi_Column_Temp, timestamp);
                   }
 
                   if ((vi_Column_Temp >= N_BANKCOLUMN*0) && (vi_Column_Temp < N_BANKCOLUMN*1))
@@ -894,17 +945,18 @@ bool BoardReaderIHEP::DecodeNextEvent()
 
 
 // --------------------------------------------------------------------------------------
-void BoardReaderIHEP::AddPixel( int iSensor, int value, int aLine, int aColumn)
+void BoardReaderIHEP::AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime)
 {
    // Add a pixel to the vector of pixels
    // require the following info
    // - input = number of the sensors
    // - value = analog value of this pixel
    // - line & column = position of the pixel in the matrix
+   // - time = 1 or 2, indicate whether this is 1st or 2nd frame wrt trigger
 
-//  if (vi_Verbose<2) printf("BoardReaderIHEP::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn);
+//  if (vi_Verbose<2) printf("BoardReaderIHEP::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
 
-  ListOfPixels.push_back( BoardReaderPixel( iSensor, value, aLine, aColumn, 0) );
+  ListOfPixels.push_back( BoardReaderPixel( iSensor, value, aLine, aColumn, aTime) );
 
 }
 

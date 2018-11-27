@@ -29,7 +29,7 @@ using namespace std;
 
 #define fMaxSubmatrices 10
 #define fMaxGeomatrices 10
-#define fMaxModules 30
+#define fMaxModules 60
 #define fMaxDigitalThresholds 16
 
 class DSession;

@@ -22,3 +22,9 @@ logs
 Results
 
 *.root
+
+results_ana_M28/
+
+*.png
+
+*.gz

@@ -14,6 +14,7 @@
 # Last update LC 2014/12/15: Remove DMonteCarlo et DHitMonteCarlo
 # Last update LC 2014/15/19: Add DMiniVector.h DMiniVector.cxx
 # Last update JB 2018/09/06: remove dependencies to tcsh, switch to sh
+# Last update JB 2018/11/08: cp .pcm files to the lib directory
 
 # ----------------------------------------
 #            Makefile.arch
@@ -148,6 +149,7 @@ DTdict.$(SrcSuf): $(DTHDRS) DTLinkDef.h
 	      	@echo " Generating dictionary using  : \n $(DTHDRS) "
 		@echo " *********************************************"
 		@rootcint -f $(OBJ_DIR)/DTdict.$(SrcSuf) -c -Iinclude/ $(DTHDRS) include/DTLinkDef.h
+		@/bin/sh -cf 'if [ -e $(OBJ_DIR)/DTdict_rdict.pcm ]; then cp $(OBJ_DIR)/DTdict_rdict.pcm $(LIB_DIR); fi'
 
 Mdict.$(SrcSuf): $(MHDRS) MLinkDef.h
 		@echo ""
@@ -155,6 +157,7 @@ Mdict.$(SrcSuf): $(MHDRS) MLinkDef.h
 		@echo " Generating dictionary using  : \n $(MHDRS) "
 		@echo " *********************************************"
 		@rootcint -f $(OBJ_DIR)/Mdict.$(SrcSuf) -c -Iinclude/ $(MHDRS) include/MLinkDef.h
+		@/bin/sh -cf 'if [ -e $(OBJ_DIR)/Mdict_rdict.pcm ]; then cp $(OBJ_DIR)/Mdict_rdict.pcm $(LIB_DIR); fi'
 
 DTdict.$(ObjSuf): DTdict.$(SrcSuf)
 		$(CXX) $(CXXFLAGS) -c $(OBJ_DIR)/DTdict.$(SrcSuf)  -o $(OBJ_DIR)/DTdict.$(ObjSuf)

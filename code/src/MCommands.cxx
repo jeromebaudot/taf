@@ -64,14 +64,14 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
   // Modified: JB 2011/11/04, call to generic method to compute efficiency
   // Modified: JB 2011/11/23, call to generic method for hot hit map
   // Modified: JB 2011/11/25, small fix to allow MimosaAlign
-  // Modified: JB 2013/06/21, read more cuts from configuration file 
+  // Modified: JB 2013/06/21, read more cuts from configuration file
   // Modified: JB 2013/08/21, new cut on seed pixel index range
   // Modified: SS 2013/10/04, new format for TheWriteMissedHits with option 2
   // Modified: JB 2014/01/21, new cut on cluster charge
   // Modified: AP 2015/01/13, new plot of efficiency vs Track to hit distace
 
   if(TString(SaveAlign) == TString("yes")) fSession->GetSetup()->GetAnalysisPar().SavePlots = false;
-  
+
   if(!CheckIfDone("init,clear")) return;
   if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaPro()","Please set a plane number!"); return; }
   if(!RunNumber) Error("MimosaPro","RunNumber not set! Please run InitSession  first");
@@ -152,23 +152,23 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
 
   //----------------------------------------------------------------------------------
-  // CUTS 
+  // CUTS
   //----------------------------------------------------------------------------------
   // only sets here the values specified as arguments to the function,
   // the rest of them will be loaded with GetParameters).
   // JB 2013/08/21
-  
+
   // on hits
   CUT_S2N_seed =  S2N_seed ; // S/N(seed)
   CUT_S2N_neighbour =  S2N_neighbour ; // S/N(neighbours)
-  
+
   // on tracks
   Thegeomatrix = GeoMatrix; // define the area of interest in the DUT
   TrackToHitDistanceLimit =  TrackHitDist ; // Distance between the track and the hit
   cout << "--- CUTS specified:" << endl;
   cout << "  min S/N ratio: for seed = " << CUT_S2N_seed << ", for neighbours (without seed) = " << CUT_S2N_neighbour << endl;
   cout << "  max distance track to hit " << TrackToHitDistanceLimit << endl;
-  
+
   // ?
   //SignalThreshold=0.;
   for(Short_t ic=0 ; ic<NCut ; ic++){
@@ -177,17 +177,17 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     NKeepHit[ic]   = 0   ;
     NKeepHitOk[ic] = 0   ;
   }
-  
+
   //---ab  Baseline cuts and previous bad events.
   // apply the baseline cut to avoid possible bad reset effects.
-  
+
   //Bool_t usebaselinecut = kTRUE;// kFALSE ;
   Bool_t usebaselinecut = kFALSE ;
   //---ab
   Int_t Previousbadevent = 0 ;
   Int_t Previousbadevent2 = 0 ;
   Float_t Baselinecut = 1100.0;
-  
+
   //----------------------------------------------------------------------------------
   // -- get parameters
   //----------------------------------------------------------------------------------
@@ -207,7 +207,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
   //----------------------------------------------------------------------------------
 
   BookingHistograms();
-  
+
   //----------------------------------------------------------------------------------
   // -- get the parametrization of the Eta function
   //----------------------------------------------------------------------------------
@@ -219,7 +219,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
   //----------------------------------------------------------------------------------
 
   GetAlignment();
-  
+
   //----------------------------------------------------------------------------------
   //--- Store Good and/or Bad events in ASCII FILEs
   //----------------------------------------------------------------------------------
@@ -247,7 +247,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
   ofstream outFile(Headerclusterdat);
   const Int_t NofCycle=5000; //was 100
 
-  
+
   //---------------------------------------------------------------
   //-- Prepare the event loop
   //---------------------------------------------------------------
@@ -268,7 +268,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
   // ************************************
 
-  
+
   // a bit of cleaning
   MainCanvas->Clear();
 
@@ -277,35 +277,35 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
   // **********************************************************************************
   // ********* MAIN LOOP ***************
   // **********************************************************************************
-  
+
   for ( Int_t ievt=MinEvent ; ievt<=MaxEvent ; ievt++ ) { // Main loop over event
-    
+
     if(MimoDebug) Info("MimosaPro","Reading event %d",ievt);
 
-    
-    
+
+
     // Event wise parameters
-    
+
     Short_t NhitInPlane = 0;
     //Short_t NtrackInPlane = 0;
-    
+
     //-- Initilisations
-    
+
     Nhitinevent=0;
     Ngoodhitinevent=0;
     Ngoodtrackinevent=0;
     NgoodtrackinDUTinevent=0;
     for ( Int_t i=0 ; i<10 ; i++ ) { StatusEvent[i]=0; }
-    
+
     //-- Update display
-    
+
     if (ievt == MinEvent) { // JB, 2008/08/09
       selection->Draw();
       for( Int_t il=0; il<8; il++) {
         textLabel[il]->Draw();
       }
     }
-    
+
     if(ievt/NofCycle*NofCycle == ievt || ievt<10){
       if( selection->GetMaximum()>15*selection->GetBinContent(6)) MainCanvas->SetLogy(); // JB 2010/04/28
       MainCanvas->Modified();
@@ -314,22 +314,22 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
       if (NtrkInMimo>100){
         cout<<"  temporary efficiency = "<<NofClMatchTrack<<" / "<<NtrkInMimo<<" = "<<1.*NofClMatchTrack/NtrkInMimo<<endl;
       }
-      
+
     }
-    
+
     //-- Update counter for efficiency
-    
+
     StatusEvent[1]++;
     if(ievt / NeventRangeForEfficiency * NeventRangeForEfficiency == ievt ){ ievt_array ++; }
-    
+
     //=========================
     if(MimoDebug>1) cout << " getting the event" << endl;
     t->GetEvent(ievt);
     //=========================
-    
+
     DEventHeader& CurrentEventHeader=Evt->GetHeader();
     //cout << "Nframes in events " << ievt << " is " << CurrentEventHeader.GetNumberOfFrames() << endl;
-    
+
     //---Store events in ascii file:
     /* DEventHeader& CurrentEventHeader=Evt->GetHeader();
      if(TheWriteGoodHits>1){
@@ -341,21 +341,21 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
      */
     //    cout<<"####### evt RealEventNumber, evt-ievt , ievt"<<CurrentEventHeader.GetEventNumber()<<" "
     //	<<CurrentEventHeader.GetEventNumber()-ievt <<" "<<ievt<<endl;
-    
+
     if(MimoDebug>1) cout << " getting the planes, tracks " << Evt->fT1PlanesN << " and hits" << endl;
     TClonesArray *Trpl   = Evt->GetTransparentPlanes() ; //tracks
     TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
     TClonesArray *Planes = Evt->GetAuthenticPlanes()   ; //planes
     Int_t NbOfTrpl   = Trpl->GetLast()+1   ; // total # tracks over all planes
     Int_t NbOfHits   = Hits->GetLast()+1   ; // total # hits over all planes
-      
+
     // check to avoid crash due to empty event, added by JB, Sept 2008,
     // cut NbOfHits==0 removed since there may be no hit at all but the event should still be taken into account for efficiency, JB 2012/06/08
     if( NbOfTrpl==0 ) {
       if (MimoDebug > 0) Info("MimosaPro","Empty event %d: #tracks %d\n", ievt, NbOfTrpl);
       continue;
     }
-    
+
     //Find the plane :
     Int_t okP = 0, okT = 0 ; // two ok added instead of one, JB Sept 2007
     DAuthenticPlane *ThePlaneStudied = 0; // init
@@ -370,8 +370,8 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
       }
       j++;
     }
-    
-    
+
+
     // Find the tracks in this plane and count them with okT
     // JB 2009/07/20
     DTransparentPlane *aTrpl;
@@ -383,11 +383,11 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
       }
       j++;
     }
-    
-    
+
+
     // ****************** Filling histos
     selection->Fill(1.);  // all events
-    
+
     //-- Reference plane study
     for ( Int_t iipl=0 ; iipl<TMath::Min(NbOfTrpl, 10) ; iipl++ ) {
       aTrpl = (DTransparentPlane*) Trpl->At(iipl) ;
@@ -404,18 +404,18 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
       } // end if this is not the DUT
     }
     // ******************
-    
-    
+
+
     //----ab    CUT ON THE BASELINE TO AVOID BAD RESET EFFECTS:
     if( ((ThePlaneStudied->PFrfr1)<Baselinecut) && (usebaselinecut==kTRUE) ){okT=0; okP=0;}
-    
+
     //---------------------------------------------------------------
     // if Both TransparentPlane and AuthenticPlane exist : (JB, Sept 2008)
     // and no baseline cut
     // and number of hits and tracks are within limits
     if ( okP && okT && NbOfHits<CUT_MaxNbOfHits && NbOfHits>=CUT_MinNbOfHits && NbOfTrpl>0) { // Plane exists with tracks and hits
       StatusEvent[2]++;
-      
+
       // ****************** Filling histos
       selection->Fill(2.); // event with track(s) and hits in the plane
       hnhit->Fill(NhitInPlane);
@@ -436,24 +436,24 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
       RV[0] = -NofPixelInColumn * PixelSizeV/2.0;
       RV[1] = +NofPixelInColumn * PixelSizeV/2.0;
 
-      
+
       //---------------------------------------------------------------
       // Loop over hits BUT keep only the ones in the right plane
       for (Int_t iHit=0 ; iHit<NbOfHits ; iHit++){ // loop on hits
-        
+
         DAuthenticHit *ahit = (DAuthenticHit*)Hits->At(iHit);
         if( ahit->Hpk != ThePlaneNumber ) continue; // select only hits in DUT
         StatusEvent[6]++;
         Nhitinevent++;
         NRecHit++;
-        
+
         Int_t Hotpixel = HotPixel_test( ahit->Hsk); // JB 2011/11/23
-        
+
         // Now compute variables usefull for cuts
-        
+
         NofPixelsInCluster = (ahit->HNNS < MaxNofPixelsInCluster)?ahit->HNNS:MaxNofPixelsInCluster;
         if (MimoDebug>2) Info("MimosaPro"," NofPixelsInCluster is set to %d (in hit %d, max %d)\n", NofPixelsInCluster, ahit->HNNS, MaxNofPixelsInCluster);
-        
+
         // signal over noise ratio of the seed pixel
         Float_t snSeed;
         if( ahit->Hsn != 0.0 ) {
@@ -464,7 +464,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
         }
         if(MimoDebug>2) printf("MimosaPro: snSeed computation with Hsn=%f, Hq0=%f, Hn0=%f, NoiseScope=%f => snSeed=%.1f\n", ahit->Hsn, ahit->Hq0, ahit->Hn0, NoiseScope, snSeed);
 
-        
+
         // charge and S/N in the second highest pixel of the hit
         // among the 4 pixels neighbouring the seed (cross)
         Float_t q2nd = 0.;
@@ -482,24 +482,24 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
             }
           }
         }
-        
+
         // charge of the cluster without the seed
         ChargeAroundSeed = (ahit->Hqc - ahit->Hq0)*calibration;
-        
+
         // what the hell is this ?? JB 2010/06/03
         for(Short_t ic=0 ; ic<NCut ; ic++){
           if (ChargeAroundSeed>VCut[ic]){
             NKeepHit[ic]++ ;
           }
         }
-        
+
         if(MimoDebug>2) {
           printf("MimosaPro: Hit %d, qSeed=%.1f, qAroundSeed=%.1f, hot=%d, snSeed=%.1f, sn2nd=%.1f\n", iHit, ahit->Hq0, ChargeAroundSeed, Hotpixel, snSeed, sn2nd);
         }
-        
+
         // ****************** Filling histos
         selection->Fill(6.);  // all hits in MIMOSA
-        
+
         h2dallhits->Fill( ahit->Hsu, ahit->Hsv);
         hallSNneighbour->Fill(ahit->HSNneighbour);
         hAllS2N->Fill(snSeed);
@@ -517,26 +517,26 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 	  //cout << "ahit->HNNS = " << ahit->HNNS << endl;
 	  if(ahit->HNNS > 0) Warning("MimosaPro","evt %d, segment WARNING ahit->Hq0 = 0", ievt);
 	}
-        
+
         // ******************
-        
-        
+
+
         //--------------------------------------------------------------
         // If hit passes the selection cut
-        if( 
+        if(
               ( Hotpixel == 0)
          //&& ( ahit->HqM[0]*calibration>0. ) // why is it usefull ? JB 2013/11/08
-           && ( ahit->HsnPulse / ahit->Hsn >= CUT_S2N_seed ) 
+           && ( ahit->HsnPulse / ahit->Hsn >= CUT_S2N_seed )
            && ( ahit->HSNneighbour >= CUT_S2N_neighbour) //YV 27/1109 you add these 2 lines if you want S/N cuts
            && ( ChargeAroundSeed >= CUT_MinQ_neighbour )  // JB 2013/11/08
            && ( ahit->Hq0 >= CUT_Q_seed ) // JB 2013/11/08
            && ( ahit->Hqc >= CUT_Q_cluster ) // JB 2014/01/21
            && ( MinNofPixelsInCluster <= ahit->HNNS && ahit->HNNS <= MaxNofPixelsInCluster ) // JB 2013/09/11
-           && ( CUT_MinSeedIndex==CUT_MaxSeedIndex || 
+           && ( CUT_MinSeedIndex==CUT_MaxSeedIndex ||
                 (CUT_MinSeedIndex<=ahit->Hsk && ahit->Hsk<=CUT_MaxSeedIndex) ) // allows to select an index range for the seed pixel (ineffective if minIndex==maxIndex), JB 2013/08/21
-           && ( CUT_MinSeedCol==CUT_MaxSeedCol || 
+           && ( CUT_MinSeedCol==CUT_MaxSeedCol ||
                (CUT_MinSeedCol<=(ahit->Hsk%NofPixelInRaw) && (ahit->Hsk%NofPixelInRaw)<=CUT_MaxSeedCol) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
-           && ( CUT_MinSeedRow==CUT_MaxSeedRow || 
+           && ( CUT_MinSeedRow==CUT_MaxSeedRow ||
                (CUT_MinSeedRow<=(ahit->Hsk/NofPixelInRaw) && (ahit->Hsk/NofPixelInRaw)<=CUT_MaxSeedRow) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
            //&& 256<=(ahit->Hsk%NofPixelInColumn) && (ahit->Hsk%322)<=319 // S1:0-95, S2:96-191, S3:192-255, S4:256-319, JB 2013/08/22
            ){ // if hit passes cuts
@@ -545,13 +545,13 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
           IndexOfGoodHitsInEvent[Ngoodhitinevent] = iHit;
           Ngoodhitinevent++;
           if(MimoDebug>1) cout << " found good hit " << Ngoodhitinevent-1 << " with index " << IndexOfGoodHitsInEvent[Ngoodhitinevent-1] << " pos " << ahit->Hu << ";" << ahit->Hv << " and dist to track " << ahit->Hu-ahit->Htu << ";" << ahit->Hv-ahit->Htv << endl;
-            
+
           // ****************** Filling histos
           selection->Fill(7.); // Good hits in MIMOSA
-	  
+
 	  //AP, 2014/10/29: Displacing histos outside the loop
 	  //hnGOODhit->Fill(Ngoodhitinevent);
-	  //hnahitievt->Fill( ievt, Ngoodhitinevent);          
+	  //hnahitievt->Fill( ievt, Ngoodhitinevent);
           GoodHit_Fill( ahit); // JB 2010/10/06
           hgoodSN_vs_SNN->Fill(ahit->HSNneighbour,snSeed);
           BinarySpecific_HitsOnly_fill( ahit);  // JB 2010/06/03
@@ -569,18 +569,18 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
         } // end if hit passes cuts
         //--------------------------------------------------------------
-        
+
         else { // if hit does not pass cuts
           if(MimoDebug>1) Info("MimosaPro","Hit not passing selection cuts, ChargeAroundSeed=%f <> %f, seedCharge=%.1f <> %.0f, hotPixel %d", ChargeAroundSeed, CUT_MaxQ_neighbour, ahit->HqM[0]*calibration, 0., Hotpixel);
         }
-        
+
       } // end loop on hits
       //--------------------------------------------------------------
-      
-      
-      
+
+
+
       //AP 2015/06/09
-      //Peace of code to identify duplicate hits, i.e., hits mainly in the same position but with different 
+      //Peace of code to identify duplicate hits, i.e., hits mainly in the same position but with different
       //time-stamp and pixel-multiplicity.
       Int_t IndexOfGoodHitsInEvent_tmp[4000];
       Int_t Ngoodhitinevent_tmp = 0;
@@ -590,21 +590,21 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 	DAuthenticHit* ahit1 = (DAuthenticHit*)Hits->At(IndexOfGoodHitsInEvent[iHit1]);
 	bool IsAlreadyInDuplicateList = false;
 	for(Int_t iHit_dup=0; iHit_dup<NgoodhitDuplicateCounter; iHit_dup++) {
-	  if(IndexOfGoodHitsInEvent[iHit1] == IndexOfDuplicatedHits[iHit_dup][0] || 
+	  if(IndexOfGoodHitsInEvent[iHit1] == IndexOfDuplicatedHits[iHit_dup][0] ||
 	     IndexOfGoodHitsInEvent[iHit1] == IndexOfDuplicatedHits[iHit_dup][1]) {
 	    IsAlreadyInDuplicateList = true;
 	    break;
 	  }
 	}
 	if(IsAlreadyInDuplicateList) continue;
-	
+
 	bool HasDuplicate = false;
 	for(Int_t iHit2=iHit1+1; iHit2<Ngoodhitinevent; iHit2++) { // 2nd loop over good hits
 	  DAuthenticHit* ahit2 = (DAuthenticHit*)Hits->At(IndexOfGoodHitsInEvent[iHit2]);
 
 	  bool IsAlreadyInDuplicateList2 = false;
 	  for(Int_t iHit_dup=0; iHit_dup<NgoodhitDuplicateCounter; iHit_dup++) {
-	    if(IndexOfGoodHitsInEvent[iHit2] == IndexOfDuplicatedHits[iHit_dup][0] || 
+	    if(IndexOfGoodHitsInEvent[iHit2] == IndexOfDuplicatedHits[iHit_dup][0] ||
 	       IndexOfGoodHitsInEvent[iHit2] == IndexOfDuplicatedHits[iHit_dup][1]) {
 	      IsAlreadyInDuplicateList2 = true;
 	      break;
@@ -616,8 +616,8 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 	  Double_t distanceV = TMath::Abs(ahit1->Hv  - ahit2->Hv);
 	  Double_t Delta_TS  = TMath::Abs(ahit1->HTS - ahit2->HTS);
 
-	  if((distanceU <= PixelSizeU) && 
-	     (distanceV <= PixelSizeV) &&  
+	  if((distanceU <= PixelSizeU) &&
+	     (distanceV <= PixelSizeV) &&
 	     (Delta_TS  <= 2) //For the moment time window is +/-2 to identify the duplicated hits
 	     ) {
 	    HasDuplicate = true;
@@ -640,7 +640,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
 	    break;
 	  }
-	  
+
 	} //end of 2nd loop over good hits
 
 	//If hit is not duplicated put it on temporal list of good hits
@@ -650,15 +650,15 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 	}
 
       } //end of 1st loop over good hits
-      
+
       //Loop over duplicated hits and put on the tamporal list the one with the earliest time-stamp
       for(Int_t iHit=0; iHit<NgoodhitDuplicateCounter; iHit++) { // loop over good duplicated hits
 	IndexOfGoodHitsInEvent_tmp[Ngoodhitinevent_tmp] = IndexOfDuplicatedHits[iHit][0];
 	Ngoodhitinevent_tmp++;
       } //end of loop over good duplicated hits
 
-      
-      //Now replace the List of good hits with the temporal list. In this way eliminate the dupplicated hits for the 
+
+      //Now replace the List of good hits with the temporal list. In this way eliminate the dupplicated hits for the
       //estimation of detection efficiency, spatial resolution and cluster multiplicity
       Ngoodhitinevent = Ngoodhitinevent_tmp;
       for(Int_t iHit=0; iHit<Ngoodhitinevent; iHit++) IndexOfGoodHitsInEvent[iHit] = IndexOfGoodHitsInEvent_tmp[iHit];
@@ -668,28 +668,28 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
       if(MimoDebug) Info("MimosaPro","End loop on hits, found %d good hits in event %d", Ngoodhitinevent, ievt);
       const Int_t NofCycle=1000; //was 100
-      
+
       //---------------------------------------------------------------
       // FIRST Loop on tracks to count how many are in the EXCLUSION GEOMATRIX
       Int_t Ngoodtrackgeominevent = 0;
       Int_t NgoodtrackSensorinevent = 0;
       for (Int_t iTrk=0 ; iTrk<NbOfTrpl ; iTrk++){ // loop on tracks
-        
+
         aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( aTrpl->Tpk != ThePlaneNumber ) continue; // select only tracks in DUT
         TrackParameters_compute(aTrpl, alignement); // compute tu,tv
-        
+
         if( TrackInMimo( GeoMatrixForTrackCut,tu,tv, ThesubmatrixNumber) /* && aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 < TrackChi2Limit */) {
           Ngoodtrackgeominevent++;
         }
-        
+
 	//Check if track passes through the sensor full surface
-        if(tu >= RU[0] && tu <= RU[1] && 
+        if(tu >= RU[0] && tu <= RU[1] &&
 	   tv >= RV[0] && tv <= RV[1]) {
 	  NgoodtrackSensorinevent++;
         }
       } // end loop on tracks
-      
+
       NTracksPerEventInSensor = NgoodtrackSensorinevent;
       hNGoodGeomTracksPerEvent->Fill( Ngoodtrackgeominevent);
       hnTracksinSensorPerEvent->Fill(NgoodtrackSensorinevent);
@@ -702,26 +702,26 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
       double StupidTracDensity = TracDensity;
       hTrackDensity->Fill(StupidTracDensity);
       if( MimoDebug>1) Info("MimosaPro"," Number of tracks in EXCLUSION GEOMATRIX %d is %d.", GeoMatrixForTrackCut , Ngoodtrackgeominevent);
-      
-      
-      
+
+
+
       //---------------------------------------------------------------
       // Loop on tracks BUT keep only the ones in the right plane
       for (Int_t iTrk=0 ; iTrk<NbOfTrpl ; iTrk++){ // loop on tracks
-        
+
         aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( aTrpl->Tpk != ThePlaneNumber ) continue; // select only tracks in DUT
-        
+
         StatusEvent[3]++;
-        
+
         // ****************** Filling histos
         selection->Fill(3.); // all tracks in plane
-        
+
         TrackParameters_allFill( aTrpl, ievt);
         // ******************
-        
+
         if( MimoDebug>1) Info("MimosaPro"," Track %d has chi2=%f <> %f ?", iTrk, aTrpl->Tchi2, TrackChi2Limit);
-        
+
         //---------------------------------------------------------------
         // if chi2 of selected track is OK
         if ( aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 < TrackChi2Limit // JB, chi2=0. is not a real pb
@@ -731,51 +731,51 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
             ){ // if good track
           StatusEvent[4]++;
           Ngoodtrackinevent++;
-          
+
           TrackParameters_compute(aTrpl, alignement);
-          
+
           /*******************/
           selection->Fill(4.);   // Good quality track
-          
+
           hNTracksPerEvent->Fill( Ngoodtrackinevent);
           hNTracksPerEventievt->Fill( ievt, Ngoodtrackinevent);
-          
+
           TrackParameters_goodFill( aTrpl, ievt);
-          
+
           /*******************/
-          
+
           Bool_t TrkCrossMimo = TrackInMimo( Thegeomatrix, tu ,tv, ThesubmatrixNumber);
-          
+
           if( MimoDebug) Info("MimosaPro"," Is track %d in MIMOSA ? %d", iTrk, TrkCrossMimo);
-          
+
           //---------------------------------------------------------------
           // if track is in the good geometry range
           if( TrkCrossMimo == kTRUE ){ // if the track is in MIMOSA
             StatusEvent[5]++;
             NgoodtrackinDUTinevent++;
             NtrkInMimo++ ;
-            
+
 	    hnTracksInGeomatrixVsTrackPerEvent->Fill(NgoodtrackSensorinevent);
 
             Previousbadevent2 = Previousbadevent;
             Previousbadevent = ievt;
             temp_NtrkInMimo[ievt_array]++;
-            
-            
+
+
             //-- Find the nearest good hit to this track
-            
+
             TrackToHitDistance    = 10000000.0 ;
             TrackToHit2ndDistance = 10000000.0 ;
             DAuthenticHit *thehit    = 0; //This will be a real hit
-            //DAuthenticHit *the2ndhit = 0; 
+            //DAuthenticHit *the2ndhit = 0;
             DAuthenticHit *ahit      = 0;
             Float_t adist;
 	    Int_t TheHitIdx = -1;
-            
+
             if( Ngoodhitinevent<=0 ) { // no hit at all, JB 2009/09/08
               nmissh++;
             }
-            
+
             for(Int_t iHit=0; iHit<Ngoodhitinevent; iHit++) { // loop over good hits
               ahit = (DAuthenticHit*)Hits->At( IndexOfGoodHitsInEvent[iHit] );
               if(MimoDebug>1) cout << " Good hit " << iHit << " selected at index " << IndexOfGoodHitsInEvent[iHit] << " with position " << ahit->Hu << ";" << ahit->Hv << endl;
@@ -790,12 +790,12 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 		//cout<<ievt<<" DISTANCES "<<TrackToHitDistance<<" "<<TrackToHit2ndDistance<<endl;
               }
             } // end loop over good hits
-            
-            
+
+
             //-- Check the nearest hit is within the requested distance
-            
+
             Bool_t aHitIsFound = kFALSE ;
-            if( fabs(TrackToHitDistance) < TrackToHitDistanceLimit 
+            if( fabs(TrackToHitDistance) < TrackToHitDistanceLimit
                //&& fabs(ahit->Hv-tv)<200. // specific case, JB 2012/11/20
                //&& fabs(ahit->Hu-tu)<1000. // specific case, JB 2012/11/20
                ){
@@ -813,15 +813,15 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 		effi_vs_TrkHitDist->SetBinContent(ItrkHitDis+1,effi_vs_TrkHitDist->GetBinContent(ItrkHitDis+1) + 1);
 	      }
 	    }
-	    
-            
+
+
             // ****************** Filling histos
             selection->Fill(5.); // Good track in MIMOSA
-            
+
             hnGOODhitwhentrack->Fill(Ngoodhitinevent);
             hnahitievt->Fill( ievt, Ngoodhitinevent);
             hTrackToClusterMinDistance->Fill(TrackToHitDistance); // Minimal distance from track to hits
-	    if(TrackToHit2ndDistance<999999.0){ 
+	    if(TrackToHit2ndDistance<999999.0){
 	      hTrackTo2ndclosestClusterDistance->Fill(TrackToHit2ndDistance); // 2nd Minimal distance from track to hits
 	      hMinDistance_vs_2ndDistance->Fill(TrackToHit2ndDistance,TrackToHitDistance);
               /*
@@ -835,10 +835,10 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 		ComputePixelPosition_UVToColRow(the2ndhit->Hu,the2ndhit->Hv,mycol_2nd,mylin_2nd);
 		cout << endl;
 		cout <<"CLOSE TEST: ievt " << ievt << ", TheHit (col,lin) = (" << mycol << "," << mylin << "); TS_hit = " << thehit->HTS << ", hit_mult = " << thehit->HNNS
-		     << "; The2ndHit (col,lin) = (" << mycol_2nd << "," 
-		     << mylin_2nd << "); TS_2ndhit = " << the2ndhit->HTS << ", 2ndhit_mult = " << the2ndhit->HNNS << "; " 
+		     << "; The2ndHit (col,lin) = (" << mycol_2nd << ","
+		     << mylin_2nd << "); TS_2ndhit = " << the2ndhit->HTS << ", 2ndhit_mult = " << the2ndhit->HNNS << "; "
 		     << "TrkToHitDistance = " << TrackToHitDistance << ", TrkTo2ndHitDistance = " << TrackToHit2ndDistance
-		     << ", DeltaU/PitchU = " << (double)(thehit->Hu - the2ndhit->Hu)/PixelSizeU 
+		     << ", DeltaU/PitchU = " << (double)(thehit->Hu - the2ndhit->Hu)/PixelSizeU
 		     << ", DeltaV/PitchV = " << (double)(thehit->Hv - the2ndhit->Hv)/PixelSizeV
 		     << ", pitch_distance = " << Pitch_distance
 		     << endl;
@@ -847,18 +847,18 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
               */
 	    }
             TrkInMimo->Fill(tu,tv);  //MG 2011/07/08  for efficency 2D plot
-            
+
             // ******************
-            
+
             if(MimoDebug>1) cout << " Nearest hit to track at " << TrackToHitDistance << " <?> " << TrackToHitDistanceLimit<< ", hit found = " << aHitIsFound << endl;
-            
+
             //---------------------------------------------------------------
             // If a good hit near this track was found
             if ( aHitIsFound ){ // if a hit matching the track was found
               StatusEvent[8]++;
               StatusEvent[9]++;
               NofClMatchTrack++;
-	      
+
 	      //Fill histograms related with duplicated matched hits
 	      //Check if matched hit is duplicated
 	      Int_t IdxDuplicatedMatchedHit = -999;
@@ -868,7 +868,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 	      if(IdxDuplicatedMatchedHit != -999) {
 		DAuthenticHit* ahit1 = (DAuthenticHit*)Hits->At(IndexOfDuplicatedHits[IdxDuplicatedMatchedHit][0]);
 		DAuthenticHit* ahit2 = (DAuthenticHit*)Hits->At(IndexOfDuplicatedHits[IdxDuplicatedMatchedHit][1]);
-		
+
 		hDuplicate_2DMult->Fill(ahit1->HNNS,ahit2->HNNS);
 		hDuplicate_DeltaTS->Fill(ahit2->HTS - ahit1->HTS);
 		hDuplicate_npixc->Fill(ahit1->HNNS);
@@ -878,47 +878,47 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 	      hnGOODhitInGeomatrixVsTrackPerEvent->Fill(NgoodtrackSensorinevent);
 
               temp_NofClMatchTrack[ievt_array]++; // for time dependent efficiency
-              
+
               // what the hell is this ?? JB 2010/06/03
               for(Short_t ic=0 ; ic<NCut ; ic++){
                 if (ChargeAroundSeed>VCut[ic]){
                   NKeepHitOk[ic]++ ;
                 }
               }
-              
-              
+
+
               // ****************************************
               // Analysis of matched hits & tracks
-         
+
               NofPixelsInCluster = (thehit->HNNS < MaxNofPixelsInCluster)?thehit->HNNS:MaxNofPixelsInCluster;
-              
+
               ClusterCharges_compute( thehit);  // JB 2010/06/03
               ClusterPosition_compute( thehit, alignement);  // JB 2010/06/03
               //if(MimoDebug>1) cout << " hit   in plane (Plane frame) " << hU << ", " << hV << ", " << hW << "." << endl;
-              
+
               //TrackToHitDistance= sqrt((hU-tu)*(hU-tu)+(hV-tv)*(hV-tv)); // recomputed with best hit position
               // ************************************
 
-              
+
               // ************************************
               // Fill data for precision alignement
               // get the computed hit position if not too far from digital position
               // JB 2009/09/01
               if( abs(thehit->Hu - thehit->Hsu) < 5.*PixelSizeU
                  && abs(thehit->Hv - thehit->Hsv) < 5.*PixelSizeV ){
-                alignement->NewData( thehit->Hu, thehit->Hv, 
-				     thehit->Hresu, thehit->Hresv, 
+                alignement->NewData( thehit->Hu, thehit->Hv,
+				     thehit->Hresu, thehit->Hresv,
 				     tx, ty, tz, tdx, tdy); // more precise
               }
               else{
                 alignement->NewData( thehit->Hsu, thehit->Hsv,
-				     thehit->Hresu, thehit->Hresv, 
+				     thehit->Hresu, thehit->Hresv,
 				     tx, ty, tz, tdx, tdy);  // more robust.
               }
               // ************************************
-              
-              
-              
+
+
+
               // ************************************
               // --- write into the file info about the cluster
               //---- to be written in an ASCII file to be used for the hit separation macros.
@@ -930,9 +930,9 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                 << " - Hsn S/N = "<<thehit->HsnPulse / thehit->Hsn
                 << "total charge=" << TotalCharge
                 << endl;
-                
+
               }
-              
+
               if(TheWriteGoodHits>1){
                 for(Int_t i=0; i < NofPixelsInCluster; i++){
                   outFileGoodEvt << "Evt "<< ievt << endl;
@@ -948,7 +948,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                   << endl;
                 }
               }
-              
+
               // fill the file with the informations
               /*if(TheWriteGoodHits==1){
                outFileGoodEvt <<"-GOOD ASSOCIATION --- RealEventNumber ="<<CurrentEventHeader.GetEventNumber()<<"; ievt = "<<ievt<<endl;
@@ -970,9 +970,9 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                 //cout << UCGcorr << " " << VCGcorr << " " << tx << " " << ty << " " << tz << " " << tdx << " " << tdy << endl;
                 cout <<"---------------------"<<endl;
               }
-              
-              
-              
+
+
+
               if(NofPixelsInCluster >20){
                 outFile << tu << " ";
                 outFile << tv << " ";
@@ -989,20 +989,20 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                 outFile << " \n";
               }
               // ************************************
-              
-              
+
+
               // ****************** Filling histos
               selection->Fill(8.); // good hit associated to a good track
               selection->Fill(9.);
-              
+
               ClusterCharges_fill( thehit, ievt);   // JB 2010/06/03
               ClusterShape_fill( thehit);  // JB 2010/04/13
               BinarySpecific_fill( thehit);  // JB 2010/06/03
               ClusterPosition_fill( thehit); // JB 2010/07/21
               TrackHitPosition_fill( thehit, aTrpl, ievt); // JB 2010/07/22
-              
+
               goodtracks->Fill( tu, tv); //MG 2010/06/10 "matched tracks"
-              
+
 	      hDist_Trck_Diode_Asso->Fill(GetTrackDistantToClosestDiode(tu,tv));
 	      if(thehit->HNNS < huCGwidth_vs_Mult->GetXaxis()->GetNbins()) {
                 for(int imult=0;imult<huCGwidth_vs_Mult->GetXaxis()->GetNbins()-1;imult++) {
@@ -1027,15 +1027,15 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
               hraw1PFrfr2GOOD->Fill(float(ThePlaneStudied->PFrfr2));
               hraw1PFrfr2GOOD_time->Fill(ievt,float(ThePlaneStudied->PFrfr2));
               hraw1NoiseGOOD_time->Fill(ievt,float(ThePlaneStudied->PFn));
-              
+
               // ******************
-              
+
               //-----------------------------
               // User's stuff
               // JB 2009/09/07
               //-----------------------------
               if(MimoDebug>1) cout << " STARTING user's stuff" << endl;
-              
+
               for(Int_t iHit=0; iHit<Ngoodhitinevent; iHit++) { // loop over good hits
                 ahit = (DAuthenticHit*)Hits->At( IndexOfGoodHitsInEvent[iHit] );
                 if( thehit != ahit ) {
@@ -1043,10 +1043,10 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                   hUserHitCorrelationCol->Fill( ahit->Hsv - thehit->Hsv);
                 }
               } // end loop over good hits
-              
-              
+
+
               if(MimoDebug) Info("MimosaPro","Done with good matched track-hit study");
-              
+
 
             }  // end if a hit matching the track was found
             //---------------------------------------------------------------
@@ -1054,26 +1054,26 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
             //---------------------------------------------------------------
             else { // end if no hit matching the track was found
               nmiss++;
-              
+
 	      //if(Ngoodtrackinevent == 1) {
 		//double mycol,mylin;
 		//ComputePixelPosition_UVToColRow(tu,tv,mycol,mylin);
 	        //cout << "Evt = " << ievt << " has Inefficient track located at (u,v) = (" << tu << "," << tv << "); (col,lin) = (" << mycol << "," << mylin << ")" << endl;
 	      //}
-	      
+
               if(ievt/NofCycle*NofCycle == ievt){
                 cout << " Number of tracks missed = " << nmiss << endl;
               }
-              
-              
+
+
               //--- Do some print out
-              
+
               if (MimoDebug) {
                 cout <<"--INEFFICIENT event = "<<ievt<<endl;
               }
-              
+
               if (MimoDebug>2) {
-                
+
                 cout << " -8-BAD TRACK-HIT DIST OR NO HIT evt = "<<ievt;
                 cout << " dist= "<<TrackToHitDistance;
                 cout << " ( " << Ngoodhitinevent << " hits in plane)" <<endl;
@@ -1086,9 +1086,9 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                 cout << " tx=" << tx <<" ty=" << ty <<" tz=" << tz
                 <<" tdx="<<tdx <<" tdy="<<tdy <<endl;
                 cout<<" tu= "<<tu<<" tv= "<<tv<<endl;
-                
+
                 if( Ngoodhitinevent>0 ) { // if there is at least a hit
-                  
+
                   cout << " -----------Info on nearest hit ----------" << endl;
                   cout << " Charge on Seed HqM[0]*cal         = " << thehit->HqM[0]*calibration << " = " << thehit->HqM[0] << "*" << calibration <<  endl;
                   cout << " thehit->Hqc * calibration         = " << thehit->Hqc * calibration  << endl;
@@ -1101,7 +1101,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                   cout << endl;
                   cout << " Index  of Seed          = " << thehit->Hsk  << " column: " << (thehit->Hsk)%NofPixelInRaw << " -- line: "  << (thehit->Hsk)/NofPixelInRaw<< endl;
                   cout<<" hUdigital="<< thehit->Hsu <<" hVdigital="<< thehit->Hsv <<" pixelsizeV"<< PixelSizeV<<endl;
-                  
+
                   //cout << " Qseed (e-) = " << qonly[0];
                   //cout << " Charge on Seed q[0]               = " << q[0]      << endl;
                   //cout << " q[0] vs qonly[0] vs HqM[0]*cal    = " << q[0] << " vs " << qonly[0] << " vs " << thehit->HqM[0]*calibration << endl;
@@ -1118,34 +1118,34 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                   //cout << " q[12] vs qonly[12] vs HqM[12]*cal = " << q[12] << " vs " << qonly[12] << " vs " << thehit->HqM[12]*calibration << endl;
                   //cout << " q[13] vs qonly[13] vs HqM[13]*cal = " << q[13] << " vs " << qonly[13] << " vs " << thehit->HqM[13]*calibration << endl;
                   //cout << " q[14] vs qonly[14] vs HqM[14]*cal = " << q[14] << " vs " << qonly[14] << " vs " << thehit->HqM[14]*calibration << endl;
-                  
+
                   //cout << " -----------Comparison track - hit ----------" << endl;
                   //cout << " Tud = Hu-Tu  (TTree)  = " << tud << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Tvd = Hv-Tv  (TTree)  = " << tvd << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Hu                    = " << thehit->Hu << " ---UofHitCG5 = "  << UofHitCG5  << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Hv                    = " << thehit->Hv << " ---VofHitCG5 = "  << VofHitCG5  << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Tack to hit dist calc = " <<  sqrt( (UofHitCG5-tu)*(UofHitCG5-tu) + (VofHitCG5-tv)*(VofHitCG5-tv) ) << endl;
-                  
+
                 } // end if there is at least one hit
-                
+
                 cout <<"-----"<<endl;
-                
+
                 cout <<"--NO HIT FOUND---Reco evt = "<<ievt<<endl;
                 printf("event Pas de hit, impact: tu=%f  tv=%f  chi2 : %f\n",tu,tv,chi2);
                 cout<< float(ThePlaneStudied->PFrfr1)<<endl;
-                
+
                 cout << "Event number = " <<Previousbadevent<<"; Previous event with a track in mimosa = "<<Previousbadevent2<< endl;
                 cout<<"Eventheader: evt, time delay Frame1 "<<CurrentEventHeader.GetEventNumber()<<" "<< CurrentEventHeader.GetTime()
                 <<" "<<CurrentEventHeader.EtimeSinceLastEvent<<" "<<ThePlaneStudied->PFrfr1<<endl;
                 CurrentEventHeader.Print();
                 cout <<"-----"<<endl;
               } // end if MimoDebug
-              
-              
+
+
               //----  fill the file with the infomations if requested
               if(TheWriteMissedHits==1){ // if write info for missed hits
                 if (MimoDebug) cout << " Writing info for missed event " << ievt << endl;
-                
+
                 outFileBadEvt<<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
                 outFileBadEvt << "event counter = " << ievt << ", from DSF = " << CurrentEventHeader.GetEventNumber() << ", from daq = " << Evt->GetFrameNb() << endl;
                 outFileBadEvt << "Event number = " << Previousbadevent << "; Previous event with a track in mimosa = " << Previousbadevent2 << endl;
@@ -1170,7 +1170,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                   }
                   outFileBadEvt << endl;
                 }
-                
+
                 outFileBadEvt << " total # hits in all planes = " << NbOfHits << endl;
                 outFileBadEvt << " total # hits in the DUT = " << Nhitinevent << ", good hits = " << Ngoodhitinevent << endl;
                 outFileBadEvt << " total # good tracks in telescope = " << Ngoodtrackinevent << endl;
@@ -1181,7 +1181,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                 outFileBadEvt << "    tdx = " << tdx << ", tdy = " << tdy << endl;
                 outFileBadEvt << "    tu = " << tu << ", tv = " << tv << " or col = " << (Int_t)(tu+FirstPixelShiftU)/PixelSizeU << ", row = " << (Int_t)(tv+FirstPixelShiftV)/PixelSizeV << endl;
                 outFileBadEvt << "    chi2 = " << chi2 << endl;
-                
+
                 outFileBadEvt << " track to nearest hit distance = "<< TrackToHitDistance << endl;
                 if( Ngoodhitinevent>0 ) { // if there is at least a hit
                   outFileBadEvt << " Nearest hit properties:" << endl;
@@ -1191,20 +1191,20 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
                   outFileBadEvt << "   charge (w/o calib) in seed = " << thehit->Hq0 << ", around seed " << ahit->Hqc - ahit->Hq0 << " and in hit " << thehit->Hqc << endl;
                   outFileBadEvt << "   S/N of seed = " << thehit->HsnPulse / ahit->Hsn << ", around seed " << thehit->HSNneighbour << endl;
                 } // end if there is at least a hit
-                
+
                 outFileBadEvt << "-----" << endl;
               } // end if write info for missed hits
-              
+
               else if(TheWriteMissedHits==2){ // if write info for missed hits
                 outFileBadEvt<<ievt<<","<<CurrentEventHeader.GetTriggerAt(1)<<","<<CurrentEventHeader.GetTriggerAt(0)<<","<<Ngoodhitinevent<<endl;
               }
-              
+
               // ****************** Filling histos
               //MissedHit->cd();
-              
-              
+
+
               tuv->Fill(tu,tv);
-              
+
               hchi2_nc->Fill(chi2);
               htu->Fill(tu);
               htv->Fill(tv);
@@ -1214,7 +1214,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
               itu= Int_t(tu/PixelSizeU);
               itv= Int_t(tv/PixelSizeV);
               htuvInPix->Fill(tu-itu*PixelSizeU,tv-itv*PixelSizeV);
-              
+
               hraw1badone->Fill(float(ThePlaneStudied->PFrfr1));
               hraw1badone_time->Fill(ievt,float(ThePlaneStudied->PFrfr1));
               hraw1badoneNoise_time->Fill(ievt,float(ThePlaneStudied->PFn)*calibration);
@@ -1223,7 +1223,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
               hraw1PFrfr2BAD->Fill(float(ThePlaneStudied->PFrfr2));
               hraw1PFrfr2BAD_time->Fill(ievt,float(ThePlaneStudied->PFrfr2));
               hraw1NoiseBAD_time->Fill(ievt,float(ThePlaneStudied->PFn));
-             
+
 	      double u = (tu + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
 	      u = (u - int(u))*2.0*PixelSizeU;
 	      double v = (tv + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
@@ -1231,9 +1231,9 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 	      huvCGtuv_NoAsso->Fill(u,v);
 	      //compute diode position modulo:
 	      //compute diode position modulo:
-	      Double_t diodeu,diodev,diodew; 
+	      Double_t diodeu,diodev,diodew;
 	      Double_t diodepitchW=10.0;
-	      Int_t diodecol = -1; 
+	      Int_t diodecol = -1;
 	      Int_t diodelin = -1;
 	      Double_t diodetrkdist=100000.0;
 	      //cout<<"-------------NO ASSO TEST ---------"<<endl;
@@ -1245,22 +1245,22 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 		    diodeu = (diodeu - int(diodeu))*2.0*PixelSizeU;
 		  }else{
 		    diodeu = (diodeu + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
-		    diodeu = (diodeu - int(diodeu))*2.0*PixelSizeU + 2.0*PixelSizeU;	 
+		    diodeu = (diodeu - int(diodeu))*2.0*PixelSizeU + 2.0*PixelSizeU;
 		  }
 		  if(ilin<3){
 		    diodev = (diodev + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
-		    diodev = (diodev - int(diodev))*2.0*PixelSizeV;   
+		    diodev = (diodev - int(diodev))*2.0*PixelSizeV;
 		  }else{
 		    diodev = (diodev + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
-		    diodev = (diodev - int(diodev))*2.0*PixelSizeV+ 2.0*PixelSizeV;   
+		    diodev = (diodev - int(diodev))*2.0*PixelSizeV+ 2.0*PixelSizeV;
 		  }
 		  if(sqrt((u-diodeu)*(u-diodeu)+(v-diodev)*(v-diodev))<diodetrkdist){
 		    diodetrkdist = sqrt((u-diodeu)*(u-diodeu)+(v-diodev)*(v-diodev));
-		  }       
+		  }
 		  //cout<<"NO ASSO icol ilin diodeu diodev u v diodetrkdist "<<icol<<" "<<ilin<<" diodeu="<<diodeu<<" diodev="<<diodev<<" u="<<u<<" v="<<v<<" "<<diodetrkdist<<endl;
 		  diodelin++;
 		}
-		diodecol++;  
+		diodecol++;
 	      }
 	      //cout<<"------------END TEST ---------"<<endl;
 	      //hDist_Trck_Diode_NoAsso->Fill(diodetrkdist);
@@ -1275,12 +1275,12 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
               else {
                 FalseHitMap->Fill(tu,tv);
               }
-              
+
               // ******************
-              
+
             } // end if no hit matching the track was found
             //---------------------------------------------------------------
-            
+
 
           }  // end if the track is in MIMOSA
           //---------------------------------------------------------------
@@ -1290,18 +1290,18 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
       } // end loop on tracks
       //---------------------------------------------------------------
-      
+
       if(MimoDebug) Info("MimosaPro","End loop on tracks, found %d good tracks in DUT", NgoodtrackinDUTinevent);
-      
+
     } // end if Plane exists with tracks and hits
     //---------------------------------------------------------------
 
     else { // if there was no plane or tracks or hits
-      Warning("MimosaPro","problem event %d with plane %d: Authentic %d?=1 or Transparent %d?=1 or #Hits %d<? %d <?%d  or #trpl %d>?0\n\n", ievt, ThePlaneNumber, okP, okT, CUT_MinNbOfHits, NbOfHits, CUT_MaxNbOfHits, NbOfTrpl);
+      //Warning("MimosaPro","problem event %d with plane %d: Authentic %d?=1 or Transparent %d?=1 or #Hits %d<? %d <?%d  or #trpl %d>?0\n\n", ievt, ThePlaneNumber, okP, okT, CUT_MinNbOfHits, NbOfHits, CUT_MaxNbOfHits, NbOfTrpl);
       //return; // allow to continue and simply skip this event, JB 2009/09/01
     }
-    
-    
+
+
     //---------------------------------------------------------------
     //-- Do some statistics after event analysis
     //---------------------------------------------------------------
@@ -1311,7 +1311,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     // StatusEvent[4]>1 <=> there is a good track
     // StatusEvent[5]>1 <=> there is a good track in the good geomatrix
     // StatusEvent[8/9]>1 <=> a hit is matched to the track
-    
+
     if (MimoDebug > 1) {
       cout << "StatusEvent = ";
       for ( Int_t i=1 ; i<10 ; i++ ) {
@@ -1319,8 +1319,8 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
       }
       cout<<endl;
     }
-    
-    
+
+
     if(MimoDebug) Info("MimosaPro","Event %d ended\n",ievt);
 
   } // end of Main loop over event
@@ -1389,9 +1389,9 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
     effi_vs_TrkHitDist->SetBinContent(ItrkHitDis+1,effic*100.0);
     effi_vs_TrkHitDist->SetBinError(ItrkHitDis+1,effic_err*100.0);
-    
+
     double distance  = effi_vs_TrkHitDist->GetBinCenter(ItrkHitDis+1);
-    
+
     Int_t goodbin_p  = int(distance*hTrackTo2ndclosestClusterDistance->GetXaxis()->GetNbins()/hTrackTo2ndclosestClusterDistance->GetXaxis()->GetXmax());
     Double_t Ntot_p  = h2dmatchedhits->GetEntries();
     Double_t Ngood_p = hWrongAssociationProba->GetBinContent(goodbin_p)*h2dmatchedhits->GetEntries();
@@ -1446,10 +1446,10 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
   //Correction to the cluster multiplicity distribution
   //Subtracting out contribution of fakes from the multiplicity = 1 bin
   hnpix_c->SetBinContent(hnpix_c->FindBin(1),hnpix_c->GetBinContent(hnpix_c->FindBin(1)) - (MimosaEfficiency - CorrectedEfficiency)*NtrkInMimo);
-  
+
   hNomEffic->SetBinContent(1,CorrectedEfficiency*100.0);
   hNomEffic->SetBinError(1,CorrectedEfficiencyError*100.0);
-  
+
   //  Double_t Efficiencymistake = (Ntot-Ngood)/Ntot*wrongassociationProba;
   cout << "============================================" << endl;
   cout<< "Proba of wrong association with a cut < "<<TrackToHitDistanceLimit<<" microns -> "<<wrongassociationProba<<" / 1   +-  "
@@ -1511,7 +1511,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
     NPages++;
-    
+
     //AP, 2015/03/09.   Printing out metadata in summary file
     char fOutName[200];
     sprintf(fOutName,"run%dPl%d_ClCharge",RunNumber,ThePlaneNumber);
@@ -1525,7 +1525,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     c1.SetLeftMargin(0.05);
     c1.SetRightMargin(0.05);
     c1.Print(EPSNameO.Data());
-    
+
     TString command;
     double initX = 0.05;
     double initY = 0.05;
@@ -1533,7 +1533,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     double Y = 1.0 - initY;
     char ytitle[100];
     TLatex* latex = new TLatex();
-    
+
     c1.Clear();
     latex->SetTextAlign(12);
     latex->SetTextSize(0.05);
@@ -1551,12 +1551,12 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     latex->SetTextSize(0.02);
     latex->DrawLatex(X,Y,command.Data());
     latex->SetTextSize(0.025);
-  
+
     Y -= initY;
     command  = TString("RUN NUMBER = ") + long(RunNumber) + TString(" Plane number = ") + long(ThePlaneNumber);
     command += TString(" submatrix Number = ") + long(ThesubmatrixNumber);
     latex->DrawLatex(X,Y,command.Data());
-    
+
     Y -= initY;
     sprintf(ytitle,"%.1f",geomUmin);
     command  = TString("Geomatrix = ") + long(GeoMatrix) + TString(" : (") + TString(ytitle);
@@ -1572,16 +1572,16 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     sprintf(ytitle,"%.1f",TrackToHitDistanceLimit);
     command  = TString("track-Hit dist cut = ") + TString(ytitle) + TString("#mum");
     latex->DrawLatex(X,Y,command.Data());
-    
+
     Y -= initY;
     sprintf(ytitle,"%.1f",TrackChi2Limit);
     command  = TString("#chi^{2}_{max} = ") + TString(ytitle);
     latex->DrawLatex(X,Y,command.Data());
-    
+
     Y -= initY;
     command  = TString("min # of hits required per tracks = ") + long(MinHitsPerTrack);
     latex->DrawLatex(X,Y,command.Data());
-    
+
     if( MaxNbOfTracksInGeom > -1) {
       Y -= initY;
       command  = TString("Max nb of tracks allowed = ") + long(MaxNbOfTracksInGeom) + TString(", in exclusion geomatrix ") + long(GeoMatrixForTrackCut);
@@ -1608,7 +1608,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     Y -= initY;
     command  = TString("MIN and MAX # of hits per event to evaluate effic = ") + long(CUT_MinNbOfHits) + TString(" and ") + long(CUT_MaxNbOfHits);
     latex->DrawLatex(X,Y,command.Data());
-    
+
     Y -= initY;
     sprintf(ytitle,"%.3f",calibration);
     command  = TString("calibration = ") + TString(ytitle);
@@ -1627,12 +1627,12 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     Y -= 2*initY;
     command  = TString("Total # events processed = ") + long(MaxEvent-MinEvent+1);
     latex->DrawLatex(X,Y,command.Data());
-    
+
     Y -= initY;
     sprintf(ytitle,"%.4f",MimosaEfficiency);
     command  = TString("matched/good tracks in DUT = ") + long(NofClMatchTrack) + TString("  ") + long(NtrkInMimo) + TString("  ") + TString(ytitle);
     latex->DrawLatex(X,Y,command.Data());
-    
+
     Y -= initY;
     sprintf(ytitle,"%.4f",MimosaEfficiency*100.0);
     command  = TString("Effic                  = (") + TString(ytitle) + TString(" #pm ");
@@ -1662,7 +1662,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     sprintf(ytitle,"%.3f",hNTracksPerEvent->GetRMS());
     command += TString(ytitle);
     latex->DrawLatex(X,Y,command.Data());
-  
+
     Y -= initY;
     sprintf(ytitle,"%.3f",hnhit->GetMean());
     command  = TString("# of rec hits in DUT = ") + long(NRecHit) + TString(", good = ") + long(ngoodhit) + TString(", average/event = ") + TString(ytitle);
@@ -1694,7 +1694,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     NTracks   = hnTracksInGeomatrixVsTrackPerEvent->GetBinContent(i+1);
     NGoodHits = hnGOODhitInGeomatrixVsTrackPerEvent->GetBinContent(i+1);
 
-    if(NTracks   > Nlimit && 
+    if(NTracks   > Nlimit &&
        NGoodHits > Nlimit) {
 
       Effic     = (double)NGoodHits/NTracks;
@@ -1981,7 +1981,7 @@ void MimosaAnalysis::MimosaCluster(Int_t MaxEvt , Float_t S2N_seed, Float_t S2N_
   // Simple wrapper to MimosaCalibration without ChargeAroundSeedCutMax argument
   //
   // JB 2014/01/17
-  
+
   MimosaCalibration(MaxEvt, S2N_seed, S2N_neighbour, 1.e6, submatrix, GeoMatrix);
 
 }
@@ -1992,11 +1992,11 @@ void MimosaAnalysis::MimosaCluster(Int_t MaxEvt , Float_t S2N_seed, Float_t S2N_
 
 void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t S2N_neighbour, Float_t ChargeAroundSeedCutMax, Int_t submatrix, Int_t GeoMatrix)
 {
-  // -- Processing macro for MIMOSA root DSF file 
+  // -- Processing macro for MIMOSA root DSF file
   //     for a single given submatrix in a given area (GeoMatrix)
   //
   // Allows to characterize clusters after selection.
-  // Also try to determine the position of the calibration peak 
+  // Also try to determine the position of the calibration peak
   //   if monochromatic X-ray data.
   //
   // Note that calibration constant is not taken into account for
@@ -2096,7 +2096,7 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
   ClusterShape_init();
   ClusterCharges_init();
   ClusterPosition_init(); // JB 2014/01/10
-  
+
   // ************************************
 
   Info("MimosaCalibration","\nReady to loop over %d events\n", MaxEvent);
@@ -2106,25 +2106,25 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
   // ********* MAIN LOOP ***************
   // **********************************************************************************
   for ( Int_t ievt=MinEvent ; ievt<=MaxEvent ; ievt++ ) { // Main loop over event
-    
+
     if(MimoDebug) Info("MimosaCalibration","Reading event %d",ievt);
-    
+
     // Event wise parameters
     Ngoodhitsinevent = 0;
-    
+
     //=========================
     t->GetEvent(ievt);
     //=========================
-    
+
     if(ievt/NofCycle*NofCycle == ievt || ievt<10){
-      cout << "MimosaCluster Event " << ievt <<endl;      
+      cout << "MimosaCluster Event " << ievt <<endl;
     }
 
     if(MimoDebug>1) cout << " getting the hits" << endl;
     TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
     NbOfHits   = Hits->GetLast()+1; // total # hits over all planes
     //DAuthenticPlane *thePlane = (DAuthenticPlane*) Evt->GetAuthenticPlanes()->At(ThePlaneNumber);
-    
+
     /*if( NbOfHits==0 || !thePlane ) { // check to avoid crash due to empty event
      if (MimoDebug) Info("MimosaCalibration","Empty event %d: #hits %d or missing plane %d\n", ievt, NbOfHits, ThePlaneNumber);
      continue;
@@ -2133,19 +2133,19 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
     seedList = new Int_t[NbOfHits];
 
     int NfiredPixelsInEvent = 0;
-    
+
     //---------------------------------------------------------------
     // Loop over hits BUT keep only the ones in the right plane
     if(MimoDebug>1) cout << " Looping over " << NbOfHits << " hits" << endl;
     for (Int_t iHit=0 ; iHit<NbOfHits ; iHit++){ // loop on hits
-      
+
       seedList[iHit] = -1; //init seed index (hit not selected will keep this index)
-      
+
       DAuthenticHit *ahit = (DAuthenticHit*)Hits->At(iHit);
       if( ahit->Hpk != ThePlaneNumber ) continue; // select only hits in DUT
-      
+
       totalNOfHits++;
-      
+
       // compute S/N with condition on the noise
       Float_t snSeed = 0.;
       if( ahit->Hn0 != 0.) {
@@ -2154,7 +2154,7 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
       else {
         snSeed = ahit->Hq0;
       }
-      
+
       if (MimoDebug>1) printf( "MimosaCalibration: trying hit %d against 1st selection: snSeed=%5.1f >? %5.1f, Qseed=%5.1f >? %5.1f\n", iHit, snSeed, CUT_S2N_seed, ahit->Hq0, CUT_Q_seed);
       //--------------------------------------------------------------
       // If hit passes the first selection cuts
@@ -2162,62 +2162,62 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
          && ( ahit->Hq0 >= CUT_Q_seed ) // JB 2013/11/08
          && ( MinNofPixelsInCluster <= ahit->HNNS && ahit->HNNS <= MaxNofPixelsInCluster ) // JB 2013/09/11
          && TrackInMimo( Thegeomatrix, ahit->Hu, ahit->Hv, ThesubmatrixNumber)
-         && ( CUT_MinSeedIndex==CUT_MaxSeedIndex || 
+         && ( CUT_MinSeedIndex==CUT_MaxSeedIndex ||
              (CUT_MinSeedIndex<=ahit->Hsk && ahit->Hsk<=CUT_MaxSeedIndex) ) // allows to select an index range for the seed pixel (ineffective if minIndex==maxIndex), JB 2013/08/21
-         && ( CUT_MinSeedCol==CUT_MaxSeedCol || 
+         && ( CUT_MinSeedCol==CUT_MaxSeedCol ||
              (CUT_MinSeedCol<=(ahit->Hsk%NofPixelInRaw) && (ahit->Hsk%NofPixelInRaw)<=CUT_MaxSeedCol) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
-         && ( CUT_MinSeedRow==CUT_MaxSeedRow || 
+         && ( CUT_MinSeedRow==CUT_MaxSeedRow ||
              (CUT_MinSeedRow<=(ahit->Hsk/NofPixelInRaw) && (ahit->Hsk/NofPixelInRaw)<=CUT_MaxSeedRow) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
          // && 256<=(ahit->Hsk%NofPixelInColumn) && (ahit->Hsk%322)<=319 // S1:0-95, S2:96-191, S3:192-255, S4:256-319, JB 2013/08/22
          && ( CUT_MinNbOfHits<=NbOfHits && NbOfHits<=CUT_MaxNbOfHits )
-         
+
          ){ // if hit passes first cuts
-        
+
         if( fIfCalibration ) { // If goal is calibration, added JB 2014/01/10
           if (MimoDebug>1) printf( "MimosaCalibration: trying hit %d against calib peak selection: Qneighbour=%5.1f <? %5.1f\n", iHit, ahit->Hqc - ahit->Hq0, CUT_MaxQ_neighbour);
           //--------------------------------------------------------------
           // If hit in the peak, usefull to determine the calibration constant
           if( ahit->Hqc - ahit->Hq0 < CUT_MaxQ_neighbour ) { // if hit in the calibration peak
-            
+
             //Ngoodhits++;
             NgoodhitsinPeak++;
             if (MimoDebug>1) printf( "MimosaCalibration: hit %d selected for peak\n", iHit);
-            
+
             seedList[iHit] = IndexofPix[0];
-            
+
             hqSeedCalibration->Fill( ahit->Hq0);
             hqNeighbourCalibration->Fill( ahit->Hqc - ahit->Hq0);
             hqSeedVsNeighbourCalibration->Fill( ahit->Hq0, ahit->Hqc - ahit->Hq0);
-            
+
           } // end if hit in peak
           //--------------------------------------------------------------
         } // end If goal is calibration
-        
-        if (MimoDebug>1) printf( "MimosaCalibration: trying hit %d against 2nd selection: snNeighbour=%5.1f >? %5.1f, Qneighbour=%5.1f >? %5.1f\n", 
+
+        if (MimoDebug>1) printf( "MimosaCalibration: trying hit %d against 2nd selection: snNeighbour=%5.1f >? %5.1f, Qneighbour=%5.1f >? %5.1f\n",
 				 iHit, ahit->HSNneighbour, CUT_S2N_neighbour, ahit->Hqc - ahit->Hq0, CUT_MinQ_neighbour);
         //--------------------------------------------------------------
         // If hit passes the second selection cuts
-        if(  ahit->HSNneighbour >= CUT_S2N_neighbour 
+        if(  ahit->HSNneighbour >= CUT_S2N_neighbour
            && ( ahit->Hqc - ahit->Hq0 >= CUT_MinQ_neighbour ) // JB 2013/11/08
            && ( ahit->Hqc >= CUT_Q_cluster ) // JB 2014/01/21
            ) { // if hit passes full cuts
-          
+
           Ngoodhits++;
           Ngoodhitsinevent++;
           if (MimoDebug>1) printf( "MimosaCalibration: hit %d selected as %dth hit of event and %ith hit overall\n", iHit, Ngoodhitsinevent, Ngoodhits);
-          
+
           seedList[iHit] = IndexofPix[0];
-          
+
           NofPixelsInCluster = (ahit->HNNS < MaxNofPixelsInCluster)?ahit->HNNS:MaxNofPixelsInCluster;
           if (MimoDebug>2) Info("MimosaPro"," NofPixelsInCluster is set to %d (in hit %d, max %d)\n", NofPixelsInCluster, ahit->HNNS, MaxNofPixelsInCluster);
-          
+
           ClusterCharges_compute( ahit);
           ClusterPosition_compute( ahit, alignement);
-          
+
           hnGOODhit->Fill(Ngoodhitsinevent);
           hnahitievt->Fill( ievt, Ngoodhitsinevent);
           GoodHit_Fill( ahit);
-          
+
           BinarySpecific_HitsOnly_fill( ahit);
           BinarySpecific_fill( ahit);
           ClusterCharges_fill( ahit, ievt);
@@ -2228,18 +2228,18 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
 
         } // end if hit passes full cut
         //--------------------------------------------------------------
-        
+
       } // end if hit passes first cuts
       //--------------------------------------------------------------
-      
+
       else { // if hit does not pass cuts
         if(MimoDebug>1) Info("MimosaCalibration","Hit not passing selection cuts, S/N(seed)=%.1f <> %.1f, S/N(neighbours only)=%.1f <> %.1f, # pixels %d, in GEOM area ? %d", snSeed, CUT_S2N_seed, ahit->HSNneighbour, CUT_S2N_neighbour, NofPixelsInCluster, TrackInMimo( Thegeomatrix, ahit->Hu, ahit->Hv, ThesubmatrixNumber));
       }
-      
-      
+
+
     } // end loop on hits
     //--------------------------------------------------------------
-    
+
     h_pixels_event->Fill(NfiredPixelsInEvent);
 
     // Build all possible distance between selected hits (after 2nd cuts)
@@ -2251,23 +2251,23 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
         countHit++;
         x1 = seedList[iHit]%NofPixelInRaw;
         y1 = seedList[iHit]/NofPixelInRaw;
-        
+
         for (Int_t iHit2=iHit+1 ; iHit2<NbOfHits ; iHit2++) {
           if( seedList[iHit2]!=-1 ) { // use selected hits only
             x2 = seedList[iHit2]%NofPixelInRaw;
             y2 = seedList[iHit2]/NofPixelInRaw;
-            
+
             dist = TMath::Sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
             hSeedBetweenDist->Fill( dist );
           } // end selected hits 2
         } // end second loop on hits
       } // end selected hits 1
     } // end loop on hits
-    
+
     delete seedList;
-    
+
     if(MimoDebug) Info("MimosaCalibration","End loop on hits, found %d good hits in event %d (total %d good hits)", Ngoodhitsinevent, ievt, Ngoodhits);
-    
+
   } // end of Main loop over event
   //**********************************************************************************
   //******************************* END OF MAIN LOOP *********************************
@@ -2277,35 +2277,35 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
 
   // ************************************
   // Call final part of analysis here
-  
+
   ClusterPosition_end(); // JB 2014/01/10
   ClusterCharges_end();
   ClusterShape_end();
   BinarySpecific_end();
-  
+
   // ************************************
-  
-  
+
+
   printf("\n*------------------------------------*\n");
   printf(" %d hits read, %d selected, %d rejected, in peak %d", totalNOfHits, Ngoodhits, totalNOfHits-Ngoodhits, NgoodhitsinPeak);
   printf("\n*------------------------------------*\n");
-  
-  
+
+
   //---------------------------------------------------------------
   //-- The End
   //---------------------------------------------------------------
-  
+
   fMimosaCalibrationDone=kTRUE;
   fClearDone=kFALSE;
   PreparePost();
-  
+
 }
 
 //______________________________________________________________________________
 //
 void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t plane0, Float_t S2N_seed0, Float_t S2N_neighbour0, Int_t submatrix0, Int_t GeoMatrix0, Short_t plane1, Float_t S2N_seed1, Float_t S2N_neighbour1, Int_t submatrix1, Int_t GeoMatrix1)
 {
-  
+
   // -- Combined analysis of two nearby planes to produce minivectors
   //    and compare them to a track
   //
@@ -2317,28 +2317,28 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
   // Modified: JB 2011/11/04, call to generic method to compute efficiency
   // Modified: JB 2013/11/08, new mechanism to load cut values and new cuts
   // Modified: JB 2015/12/15, take 2nd plane geomatrix into account
-  
+
   if(!CheckIfDone("init,clear")) return;
   if(!RunNumber) Error("MimosaPro","RunNumber not set! Please run InitSession  first");
-  
+
   Int_t theplanenumber[2] = { plane0, plane1};
   ThePlaneNumber = plane0; // JB 2011/10/30, for display
   ThePlaneNumber2 = plane1;
-  
+
   InitMimosaType();
   Info("MimosaPro","Mimosa type %d", MimosaType);
-  
+
   GetAnalysisGoal();
   fIfReferenceTrack = kTRUE;
   fIfMiniVector = kTRUE;
-  
+
   gSystem->ChangeDirectory(fWorkingDirectory);// VR 2014/06/30 replace DTIR by fWorkingDirectory
-  
-  
+
+
   //----------------------------------------------------------------------------------
   // -- Open the input file containing the TTree
   //----------------------------------------------------------------------------------
-  
+
   Nevt = OpenInputFile(); // total number of events in the tree
   if( Nevt<=0) {
     Error("MimosaMiniVectors"," The input file contains an incorrect number of events %d!",Nevt);
@@ -2346,59 +2346,59 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
   else {
     Info("MimosaMiniVectors","There is %d events in the input file.",Nevt);
   }
-  
+
   //----------------------------------------------------------------------------------
   // -- Init analysis variables
   //----------------------------------------------------------------------------------
-  
+
   // for counting hits and tracks
   Int_t   ngoodhit    = 0; // # good hits in the DUT
   Int_t   NRecHit     = 0; // total # hits in the DUT
   Int_t   nmiss       = 0; // # good tracks in the DUT without a matched hit, JB 2009/09/08
   Int_t   nmissh[2]   = {0, 0}; // # good tracks in the DUT with no good hit in the DUT, JB 2009/09/08
   Int_t   nmissthdist[2] = {0, 0}; // # good tracks in the DUT with hit outside the distance limit
-  
+
   Int_t Nhitinevent; // JB 2009/09/08
   Int_t Ngoodhitinevent[2]; // # good hits in the event
   Int_t Ngoodtrackinevent; // # good tracks in the telescope in the event
   Int_t NgoodtrackinDUTinevent; // # good tracks in the telescope and in the DUT in the event
-  
+
   Float_t trackToHitDistance[2] = { 100000., 100000.};
-  
+
   // Counter on event status
   Int_t StatusEvent[10];
   for ( Int_t i=0 ; i<10 ; i++ ) {
     StatusEvent[i]=0;
   }
-  
+
   Int_t IndexOfGoodHitsInEvent[2][5000]; // enlarge to 5000, Jb 209/09/21
-  
-  
+
+
   //----------------------------------------------------------------------------------
   // -- get parameters
   //----------------------------------------------------------------------------------
-  
+
   ThesubmatrixNumber = submatrix0; // JB 2015/12/15
   GetParameters(); // JB 2010/07/23
-  
+
   //----------------------------------------------------------------------------------
   // CUTS
   //----------------------------------------------------------------------------------
-  
+
   // on baseline
   Bool_t usebaselinecut = kFALSE ;
   Float_t Baselinecut = 1100.0;
-  
+
   // on hits
-  
+
   Float_t cut_S2N_seed[2] = {S2N_seed0, S2N_seed1}; // S/N(seed)
   Float_t cut_S2N_neighbour[2] = {S2N_neighbour0, S2N_neighbour1}; // S/N(neighbours)
   Int_t   maxNofPixelsInCluster[2] = {fSession->GetSetup()->GetAnalysisPar().MaxNofPixelsInCluster[submatrix0], fSession->GetSetup()->GetAnalysisPar().MaxNofPixelsInCluster[submatrix1]};
-  
+
   // on tracks
   TrackToHitDistanceLimit =  TrackHitDist ; // Distance between the track and the hit
   TrackChi2Limit = fSession->GetSetup()->GetAnalysisPar().TrackChi2Limit;
-  
+
   // on geometry
   // First plane geomatrix
   Thegeomatrix = GeoMatrix0; // define the area of interest in the DUT
@@ -2406,7 +2406,7 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
   geomUmax = fSession->GetSetup()->GetAnalysisPar().Umax[ThesubmatrixNumber][Thegeomatrix];
   geomVmin = fSession->GetSetup()->GetAnalysisPar().Vmin[ThesubmatrixNumber][Thegeomatrix];
   geomVmax = fSession->GetSetup()->GetAnalysisPar().Vmax[ThesubmatrixNumber][Thegeomatrix];
-  
+
   // Second plane geomatrix
   // JB 2015/12/15
   ThesubmatrixNumber2 = submatrix1;
@@ -2415,7 +2415,7 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
   geomUmax2 = fSession->GetSetup()->GetAnalysisPar().Umax[ThesubmatrixNumber2][Thegeomatrix2];
   geomVmin2 = fSession->GetSetup()->GetAnalysisPar().Vmin[ThesubmatrixNumber2][Thegeomatrix2];
   geomVmax2 = fSession->GetSetup()->GetAnalysisPar().Vmax[ThesubmatrixNumber2][Thegeomatrix2];
-  
+
   cout << "----------- CUTS:" << endl;
   cout << "  Baseline cut " << Baselinecut << " applied ? " << usebaselinecut << endl;
   for( Short_t iplane=0; iplane<2; iplane++) {
@@ -2431,33 +2431,33 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
   }
   cout << "  max distance track to hit " << TrackToHitDistanceLimit << endl;
   cout << "  max track chi2 " << TrackChi2Limit << endl;
-  
+
   Info("MimosaMiniVectors","Analysis variables initialized");
-  
+
   //----------------------------------------------------------------------------------
   // -- prepare displays
   //----------------------------------------------------------------------------------
-  
+
   PrepareOnlineDisplay();
-  
+
   //----------------------------------------------------------------------------------
   // -- booking histograms
   //----------------------------------------------------------------------------------
-  
+
   BookingHistograms();
-  
+
   //----------------------------------------------------------------------------------
   // -- get the alignement parameters and parametrization of the Eta function
   //----------------------------------------------------------------------------------
-  
+
   DPrecAlign *align[2];
   TFile* theCorFiles[2] = { 0, 0};
-  
+
   for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
-    
+
     if (!theCorFiles[iplane]) InitCorPar( RunNumber, theplanenumber[iplane]);
     theCorFiles[iplane] = theCorFile;
-    
+
     if( theCorFiles[iplane]->IsOpen() && theCorFiles[iplane]->FindKey("alignement") ) { // if the CorPar files is already initialized
       align[iplane] =(DPrecAlign*)theCorFiles[iplane]->Get("alignement");
       align[iplane]->Print();
@@ -2465,71 +2465,71 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
     else {
       Error("MimosaMiniVectors","No alignement found from the file %s, for plane %d, STOPPING\n", theCorFiles[iplane]->GetName(), theplanenumber[iplane]);
     }
-    
+
     align[iplane]->PrintAll(); // JB 2011/10/31
     Info("MimosaMiniVectors","Alignement read for plane %d", theplanenumber[iplane]);
   } // end loop on planes
-  
+
   GetMiEta(); // JB 2010/09/01 shall be aplied to both planes as well!
-  
-  
-  
+
+
+
   // store the cluster info in separate ascii file:
   Char_t Headerclusterdat[100];
   sprintf(Headerclusterdat,"HitSeparation/rawhit/newcluster_%d_%d.dat",RunNumber,ThePlaneNumber);
   ofstream outFile(Headerclusterdat);
   Int_t NofCycle=1000; //was 100
-  
-  
+
+
   //---------------------------------------------------------------
   //-- Prepare the event loop
   //---------------------------------------------------------------
-  
+
   //  Chose the min and max event number you want to loop on:
   Int_t MinEvent = fSession->GetSetup()->GetPlanePar(ThePlaneNumber).InitialNoise;//50000;//40000; //was 2000, modifyed by JB Sept 2007 to match number of events for initialization (ped and noise)
   Int_t MaxEvent = TMath::Min((Long64_t)MaxEvt,t->GetEntries()) ;
-  
-  
+
+
   // ************************************
   // Call init part of the analysis here
-  
+
   MaxNofPixelsInCluster = TMath::Max( maxNofPixelsInCluster[0], maxNofPixelsInCluster[1]);
   Efficiency_init();     // JB 2011/11/04
   ClusterCharges_init();
   ClusterPosition_init();
-  
+
   // ************************************
-  
+
   // a bit of cleaning
   MainCanvas->Clear();
-  
+
   Info("MimosaMiniVectors","\nReady to loop over %d events\n", MaxEvent);
-  
+
   // **********************************************************************************
   // ********* MAIN LOOP ***************
   // **********************************************************************************
   for ( Int_t ievt=MinEvent ; ievt<=MaxEvent ; ievt++ ) { // Main loop over event
-    
+
     if(MimoDebug) Info("MimosaMiniVectors","Reading event %d",ievt);
-    
+
     //-- Initilisations
-    
+
     Nhitinevent=0;
     Ngoodhitinevent[0]=0;
     Ngoodhitinevent[1]=0;
     Ngoodtrackinevent=0;
     NgoodtrackinDUTinevent=0;
     for ( Int_t i=0 ; i<10 ; i++ ) { StatusEvent[i]=0; }
-    
+
     //-- Update display
-    
+
     if (ievt == MinEvent) { // JB, 2008/08/09
       selection->Draw();
       for( Int_t il=0; il<8; il++) {
         textLabel[il]->Draw();
       }
     }
-    
+
     if(ievt/NofCycle*NofCycle == ievt){
       if( ievt>1000) NofCycle = 2000;
       if( ievt>5000) NofCycle = 5000;
@@ -2541,19 +2541,19 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
         cout<<"  temporary efficiency = "<<NofClMatchTrack<<" / "<<NtrkInMimo<<" = "<<1.*NofClMatchTrack/NtrkInMimo<<endl;
       }
     }
-    
+
     //-- Update counter for efficiency
-    
+
     StatusEvent[1]++;
     if(ievt / NeventRangeForEfficiency * NeventRangeForEfficiency == ievt ){ ievt_array ++; }
-    
+
     //=========================
     if(MimoDebug>1) cout << " getting the event" << endl;
     t->GetEvent(ievt);
     //=========================
-    
+
     //DEventHeader& CurrentEventHeader=Evt->GetHeader();
-    
+
     if(MimoDebug>1) cout << " getting the planes, tracks and hits" << endl;
     TClonesArray *Trpl   = Evt->GetTransparentPlanes() ; //tracks
     TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
@@ -2561,13 +2561,13 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
     Int_t NbOfTrpl   = Trpl->GetLast()+1   ; // total # tracks over all planes
     Int_t NbOfHits   = Hits->GetLast()+1   ; // total # hits over all planes
     Int_t NbOfPlanes = Planes->GetLast()+1 ; // Total Number of Planes
-    
+
     // check to avoid crash due to empty event, added by JB, Sept 2008,
     if( NbOfTrpl==0 || NbOfHits==0 || NbOfPlanes==0 ) {
       if (MimoDebug) Info("MimosaMiniVectors","Empty event %d: #tracks %d, #hits %d, #planes %d \n", ievt, NbOfTrpl, NbOfHits, NbOfPlanes);
       continue;
     }
-    
+
     // get pointers to the planes studied
     DAuthenticPlane *ThePlaneStudied[2] = {0, 0}; // init
     DAuthenticPlane *aPlane;
@@ -2576,13 +2576,13 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
       if ( aPlane->Ppk == theplanenumber[0] ) ThePlaneStudied[0] = aPlane;
       else if ( aPlane->Ppk == theplanenumber[1] ) ThePlaneStudied[1] = aPlane;
     }
-    
-    
+
+
     // ****************** Filling histos
     selection->Fill(1.);  // all events
-    
+
     // ******************
-    
+
     //---------------------------------------------------------------
     // if planes are there
     // and baseline cuts OK
@@ -2593,35 +2593,35 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
         && NbOfHits<CUT_MaxNbOfHits && NbOfHits>=CUT_MinNbOfHits
         ) { // Plane exists with tracks and hits
       StatusEvent[2]++;
-      
+
       // ****************** Filling histos
       selection->Fill(2.); // event with track(s) and hits in the plane
-      
+
       hnhit->Fill(ThePlaneStudied[0]->PhN + ThePlaneStudied[1]->PhN);
       hnhitievt->Fill(ievt,ThePlaneStudied[0]->PhN + ThePlaneStudied[1]->PhN);
       // ******************
-      
+
       //---------------------------------------------------------------
       // Loop over hits BUT keep only the ones in the right plane
       if(MimoDebug>1) cout << " looping over " << NbOfHits << " hits" << endl;
       for (Int_t iHit=0 ; iHit<NbOfHits ; iHit++){ // loop on hits
-        
+
         DAuthenticHit *ahit = (DAuthenticHit*)Hits->At(iHit);
-        
+
         //------------------------------------------
         for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
-          
+
           //------------------------------------------
           if( ahit->Hpk == theplanenumber[iplane] ) { // if hit belongs to expected plane
             StatusEvent[6]++;
             Nhitinevent++;
             NRecHit++;
-            
+
             // Now compute variables usefull for cuts
-            
+
             NofPixelsInCluster = (ahit->HNNS < maxNofPixelsInCluster[iplane])?ahit->HNNS:maxNofPixelsInCluster[iplane];
             if (MimoDebug>2) Info("MimosaMiniVectors"," NofPixelsInCluster is set to %d (in hit %d, max %d)\n", NofPixelsInCluster, ahit->HNNS, maxNofPixelsInCluster[iplane]);
-            
+
             // signal over noise ratio of the seed pixel
             Float_t snSeed;
             if( ahit->Hn0 > 0.1 ) {
@@ -2630,7 +2630,7 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
             else { // for sparsified readout, JB 2009/05/19
               snSeed=ahit->Hq0;
             }
-            
+
             // charge and S/N in the second highest pixel of the hit
             // among the 4 pixels neighbouring the seed (cross)
             Float_t q2nd = 0.;
@@ -2648,20 +2648,20 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
                 }
               }
             }
-            
+
             // charge of the cluster without the seed
             ChargeAroundSeed = (ahit->Hqc - ahit->Hq0)*calibration;
-            
+
             if(MimoDebug>2) {
               printf("MimosaMiniVectors: Hit %d, qSeed=%.1f, qAroundSeed=%.1f, snSeed=%.1f, sn2nd=%.1f\n", iHit, ahit->Hq0, ChargeAroundSeed,snSeed, sn2nd);
             }
-            
+
             // ****************** Filling histos
             selection->Fill(6.);  // all hits in MIMOSA
-            
+
             // ******************
-            
-            
+
+
             //--------------------------------------------------------------
             // If hit passes the selection cut
             if( ChargeAroundSeed >= CUT_MinQ_neighbour
@@ -2674,17 +2674,17 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
               IndexOfGoodHitsInEvent[iplane][Ngoodhitinevent[iplane]] = iHit;
               Ngoodhitinevent[iplane]++;
               if(MimoDebug>2) cout << " plane " << theplanenumber[iplane] << " found good hit " << Ngoodhitinevent[iplane]-1 << " with index " << IndexOfGoodHitsInEvent[iplane][Ngoodhitinevent[iplane]-1] << " pos " << ahit->Hu << ";" << ahit->Hv << " and dist to track " << ahit->Hu-ahit->Htu << ";" << ahit->Hv-ahit->Htv << endl;
-              
+
               // ****************** Filling histos
               selection->Fill(7.); // Good hits in MIMOSA
-              
+
               hnGOODhit->Fill(Ngoodhitinevent[iplane]);
               hnahitievt->Fill( ievt, Ngoodhitinevent[iplane]);
               GoodHit_Fill( ahit); // JB 2010/10/06
               hgoodSN_vs_SNN->Fill(ahit->HSNneighbour,snSeed);
-              
+
               BinarySpecific_HitsOnly_fill( ahit);
-              
+
               if( ahit->Htk >= 0) { // if a track was associated in Tree
                 Float_t adist = sqrt((ahit->Hsu-ahit->Htu)*(ahit->Hsu-ahit->Htu)+(ahit->Hsv-ahit->Htv)*(ahit->Hsv-ahit->Htv)) ;
                 duvall->Fill( adist); //For all the clusters with Hqc-Hq0>Cut
@@ -2696,45 +2696,45 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
                 }
               } // end if a track was associated
               // ******************
-              
+
             } // end if hit passes cuts
             //--------------------------------------------------------------
-            
+
             else { // if hit does not pass cuts
               if(MimoDebug>2) printf(" plane %d, hit %d NOT passing selection cuts, ChargeAroundSeed=%f <> %f, seedCharge=%.1f <> %.0f, NofPixelsInCluster=%d\n", theplanenumber[iplane], iHit, ChargeAroundSeed, CUT_MinQ_neighbour, ahit->HqM[0]*calibration, 0., NofPixelsInCluster);
             }
-            
+
           } // end if hit belongs to expected plane
           //--------------------------------------------------------------
-          
+
         } // end loop on planes
         //--------------------------------------------------------------
-        
+
       } // end loop on hits
       //--------------------------------------------------------------
-      
+
       if(MimoDebug) Info("MimosaMiniVectors","End loop on hits, found %d and %d good hits from planes", Ngoodhitinevent[0], Ngoodhitinevent[1]);
-      
-      
+
+
       //---------------------------------------------------------------
       // Loop on tracks BUT keep only the ones in the right plane
       if(MimoDebug>1) cout << " looping over " << NbOfTrpl << " tracks" << endl;
       for (Int_t iTrk=0 ; iTrk<NbOfTrpl ; iTrk++){ // loop on tracks
-        
+
         DTransparentPlane *aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( aTrpl->Tpk != theplanenumber[0] ) continue; // select only tracks in DUT
-        
+
         StatusEvent[3]++;
-        
-        
+
+
         // ****************** Filling histos
         selection->Fill(3.); // all tracks in plane
-        
+
         TrackParameters_allFill( aTrpl, ievt);
         // ******************
-        
+
         if( MimoDebug>2) cout << " Track " << iTrk << " has chi2=" << aTrpl->Tchi2 << " <?> " << TrackChi2Limit << endl;
-        
+
         //---------------------------------------------------------------
         // if chi2 of selected track is OK
         if ( aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 < TrackChi2Limit // JB, chi2=0. is not a real pb
@@ -2742,7 +2742,7 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
             ){ // if good track
           StatusEvent[4]++;
           Ngoodtrackinevent++;
-          
+
           // compute track information for each plane
           for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
             alignement = align[iplane];
@@ -2757,50 +2757,50 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
               cout << " track UVW " << trackPosUVW[iplane](0) << ", " << trackPosUVW[iplane](1) << ", " << trackPosUVW[iplane](2) << endl;
             }
           }
-          
+
           /*******************/
           selection->Fill(4.);   // Good quality track
-          
+
           hNTracksPerEvent->Fill( Ngoodtrackinevent);
           hNTracksPerEventievt->Fill( ievt, Ngoodtrackinevent);
-          
+
           TrackParameters_goodFill( aTrpl, ievt);
-          
+
           /*******************/
-          
+
           Bool_t TrkCrossMimo = TrackInMimo( Thegeomatrix, trackPosUVW[0](0), trackPosUVW[0](1), ThesubmatrixNumber);
           if(MimoDebug>1) cout << " Is track " << iTrk << "in first MIMOSA ? " << TrkCrossMimo << endl;
 
           // 2nd test in 2nd plane, JB 2015/12/15
           TrkCrossMimo &= TrackInMimo( Thegeomatrix2, trackPosUVW[1](0), trackPosUVW[1](1), ThesubmatrixNumber2);
           if(MimoDebug>1) cout << " Is track " << iTrk << "in both MIMOSA ? " << TrkCrossMimo << endl;
-          
+
           //---------------------------------------------------------------
           // if track is in the good geometry range
           if( TrkCrossMimo == kTRUE ){ // if the track is in MIMOSA
             StatusEvent[5]++;
             NgoodtrackinDUTinevent++;
             NtrkInMimo++ ;
-            
+
             if(MimoDebug) Info("MimosaMiniVectors"," Good (chi2=%f) track %d found in MIMOSA", aTrpl->Tchi2, iTrk);
-            
+
             temp_NtrkInMimo[ievt_array]++;
-            
+
             //-- Find the nearest good hit to this track in each plane
             DAuthenticHit *thehit[2] = {0, 0};
             Bool_t aHitIsFound[2] = {kFALSE, kFALSE};
             DAuthenticHit *ahit = 0;
             Float_t adist;
-            
+
             //------------------------------------------
             for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
-              
+
               trackToHitDistance[iplane] = 10000000.0 ;
-              
+
               if( Ngoodhitinevent[iplane]<=0 ) { // no hit at all, JB 2009/09/08
                 nmissh[iplane]++;
               }
-              
+
               if(MimoDebug>2) cout << "  Trying to associate hits of plane " << theplanenumber[iplane] << ", loop on " << Ngoodhitinevent[iplane] << " candidates." << endl;
               for(Int_t iHit=0; iHit<Ngoodhitinevent[iplane]; iHit++) { // loop over good hits
                 ahit = (DAuthenticHit*)Hits->At( IndexOfGoodHitsInEvent[iplane][iHit] );
@@ -2811,44 +2811,44 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
                   trackToHitDistance[iplane]=adist;
                 }
               } // end loop over good hits
-              
-              
+
+
               //-- Check the nearest hit is within the requested distance
-              
+
               if( fabs(trackToHitDistance[iplane]) < TrackToHitDistanceLimit ){
                 aHitIsFound[iplane] = kTRUE ;
               }
               else if( thehit[iplane] ) { // hit there but too far away, JB 2009/09/08
                 nmissthdist[iplane]++;
               }
-              
+
               if(MimoDebug) cout << " Plane " << theplanenumber[iplane] << ": Nearest hit to track at " << trackToHitDistance[iplane] << " <?> " << TrackToHitDistanceLimit<< ", hit found = " << aHitIsFound[iplane] << endl;
-              
+
             } // end loop on planes
             //---------------------------------------------------------------
-            
+
             // ****************** Filling histos
             selection->Fill(5.); // Good track in MIMOSA
-            
+
             for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
               hnGOODhitwhentrack->Fill(Ngoodhitinevent[iplane]);
               hTrackToClusterMinDistance->Fill(trackToHitDistance[iplane]); // Minimal distance from track to hits
             }
-            
+
             // ******************
-            
+
             //---------------------------------------------------------------
             // If both good hits near this track were found
             if ( aHitIsFound[0] && aHitIsFound[1] ){ // if a hit matching the track was found
               StatusEvent[8]++;
               NofClMatchTrack++;
               temp_NofClMatchTrack[ievt_array]++; // for time dependent efficiency
-              
+
               if(MimoDebug) Info("MimosaMiniVectors"," Two good hits (plane %d, hit %d & plane %d, hit %d) matching the track", theplanenumber[0], thehit[0]->Hhk, theplanenumber[1], thehit[1]->Hhk);
-              
+
               // ****************************************
               // Analysis of matched hits & tracks
-              
+
               for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
                 NofPixelsInCluster = (thehit[iplane]->HNNS < maxNofPixelsInCluster[iplane])?thehit[iplane]->HNNS:maxNofPixelsInCluster[iplane];
                 MaxNofPixelsInCluster = maxNofPixelsInCluster[iplane];
@@ -2862,36 +2862,36 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
                   cout << " hit XYZ " << hitPosXYZ[iplane](0) << ", " << hitPosXYZ[iplane](1) << ", " << hitPosXYZ[iplane](2) << endl;
                 }
               } // end loop on planes
-              
+
               MiniVector_compute();
-              
+
               // ************************************
-              
-              
+
+
               // ****************** Filling histos
               selection->Fill(8.); // good hits associated to a good track
-              
+
               ClusterPosition_fill( thehit[0]); // added, JB 2011/10/30
               MiniVector_fill( thehit[0], thehit[1]);
-              
+
               // ******************
-              
+
               if(MimoDebug) Info("MimosaMiniVectors","Done with good matched track-hits study");
-              
+
             }  // end if both hit matching the track were found
             //---------------------------------------------------------------
-            
+
             //---------------------------------------------------------------
             else { // end if no hit matching the track was found
               nmiss++;
-              
+
               if(ievt/NofCycle*NofCycle == ievt){
                 cout << " Number of tracks missed = " << nmiss << endl;
               }
-              
+
               //--- Do some print out
               if (MimoDebug>2) {
-                
+
                 cout << " -8-BAD TRACK-HIT DIST OR NO HIT evt = "<<ievt;
                 for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
                   cout << " dist=" << trackToHitDistance[iplane];
@@ -2907,9 +2907,9 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
                 cout << " tx=" << tx <<" ty=" << ty <<" tz=" << tz
                 <<" tdx="<<tdx <<" tdy="<<tdy <<endl;
                 cout<<" tu= "<<tu<<" tv= "<<tv<<endl;
-                
+
                 if( Ngoodhitinevent[0]>0 ) { // if there is at least a hit
-                  
+
                   cout << " -----------Info on nearest hit ----------" << endl;
                   cout << " Charge on Seed HqM[0]*cal         = " << thehit[0]->HqM[0]*calibration << " = " << thehit[0]->HqM[0] << "*" << calibration <<  endl;
                   cout << " thehit[0]->Hqc * calibration         = " << thehit[0]->Hqc * calibration  << endl;
@@ -2923,7 +2923,7 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
                   cout << " Index  of Seed          = " << thehit[0]->Hsk  << " column: " << (thehit[0]->Hsk)%NofPixelInRaw << " -- line: "  << (thehit[0]->Hsk)/NofPixelInRaw<< endl;
                   cout<<" hUdigital="<< thehit[0]->Hsu <<" hVdigital="<< thehit[0]->Hsv <<" pixelsizeV"<< PixelSizeV<<endl;
                 } // end if there is at least one hit
-                
+
                 else {
                   cout <<"-----------NO HIT FOUND-----------"<<endl;
                   for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
@@ -2932,14 +2932,14 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
                     cout <<"  Raw value frame 2="<< Float_t(ThePlaneStudied[iplane]->PFrfr2) <<endl;
                   } // end loop on planes
                 }
-                
+
                 cout <<"-----"<<endl;
               } // end if MimoDebug
-              
-              
-              
+
+
+
               tuv->Fill(tu,tv);
-              
+
               hchi2_nc->Fill(chi2);
               htu->Fill(tu);
               htv->Fill(tv);
@@ -2949,7 +2949,7 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
               itu= Int_t(tu/PixelSizeU);
               itv= Int_t(tv/PixelSizeV);
               htuvInPix->Fill(tu-itu*PixelSizeU,tv-itv*PixelSizeV);
-              
+
               if( Ngoodhitinevent[0]>0 && thehit[0] ) { // if there is at least a hit (thehit is the nearest)
                 hqc_nc->Fill(thehit[0]->Hqc);
                 hnpix_nc->Fill(thehit[0]->HNNS); // Hsk); JB 2009/09/01
@@ -2959,50 +2959,50 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
               else {
                 FalseHitMap->Fill(tu,tv);
               }
-              
+
               // ******************
-              
+
             } // end if no hit matching the track was found
             //---------------------------------------------------------------
-            
+
           }  // end if the track is in MIMOSA
           //---------------------------------------------------------------
-          
+
         } // end if good track
         //---------------------------------------------------------------
-        
+
       } // end loop on tracks
       //---------------------------------------------------------------
-      
+
       if(MimoDebug) Info("MimosaMiniVectors","End loop on tracks, found %d good tracks in DUT", NgoodtrackinDUTinevent);
-      
+
     } // end if Plane exists with tracks and hits
     //---------------------------------------------------------------
-    
+
     else { // if there was no plane or tracks or hits
       Warning("MimosaMiniVectors","problem event %d with plane %d: #Hits %d<? %d <?%d, pointer to planes are %p and %p, other conditions %d and %d\n\n", ievt, ThePlaneNumber, CUT_MinNbOfHits, NbOfHits, CUT_MaxNbOfHits, ThePlaneStudied[0], ThePlaneStudied[1], (usebaselinecut==kFALSE && ThePlaneStudied[0]->PFrfr1<Baselinecut), (usebaselinecut==kFALSE && ThePlaneStudied[1]->PFrfr1<Baselinecut) // removing warning: adding casts because of 'int' format instead of 'DAuthenticPlane *' BH 2013/08/20
               );
       //return; // allow to continue and simply skip this event, JB 2009/09/01
     }
-    
-    
+
+
     if(MimoDebug) Info("MimosaMiniVectors","Event %d ended\n",ievt);
-    
+
   } // end of Main loop over event
   //**********************************************************************************
   //******************************* END OF MAIN LOOP *********************************
   //**********************************************************************************
-  
+
   // ************************************
   // Call final part of analysis here
-  
+
   ClusterPosition_end(); // JB 2014/01/10
   ClusterCharges_end();
   BinarySpecific_end();
   Efficiency_end( MaxEvent-MinEvent+1 ); // JB 2011/11/04
-  
+
   // ************************************
-  
+
   // Display final histograms
   MainCanvas->Clear();
   if( selection->GetMaximum()>15*selection->GetBinContent(6)) MainCanvas->SetLogy();
@@ -3011,12 +3011,12 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
     textLabel[il]->Draw();
   }
   MainCanvas->Update();
-  
-  
+
+
   //---------------------------------------------------------------
   //-- Print statistics out
   //---------------------------------------------------------------
-  
+
   cout << "-------- RUN NUMBER = "<<RunNumber<<" Plane numbers = "<<theplanenumber[0]<<", "<<theplanenumber[1]
   <<" submatrix numbers = "<<submatrix0<<", "<<submatrix1<<endl;
   cout << "-------- matched/good tracks in DUT = " << NofClMatchTrack << "  " << NtrkInMimo << "  " << MimosaEfficiency << endl;
@@ -3029,28 +3029,28 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
   cout << "-------- CUTS S/N seed and S/N neighbours= "<<CUT_S2N_seed<<" "<<CUT_S2N_neighbour<<endl;
   cout << "-------- MIN and MAX number of hits per event to evaluate efficiency "<<CUT_MinNbOfHits<<" "<<CUT_MaxNbOfHits<<endl;
   cout << "-------- calibration "<<calibration<<endl;
-  
+
   //---------------------------------------------------------------
   //-- Write histos
   //---------------------------------------------------------------
-  
+
   if (fWriteHistos) {
     gSystem->cd(CreateGlobalResultDir());
     if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-    
+
     Char_t Header[200];
     sprintf(Header,"AllPlots_%d_%d.root",RunNumber,ThePlaneNumber);
     TFile* AllHist = new TFile(Header,"RECREATE");
     dir->GetList()->Write();
     AllHist->Close(); delete AllHist;
     gSystem->cd(fWorkingDirectory);// VR 2014/06/30 replace DTIR by fWorkingDirectory
-    
+
   }
-  
+
   //---------------------------------------------------------------
   //-- The End
   //---------------------------------------------------------------
-  
+
   fMimosaMiniVectorsDone=kTRUE;
   fClearDone=kFALSE;
   PreparePost();
@@ -3061,8 +3061,8 @@ void MimosaAnalysis::MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t
 //
 void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t plane0, Float_t S2N_seed0, Float_t S2N_neighbour0, Int_t submatrix0, Short_t plane1, Float_t S2N_seed1, Float_t S2N_neighbour1, Int_t submatrix1, Int_t GeoMatrix)
 {
-  
-  // -- Combined analysis of two nearby planes 
+
+  // -- Combined analysis of two nearby planes
   //     performed in the tracker coordinate
   //
   // Main analysis method: loops over all events found in a runXXX_0X.root file
@@ -3070,27 +3070,27 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
   //
   // Created : JB 2013/05/01, from the MimosaMiniVector method
   // Modified: JB 2013/11/08, new mechanism to load cut values and new cuts
-  
+
   if(!CheckIfDone("init,clear")) return;
   if(!RunNumber) Error("MimosaPro","RunNumber not set! Please run InitSession  first");
-  
+
   Int_t theplanenumber[2] = { plane0, plane1};
   ThePlaneNumber = plane0;
   ThePlaneNumber2 = plane1;
-  
+
   InitMimosaType();
   Info("MimosaPro","Mimosa type %d", MimosaType);
-  
+
   GetAnalysisGoal();
   fIfReferenceTrack = kTRUE;
-  
+
   gSystem->ChangeDirectory(fWorkingDirectory);// VR 2014/06/30 replace DTIR by fWorkingDirectory
-  
-  
+
+
   //----------------------------------------------------------------------------------
   // -- Open the input file containing the TTree
   //----------------------------------------------------------------------------------
-  
+
   Nevt = OpenInputFile(); // total number of events in the tree
   if( Nevt<=0) {
     Error("MimosaPro2Planes"," The input file contains an incorrect number of events %d!",Nevt);
@@ -3098,66 +3098,66 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
   else {
     Info("MimosaPro2Planes","There is %d events in the input file.",Nevt);
   }
-  
+
   //----------------------------------------------------------------------------------
   // -- Init analysis variables
   //----------------------------------------------------------------------------------
-  
+
   // for counting hits and tracks
   Int_t   ngoodhit    = 0; // # good hits in the DUT
   Int_t   NRecHit     = 0; // total # hits in the DUT
   Int_t   nmiss       = 0; // # good tracks in the DUT without a matched hit
   Int_t   nmissh[2]   = {0, 0}; // # good tracks in the DUT with no good hit in the DUT
   Int_t   nmissthdist[2] = {0, 0}; // # good tracks in the DUT with hit outside the distance limit
-  
-  Int_t Nhitinevent; // 
+
+  Int_t Nhitinevent; //
   Int_t Ngoodhitinevent[2]; // # good hits in the event
   Int_t Ngoodtrackinevent; // # good tracks in the telescope in the event
   Int_t NgoodtrackinDUTinevent; // # good tracks in the telescope and in the DUT in the event
-  
+
   Float_t trackToHitDistance[2] = { 100000., 100000.};
-  
+
   // Counter on event status
   Int_t StatusEvent[10];
   for ( Int_t i=0 ; i<10 ; i++ ) {
     StatusEvent[i]=0;
   }
-  
+
   Int_t IndexOfGoodHitsInEvent[2][5000]; // enlarge to 5000
-  
-  
+
+
   //----------------------------------------------------------------------------------
   // -- get parameters
   //----------------------------------------------------------------------------------
-  
+
   ThesubmatrixNumber = submatrix0;
   GetParameters();
-  
+
   //----------------------------------------------------------------------------------
   // CUTS
   //----------------------------------------------------------------------------------
-  
+
   // on baseline
   Bool_t usebaselinecut = kFALSE ;
   Float_t Baselinecut = 1100.0;
-  
+
   // on hits
-  
+
   Float_t cut_S2N_seed[2] = {S2N_seed0, S2N_seed1}; // S/N(seed)
   Float_t cut_S2N_neighbour[2] = {S2N_neighbour0, S2N_neighbour1}; // S/N(neighbours)
   Int_t   maxNofPixelsInCluster[2] = {fSession->GetSetup()->GetAnalysisPar().MaxNofPixelsInCluster[submatrix0], fSession->GetSetup()->GetAnalysisPar().MaxNofPixelsInCluster[submatrix1]};
-  
+
   // on tracks
   TrackToHitDistanceLimit =  TrackHitDist ; // Distance between the track and the hit
   TrackChi2Limit = fSession->GetSetup()->GetAnalysisPar().TrackChi2Limit;
-  
+
   // on geometry
   Thegeomatrix = GeoMatrix; // define the area of interest in the DUT
   geomUmin = fSession->GetSetup()->GetAnalysisPar().Umin[submatrix0][Thegeomatrix];
   geomUmax = fSession->GetSetup()->GetAnalysisPar().Umax[submatrix0][Thegeomatrix];
   geomVmin = fSession->GetSetup()->GetAnalysisPar().Vmin[submatrix0][Thegeomatrix];
   geomVmax = fSession->GetSetup()->GetAnalysisPar().Vmax[submatrix0][Thegeomatrix];
-  
+
   cout << "----------- CUTS:" << endl;
   cout << "  Baseline cut " << Baselinecut << " applied ? " << usebaselinecut << endl;
   cout << "  # hits (min, max): " << CUT_MinNbOfHits << " - " << CUT_MaxNbOfHits << endl;
@@ -3170,37 +3170,37 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
   cout << "  max distance track to hit " << TrackToHitDistanceLimit << endl;
   cout << "  max track chi2 " << TrackChi2Limit << endl;
   cout << "  geomatrix is " << Thegeomatrix << ", limits in U: " << geomUmin << ", " << geomUmax << ", limits in V: " << geomVmin << ", " << geomVmax << endl;
-  
+
   Info("MimosaPro2Planes","Analysis variables initialized");
-  
+
   //----------------------------------------------------------------------------------
   // -- prepare displays
   //----------------------------------------------------------------------------------
-  
+
   PrepareOnlineDisplay();
-  
+
   //----------------------------------------------------------------------------------
   // -- booking histograms
   //----------------------------------------------------------------------------------
-  
+
   BookingHistograms();
   // rebin hit map histograms to take into account geomatrix limits
   hxy->SetBins( (Int_t)((geomUmax-geomUmin)/PixelSizeU), geomUmin, geomUmax, (Int_t)((geomVmax-geomVmin)/PixelSizeV), geomVmin, geomVmax );
   hhx->SetBins( (Int_t)((geomUmax-geomUmin)/PixelSizeU), geomUmin, geomUmax );
   hhy->SetBins( (Int_t)((geomVmax-geomVmin)/PixelSizeV), geomVmin, geomVmax );
-  
+
   //----------------------------------------------------------------------------------
   // -- get the alignement parameters and parametrization of the Eta function
   //----------------------------------------------------------------------------------
-  
+
   DPrecAlign *align[2];
   TFile* theCorFiles[2] = { 0, 0};
-  
+
   for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
-    
+
     if (!theCorFiles[iplane]) InitCorPar( RunNumber, theplanenumber[iplane]);
     theCorFiles[iplane] = theCorFile;
-    
+
     if( theCorFiles[iplane]->IsOpen() && theCorFiles[iplane]->FindKey("alignement") ) { // if the CorPar files is already initialized
       align[iplane] =(DPrecAlign*)theCorFiles[iplane]->Get("alignement");
       align[iplane]->Print();
@@ -3208,71 +3208,71 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
     else {
       Error("MimosaPro2Planes","No alignement found from the file %s, for plane %d, STOPPING\n", theCorFiles[iplane]->GetName(), theplanenumber[iplane]);
     }
-    
+
     align[iplane]->PrintAll();
     Info("MimosaPro2Planes","Alignement read for plane %d", theplanenumber[iplane]);
   } // end loop on planes
-  
+
   GetMiEta(); // JB 2010/09/01 shall be aplied to both planes as well!
-  
-  
-  
+
+
+
   // store the cluster info in separate ascii file:
   Char_t Headerclusterdat[100];
   sprintf(Headerclusterdat,"HitSeparation/rawhit/newcluster_%d_%d.dat",RunNumber,ThePlaneNumber);
   ofstream outFile(Headerclusterdat);
   Int_t NofCycle=1000; //was 100
-  
-  
+
+
   //---------------------------------------------------------------
   //-- Prepare the event loop
   //---------------------------------------------------------------
-  
+
   //  Chose the min and max event number you want to loop on:
   Int_t MinEvent = fSession->GetSetup()->GetPlanePar(ThePlaneNumber).InitialNoise;
   Int_t MaxEvent = TMath::Min((Long64_t)MaxEvt,t->GetEntries()) ;
-  
-  
+
+
   // ************************************
   // Call init part of the analysis here
-  
+
   MaxNofPixelsInCluster = TMath::Max( maxNofPixelsInCluster[0], maxNofPixelsInCluster[1]);
   Efficiency_init();
   ClusterCharges_init();
   ClusterPosition_init();
-  
+
   // ************************************
-  
+
   // a bit of cleaning
   MainCanvas->Clear();
-  
+
   Info("MimosaPro2Planes","\nReady to loop over %d events\n", MaxEvent);
-  
+
   // **********************************************************************************
   // ********* MAIN LOOP ***************
   // **********************************************************************************
   for ( Int_t ievt=MinEvent ; ievt<=MaxEvent ; ievt++ ) { // Main loop over event
-    
+
     if(MimoDebug) Info("MimosaPro2Planes","Reading event %d",ievt);
-    
+
     //-- Initilisations
-    
+
     Nhitinevent=0;
     Ngoodhitinevent[0]=0;
     Ngoodhitinevent[1]=0;
     Ngoodtrackinevent=0;
     NgoodtrackinDUTinevent=0;
     for ( Int_t i=0 ; i<10 ; i++ ) { StatusEvent[i]=0; }
-    
+
     //-- Update display
-    
+
     if (ievt == MinEvent) {
       selection->Draw();
       for( Int_t il=0; il<8; il++) {
         textLabel[il]->Draw();
       }
     }
-    
+
     if(ievt/NofCycle*NofCycle == ievt){
       if( ievt>1000) NofCycle = 2000;
       if( ievt>5000) NofCycle = 5000;
@@ -3284,18 +3284,18 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
         cout<<"  temporary efficiency = "<<NofClMatchTrack<<" / "<<NtrkInMimo<<" = "<<1.*NofClMatchTrack/NtrkInMimo<<endl;
       }
     }
-    
+
     //-- Update counter for efficiency
-    
+
     StatusEvent[1]++;
     if(ievt / NeventRangeForEfficiency * NeventRangeForEfficiency == ievt ){ ievt_array ++; }
-    
+
     //=========================
     if(MimoDebug>1) cout << " getting the event" << endl;
     t->GetEvent(ievt);
     //=========================
-    
-    
+
+
     if(MimoDebug>1) cout << " getting the planes, tracks and hits" << endl;
     TClonesArray *Trpl   = Evt->GetTransparentPlanes() ; //tracks
     TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
@@ -3303,13 +3303,13 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
     Int_t NbOfTrpl   = Trpl->GetLast()+1   ; // total # tracks over all planes
     Int_t NbOfHits   = Hits->GetLast()+1   ; // total # hits over all planes
     Int_t NbOfPlanes = Planes->GetLast()+1 ; // Total Number of Planes
-    
+
     // check to avoid crash due to empty event
     if( NbOfTrpl==0 || NbOfHits==0 || NbOfPlanes==0 ) {
       if (MimoDebug) Info("MimosaPro2Planes","Empty event %d: #tracks %d, #hits %d, #planes %d \n", ievt, NbOfTrpl, NbOfHits, NbOfPlanes);
       continue;
     }
-    
+
     // get pointers to the planes studied
     DAuthenticPlane *ThePlaneStudied[2] = {0, 0}; // init
     DAuthenticPlane *aPlane;
@@ -3318,13 +3318,13 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
       if ( aPlane->Ppk == theplanenumber[0] ) ThePlaneStudied[0] = aPlane;
       else if ( aPlane->Ppk == theplanenumber[1] ) ThePlaneStudied[1] = aPlane;
     }
-    
-    
+
+
     // ****************** Filling histos
     selection->Fill(1.);  // all events
-    
+
     // ******************
-    
+
     //---------------------------------------------------------------
     // if planes are there
     // and baseline cuts OK
@@ -3335,35 +3335,35 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
         && NbOfHits<CUT_MaxNbOfHits && NbOfHits>=CUT_MinNbOfHits
         ) { // Plane exists with tracks and hits
       StatusEvent[2]++;
-      
+
       // ****************** Filling histos
       selection->Fill(2.); // event with track(s) and hits in the plane
-      
+
       hnhit->Fill(ThePlaneStudied[0]->PhN + ThePlaneStudied[1]->PhN);
       hnhitievt->Fill(ievt,ThePlaneStudied[0]->PhN + ThePlaneStudied[1]->PhN);
       // ******************
-      
+
       //---------------------------------------------------------------
       // Loop over hits BUT keep only the ones in the right plane
       if(MimoDebug>1) cout << " looping over " << NbOfHits << " hits" << endl;
       for (Int_t iHit=0 ; iHit<NbOfHits ; iHit++){ // loop on hits
-        
+
         DAuthenticHit *ahit = (DAuthenticHit*)Hits->At(iHit);
-        
+
         //------------------------------------------
         for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
-          
+
           //------------------------------------------
           if( ahit->Hpk == theplanenumber[iplane] ) { // if hit belongs to expected plane
             StatusEvent[6]++;
             Nhitinevent++;
             NRecHit++;
-            
+
             // Now compute variables usefull for cuts
-            
+
             NofPixelsInCluster = (ahit->HNNS < maxNofPixelsInCluster[iplane])?ahit->HNNS:maxNofPixelsInCluster[iplane];
             if (MimoDebug>2) Info("MimosaPro2Planes"," NofPixelsInCluster is set to %d (in hit %d, max %d)\n", NofPixelsInCluster, ahit->HNNS, maxNofPixelsInCluster[iplane]);
-            
+
             // signal over noise ratio of the seed pixel
             Float_t snSeed;
             if( ahit->Hn0 > 0.1 ) {
@@ -3372,7 +3372,7 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
             else { // for sparsified readout, JB 2009/05/19
               snSeed=ahit->Hq0;
             }
-            
+
             // charge and S/N in the second highest pixel of the hit
             // among the 4 pixels neighbouring the seed (cross)
             Float_t q2nd = 0.;
@@ -3390,46 +3390,46 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
                 }
               }
             }
-            
+
             // charge of the cluster without the seed
             ChargeAroundSeed = (ahit->Hqc - ahit->Hq0)*calibration;
-            
+
             if(MimoDebug>2) {
               printf("MimosaPro2Planes: Hit %d, qSeed=%.1f, qAroundSeed=%.1f, snSeed=%.1f, sn2nd=%.1f\n", iHit, ahit->Hq0, ChargeAroundSeed,snSeed, sn2nd);
             }
-            
+
             // ****************** Filling histos
             selection->Fill(6.);  // all hits in MIMOSA
-            
+
             // ******************
-            
-            
+
+
             //--------------------------------------------------------------
             // If hit passes the selection cut
-            if(  
+            if(
                snSeed >= cut_S2N_seed[iplane]
                && ( ahit->HSNneighbour >= cut_S2N_neighbour[iplane])
                && ( ChargeAroundSeed >= CUT_MinQ_neighbour )
                && ( ahit->HNNS <= maxNofPixelsInCluster[iplane] )
                //&& TrackInMimo( Thegeomatrix, ahit->Hu, ahit->Hv)
-               
+
                ){ // if hit passes cuts
               StatusEvent[7]++;
               ngoodhit++;
               IndexOfGoodHitsInEvent[iplane][Ngoodhitinevent[iplane]] = iHit;
               Ngoodhitinevent[iplane]++;
               if(MimoDebug>2) cout << " plane " << theplanenumber[iplane] << " found good hit " << Ngoodhitinevent[iplane]-1 << " with index " << IndexOfGoodHitsInEvent[iplane][Ngoodhitinevent[iplane]-1] << " pos " << ahit->Hu << ";" << ahit->Hv << " and dist to track " << ahit->Hu-ahit->Htu << ";" << ahit->Hv-ahit->Htv << endl;
-              
+
               // ****************** Filling histos
               selection->Fill(7.); // Good hits in MIMOSA
-              
+
               hnGOODhit->Fill(Ngoodhitinevent[iplane]);
               hnahitievt->Fill( ievt, Ngoodhitinevent[iplane]);
               GoodHit_Fill( ahit); // JB 2010/10/06
               hgoodSN_vs_SNN->Fill(ahit->HSNneighbour,snSeed);
-              
+
               BinarySpecific_HitsOnly_fill( ahit);
-              
+
               if( ahit->Htk >= 0) { // if a track was associated in Tree
                 Float_t adist = sqrt((ahit->Hsu-ahit->Htu)*(ahit->Hsu-ahit->Htu)+(ahit->Hsv-ahit->Htv)*(ahit->Hsv-ahit->Htv)) ;
                 duvall->Fill( adist); //For all the clusters with Hqc-Hq0>Cut
@@ -3441,45 +3441,45 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
                 }
               } // end if a track was associated
               // ******************
-              
+
             } // end if hit passes cuts
             //--------------------------------------------------------------
-            
+
             else { // if hit does not pass cuts
               if(MimoDebug>2) printf(" plane %d, hit %d NOT passing selection cuts, ChargeAroundSeed=%f <> %f, seedCharge=%.1f <> %.0f, NofPixelsInCluster=%d\n", theplanenumber[iplane], iHit, ChargeAroundSeed, CUT_MinQ_neighbour, ahit->HqM[0]*calibration, 0., NofPixelsInCluster);
             }
-            
+
           } // end if hit belongs to expected plane
           //--------------------------------------------------------------
-          
+
         } // end loop on planes
         //--------------------------------------------------------------
-        
+
       } // end loop on hits
       //--------------------------------------------------------------
-      
+
       if(MimoDebug) Info("MimosaPro2Planes","End loop on hits, found %d and %d good hits from planes", Ngoodhitinevent[0], Ngoodhitinevent[1]);
-      
-      
+
+
       //---------------------------------------------------------------
       // Loop on tracks BUT keep only the ones in the right plane
       if(MimoDebug>1) cout << " looping over " << NbOfTrpl << " tracks" << endl;
       for (Int_t iTrk=0 ; iTrk<NbOfTrpl ; iTrk++){ // loop on tracks
-        
+
         DTransparentPlane *aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( aTrpl->Tpk != theplanenumber[0] ) continue; // select only tracks in DUT
-        
+
         StatusEvent[3]++;
-        
-        
+
+
         // ****************** Filling histos
         selection->Fill(3.); // all tracks in plane
-        
+
         TrackParameters_allFill( aTrpl, ievt);
         // ******************
-        
+
         if( MimoDebug>2) cout << " Track " << iTrk << " has chi2=" << aTrpl->Tchi2 << " <?> " << TrackChi2Limit << endl;
-        
+
         //---------------------------------------------------------------
         // if chi2 of selected track is OK
         if ( aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 < TrackChi2Limit // JB, chi2=0. is not a real pb
@@ -3487,7 +3487,7 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
             ){ // if good track
           StatusEvent[4]++;
           Ngoodtrackinevent++;
-          
+
           // compute track information for each plane
           for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
             alignement = align[iplane];
@@ -3502,47 +3502,47 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
               cout << " track UVW " << trackPosUVW[iplane](0) << ", " << trackPosUVW[iplane](1) << ", " << trackPosUVW[iplane](2) << endl;
             }
           }
-          
+
           /*******************/
           selection->Fill(4.);   // Good quality track
-          
+
           hNTracksPerEvent->Fill( Ngoodtrackinevent);
           hNTracksPerEventievt->Fill( ievt, Ngoodtrackinevent);
-          
+
           TrackParameters_goodFill( aTrpl, ievt);
-          
+
           /*******************/
-          
+
           Bool_t TrkCrossMimo = TrackInMimo( Thegeomatrix, trackPosUVW[0](0), trackPosUVW[0](1), ThesubmatrixNumber);
-          
+
           if(MimoDebug>1) cout << " Is track " << iTrk << "in MIMOSA ? " << TrkCrossMimo << endl;
-          
+
           //---------------------------------------------------------------
           // if track is in the good geometry range
           if( TrkCrossMimo == kTRUE ){ // if the track is in MIMOSA
             StatusEvent[5]++;
             NgoodtrackinDUTinevent++;
             NtrkInMimo++ ;
-            
+
             if(MimoDebug) Info("MimosaPro2Planes"," Good (chi2=%f) track %d found in MIMOSA", aTrpl->Tchi2, iTrk);
-            
+
             temp_NtrkInMimo[ievt_array]++;
-            
+
             //-- Find the nearest good hit to this track in each plane
             DAuthenticHit *thehit[2] = {0, 0};
             Bool_t aHitIsFound[2] = {kFALSE, kFALSE};
             DAuthenticHit *ahit = 0;
             Float_t adist;
-            
+
             //------------------------------------------
             for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
-              
+
               trackToHitDistance[iplane] = 10000000.0 ;
-              
+
               if( Ngoodhitinevent[iplane]<=0 ) { // no hit at all, JB 2009/09/08
                 nmissh[iplane]++;
               }
-              
+
               if(MimoDebug>2) cout << "  Trying to associate hits of plane " << theplanenumber[iplane] << ", loop on " << Ngoodhitinevent[iplane] << " candidates." << endl;
               for(Int_t iHit=0; iHit<Ngoodhitinevent[iplane]; iHit++) { // loop over good hits
                 ahit = (DAuthenticHit*)Hits->At( IndexOfGoodHitsInEvent[iplane][iHit] );
@@ -3553,44 +3553,44 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
                   trackToHitDistance[iplane]=adist;
                 }
               } // end loop over good hits
-              
-              
+
+
               //-- Check the nearest hit is within the requested distance
-              
+
               if( fabs(trackToHitDistance[iplane]) < TrackToHitDistanceLimit ){
                 aHitIsFound[iplane] = kTRUE ;
               }
               else if( thehit[iplane] ) { // hit there but too far away, JB 2009/09/08
                 nmissthdist[iplane]++;
               }
-              
+
               if(MimoDebug) cout << " Plane " << theplanenumber[iplane] << ": Nearest hit to track at " << trackToHitDistance[iplane] << " <?> " << TrackToHitDistanceLimit<< ", hit found = " << aHitIsFound[iplane] << endl;
-              
+
             } // end loop on planes
             //---------------------------------------------------------------
-            
+
             // ****************** Filling histos
             selection->Fill(5.); // Good track in MIMOSA
-            
+
             for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
               hnGOODhitwhentrack->Fill(Ngoodhitinevent[iplane]);
               hTrackToClusterMinDistance->Fill(trackToHitDistance[iplane]); // Minimal distance from track to hits
             }
-            
+
             // ******************
-            
+
             //---------------------------------------------------------------
             // If a good hit in one of the two plane near this track was found
             if ( aHitIsFound[0] || aHitIsFound[1] ){ // if a hit matching the track was found
               StatusEvent[8]++;
               NofClMatchTrack++;
               temp_NofClMatchTrack[ievt_array]++; // for time dependent efficiency
-              
+
               if(MimoDebug) Info("MimosaPro2Planes"," Good hit found for plane %d, hit %d and for plane %d, hit %d) matching the track", theplanenumber[0], (aHitIsFound[0]?thehit[0]->Hhk:0), theplanenumber[1], (aHitIsFound[1]?thehit[1]->Hhk:0));
-              
+
               // ****************************************
               // Analysis of matched hits & tracks
-              
+
               for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
                 if( aHitIsFound[iplane] ) { // if a hit was found for this plane
                   NofPixelsInCluster = (thehit[iplane]->HNNS < maxNofPixelsInCluster[iplane])?thehit[iplane]->HNNS:maxNofPixelsInCluster[iplane];
@@ -3604,37 +3604,37 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
                     cout << " hit UVW " << hitPosUVW[iplane](0) << ", " << hitPosUVW[iplane](1) << ", " << hitPosUVW[iplane](2) << endl;
                     cout << " hit XYZ " << hitPosXYZ[iplane](0) << ", " << hitPosXYZ[iplane](1) << ", " << hitPosXYZ[iplane](2) << endl;
                   }
-                  
+
                   ClusterPosition_fill( thehit[iplane]);
-                  
+
                 } // end if a hit was found for this plane
               } // end loop on planes
-              
+
               // ************************************
-              
-              
+
+
               // ****************** Filling histos
               selection->Fill(8.); // good hits associated to a good track
-              
-              
+
+
               // ******************
-              
+
               if(MimoDebug) Info("MimosaPro2Planes","Done with good matched track-hits study");
-              
+
             }  // end if both hit matching the track were found
             //---------------------------------------------------------------
-            
+
             //---------------------------------------------------------------
             else { // end if no hit matching the track was found
               nmiss++;
-              
+
               if(ievt/NofCycle*NofCycle == ievt){
                 cout << " Number of tracks missed = " << nmiss << endl;
               }
-              
+
               //--- Do some print out
               if (MimoDebug>2) {
-                
+
                 cout << " -8-BAD TRACK-HIT DIST OR NO HIT evt = "<<ievt;
                 for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
                   cout << " dist=" << trackToHitDistance[iplane];
@@ -3650,9 +3650,9 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
                 cout << " tx=" << tx <<" ty=" << ty <<" tz=" << tz
                 <<" tdx="<<tdx <<" tdy="<<tdy <<endl;
                 cout<<" tu= "<<tu<<" tv= "<<tv<<endl;
-                
+
                 if( Ngoodhitinevent[0]>0 ) { // if there is at least a hit
-                  
+
                   cout << " -----------Info on nearest hit ----------" << endl;
                   cout << " Charge on Seed HqM[0]*cal         = " << thehit[0]->HqM[0]*calibration << " = " << thehit[0]->HqM[0] << "*" << calibration <<  endl;
                   cout << " thehit[0]->Hqc * calibration         = " << thehit[0]->Hqc * calibration  << endl;
@@ -3666,7 +3666,7 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
                   cout << " Index  of Seed          = " << thehit[0]->Hsk  << " column: " << (thehit[0]->Hsk)%NofPixelInRaw << " -- line: "  << (thehit[0]->Hsk)/NofPixelInRaw<< endl;
                   cout<<" hUdigital="<< thehit[0]->Hsu <<" hVdigital="<< thehit[0]->Hsv <<" pixelsizeV"<< PixelSizeV<<endl;
                 } // end if there is at least one hit
-                
+
                 else {
                   cout <<"-----------NO HIT FOUND-----------"<<endl;
                   for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
@@ -3675,14 +3675,14 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
                     cout <<"  Raw value frame 2="<< Float_t(ThePlaneStudied[iplane]->PFrfr2) <<endl;
                   } // end loop on planes
                 }
-                
+
                 cout <<"-----"<<endl;
               } // end if MimoDebug
-              
-              
-              
+
+
+
               tuv->Fill(tu,tv);
-              
+
               hchi2_nc->Fill(chi2);
               htu->Fill(tu);
               htv->Fill(tv);
@@ -3692,7 +3692,7 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
               itu= Int_t(tu/PixelSizeU);
               itv= Int_t(tv/PixelSizeV);
               htuvInPix->Fill(tu-itu*PixelSizeU,tv-itv*PixelSizeV);
-              
+
               if( Ngoodhitinevent[0]>0 && thehit[0] ) { // if there is at least a hit (thehit is the nearest)
                 hqc_nc->Fill(thehit[0]->Hqc);
                 hnpix_nc->Fill(thehit[0]->HNNS); // Hsk); JB 2009/09/01
@@ -3702,28 +3702,28 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
               else {
                 FalseHitMap->Fill(tu,tv);
               }
-              
+
               // ******************
-              
+
             } // end if no hit matching the track was found
             //---------------------------------------------------------------
-            
+
           }  // end if the track is in MIMOSA
           //---------------------------------------------------------------
-          
+
         } // end if good track
         //---------------------------------------------------------------
-        
+
       } // end loop on tracks
       //---------------------------------------------------------------
-      
+
       if(MimoDebug) Info("MimosaPro2Planes","End loop on tracks, found %d good tracks in DUT", NgoodtrackinDUTinevent);
-      
+
     } // end if Plane exists with tracks and hits
     //---------------------------------------------------------------
-    
+
     else { // if there was no plane or tracks or hits
-      Warning("MimosaPro2Planes","problem event %d with plane %d: #Hits %d<? %d <?%d, pointer to planes are %d and %d, other conditions %d and %d\n\n", 
+      Warning("MimosaPro2Planes","problem event %d with plane %d: #Hits %d<? %d <?%d, pointer to planes are %d and %d, other conditions %d and %d\n\n",
 	      int(ievt),
 	      int(ThePlaneNumber),
 	      int(CUT_MinNbOfHits),
@@ -3736,25 +3736,25 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
               );
       //return; // allow to continue and simply skip this event, JB 2009/09/01
     }
-    
-    
+
+
     if(MimoDebug) Info("MimosaPro2Planes","Event %d ended\n",ievt);
-    
+
   } // end of Main loop over event
   //**********************************************************************************
   //******************************* END OF MAIN LOOP *********************************
   //**********************************************************************************
-  
+
   // ************************************
   // Call final part of analysis here
-  
+
   ClusterPosition_end(); // JB 2014/01/10
   ClusterCharges_end();
   BinarySpecific_end();
   Efficiency_end( MaxEvent-MinEvent+1 ); // JB 2011/11/04
-  
+
   // ************************************
-  
+
   // Display final histograms
   MainCanvas->Clear();
   if( selection->GetMaximum()>15*selection->GetBinContent(6)) MainCanvas->SetLogy();
@@ -3763,12 +3763,12 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
     textLabel[il]->Draw();
   }
   MainCanvas->Update();
-  
-  
+
+
   //---------------------------------------------------------------
   //-- Print statistics out
   //---------------------------------------------------------------
-  
+
   cout << "-------- RUN NUMBER = "<<RunNumber<<" Plane numbers = "<<theplanenumber[0]<<", "<<theplanenumber[1]
   <<" submatrix numbers = "<<submatrix0<<", "<<submatrix1<<endl;
   cout << "-------- matched/good tracks in DUT = " << NofClMatchTrack << "  " << NtrkInMimo << "  " << MimosaEfficiency << endl;
@@ -3781,28 +3781,28 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
   cout << "-------- CUTS S/N seed and S/N neighbours= "<<CUT_S2N_seed<<" "<<CUT_S2N_neighbour<<endl;
   cout << "-------- MIN and MAX number of hits per event to evaluate efficiency "<<CUT_MinNbOfHits<<" "<<CUT_MaxNbOfHits<<endl;
   cout << "-------- calibration "<<calibration<<endl;
-  
+
   //---------------------------------------------------------------
   //-- Write histos
   //---------------------------------------------------------------
-  
+
   if (fWriteHistos) {
     gSystem->cd(CreateGlobalResultDir());
     if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-    
+
     Char_t Header[200];
     sprintf(Header,"AllPlots_%d_%d.root",RunNumber,ThePlaneNumber);
     TFile* AllHist = new TFile(Header,"RECREATE");
     dir->GetList()->Write();
     AllHist->Close(); delete AllHist;
     gSystem->cd(fWorkingDirectory);// VR 2014/06/30 replace DTIR by fWorkingDirectory
-    
+
   }
-  
+
   //---------------------------------------------------------------
   //-- The End
   //---------------------------------------------------------------
-  
+
   fMimosaPro2PlanesDone=kTRUE;
   fClearDone=kFALSE;
   PreparePost();
@@ -4104,7 +4104,7 @@ void MimosaAnalysis::MimosaVertex(Int_t MaxEvt, Short_t plane1, Short_t plane2)
 //
 void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t GeoMatrix, Float_t chi2Cut)
 {
-  
+
   // ???
   //
   // Loic ?
@@ -4138,7 +4138,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
   //----------------------------------------------------------------------------------
   // -- CUTS
   //----------------------------------------------------------------------------------
-  
+
   // on tracks
   //TrackToHitDistanceLimit =  TrackHitDist ; // Distance between the track and the hit
   //TrackChi2Limit = fSession->GetSetup()->GetAnalysisPar().TrackChi2Limit;
@@ -4195,7 +4195,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
 
   Int_t DPrecAlignMethod = fSession->GetSetup()->GetTrackerPar().DPrecAlignMethod;   // LC 2015/01/31
   DPrecAlign *anAlign = new DPrecAlign(DPrecAlignMethod);
-     
+
   anAlign->SetRotations( 0., 0., 0.);
   anAlign->SetTranslation( 0., 0., 0.);
   anAlign->CalculatePlane();
@@ -4222,7 +4222,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
 /*
     DTracker *tTracker = fSession->GetTracker();
     DTrack   *aTrack;
-    
+
     for( Int_t iTrack=1; iTrack<=tTracker->GetTracksN(); iTrack++ ) { // loop on tracks
       aTrack = tTracker->GetTrack(iTrack);
 
@@ -4240,7 +4240,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
 
     if( NbOfTrpl==0 ) continue; // if no track continue :)
 
-    // Find the tracks in this plane and count them with okT  
+    // Find the tracks in this plane and count them with okT
     DTransparentPlane *aTrpl = NULL;
 
     Int_t j = 0; // init
@@ -4255,25 +4255,25 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
     std::cout<<" Number of tracks = "<<okT<<std::endl;
 
     hVertexTrackChi2->Fill(aTrpl->Tchi2);
-    
+
     if (aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 <= chi2Cut)
     {
 
       std::cout<<"Track Chi2 = "<<aTrpl->Tchi2<<std::endl;
 /*
-      //TrackParameters_compute : 
+      //TrackParameters_compute :
       tx  = aTrpl->Tx ;
-      ty  = aTrpl->Ty ; 
+      ty  = aTrpl->Ty ;
       tz  = aTrpl->Tz ;
       tdx = aTrpl->Tdx ;
       tdy = aTrpl->Tdy ;
 
       std::cout<<"Tu = "<<aTrpl->Tu<<"  Tv = "<<aTrpl->Tv<<std::endl;
-    
+
       DataPoints aPosition(0, 0, tx, ty, tz, tdx, tdy);
-                           
+
       anAlign->CalculateIntersection(&aPosition);
-                                 
+
       DR3 pos = anAlign->GetTrackPosition();
       cout << "x = " << pos(0) << ", y = " << pos(1) << endl;
 */
@@ -4291,7 +4291,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
       hVertexPosXY->Fill( aTrpl->TvertexU, aTrpl->TvertexV );
       hVertexTrackDistance->Fill( sqrt(aTrpl->TvertexU*aTrpl->TvertexU + aTrpl->TvertexV*aTrpl->TvertexV + aTrpl->TvertexW*aTrpl->TvertexW ) );
     }
-  
+
   } // end of Main loop over event
 
   //**********************************************************************************
@@ -4302,7 +4302,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
   cVertexFinder->cd();
 
   cVertexFinder->Divide(2, 3);
-  
+
   //TPad* cVertexFinder_1=(TPad*)(cVertexFinder->GetPrimitive("cVertexFinder_1"));
   cVertexFinder->cd(1);
   AutoZoom(hVertexPosX)->Draw();
@@ -4321,7 +4321,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
 
   cVertexFinder->cd(5);
   AutoZoom(hVertexTrackDistance)->Draw();
-  
+
   TF1* fitFunction = new TF1("fitFunction","[0]+[1]*x*TMath::Exp([2]*x)",0,10);
   fitFunction->SetParameters(0., 1., -0.1);
   hVertexTrackDistance->Fit( "fitFunction" );
@@ -4336,30 +4336,30 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
 //
 void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S2N_seed, Float_t S2N_neighbour  , Int_t submatrix , Int_t GeoMatrix ,Option_t*  SaveAlign,  Int_t UseHitMap, Int_t WriteMissedHits, Int_t WriteGoodHits)
 {
-  
+
   // -- Main processing macro for MIMOSA root DSF file with a ladder as DUT
   //
   // Main analysis method: loops over all events found in a runXXX_0X.root file
   // Fills all histograms
   //
   // Copy of MimosaPro on 2014/02/10, JB
-  
-  
+
+
   if(!CheckIfDone("init,clear")) return;
   if(!TheLadderNumber || TheLadderNumber>fSession->GetTracker()->GetNumberOfLadders()) {Warning("MimosaPro()","Please set a ladder number!"); return; }
   if(!RunNumber) Error("MimosaPro","RunNumber not set! Please run InitSession  first");
-  
+
   InitMimosaType();
   Info("MimosaPro","Mimosa type %d", MimosaType);
-  
+
   GetAnalysisGoal();
   fIfReferenceTrack = kTRUE;
-  
+
   if (!theCorFile) InitCorPar( RunNumber, TheLadderNumber, "ladder");
   cout << "InitCorPar OK" << endl ;
   gSystem->ChangeDirectory(fWorkingDirectory);// VR 2014/06/30 replace DTIR by fWorkingDirectory
-  
-  
+
+
   //----ADC
   // ADC Readout !=0 if Readout is >=200
   // Modified JB 2009/07/20
@@ -4368,42 +4368,42 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
   //  ADCReadout = (fSession->GetSetup()->GetPlanePar(ThePlaneNumber)).Readout%200;
   //}
   //----ADC
-  
+
   //----------------------------------------------------------------------------------
   // -- Open the input file containing the TTree
   //----------------------------------------------------------------------------------
-  
+
   Nevt = OpenInputFile(); // total number of events in the tree
-  
+
   //----------------------------------------------------------------------------------
   // -- Chose the plane(matrix) and possibly the sub-matrix.
   //----------------------------------------------------------------------------------
-  
+
   ThesubmatrixNumber = submatrix;
-  
+
   //----------------------------------------------------------------------------------
   // -- Init analysis variables
   //----------------------------------------------------------------------------------
-  
+
   // for counting hits and tracks
   Int_t   ngoodhit    = 0; // # good hits in the DUT
   Int_t   NRecHit     = 0; // total # hits in the DUT
   Int_t   nmiss       = 0; // # good tracks in the DUT without a matched hit, JB 2009/09/08
   Int_t   nmissh      = 0; // # good tracks in the DUT with no good hit in the DUT, JB 2009/09/08
   Int_t   nmissthdist = 0; // # good tracks in the DUT with hit outside the distance limit
-  
+
   Int_t Nhitinevent; // JB 2009/09/08
   Int_t Ngoodhitinevent; // # good hits in the event
   Int_t Ngoodtrackinevent; // # good tracks in the telescope in the event
   Int_t NgoodtrackinDUTinevent; // # good tracks in the telescope and in the DUT in the event
-  
+
   // Counter on event status
   Int_t StatusEvent[10];
   for ( Int_t i=0 ; i<10 ; i++ ) {
     StatusEvent[i]=0;
   }
-  
-  
+
+
   //  To calculate parameters to prove the posibility of selection improvement of clusters
   const Short_t NCut      =  500   ;
   Float_t VCutMin         = -10.0 ;
@@ -4412,30 +4412,30 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
   Int_t NKeepHitOk[NCut] ;
   Float_t VCut[NCut]     ;
   //Float_t SignalThreshold;
-  
+
   //Int_t *IndexOfGoodHitsInEvent = new Int_t[CUT_MaxNbOfHits];
   Int_t IndexOfGoodHitsInEvent[8000]; // enlarge to 4000, JB 2010/08/27
   // Bool_t FillHitSeparationRootFile =  kFALSE ;//kTRUE;// kFALSE ;
-  
-  
+
+
   //----------------------------------------------------------------------------------
-  // CUTS 
+  // CUTS
   //----------------------------------------------------------------------------------
   // only sets here the values specified as arguments to the function,
   // the rest of them will be loaded with GetParameters).
   // JB 2013/08/21
-  
+
   // on hits
   CUT_S2N_seed =  S2N_seed ; // S/N(seed)
   CUT_S2N_neighbour =  S2N_neighbour ; // S/N(neighbours)
-  
+
   // on tracks
   Thegeomatrix = GeoMatrix; // define the area of interest in the DUT
   TrackToHitDistanceLimit =  TrackHitDist ; // Distance between the track and the hit
   cout << "--- CUTS specified:" << endl;
   cout << "  min S/N ratio: for seed = " << CUT_S2N_seed << ", for neighbours (without seed) = " << CUT_S2N_neighbour << endl;
   cout << "  max distance track to hit " << TrackToHitDistanceLimit << endl;
-  
+
   // ?
   //SignalThreshold=0.;
   for(Short_t ic=0 ; ic<NCut ; ic++){
@@ -4444,54 +4444,54 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
     NKeepHit[ic]   = 0   ;
     NKeepHitOk[ic] = 0   ;
   }
-  
+
   //---ab  Baseline cuts and previous bad events.
   // apply the baseline cut to avoid possible bad reset effects.
-  
+
   //Bool_t usebaselinecut = kTRUE;// kFALSE ;
   Bool_t usebaselinecut = kFALSE ;
   //---ab
   Int_t Previousbadevent = 0 ;
   Int_t Previousbadevent2 = 0 ;
   Float_t Baselinecut = 1100.0;
-  
+
   //----------------------------------------------------------------------------------
   // -- get parameters
   //----------------------------------------------------------------------------------
-  
+
   GetParameters(); // JB 2010/07/23
-  
+
   Info("MimosaPro","Analysis variables initialized");
-  
+
   //----------------------------------------------------------------------------------
   // -- prepare displays
   //----------------------------------------------------------------------------------
-  
+
   PrepareOnlineDisplay();
-  
+
   //----------------------------------------------------------------------------------
   // -- booking histograms
   //----------------------------------------------------------------------------------
-  
+
   BookingHistograms();
-  
+
   //----------------------------------------------------------------------------------
   // -- get the parametrization of the Eta function
   //----------------------------------------------------------------------------------
-  
+
   GetMiEta();
-  
+
   //----------------------------------------------------------------------------------
   // -- prepare alignment parameters
   //----------------------------------------------------------------------------------
-  
+
   GetAlignment();
-  
+
   //----------------------------------------------------------------------------------
   //--- Store Good and/or Bad events in ASCII FILEs
   //----------------------------------------------------------------------------------
   // Updated from AB by JB, 2009/09/08
-  
+
   Int_t TheWriteGoodHits = WriteGoodHits; // 0 = no; 1 = yes.
   Char_t Header_EventList[400];
   sprintf(Header_EventList,"%s/%d_pl%i_Sub%i_Seed%i_Neig%i_geomat%i_T2h%i_chi2%i_HitMap%i/good%d_pl%i_Sub%i_Seed%i_Neig%i_geomat%i_T2h%i_chi2%i,HitMap%i.dat", CreateGlobalResultDir(), RunNumber, ThePlaneNumber, ThesubmatrixNumber, (Int_t)CUT_S2N_seed, (Int_t)CUT_S2N_neighbour, Thegeomatrix, (Int_t)TrackToHitDistanceLimit, (Int_t)TrackChi2Limit, TheUsePixelMap, RunNumber, ThePlaneNumber, ThesubmatrixNumber, (Int_t)CUT_S2N_seed, (Int_t)CUT_S2N_neighbour, Thegeomatrix, (Int_t)TrackToHitDistanceLimit, (Int_t)TrackChi2Limit, TheUsePixelMap);
@@ -4499,7 +4499,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
     outFileGoodEvt.open(Header_EventList,ios::app);
     Info("MimosaPro","Good hits information will be logged in file %s\n", Header_EventList);
   }
-  
+
   Int_t TheWriteMissedHits = WriteMissedHits; // 0 = no; 1 = yes; 2 = yes but short format.
   Char_t badEvtFileName[400];
   sprintf( badEvtFileName,"%s/bad%d_pl%i_Sub%i_Seed%i_Neig%i_geomat%i_T2h%i_chi2%i_HitMap%i.dat", CreateGlobalResultDir(), RunNumber, ThePlaneNumber, ThesubmatrixNumber, (Int_t)CUT_S2N_seed, (Int_t)CUT_S2N_neighbour, Thegeomatrix, (Int_t)TrackToHitDistanceLimit, (Int_t)TrackChi2Limit, TheUsePixelMap); // dir name corrected, JB 2011/07/18
@@ -4507,72 +4507,72 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
     outFileBadEvt.open(badEvtFileName,ios::app);
     Info("MimosaPro","Missed hits information will be logged in file %s, (open=%d)\n", badEvtFileName, outFileBadEvt.fail());
   }
-  
+
   // store the cluster info in separate ascii file:
   Char_t Headerclusterdat[100];
   sprintf(Headerclusterdat,"HitSeparation/rawhit/newcluster_%d_%d.dat",RunNumber,ThePlaneNumber);
   ofstream outFile(Headerclusterdat);
   const Int_t NofCycle=5000; //was 100
-  
-  
+
+
   //---------------------------------------------------------------
   //-- Prepare the event loop
   //---------------------------------------------------------------
-  
+
   //  Chose the min and max event number you want to loop on:
   Int_t MinEvent = fSession->GetSetup()->GetPlanePar(ThePlaneNumber).InitialNoise;//50000;//40000; //was 2000, modifyed by JB Sept 2007 to match number of events for initialization (ped and noise)
   Int_t MaxEvent = TMath::Min((Long64_t)MaxEvt,t->GetEntries()) ;
-  
-  
+
+
   // ************************************
   // Call init part of the analysis here
-  
+
   HotPixel_init( UseHitMap); // JB 2011/11/23
   Efficiency_init();     // JB 2011/11/04
   ClusterShape_init();   // JB 2010/04/13
   ClusterCharges_init(); // JB 2010/06/03
   ClusterPosition_init();
-  
+
   // ************************************
-  
-  
+
+
   // a bit of cleaning
   MainCanvas->Clear();
-  
+
   Info("MimosaPro","\nReady to loop over %d events (over %d in the tree)\n", MaxEvent, (int)t->GetEntries());
-  
+
   // **********************************************************************************
   // ********* MAIN LOOP ***************
   // **********************************************************************************
-  
+
   for ( Int_t ievt=MinEvent ; ievt<=MaxEvent ; ievt++ ) { // Main loop over event
-    
+
     if(MimoDebug) Info("MimosaPro","Reading event %d",ievt);
-    
-    
-    
+
+
+
     // Event wise parameters
-    
+
     Short_t NhitInPlane = 0;
     //Short_t NtrackInPlane = 0;
-    
+
     //-- Initilisations
-    
+
     Nhitinevent=0;
     Ngoodhitinevent=0;
     Ngoodtrackinevent=0;
     NgoodtrackinDUTinevent=0;
     for ( Int_t i=0 ; i<10 ; i++ ) { StatusEvent[i]=0; }
-    
+
     //-- Update display
-    
+
     if (ievt == MinEvent) { // JB, 2008/08/09
       selection->Draw();
       for( Int_t il=0; il<8; il++) {
         textLabel[il]->Draw();
       }
     }
-    
+
     if(ievt/NofCycle*NofCycle == ievt || ievt<10){
       if( selection->GetMaximum()>15*selection->GetBinContent(6)) MainCanvas->SetLogy(); // JB 2010/04/28
       MainCanvas->Modified();
@@ -4581,21 +4581,21 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
       if (NtrkInMimo>100){
         cout<<"  temporary efficiency = "<<NofClMatchTrack<<" / "<<NtrkInMimo<<" = "<<1.*NofClMatchTrack/NtrkInMimo<<endl;
       }
-      
+
     }
-    
+
     //-- Update counter for efficiency
-    
+
     StatusEvent[1]++;
     if(ievt / NeventRangeForEfficiency * NeventRangeForEfficiency == ievt ){ ievt_array ++; }
-    
+
     //=========================
     if(MimoDebug>1) cout << " getting the event" << endl;
     t->GetEvent(ievt);
     //=========================
-    
+
     DEventHeader& CurrentEventHeader=Evt->GetHeader();
-    
+
     //---Store events in ascii file:
     /* DEventHeader& CurrentEventHeader=Evt->GetHeader();
      if(TheWriteGoodHits>1){
@@ -4607,21 +4607,21 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
      */
     //    cout<<"####### evt RealEventNumber, evt-ievt , ievt"<<CurrentEventHeader.GetEventNumber()<<" "
     //	<<CurrentEventHeader.GetEventNumber()-ievt <<" "<<ievt<<endl;
-    
+
     if(MimoDebug>1) cout << " getting the planes, tracks " << Evt->fT1PlanesN << " and hits" << endl;
     TClonesArray *Trpl   = Evt->GetTransparentPlanes() ; //tracks
     TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
     TClonesArray *Planes = Evt->GetAuthenticPlanes()   ; //planes
     Int_t NbOfTrpl   = Trpl->GetLast()+1   ; // total # tracks over all planes
     Int_t NbOfHits   = Hits->GetLast()+1   ; // total # hits over all planes
-    
+
     // check to avoid crash due to empty event, added by JB, Sept 2008,
     // cut NbOfHits==0 removed since there may be no hit at all but the event should still be taken into account for efficiency, JB 2012/06/08
     if( NbOfTrpl==0 ) {
       if (MimoDebug > 0) Info("MimosaPro","Empty event %d: #tracks %d\n", ievt, NbOfTrpl);
       continue;
     }
-    
+
     //Find the plane :
     Int_t okP = 0, okT = 0 ; // two ok added instead of one, JB Sept 2007
     DAuthenticPlane *ThePlaneStudied = 0; // init
@@ -4636,8 +4636,8 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
       }
       j++;
     }
-    
-    
+
+
     // Find the tracks in this plane and count them with okT
     // JB 2009/07/20
     DTransparentPlane *aTrpl;
@@ -4649,11 +4649,11 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
       }
       j++;
     }
-    
-    
+
+
     // ****************** Filling histos
     selection->Fill(1.);  // all events
-    
+
     //-- Reference plane study
     for ( Int_t iipl=0 ; iipl<TMath::Min(NbOfTrpl, 10) ; iipl++ ) {
       aTrpl = (DTransparentPlane*) Trpl->At(iipl) ;
@@ -4670,18 +4670,18 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
       } // end if this is not the DUT
     }
     // ******************
-    
-    
+
+
     //----ab    CUT ON THE BASELINE TO AVOID BAD RESET EFFECTS:
     if( ((ThePlaneStudied->PFrfr1)<Baselinecut) && (usebaselinecut==kTRUE) ){okT=0; okP=0;}
-    
+
     //---------------------------------------------------------------
     // if Both TransparentPlane and AuthenticPlane exist : (JB, Sept 2008)
     // and no baseline cut
     // and number of hits and tracks are within limits
     if ( okP && okT && NbOfHits<CUT_MaxNbOfHits && NbOfHits>=CUT_MinNbOfHits && NbOfTrpl>0) { // Plane exists with tracks and hits
       StatusEvent[2]++;
-      
+
       // ****************** Filling histos
       selection->Fill(2.); // event with track(s) and hits in the plane
       hnhit->Fill(NhitInPlane);
@@ -4695,24 +4695,24 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
       hraw1CDS_time->Fill(ievt,float(ThePlaneStudied->PFr));
       hraw1Signal_time->Fill(ievt,float(ThePlaneStudied->PFq));
       // ******************
-      
+
       //---------------------------------------------------------------
       // Loop over hits BUT keep only the ones in the right plane
       for (Int_t iHit=0 ; iHit<NbOfHits ; iHit++){ // loop on hits
-        
+
         DAuthenticHit *ahit = (DAuthenticHit*)Hits->At(iHit);
         if( IsPlaneInLadder( ahit->Hpk, TheLadderNumber ) ) continue; // select only hits in DUT
         StatusEvent[6]++;
         Nhitinevent++;
         NRecHit++;
-        
+
         Int_t Hotpixel = HotPixel_test( ahit->Hsk); // JB 2011/11/23
-        
+
         // Now compute variables usefull for cuts
-        
+
         NofPixelsInCluster = (ahit->HNNS < MaxNofPixelsInCluster)?ahit->HNNS:MaxNofPixelsInCluster;
         if (MimoDebug>2) Info("MimosaPro"," NofPixelsInCluster is set to %d (in hit %d, max %d)\n", NofPixelsInCluster, ahit->HNNS, MaxNofPixelsInCluster);
-        
+
         // signal over noise ratio of the seed pixel
         Float_t snSeed;
         if( ahit->Hsn != 0.0 ) {
@@ -4722,8 +4722,8 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
           snSeed=ahit->Hq0;
         }
         if(MimoDebug>2) printf("MimosaPro: snSeed computation with Hsn=%f, Hq0=%f, Hn0=%f, NoiseScope=%f => snSeed=%.1f\n", ahit->Hsn, ahit->Hq0, ahit->Hn0, NoiseScope, snSeed);
-        
-        
+
+
         // charge and S/N in the second highest pixel of the hit
         // among the 4 pixels neighbouring the seed (cross)
         Float_t q2nd = 0.;
@@ -4741,24 +4741,24 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
             }
           }
         }
-        
+
         // charge of the cluster without the seed
         ChargeAroundSeed = (ahit->Hqc - ahit->Hq0)*calibration;
-        
+
         // what the hell is this ?? JB 2010/06/03
         for(Short_t ic=0 ; ic<NCut ; ic++){
           if (ChargeAroundSeed>VCut[ic]){
             NKeepHit[ic]++ ;
           }
         }
-        
+
         if(MimoDebug>2) {
           printf("MimosaPro: Hit %d, qSeed=%.1f, qAroundSeed=%.1f, hot=%d, snSeed=%.1f, sn2nd=%.1f\n", iHit, ahit->Hq0, ChargeAroundSeed, Hotpixel, snSeed, sn2nd);
         }
-        
+
         // ****************** Filling histos
         selection->Fill(6.);  // all hits in MIMOSA
-        
+
         h2dallhits->Fill( ahit->Hsu, ahit->Hsv);
         hallSNneighbour->Fill(ahit->HSNneighbour);
         hAllS2N->Fill(snSeed);
@@ -4772,29 +4772,29 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
         if((ahit->Hq0)!=0.0){
           etal1[0]->Fill((ahit->Hqc/ahit->Hq0) - 1.0) ;
         }
-        else{ 
+        else{
 	  if(ahit->HNNS > 0) Warning("MimosaPro","evt %d, segment WARNING ahit->Hq0 = 0", ievt);
 	}
-        
+
         // ******************
-        
-        
+
+
         //--------------------------------------------------------------
         // If hit passes the selection cut
-        if( 
+        if(
            ( Hotpixel == 0)
            //&& ( ahit->HqM[0]*calibration>0. ) // why is it usefull ? JB 2013/11/08
-           && ( ahit->HsnPulse / ahit->Hsn >= CUT_S2N_seed ) 
+           && ( ahit->HsnPulse / ahit->Hsn >= CUT_S2N_seed )
            && ( ahit->HSNneighbour >= CUT_S2N_neighbour) //YV 27/1109 you add these 2 lines if you want S/N cuts
            && ( ChargeAroundSeed >= CUT_MinQ_neighbour )  // JB 2013/11/08
            && ( ahit->Hq0 >= CUT_Q_seed ) // JB 2013/11/08
            && ( ahit->Hqc >= CUT_Q_cluster ) // JB 2014/01/21
            && ( MinNofPixelsInCluster <= ahit->HNNS && ahit->HNNS <= MaxNofPixelsInCluster ) // JB 2013/09/11
-           && ( CUT_MinSeedIndex==CUT_MaxSeedIndex || 
+           && ( CUT_MinSeedIndex==CUT_MaxSeedIndex ||
                (CUT_MinSeedIndex<=ahit->Hsk && ahit->Hsk<=CUT_MaxSeedIndex) ) // allows to select an index range for the seed pixel (ineffective if minIndex==maxIndex), JB 2013/08/21
-           && ( CUT_MinSeedCol==CUT_MaxSeedCol || 
+           && ( CUT_MinSeedCol==CUT_MaxSeedCol ||
                (CUT_MinSeedCol<=(ahit->Hsk%NofPixelInRaw) && (ahit->Hsk%NofPixelInRaw)<=CUT_MaxSeedCol) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
-           && ( CUT_MinSeedRow==CUT_MaxSeedRow || 
+           && ( CUT_MinSeedRow==CUT_MaxSeedRow ||
                (CUT_MinSeedRow<=(ahit->Hsk/NofPixelInRaw) && (ahit->Hsk/NofPixelInRaw)<=CUT_MaxSeedRow) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
            //&& 256<=(ahit->Hsk%NofPixelInColumn) && (ahit->Hsk%322)<=319 // S1:0-95, S2:96-191, S3:192-255, S4:256-319, JB 2013/08/22
            ){ // if hit passes cuts
@@ -4803,10 +4803,10 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
           IndexOfGoodHitsInEvent[Ngoodhitinevent] = iHit;
           Ngoodhitinevent++;
           if(MimoDebug>1) cout << " found good hit " << Ngoodhitinevent-1 << " with index " << IndexOfGoodHitsInEvent[Ngoodhitinevent-1] << " pos " << ahit->Hu << ";" << ahit->Hv << " and dist to track " << ahit->Hu-ahit->Htu << ";" << ahit->Hv-ahit->Htv << endl;
-          
+
           // ****************** Filling histos
           selection->Fill(7.); // Good hits in MIMOSA
-          
+
           hnGOODhit->Fill(Ngoodhitinevent);
           hnahitievt->Fill( ievt, Ngoodhitinevent);
           GoodHit_Fill( ahit); // JB 2010/10/06
@@ -4823,59 +4823,59 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
             //	    }
           } // end if a track was associated
           // ******************
-          
+
         } // end if hit passes cuts
         //--------------------------------------------------------------
-        
+
         else { // if hit does not pass cuts
           if(MimoDebug>1) Info("MimosaPro","Hit not passing selection cuts, ChargeAroundSeed=%f <> %f, seedCharge=%.1f <> %.0f, hotPixel %d", ChargeAroundSeed, CUT_MaxQ_neighbour, ahit->HqM[0]*calibration, 0., Hotpixel);
         }
-        
+
       } // end loop on hits
       //--------------------------------------------------------------
-      
+
       if(MimoDebug) Info("MimosaPro","End loop on hits, found %d good hits in event %d", Ngoodhitinevent, ievt);
       const Int_t NofCycle=1000; //was 100
-      
-      
-      
+
+
+
       //---------------------------------------------------------------
       // FIRST Loop on tracks to count how many are in the EXCLUSION GEOMATRIX
       Int_t Ngoodtrackgeominevent = 0;
       for (Int_t iTrk=0 ; iTrk<NbOfTrpl ; iTrk++){ // loop on tracks
-        
+
         aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( IsPlaneInLadder( aTrpl->Tpk, TheLadderNumber ) ) continue; // select only tracks in DUT
         TrackParameters_compute(aTrpl, alignement); // compute tu,tv
-        
+
         if( TrackInMimo( GeoMatrixForTrackCut,tu,tv,ThesubmatrixNumber) /* && aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 < TrackChi2Limit */) {
           Ngoodtrackgeominevent++;
         }
-        
+
       } // end loop on tracks
       hNGoodGeomTracksPerEvent->Fill( Ngoodtrackgeominevent);
       if( MimoDebug>1) Info("MimosaPro"," Number of tracks in EXCLUSION GEOMATRIX %d is %d.", GeoMatrixForTrackCut , Ngoodtrackgeominevent);
-      
-      
-      
+
+
+
       //---------------------------------------------------------------
       // Loop on tracks BUT keep only the ones in the right plane
       for (Int_t iTrk=0 ; iTrk<NbOfTrpl ; iTrk++){ // loop on tracks
-        
+
         aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( aTrpl->Tpk != ThePlaneNumber ) continue; // select only tracks in DUT
-        
+
         StatusEvent[3]++;
-        
-        
+
+
         // ****************** Filling histos
         selection->Fill(3.); // all tracks in plane
-        
+
         TrackParameters_allFill( aTrpl, ievt);
         // ******************
-        
+
         if( MimoDebug>1) Info("MimosaPro"," Track %d has chi2=%f <> %f ?", iTrk, aTrpl->Tchi2, TrackChi2Limit);
-        
+
         //---------------------------------------------------------------
         // if chi2 of selected track is OK
         if ( aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 < TrackChi2Limit // JB, chi2=0. is not a real pb
@@ -4885,46 +4885,46 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
             ){ // if good track
           StatusEvent[4]++;
           Ngoodtrackinevent++;
-          
+
           TrackParameters_compute(aTrpl, alignement);
-          
+
           /*******************/
           selection->Fill(4.);   // Good quality track
-          
+
           hNTracksPerEvent->Fill( Ngoodtrackinevent);
           hNTracksPerEventievt->Fill( ievt, Ngoodtrackinevent);
-          
+
           TrackParameters_goodFill( aTrpl, ievt);
-          
+
           /*******************/
-          
+
           Bool_t TrkCrossMimo = TrackInMimo( Thegeomatrix, tu ,tv, ThesubmatrixNumber);
-          
+
           if( MimoDebug) Info("MimosaPro"," Is track %d in MIMOSA ? %d", iTrk, TrkCrossMimo);
-          
+
           //---------------------------------------------------------------
           // if track is in the good geometry range
           if( TrkCrossMimo == kTRUE ){ // if the track is in MIMOSA
             StatusEvent[5]++;
             NgoodtrackinDUTinevent++;
             NtrkInMimo++ ;
-            
+
             Previousbadevent2 = Previousbadevent;
             Previousbadevent = ievt;
             temp_NtrkInMimo[ievt_array]++;
-            
-            
+
+
             //-- Find the nearest good hit to this track
-            
+
             TrackToHitDistance = 10000000.0 ;
             DAuthenticHit *thehit = 0; //This will be a real hit
             DAuthenticHit *ahit = 0;
             Float_t adist;
-            
+
             if( Ngoodhitinevent<=0 ) { // no hit at all, JB 2009/09/08
               nmissh++;
             }
-            
+
             for(Int_t iHit=0; iHit<Ngoodhitinevent; iHit++) { // loop over good hits
               ahit = (DAuthenticHit*)Hits->At( IndexOfGoodHitsInEvent[iHit] );
               if(MimoDebug>1) cout << " Good hit " << iHit << " selected at index " << IndexOfGoodHitsInEvent[iHit] << " with position " << ahit->Hu << ";" << ahit->Hv << endl;
@@ -4934,12 +4934,12 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                 TrackToHitDistance=adist;
               }
             } // end loop over good hits
-            
-            
+
+
             //-- Check the nearest hit is within the requested distance
-            
+
             Bool_t aHitIsFound = kFALSE ;
-            if( fabs(TrackToHitDistance) < TrackToHitDistanceLimit 
+            if( fabs(TrackToHitDistance) < TrackToHitDistanceLimit
                //&& fabs(ahit->Hv-tv)<200. // specific case, JB 2012/11/20
                //&& fabs(ahit->Hu-tu)<1000. // specific case, JB 2012/11/20
                ){
@@ -4948,18 +4948,18 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
             else if( thehit ) { // hit there but too far away, JB 2009/09/08
               nmissthdist++;
             }
-            
+
             // ****************** Filling histos
             selection->Fill(5.); // Good track in MIMOSA
-            
+
             hnGOODhitwhentrack->Fill(Ngoodhitinevent);
             hTrackToClusterMinDistance->Fill(TrackToHitDistance); // Minimal distance from track to hits
             TrkInMimo->Fill(tu,tv);  //MG 2011/07/08  for efficency 2D plot
-            
+
             // ******************
-            
+
             if(MimoDebug>1) cout << " Nearest hit to track at " << TrackToHitDistance << " <?> " << TrackToHitDistanceLimit<< ", hit found = " << aHitIsFound << endl;
-            
+
             //---------------------------------------------------------------
             // If a good hit near this track was found
             if ( aHitIsFound ){ // if a hit matching the track was found
@@ -4967,28 +4967,28 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
               StatusEvent[9]++;
               NofClMatchTrack++;
               temp_NofClMatchTrack[ievt_array]++; // for time dependent efficiency
-              
+
               // what the hell is this ?? JB 2010/06/03
               for(Short_t ic=0 ; ic<NCut ; ic++){
                 if (ChargeAroundSeed>VCut[ic]){
                   NKeepHitOk[ic]++ ;
                 }
               }
-              
-              
+
+
               // ****************************************
               // Analysis of matched hits & tracks
-              
+
               NofPixelsInCluster = (thehit->HNNS < MaxNofPixelsInCluster)?thehit->HNNS:MaxNofPixelsInCluster;
-              
+
               ClusterCharges_compute( thehit);  // JB 2010/06/03
               ClusterPosition_compute( thehit, alignement);  // JB 2010/06/03
               if(MimoDebug>1) cout << " hit   in plane (Plane frame) " << hU << ", " << hV << ", " << hW << "." << endl;
-              
+
               TrackToHitDistance= sqrt((hU-tu)*(hU-tu)+(hV-tv)*(hV-tv)); // recomputed with best hit position
               // ************************************
-              
-              
+
+
               // ************************************
               // Fill data for precision alignement
               // get the computed hit position if not too far from digital position
@@ -4996,18 +4996,18 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
               if( abs(thehit->Hu - thehit->Hsu) < 5.*PixelSizeU
                  && abs(thehit->Hv - thehit->Hsv) < 5.*PixelSizeV ){
                 alignement->NewData( thehit->Hu, thehit->Hv,
-				     thehit->Hresu, thehit->Hresv, 
+				     thehit->Hresu, thehit->Hresv,
 				     tx, ty, tz, tdx, tdy); // more precise
               }
               else{
                 alignement->NewData( thehit->Hsu, thehit->Hsv,
-				     thehit->Hresu, thehit->Hresv, 
+				     thehit->Hresu, thehit->Hresv,
 				     tx, ty, tz, tdx, tdy);  // more robust.
               }
               // ************************************
-              
-              
-              
+
+
+
               // ************************************
               // --- write into the file info about the cluster
               //---- to be written in an ASCII file to be used for the hit separation macros.
@@ -5019,9 +5019,9 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                 << " - Hsn S/N = "<<thehit->HsnPulse / thehit->Hsn
                 << "total charge=" << TotalCharge
                 << endl;
-                
+
               }
-              
+
               if(TheWriteGoodHits>1){
                 for(Int_t i=0; i < NofPixelsInCluster; i++){
                   outFileGoodEvt << "Evt "<< ievt << endl;
@@ -5037,7 +5037,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                   << endl;
                 }
               }
-              
+
               // fill the file with the informations
               /*if(TheWriteGoodHits==1){
                outFileGoodEvt <<"-GOOD ASSOCIATION --- RealEventNumber ="<<CurrentEventHeader.GetEventNumber()<<"; ievt = "<<ievt<<endl;
@@ -5059,9 +5059,9 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                 //cout << UCGcorr << " " << VCGcorr << " " << tx << " " << ty << " " << tz << " " << tdx << " " << tdy << endl;
                 cout <<"---------------------"<<endl;
               }
-              
-              
-              
+
+
+
               if(NofPixelsInCluster >20){
                 outFile << tu << " ";
                 outFile << tv << " ";
@@ -5078,20 +5078,20 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                 outFile << " \n";
               }
               // ************************************
-              
-              
+
+
               // ****************** Filling histos
               selection->Fill(8.); // good hit associated to a good track
               selection->Fill(9.);
-              
+
               ClusterCharges_fill( thehit, ievt);   // JB 2010/06/03
               ClusterShape_fill( thehit);  // JB 2010/04/13
               BinarySpecific_fill( thehit);  // JB 2010/06/03
               ClusterPosition_fill( thehit); // JB 2010/07/21
               TrackHitPosition_fill( thehit, aTrpl, ievt); // JB 2010/07/22
-              
+
               goodtracks->Fill( tu, tv); //MG 2010/06/10 "matched tracks"
-              
+
               // Plane study
               //cout<<"+++++++++++++++"<<float(ThePlaneStudied->PFrfr1)<<endl;
               hraw1goodone->Fill(float(ThePlaneStudied->PFrfr1));
@@ -5102,15 +5102,15 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
               hraw1PFrfr2GOOD->Fill(float(ThePlaneStudied->PFrfr2));
               hraw1PFrfr2GOOD_time->Fill(ievt,float(ThePlaneStudied->PFrfr2));
               hraw1NoiseGOOD_time->Fill(ievt,float(ThePlaneStudied->PFn));
-              
+
               // ******************
-              
+
               //-----------------------------
               // User's stuff
               // JB 2009/09/07
               //-----------------------------
               if(MimoDebug>1) cout << " STARTING user's stuff" << endl;
-              
+
               for(Int_t iHit=0; iHit<Ngoodhitinevent; iHit++) { // loop over good hits
                 ahit = (DAuthenticHit*)Hits->At( IndexOfGoodHitsInEvent[iHit] );
                 if( thehit != ahit ) {
@@ -5118,31 +5118,31 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                   hUserHitCorrelationCol->Fill( ahit->Hsv - thehit->Hsv);
                 }
               } // end loop over good hits
-              
-              
+
+
               if(MimoDebug) Info("MimosaPro","Done with good matched track-hit study");
-              
-              
+
+
             }  // end if a hit matching the track was found
             //---------------------------------------------------------------
-            
+
             //---------------------------------------------------------------
             else { // end if no hit matching the track was found
               nmiss++;
-              
+
               if(ievt/NofCycle*NofCycle == ievt){
                 cout << " Number of tracks missed = " << nmiss << endl;
               }
-              
-              
+
+
               //--- Do some print out
-              
+
               if (MimoDebug) {
                 cout <<"--INEFFICIENT event = "<<ievt<<endl;
               }
-              
+
               if (MimoDebug>2) {
-                
+
                 cout << " -8-BAD TRACK-HIT DIST OR NO HIT evt = "<<ievt;
                 cout << " dist= "<<TrackToHitDistance;
                 cout << " ( " << Ngoodhitinevent << " hits in plane)" <<endl;
@@ -5155,9 +5155,9 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                 cout << " tx=" << tx <<" ty=" << ty <<" tz=" << tz
                 <<" tdx="<<tdx <<" tdy="<<tdy <<endl;
                 cout<<" tu= "<<tu<<" tv= "<<tv<<endl;
-                
+
                 if( Ngoodhitinevent>0 ) { // if there is at least a hit
-                  
+
                   cout << " -----------Info on nearest hit ----------" << endl;
                   cout << " Charge on Seed HqM[0]*cal         = " << thehit->HqM[0]*calibration << " = " << thehit->HqM[0] << "*" << calibration <<  endl;
                   cout << " thehit->Hqc * calibration         = " << thehit->Hqc * calibration  << endl;
@@ -5170,7 +5170,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                   cout << endl;
                   cout << " Index  of Seed          = " << thehit->Hsk  << " column: " << (thehit->Hsk)%NofPixelInRaw << " -- line: "  << (thehit->Hsk)/NofPixelInRaw<< endl;
                   cout<<" hUdigital="<< thehit->Hsu <<" hVdigital="<< thehit->Hsv <<" pixelsizeV"<< PixelSizeV<<endl;
-                  
+
                   //cout << " Qseed (e-) = " << qonly[0];
                   //cout << " Charge on Seed q[0]               = " << q[0]      << endl;
                   //cout << " q[0] vs qonly[0] vs HqM[0]*cal    = " << q[0] << " vs " << qonly[0] << " vs " << thehit->HqM[0]*calibration << endl;
@@ -5187,34 +5187,34 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                   //cout << " q[12] vs qonly[12] vs HqM[12]*cal = " << q[12] << " vs " << qonly[12] << " vs " << thehit->HqM[12]*calibration << endl;
                   //cout << " q[13] vs qonly[13] vs HqM[13]*cal = " << q[13] << " vs " << qonly[13] << " vs " << thehit->HqM[13]*calibration << endl;
                   //cout << " q[14] vs qonly[14] vs HqM[14]*cal = " << q[14] << " vs " << qonly[14] << " vs " << thehit->HqM[14]*calibration << endl;
-                  
+
                   //cout << " -----------Comparison track - hit ----------" << endl;
                   //cout << " Tud = Hu-Tu  (TTree)  = " << tud << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Tvd = Hv-Tv  (TTree)  = " << tvd << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Hu                    = " << thehit->Hu << " ---UofHitCG5 = "  << UofHitCG5  << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Hv                    = " << thehit->Hv << " ---VofHitCG5 = "  << VofHitCG5  << endl;//          << " line: " << tk1%NofPixelInRaw           << " -- column: "  << tk1/NofPixelInRaw<< endl;
                   //cout << " Tack to hit dist calc = " <<  sqrt( (UofHitCG5-tu)*(UofHitCG5-tu) + (VofHitCG5-tv)*(VofHitCG5-tv) ) << endl;
-                  
+
                 } // end if there is at least one hit
-                
+
                 cout <<"-----"<<endl;
-                
+
                 cout <<"--NO HIT FOUND---Reco evt = "<<ievt<<endl;
                 printf("event Pas de hit, impact: tu=%f  tv=%f  chi2 : %f\n",tu,tv,chi2);
                 cout<< float(ThePlaneStudied->PFrfr1)<<endl;
-                
+
                 cout << "Event number = " <<Previousbadevent<<"; Previous event with a track in mimosa = "<<Previousbadevent2<< endl;
                 cout<<"Eventheader: evt, time delay Frame1 "<<CurrentEventHeader.GetEventNumber()<<" "<< CurrentEventHeader.GetTime()
                 <<" "<<CurrentEventHeader.EtimeSinceLastEvent<<" "<<ThePlaneStudied->PFrfr1<<endl;
                 CurrentEventHeader.Print();
                 cout <<"-----"<<endl;
               } // end if MimoDebug
-              
-              
+
+
               //----  fill the file with the infomations if requested
               if(TheWriteMissedHits==1){ // if write info for missed hits
                 if (MimoDebug) cout << " Writing info for missed event " << ievt << endl;
-                
+
                 outFileBadEvt<<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
                 outFileBadEvt << "event counter = " << ievt << ", from DSF = " << CurrentEventHeader.GetEventNumber() << ", from daq = " << Evt->GetFrameNb() << endl;
                 outFileBadEvt << "Event number = " << Previousbadevent << "; Previous event with a track in mimosa = " << Previousbadevent2 << endl;
@@ -5239,7 +5239,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                   }
                   outFileBadEvt << endl;
                 }
-                
+
                 outFileBadEvt << " total # hits in all planes = " << NbOfHits << endl;
                 outFileBadEvt << " total # hits in the DUT = " << Nhitinevent << ", good hits = " << Ngoodhitinevent << endl;
                 outFileBadEvt << " total # good tracks in telescope = " << Ngoodtrackinevent << endl;
@@ -5250,7 +5250,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                 outFileBadEvt << "    tdx = " << tdx << ", tdy = " << tdy << endl;
                 outFileBadEvt << "    tu = " << tu << ", tv = " << tv << " or col = " << (Int_t)(tu+FirstPixelShiftU)/PixelSizeU << ", row = " << (Int_t)(tv+FirstPixelShiftV)/PixelSizeV << endl;
                 outFileBadEvt << "    chi2 = " << chi2 << endl;
-                
+
                 outFileBadEvt << " track to nearest hit distance = "<< TrackToHitDistance << endl;
                 if( Ngoodhitinevent>0 ) { // if there is at least a hit
                   outFileBadEvt << " Nearest hit properties:" << endl;
@@ -5260,20 +5260,20 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
                   outFileBadEvt << "   charge (w/o calib) in seed = " << thehit->Hq0 << ", around seed " << ahit->Hqc - ahit->Hq0 << " and in hit " << thehit->Hqc << endl;
                   outFileBadEvt << "   S/N of seed = " << thehit->HsnPulse / ahit->Hsn << ", around seed " << thehit->HSNneighbour << endl;
                 } // end if there is at least a hit
-                
+
                 outFileBadEvt << "-----" << endl;
               } // end if write info for missed hits
-              
+
               else if(TheWriteMissedHits==2){ // if write info for missed hits
                 outFileBadEvt<<ievt<<","<<CurrentEventHeader.GetTriggerAt(1)<<","<<CurrentEventHeader.GetTriggerAt(0)<<","<<Ngoodhitinevent<<endl;
               }
-              
+
               // ****************** Filling histos
               //MissedHit->cd();
-              
-              
+
+
               tuv->Fill(tu,tv);
-              
+
               hchi2_nc->Fill(chi2);
               htu->Fill(tu);
               htv->Fill(tv);
@@ -5283,7 +5283,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
               itu= Int_t(tu/PixelSizeU);
               itv= Int_t(tv/PixelSizeV);
               htuvInPix->Fill(tu-itu*PixelSizeU,tv-itv*PixelSizeV);
-              
+
               hraw1badone->Fill(float(ThePlaneStudied->PFrfr1));
               hraw1badone_time->Fill(ievt,float(ThePlaneStudied->PFrfr1));
               hraw1badoneNoise_time->Fill(ievt,float(ThePlaneStudied->PFn)*calibration);
@@ -5292,7 +5292,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
               hraw1PFrfr2BAD->Fill(float(ThePlaneStudied->PFrfr2));
               hraw1PFrfr2BAD_time->Fill(ievt,float(ThePlaneStudied->PFrfr2));
               hraw1NoiseBAD_time->Fill(ievt,float(ThePlaneStudied->PFn));
-              
+
               if( Ngoodhitinevent>0 ) { // if there is at least a hit (thehit is the nearest)
                 hqc_nc->Fill(thehit->Hqc);
                 hnpix_nc->Fill(thehit->HNNS); // Hsk); JB 2009/09/01
@@ -5302,33 +5302,33 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
               else {
                 FalseHitMap->Fill(tu,tv);
               }
-              
+
               // ******************
-              
+
             } // end if no hit matching the track was found
             //---------------------------------------------------------------
-            
-            
+
+
           }  // end if the track is in MIMOSA
           //---------------------------------------------------------------
-          
+
         } // end if good track
         //---------------------------------------------------------------
-        
+
       } // end loop on tracks
       //---------------------------------------------------------------
-      
+
       if(MimoDebug) Info("MimosaPro","End loop on tracks, found %d good tracks in DUT", NgoodtrackinDUTinevent);
-      
+
     } // end if Plane exists with tracks and hits
     //---------------------------------------------------------------
-    
+
     else { // if there was no plane or tracks or hits
       Warning("MimosaPro","problem event %d with plane %d: Authentic %d?=1 or Transparent %d?=1 or #Hits %d<? %d <?%d  or #trpl %d>?0\n\n", ievt, ThePlaneNumber, okP, okT, CUT_MinNbOfHits, NbOfHits, CUT_MaxNbOfHits, NbOfTrpl);
       //return; // allow to continue and simply skip this event, JB 2009/09/01
     }
-    
-    
+
+
     //---------------------------------------------------------------
     //-- Do some statistics after event analysis
     //---------------------------------------------------------------
@@ -5338,7 +5338,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
     // StatusEvent[4]>1 <=> there is a good track
     // StatusEvent[5]>1 <=> there is a good track in the good geomatrix
     // StatusEvent[8/9]>1 <=> a hit is matched to the track
-    
+
     if (MimoDebug > 1) {
       cout << "StatusEvent = ";
       for ( Int_t i=1 ; i<10 ; i++ ) {
@@ -5346,28 +5346,28 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
       }
       cout<<endl;
     }
-    
-    
+
+
     if(MimoDebug) Info("MimosaPro","Event %d ended\n",ievt);
-    
+
   } // end of Main loop over event
-  
+
   //**********************************************************************************
   //******************************* END OF MAIN LOOP *********************************
   //**********************************************************************************
-  
+
   // ************************************
   // Call final part of analysis here
-  
+
   ClusterPosition_end(); // JB 2014/01/10
   ClusterCharges_end(); // Jb 2010/07/22
   ClusterShape_end();  // JB 2010/04/13
   BinarySpecific_end(); // JB 2010/06/03
   FakeRate_end( NtrkInMimo); // JB 2010/07/22
   Efficiency_end( MaxEvent-MinEvent+1 ); // JB 2011/11/04
-  
+
   // ************************************
-  
+
   // Display final histograms
   MainCanvas->Clear();
   MainCanvas->SetBorderMode(0);
@@ -5382,28 +5382,28 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
   hClusterMeanForm->Draw("lego2");
   //hChargeIntegral4->Draw("surf");
   MainCanvas->Update();
-  
+
   //---------------------------------------------------------------
   //-- Update and Save eta and alignment parameters
   //---------------------------------------------------------------
-  
+
   // Process the distributions to get the correction functions:
   // Reshape to call single functions, JB 2011/06/19
-  
+
   cout << "In the end... "<< endl;
   cout << "In the end... "<< endl;
   cout << "In the end... "<< endl;
   cout << "In the end... "<< endl;
-  
+
   //if ( !strstr(SaveAlign,"no") || !strstr(SaveAlign,"NO") || !SaveAlign) {
   if ( strstr(SaveAlign,"yes") || strstr(SaveAlign,"YES") ) {
-    
+
     CreateNewEta();
     fMimosaProDone=kTRUE; // required so that AlignMimosa proceeds, JB 2011/11/25
     AlignMimosa( TrackToHitDistanceLimit); // new option added, JB 2012/05/11
-    
+
   }
-  
+
   //---------------------------------------------------------------
   //-- Print statistics out
   //---------------------------------------------------------------
@@ -5418,40 +5418,40 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
   cout << "-------- track-Hit dist cut= "<<TrackToHitDistanceLimit<<" chi2 max= "<<TrackChi2Limit<<" Geomatrix = "<<GeoMatrix<<": "<<geomUmin<<"<U<"<<geomUmax<<", "<<geomVmin<<"<V<"<<geomVmax<<endl;
   cout << "-------- minimal nb of hits required per tracks = " << MinHitsPerTrack << endl;
   if( MaxNbOfTracksInGeom > -1 ) cout << "-------- Max nb of tracks allowed " << MaxNbOfTracksInGeom << ", in exclusion geomatrix " << GeoMatrixForTrackCut<<": "<<exgeomUmin<<"<U<"<<exgeomUmax<<", "<<exgeomVmin<<"<V<"<<exgeomVmax<< endl;
-  
+
   cout << "-------- number of tracks un-matched " << nmiss << ", with thdist > THdist limit " << nmissthdist << ", without hits in DUT  " << nmissh << endl; // JB 2009/09/08
   cout << "-------- Total number of event processed= "<<MaxEvent-MinEvent+1<<endl;
   cout << "-------- CUTS S/N seed and S/N neighbours= "<<CUT_S2N_seed<<" "<<CUT_S2N_neighbour<<endl;
   cout << "-------- MIN and MAX number of hits per event to evaluate efficiency "<<CUT_MinNbOfHits<<" "<<CUT_MaxNbOfHits<<endl;
   cout << "-------- calibration "<<calibration<<endl;
-  
+
   //---------------------------------------------------------------
   //---- Hot pixels management
   //---------------------------------------------------------------
-  
+
   HotPixel_end( MaxEvent-MinEvent+1);
-  
+
   //---------------------------------------------------------------
   //-- Write histos
   //---------------------------------------------------------------
-  
+
   if (fWriteHistos) {
     gSystem->cd(CreateGlobalResultDir());
     if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-    
+
     Char_t Header[200];
     sprintf(Header,"AllPlots_%d_%d.root",RunNumber,ThePlaneNumber);
     TFile* AllHist = new TFile(Header,"RECREATE");
     dir->GetList()->Write();
     AllHist->Close(); delete AllHist;
     gSystem->cd(fWorkingDirectory);// VR 2014/06/30 replace DTIR by fWorkingDirectory
-    
+
   }
-  
+
   //---------------------------------------------------------------
   //-- The End
   //---------------------------------------------------------------
-  
+
   fMimosaProDone=kTRUE;
   //SS 2011.12.05: Efficiency, multiplicity and corresponding errors are saved to the CSV file. Run number, plane number and geomatrix limits are saved as well.
   if (strstr(SaveAlign,"no") || strstr(SaveAlign,"NO")){
@@ -5471,7 +5471,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
 //
 void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatrix, Double_t theta_init, Int_t Npeak, Double_t S, Double_t W, Bool_t FirstLoop, Bool_t chooseFit)
 {
-  // -- Processing macro for MIMOSA root DSF file 
+  // -- Processing macro for MIMOSA root DSF file
   //     for a single given submatrix in a given area (GeoMatrix)
   //
   // Allows to determine the spatial resolution of a sensor using parallel bands chart.
@@ -5495,31 +5495,31 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   //                   if chooseFit=false then the distance S between bands and the bands width W changed for each bands
   //
   // Created: JH 2014/06/16
-  
-  
+
+
   if(!CheckIfDone("init,clear")) return;
   if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaImaging()","Please set a plane number (1 or 2)"); return; }
   if(!RunNumber) Error("MimosaImaging","RunNumber not set! Please run InitSession  first");
 
   InitMimosaType();
   Info("MimosaImaging","Mimosa type %d", MimosaType);
-  
+
   CorStatus=2; // indicate CorPar file is not filled, JB 2010/08/27
-  
+
   GetAnalysisGoal();
 
   Nevt = OpenInputFile(); // total number of events in the tree
   if( Nevt<=0 ) Error("MimosaImaging"," The input file contains an incorrect number of events %d!",Nevt);
   else Info("MimosaImaging","There is %d events in the input file.",Nevt);
-  
+
 
   //----------------------------------------------------------------------------------
   // -- Chose the sub-matrix.
-  //----------------------------------------------------------------------------------  
+  //----------------------------------------------------------------------------------
   ThesubmatrixNumber = submatrix;
   Thegeomatrix = GeoMatrix; // define the area of interest in the DUT
   GetParameters();
-  
+
 
   //----------------------------------------------------------------------------------
   // -- Analysis variables
@@ -5534,12 +5534,12 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
 
   Info("MimosaImaging","Analysis variables initialized");
 
-  
+
   //----------------------------------------------------------------------------------
   // -- booking histograms
   //----------------------------------------------------------------------------------
   BookingHistograms();
-  
+
   //-- Histogram to compute the best theta value
   Double_t deltaThetaCut = 20;
   const Int_t Nbin_ThetaCut  = 200;
@@ -5550,7 +5550,7 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   Double_t R_ThetaScan[2];
   R_ThetaScan[0] = 0.0;
   R_ThetaScan[1] = 180.0;
-  
+
   h2RmsOnThetaScanVsThetaCut = new TH2F("h2RmsOnThetaScanVsThetaCut", "RMS vs #theta_{cut} and #theta_{scan}",
                                         Nbin_ThetaScan, R_ThetaScan[0], R_ThetaScan[1],
                                         Nbin_ThetaCut, R_ThetaCut[0], R_ThetaCut[1]);
@@ -5566,7 +5566,7 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   //----------------------------------------------------------------------------------
   //-- Prepare the event loop
   //----------------------------------------------------------------------------------
-  
+
   //---------------------------------------------------------------
   //  Chose the min and max event number you want to loop on:
   Int_t MinEvent = fSession->GetSetup()->GetPlanePar(ThePlaneNumber).InitialNoise;
@@ -5576,11 +5576,11 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   // Variables and arrays initialisation
   Double_t minTheta, ImHu, ImHv;
   Int_t numberOfHitsInEvent = 0;
-  Int_t numberOfHitsInCut[Nbin_ThetaCut]; 
+  Int_t numberOfHitsInCut[Nbin_ThetaCut];
   const int Nstep( h1RmsOnTheta->GetXaxis()->GetNbins() );
-  
+
   Double_t Mean_array[Nbin_ThetaScan][Nbin_ThetaCut], RMS_array[Nbin_ThetaScan][Nbin_ThetaCut];
-  
+
   for (Int_t i_thetaCut=0; i_thetaCut<Nbin_ThetaCut; i_thetaCut++) {
     numberOfHitsInCut[i_thetaCut] = 0;
     for (Int_t i_thetaScan=0; i_thetaScan<Nbin_ThetaScan; i_thetaScan++) {
@@ -5588,16 +5588,16 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
       RMS_array[i_thetaScan][i_thetaCut] = 0;
     }
   }
-  
+
   if ( FirstLoop ) Info("MimosaImaging","\n\nReady to loop over %d events and %d theta step\n", MaxEvent, Nstep);
   else             Info("MimosaImaging","\n\nReady to loop over %d events\n", MaxEvent);
-  
+
   //---------------------------------------------------------------
   // Call init part of the analysis here
   ProjectionImaging_init();
   ClusterShape_init();
   ClusterCharges_init();
-  ClusterPosition_init();  
+  ClusterPosition_init();
 
 
   // **********************************************************************************
@@ -5609,51 +5609,51 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   // h1RmsOnTheta: histogram displaying the RMS vs theta.
   // **********************************************************************************
   if ( FirstLoop ) { // if all the code is performed
-    
+
     cout << "*----------------* FIRST MAIN LOOP *----------------*" << endl;
     cout << "*- Determination of the best rotation angle Theta  -*\n" << endl;
-    
-    
+
+
     for ( Int_t ievt=MinEvent ; ievt<=MaxEvent ; ievt++ ) { // First main loop over events
-    
+
       if(MimoDebug) Info("MimosaImaging","Reading event %d",ievt);
-    
+
       // Event wise parameters
       Ngoodhitsinevent = 0;
-    
+
       t->GetEvent(ievt);
-    
+
       if(MimoDebug>1) cout << " getting the hits" << endl;
       TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
       NbOfHits   = Hits->GetLast()+1; // total # hits over all planes
-    
-      
+
+
       //---------------------------------------------------------------
       // Loop over hits BUT keep only the ones in the right plane
       if(MimoDebug>1) cout << " Looping over " << NbOfHits << " hits" << endl;
       for (Int_t iHit=0 ; iHit<NbOfHits ; iHit++){ // loop on hits
-         
+
         DAuthenticHit *ahit = (DAuthenticHit*)Hits->At(iHit);
         if( ahit->Hpk != ThePlaneNumber ) continue; // select only hits in DUT
-      
-        
+
+
         if ( fIfImaging ) {
-   
+
           if( Thegeomatrix<0 || Thegeomatrix>3 ) {
             printf("MimosaImaging: WARNING, you asked for a geomatrix (%d) which does not exist, changed to 0\n", Thegeomatrix);
             Thegeomatrix = 0;
           }
-                    
+
           //---------------------------------------------------------------
           // Data projection on the estimated frame of the bands
-          
-            
+
+
           for (Int_t i_thetaCut=0; i_thetaCut<Nbin_ThetaCut; i_thetaCut++) { // loop over thetaCut
-          
+
             Double_t thetaCut = h2RmsOnThetaScanVsThetaCut->GetYaxis()->GetBinCenter(i_thetaCut+1);
             ImHu = (ahit->HuCG)*TMath::Cos(thetaCut*TMath::Pi()/180.0) + (ahit->HvCG)*TMath::Sin(thetaCut*TMath::Pi()/180.0);
             ImHv = -(ahit->HuCG)*TMath::Sin(thetaCut*TMath::Pi()/180.0) + (ahit->HvCG)*TMath::Cos(thetaCut*TMath::Pi()/180.0);
-          
+
             if ( (ImHu >= geomUmin) && (ImHu <= geomUmax) && (ImHv >= geomVmin) && (ImHv <= geomVmax) ) { // cut over theta_init
 
               numberOfHitsInCut[i_thetaCut]++;
@@ -5661,46 +5661,46 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
               //---------------------------------------------------------------
               // Calculation of the data RMS depending on the angle theta
               for (Int_t i_thetaScan=0; i_thetaScan<Nbin_ThetaScan; i_thetaScan++) { // Loop over theta
-    
+
                 Double_t theta = h2RmsOnThetaScanVsThetaCut->GetXaxis()->GetBinCenter(i_thetaScan+1)*TMath::Pi()/180.0;
                 ImHu = (ahit->HuCG)*TMath::Cos(theta) + (ahit->HvCG)*TMath::Sin(theta);
 
                 Mean_array[i_thetaScan][i_thetaCut] += ImHu;
                 RMS_array[i_thetaScan][i_thetaCut] += TMath::Power(ImHu,2);
-  
+
               } // end Loop over theta
-   
+
             } // end cut over theta_init
-          
+
           } // end i_thetaCut
-            
+
         } // end if
-               
+
       } // end loop on hits
-    
+
       if(MimoDebug) Info("MimosaImaging","End loop on hits, found %d good hits in event %d (total %d good hits)", Ngoodhitsinevent, ievt, Ngoodhits);
-      
+
       if ( ievt/10000.0 == int(ievt/10000.0) && ievt != 0 ) cout << "Number of studied events: " << ievt << endl;
-    
+
     } // end of Main loop over event
-    
-  
+
+
     //---------------------------------------------------------------
     // Get the best value of theta to study data in the frame of the bands.
     // Plot of the RMS vs theta.
     Double_t minRMS = 1.0e20;
     minTheta = -999;
-  
+
     for (Int_t i_thetaCut=0; i_thetaCut<Nbin_ThetaCut; i_thetaCut++) {
-      for (Int_t i_thetaScan=0; i_thetaScan<Nbin_ThetaScan; i_thetaScan++) {  
-        
+      for (Int_t i_thetaScan=0; i_thetaScan<Nbin_ThetaScan; i_thetaScan++) {
+
         Mean_array[i_thetaScan][i_thetaCut] /= numberOfHitsInCut[i_thetaCut];
         RMS_array[i_thetaScan][i_thetaCut] /= numberOfHitsInCut[i_thetaCut];
         RMS_array[i_thetaScan][i_thetaCut] -= TMath::Power(Mean_array[i_thetaScan][i_thetaCut],2);
         RMS_array[i_thetaScan][i_thetaCut] = TMath::Sqrt(RMS_array[i_thetaScan][i_thetaCut]);
-    
+
         h2RmsOnThetaScanVsThetaCut->SetBinContent(i_thetaScan+1, i_thetaCut+1, RMS_array[i_thetaScan][i_thetaCut]);
-        
+
         if (RMS_array[i_thetaScan][i_thetaCut] < minRMS) {
           minRMS = RMS_array[i_thetaScan][i_thetaCut];
           minTheta = h2RmsOnThetaScanVsThetaCut->GetXaxis()->GetBinCenter(i_thetaScan+1);
@@ -5709,16 +5709,16 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
     }
 
     cout << "\n*------------------------------------*" << endl;
-    cout << "Theta min = " << minTheta << "    RMS min = " << minRMS << endl; 
-    cout << "*------------------------------------*" << endl;  
-    
+    cout << "Theta min = " << minTheta << "    RMS min = " << minRMS << endl;
+    cout << "*------------------------------------*" << endl;
+
   } // end if FirstLoop
-  
+
   // **********************************************************************************
   // ***************************** END OF FIRST MAIN LOOP *****************************
   // **********************************************************************************
-  
-  
+
+
   // **********************************************************************************
   // ******************************* SECOND MAIN LOOP *********************************
   // Goal: data projection on the frame of the bands, now using the best theta value.
@@ -5738,8 +5738,8 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
     cout << "\nThe input FirstLoop is set to false." << endl;
     cout << "The first main loop is skipped:  theta is set to " << minTheta << " degree" << endl;
   }
-   
-  //-- Align bins with pixels  
+
+  //-- Align bins with pixels
   float pitchImHu = 0, pitchImHv = 0;
   float minThetaRad = minTheta*TMath::DegToRad();
   float Theta1      = TMath::ATan(PixelSizeV/PixelSizeU);
@@ -5758,9 +5758,9 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
     pitchImHu = -PixelSizeU/TMath::Cos(TMath::Abs(minThetaRad));
     pitchImHv = -PixelSizeV/TMath::Cos(TMath::Abs(minThetaRad));
   }
-  
-  cout << "\nIntiate: geomUmin = "<< geomUmin << "     geomUmax = " << geomUmax << endl;  
-  
+
+  cout << "\nIntiate: geomUmin = "<< geomUmin << "     geomUmax = " << geomUmax << endl;
+
   float divisionU    = geomUmax / pitchImHu;
   int   intdivisionU = int(divisionU);
   if (TMath::Abs(divisionU - intdivisionU) > 1.0e-6 ) {
@@ -5775,11 +5775,11 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
     else if(divisionU > 0) geomUmin = (int(geomUmin/pitchImHu) + 0)*pitchImHu;
     else if(divisionU <-1) geomUmin = (int(geomUmin/pitchImHu) - 1)*pitchImHu;
   }
-  
+
   cout << "New: geomUmin = "<< geomUmin << "     geomUmax = " << geomUmax << endl;
   cout << "PitchU = "<< PixelSizeU << "     PitchEffective = " << pitchImHu << endl;
 
-  cout << "\nIntiate: geomVmin = "<< geomVmin << "     geomVmax = " << geomVmax << endl;  
+  cout << "\nIntiate: geomVmin = "<< geomVmin << "     geomVmax = " << geomVmax << endl;
 
   Double_t divisionV = geomVmax / pitchImHv;
   Int_t intdivisionV = int(divisionV);
@@ -5794,11 +5794,11 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
     if(divisionV >= -1 && divisionV <= 0) geomVmin = -1.0*pitchImHv;
     else if(divisionV > 0) geomVmin = (int(geomVmin/pitchImHv) + 0)*pitchImHv;
     else if(divisionV <-1) geomVmin = (int(geomVmin/pitchImHv) - 1)*pitchImHv;
-  }  
-  
+  }
+
   cout << "New: geomVmin = "<< geomVmin << "     geomVmax = " << geomVmax << endl;
   cout << "PitchU = "<< PixelSizeU << "     PitchEffective = " << pitchImHv << endl;
-    
+
   int NofEffectivePitchU = int((geomUmax-geomUmin)/pitchImHu);
   if(TMath::Abs(((geomUmax-geomUmin)/NofEffectivePitchU) - pitchImHu) > 1.0e-3) {
     if(((geomUmax-geomUmin)/NofEffectivePitchU) - pitchImHu > 0)      NofEffectivePitchU += 1;
@@ -5833,11 +5833,11 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   h2DXprimeVsYprime->GetZaxis()->CenterTitle(true);
   h2DXprimeVsYprime->SetLineColor(kBlue);
   h2DXprimeVsYprime->SetLineWidth(2);
-  
+
   h1ProjectionOnX->SetBins( NofEffectivePitchU, geomUmin, geomUmax);
   h1ProjectionOnY->SetBins( NofEffectivePitchV, geomVmin, geomVmax);
   h2dgoodhits->SetBins(NofPixelInRaw, -NofPixelInRaw*PixelSizeU/2.0,    NofPixelInRaw*PixelSizeU/2.0,
-                       NofPixelInColumn, -NofPixelInColumn*PixelSizeV/2.0, NofPixelInColumn*PixelSizeV/2.0);  
+                       NofPixelInColumn, -NofPixelInColumn*PixelSizeV/2.0, NofPixelInColumn*PixelSizeV/2.0);
   for (Int_t i=0; i<4; i++) {
     h2GoodHitsMult[i]->SetBins( NofPixelInRaw, -NofPixelInRaw*PixelSizeU/2.0,    NofPixelInRaw*PixelSizeU/2.0,
                                 NofPixelInColumn, -NofPixelInColumn*PixelSizeV/2.0, NofPixelInColumn*PixelSizeV/2.0);
@@ -5847,79 +5847,79 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
 
   cout << "\n*----------------* SECOND MAIN LOOP *----------------*" << endl;
   cout << "*-     Determination of the spatial resolution      -*\n" << endl;
-  
+
   NbOfHits = 0;
   totalNOfHits = 0;
 
   TString TheOutFileName = TString(fWorkingDirectory) + TString("file_out_91893.out");
   std::ofstream file_out(TheOutFileName.Data());
   char ytitle[100];
-  
+
   for ( Int_t ievt=MinEvent ; ievt<=MaxEvent ; ievt++ ) { // Main loop over event
-    
+
     if(MimoDebug) Info("MimosaImaging","Reading event %d",ievt);
-    
+
     t->GetEvent(ievt);
-    
+
     if(MimoDebug>1) cout << " getting the hits" << endl;
     TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
     NbOfHits   = Hits->GetLast()+1; // total # hits over all planes
-    
+
     numberOfHitsInEvent = 0;
     seedList = new Int_t[NbOfHits];
-    
+
     //---------------------------------------------------------------
     // Loop over hits BUT keep only the ones in the right plane
     if(MimoDebug>1) cout << " Looping over " << NbOfHits << " hits" << endl;
     for (Int_t iHit=0 ; iHit<NbOfHits ; iHit++){ // loop on hits
-    
+
       DAuthenticHit *ahit = (DAuthenticHit*)Hits->At(iHit);
       if( ahit->Hpk != ThePlaneNumber ) continue; // select only hits in DUT
-      
+
       seedList[iHit] = -1; //init seed index (hit not selected will keep this index)
-      
-      
+
+
       if ( fIfImaging ) {
-          
+
         ImHu = (ahit->HuCG)*TMath::Cos(minTheta*TMath::Pi()/180.0) + (ahit->HvCG)*TMath::Sin(minTheta*TMath::Pi()/180.0);
         ImHv = -(ahit->HuCG)*TMath::Sin(minTheta*TMath::Pi()/180.0) + (ahit->HvCG)*TMath::Cos(minTheta*TMath::Pi()/180.0);
-        
-        
+
+
         if ( (ImHu >= geomUmin) && (ImHu <= geomUmax) && (ImHv >= geomVmin) && (ImHv <= geomVmax) ) { // cut over the region of interest
-          
-          
+
+
           if( ( ahit->Hq0 >= CUT_Q_seed ) // JB 2013/11/08
             && ( MinNofPixelsInCluster <= ahit->HNNS && ahit->HNNS <= MaxNofPixelsInCluster ) // JB 2013/09/11
-            && ( CUT_MinSeedIndex==CUT_MaxSeedIndex || 
+            && ( CUT_MinSeedIndex==CUT_MaxSeedIndex ||
                 (CUT_MinSeedIndex<=ahit->Hsk && ahit->Hsk<=CUT_MaxSeedIndex) ) // allows to select an index range for the seed pixel (ineffective if minIndex==maxIndex), JB 2013/08/21
-            && ( CUT_MinSeedCol==CUT_MaxSeedCol || 
+            && ( CUT_MinSeedCol==CUT_MaxSeedCol ||
                 (CUT_MinSeedCol<=(ahit->Hsk%NofPixelInRaw) && (ahit->Hsk%NofPixelInRaw)<=CUT_MaxSeedCol) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
-            && ( CUT_MinSeedRow==CUT_MaxSeedRow || 
+            && ( CUT_MinSeedRow==CUT_MaxSeedRow ||
                 (CUT_MinSeedRow<=(ahit->Hsk/NofPixelInRaw) && (ahit->Hsk/NofPixelInRaw)<=CUT_MaxSeedRow) ) // allows to select an col range for the seed pixel (ineffective if minCol==maxCol), JB 2013/08/22
             && ( CUT_MinNbOfHits<=NbOfHits && NbOfHits<=CUT_MaxNbOfHits )
             && ( ahit->Hqc >= CUT_Q_cluster ) // JB 2014/01/21
           ) {
-          
+
             seedList[iHit] = IndexofPix[0];
             NofPixelsInCluster = (ahit->HNNS < MaxNofPixelsInCluster)?ahit->HNNS:MaxNofPixelsInCluster;
-            
-            
+
+
             ClusterCharges_compute( ahit );
             ClusterPosition_compute( ahit, alignement );
-            
-            
+
+
             BinarySpecific_HitsOnly_fill( ahit );
             BinarySpecific_fill( ahit );
             ClusterCharges_fill( ahit, ievt );
             ClusterPosition_fill( ahit );
             ClusterShape_fill( ahit );
-            
+
             Int_t multiplicity = ahit->HNNS;
             GoodHit_Fill( ahit );
             ProjectionImaging_Fill( ahit, minTheta );
             totalNOfHits++;
             numberOfHitsInEvent++;
-            
+
             TString command;
             sprintf(ytitle,"%.10f",ImHu);
             command  = TString(ytitle) + TString("    ");
@@ -5928,23 +5928,23 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
             sprintf(ytitle,"%d",multiplicity);
             command += TString(ytitle);
             file_out << command.Data() << std::endl;
-            
+
 
 	    h2DXprimeVsYprime->Fill(ImHu,ImHv);
-            
+
           } // end CUTS
-          
+
         } // end cut over the region of interest
 
       } // end ifImaging
 
     } // end loop on hits
-    
+
     hnGOODhit->Fill( numberOfHitsInEvent );
 
     delete seedList;
     if ( ievt/10000.0 == int(ievt/10000.0) && ievt != 0 ) cout << "Number of studied events: " << ievt << endl;
-    
+
   } // end Second main loop over event
 
   file_out.close();
@@ -5956,12 +5956,12 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   ClusterShape_end();
   BinarySpecific_end();
   ProjectionImaging_end( totalNOfHits );
-  
+
   // **********************************************************************************
   // **************************** END OF SECOND MAIN LOOP *****************************
-  // **********************************************************************************  
-  
-  
+  // **********************************************************************************
+
+
   // **********************************************************************************
   // ****************************** THIRD MAIN PART ***********************************
   // Goal: fit of the data projection on x, depending on different multiplicities
@@ -5969,7 +5969,7 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
   // **********************************************************************************
   fMimosaImagingDone=kTRUE;
   fClearDone=kFALSE;
-  
+
   PreparePost();
-  CheckImaging( minTheta, Npeak, S, W, FirstLoop, chooseFit );   
+  CheckImaging( minTheta, Npeak, S, W, FirstLoop, chooseFit );
 }

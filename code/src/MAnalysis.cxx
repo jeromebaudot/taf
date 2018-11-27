@@ -1,5 +1,5 @@
 // @(#)maf/maf:$Name:  $:$Id: MAnalysis.cxx v.1 2005/10/02 18:03:46 sha Exp $
-// Author: A. Shabetai 
+// Author: A. Shabetai
 // Last modified: JB 2009/07/20
 // Last modified: JB 2009/07/22
 // Last modified: JB 2009/08/26 MimosaPro clean-up
@@ -14,7 +14,7 @@
 // Last modified: JB 2011/07/01 MimosaFake
 // Last modified: JB 2011/07/07 to localize path names
 // Last Modified: JB 2011/07/21 introduce fSession member pointer
-// Last Modified: SS 2011/10/26 correction of the resolution calculations 
+// Last Modified: SS 2011/10/26 correction of the resolution calculations
 // Last Modified: SS 2011/11/04 new methods Efficiency_
 // Last Modified: SS 2011/11/23 new methods HotPixel_
 // Last Modified: JB 2011/11/25 AlignMimosa
@@ -38,8 +38,8 @@
 // Last Modified: JB 2014/01/21 GetParameters
 // Last Modified: JB 2014/02/10 OpenInputFile, GetAlignment, IsPlaneInLadder
 // Last Modified: VR 2014/06/29 Add GetRax() method
-// Last Modified: VR 2014/06/30 Replace DTDIR by fWorkingDirectory in some methods 
-// Last Modified: JH 2014/07/21 ProjectionImaging_init, ProjectionImaging_Fill 
+// Last Modified: VR 2014/06/30 Replace DTDIR by fWorkingDirectory in some methods
+// Last Modified: JH 2014/07/21 ProjectionImaging_init, ProjectionImaging_Fill
 // Last Modified: JB 2015/01/28 GetParameters
 
 
@@ -49,7 +49,7 @@
 //   which are called from the main analysis methods
 //   like MimosaPro, MimosaCalibration, MimosaMiniVector, ...
 //
-//                                                         //   
+//                                                         //
 ////////////////////////////////////////////////////////////
 
 #ifndef _MimosaAnalysis_included_
@@ -57,13 +57,13 @@
 #endif
 #include "DSetup.h"
 
-ClassImp(MimosaAnalysis) 
+ClassImp(MimosaAnalysis)
 
 //______________________________________________________________________________
 //
 MimosaAnalysis* MimosaAnalysis::fgInstance = 0; // returns pointer to global object
 
-MRaw* MimosaAnalysis::GetRaw() 
+MRaw* MimosaAnalysis::GetRaw()
 {
 
   //returns a pointer to Raw data analysis methods
@@ -72,7 +72,7 @@ MRaw* MimosaAnalysis::GetRaw()
   return  MRaw::InstanceRaw( fSession); // JB 2011/07/21 to pass session pointer
 }
 
-MRax* MimosaAnalysis::GetRax() 
+MRax* MimosaAnalysis::GetRax()
 {
   //returns a pointer to Rax data analysis methods
   // VR 2014/06/29
@@ -83,11 +83,11 @@ MRax* MimosaAnalysis::GetRax()
 
 //______________________________________________________________________________
 //
-void MimosaAnalysis::Clear(Option_t* /*option = ""*/) 
+void MimosaAnalysis::Clear(Option_t* /*option = ""*/)
 {
   // Clears all histos and canvases
 
-  MHist::Clear();  
+  MHist::Clear();
 
   fClearDone=kTRUE;
   fMimosaDone=kFALSE;
@@ -99,21 +99,21 @@ void MimosaAnalysis::Clear(Option_t* /*option = ""*/)
   fMimosaImagingDone=kFALSE;
   fIfMCGeneration = kFALSE;
 }
-    
+
 //______________________________________________________________________________
 //
-MimosaAnalysis::MimosaAnalysis() 
+MimosaAnalysis::MimosaAnalysis()
 {
-  
+
   // MimosaAnalysis default constructor
   //
   // Modified: JB 2014/01/11 new flags for analysis purpose
-    
+
   //ROOTDIR = gSystem->Getenv("ROOTDIR"); // suppressed by JB 2011/04/12
-  
+
   sprintf( RootFile, "");
   theCorFile = 0;
-  
+
   fSession = NULL;
   //MimoDebug = fSession->GetDebug();
   MimoDebug = 0;
@@ -132,7 +132,7 @@ MimosaAnalysis::MimosaAnalysis()
   fMimosaImagingDone=kFALSE;
   fIfMCGeneration=kFALSE;
   fClearDone=kTRUE;
-  
+
   // Flags to control analysis purpose, JB 2014/01/11
   // Later, might be initialized with DSetup::GetAnalysisPar().AnalysisGoal
   fIfReferenceTrack = kFALSE;
@@ -141,38 +141,38 @@ MimosaAnalysis::MimosaAnalysis()
   fIfMiniVector = kFALSE;
   fIfVertex = kFALSE;
   fIfFake = kFALSE;
-  
+
   // Cuts for hit rate per pixels are initially set to zero,
   // they are re-initialized later with the HotPixel_init() or SetCut_Max/MinHitRatePerPixel() methods
   CUT_MaxHitRatePerPixel = 0.; //cdritsa: set to 5; if the pixel is a seed too many times in the run, remove the hit.
   CUT_MinHitRatePerPixel = 0.; // you can also remove pixels with low occupancy for testing
-  
+
   if (fgInstance)
 	  Warning("MimosaAnalysis", "object already instantiated");
-  else { 
+  else {
 	  fgInstance = this;
 	  //gTAF = fgInstance;
   }
-  
+
   //Initializing the pointers declared in MHist.h
-  saved = NULL; 
-  dir   = NULL;  
+  saved = NULL;
+  dir   = NULL;
 
   hdummy = NULL;
-  
+
   //------------------------------------------------------------------------------
   //----- general control
   //------------------------------------------------------------------------------
   selection = NULL;
   MainCanvas = NULL;
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // Charges, noise, S/N, pixel multiplicity plots for SELECTED clusters
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
 
   // seed
   hChargeInSeed   = NULL;
-  hRealTrackNoise = NULL; 
+  hRealTrackNoise = NULL;
   hsn             = NULL;
   hSNReal         = NULL;
 
@@ -184,9 +184,9 @@ MimosaAnalysis::MimosaAnalysis()
   // all pixels
   hChargeInCluster = NULL;
   for(int i=0;i<MaxNofPixelsInClusterMax;i++) {
-    hqcn[i]     = NULL; 
-    hqcngeom[i] = NULL; 
-    hindivq[i]  = NULL; 
+    hqcn[i]     = NULL;
+    hqcngeom[i] = NULL;
+    hindivq[i]  = NULL;
     hsnn[i]     = NULL;
   }
 
@@ -200,7 +200,7 @@ MimosaAnalysis::MimosaAnalysis()
   hChargeOrder8 = NULL;
   hChargeOrder9 = NULL;
 
-  //TH2F *hChargeCor_1_2; 
+  //TH2F *hChargeCor_1_2;
   //TH2F *hChargeCor_1_3 ;
   //TH2F *hChargeCor_1_4 ;
   //TH2F *hChargeCor_2_3 ;
@@ -218,7 +218,7 @@ MimosaAnalysis::MimosaAnalysis()
   hQ3x345r   = NULL;
   hQ3x327r   = NULL;
 
-  // cluster wise 
+  // cluster wise
   hsnc = NULL;
   hChargeSum_4 = NULL;
   hqc_c = NULL;
@@ -245,7 +245,7 @@ MimosaAnalysis::MimosaAnalysis()
   hDuplicate_DeltaTS = NULL;
   hDuplicate_npixc = NULL;
   hDuplicate_npixc_vs_TrkDistToDiode = NULL;
-  
+
   static const Int_t jpixmax=8;
   for(int i=0;i<jpixmax;i++) {
     hsn_pix_0[i] = NULL;
@@ -305,13 +305,13 @@ MimosaAnalysis::MimosaAnalysis()
   //--- efficiency
   // MG 2010/06/04
   //------------------------------------------------------------------------------
-  
+
   effimap = NULL;
   effi_vs_TrkHitDist = NULL;
   effiCorr_vs_TrkHitDist = NULL;
   goodtracks = NULL;
   TrkInMimo = NULL;
-  
+
   //------------------------------------------------------------------------------
   //--- hit position
   //------------------------------------------------------------------------------
@@ -368,7 +368,7 @@ MimosaAnalysis::MimosaAnalysis()
     hVcorTvInPix = NULL;
     huCGtuInPix4 = NULL;
     huCG2x2tuInPix = NULL;
-    hvCG2x2tvInPix = NULL; 
+    hvCG2x2tvInPix = NULL;
     hEta2x2tu1L = NULL;
     hEta2x2tv1L = NULL;
     hEta2x2tu2L = NULL;
@@ -411,11 +411,11 @@ MimosaAnalysis::MimosaAnalysis()
     h2dgoodhits = NULL;
     h2dmatchedhits = NULL;
     h2DpictureMatched = NULL;
-    hEta2x2vsInd = NULL;  
-    hChargeVsPosition = NULL; 
+    hEta2x2vsInd = NULL;
+    hChargeVsPosition = NULL;
     hChargeVsDistance = NULL;
     hNorm = NULL;
-    hAllHitsInPixel = NULL; 
+    hAllHitsInPixel = NULL;
     h1RmsOnTheta = NULL;
     h2RmsOnThetaScanVsThetaCut = NULL;
     h1ProjectionOnX = NULL;
@@ -443,15 +443,15 @@ MimosaAnalysis::MimosaAnalysis()
     tuv = NULL;
     tuv1 = NULL;
 
-    hhu = NULL;   
+    hhu = NULL;
     hhv = NULL;
-    hhx = NULL;   
+    hhx = NULL;
     hhy = NULL;
     hhuS = NULL;
-    hhvS = NULL;  
-    htu = NULL;    
+    hhvS = NULL;
+    htu = NULL;
     htv = NULL;
-    //---ab 
+    //---ab
     htuhtv = NULL;
     hGOODqcel = NULL;
 
@@ -465,7 +465,7 @@ MimosaAnalysis::MimosaAnalysis()
     hnpix = NULL;
     hnpix_nc = NULL;
 
-    FalseHitMap = NULL; 
+    FalseHitMap = NULL;
     hClusterChargeProfile = NULL;
     hClusterChargeNorm = NULL;
     for(int i=0;i<2;i++) {
@@ -481,13 +481,13 @@ MimosaAnalysis::MimosaAnalysis()
     duvall = NULL;
 
     hCDSvar = NULL;
-    CDSVarvsTime = NULL; 
+    CDSVarvsTime = NULL;
     dtime = NULL;
 
   //------------------------------------------------------------------------------
   //----- Spatial Resolution
   //------------------------------------------------------------------------------
-    hAllHuvsAllTu1 = NULL;  
+    hAllHuvsAllTu1 = NULL;
     hAllHvvsAllTv1 = NULL;
     huCGtu1 = NULL;
     hvCGtv1 = NULL;
@@ -500,7 +500,7 @@ MimosaAnalysis::MimosaAnalysis()
     hEffic_vs_Dist_Trck_Diode = NULL;
     hDist_Trck_Diode_Asso_vs_Mult = NULL;
     hnpixc_vs_TrkDistToDiode = NULL;
-    
+
     huCGwidth_vs_Mult = NULL;
     hvCGwidth_vs_Mult = NULL;
     huCGmean_vs_Mult = NULL;
@@ -535,41 +535,41 @@ MimosaAnalysis::MimosaAnalysis()
     leg_CGWidth_vs_Mult = NULL;
     cresfit_CGWidth_vs_TracksPerEvent = NULL;
 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     // Fake rate study
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     hNhitperpixel = NULL;
     hNhitRateperpixel = NULL;
     hPixelsPerFakeRate = NULL;
 
     cfake = NULL;
 
-    //------------------------------------------------------------------------------ 
-    // tracks properties and chi2  
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
+    // tracks properties and chi2
+    //------------------------------------------------------------------------------
 
     hNTracksPerEvent = NULL;
     hNTracksPerEventievt = NULL;
     hNGoodGeomTracksPerEvent = NULL;
-  
+
     hAllTvTu = NULL;
     hAllTu = NULL;
     hAllTv = NULL;
     hGoodChi2TvTu = NULL;
-    hGoodChi2Tu = NULL; 
+    hGoodChi2Tu = NULL;
     hGoodChi2Tv = NULL;
     hGoodChi2Tx = NULL;
     hGoodChi2Ty = NULL;
     hGoodChi2AngleXZ = NULL;
     hGoodChi2AngleYZ = NULL;
 
-    hchi2_c = NULL;  
+    hchi2_c = NULL;
     hchi2_nc = NULL;
     hchi2 = NULL;
 
-    hTrackToClusterMinDistance = NULL; 
-    hTrackTo2ndclosestClusterDistance = NULL; 
-    hWrongAssociationProba = NULL; 
+    hTrackToClusterMinDistance = NULL;
+    hTrackTo2ndclosestClusterDistance = NULL;
+    hWrongAssociationProba = NULL;
     hMinDistance_vs_2ndDistance = NULL;
 
     hNhitsPerTrack_all = NULL;
@@ -587,12 +587,12 @@ MimosaAnalysis::MimosaAnalysis()
       hRef_Tud_vs_Tk1[i] = NULL;
     }
 
-    //Char_t titreref[100] ; 
-    //Char_t nomRef[50]; 
+    //Char_t titreref[100] ;
+    //Char_t nomRef[50];
 
-    //------------------------------------------------------------------------------ 
-    // Good/All hits. 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
+    // Good/All hits.
+    //------------------------------------------------------------------------------
     hnhitievt = NULL;
     hnahitievt = NULL;
     hnGOODhit = NULL;
@@ -611,7 +611,7 @@ MimosaAnalysis::MimosaAnalysis()
 
     hAllS2N = NULL;
     hallhitSN = NULL;
-    hallSNneighbour = NULL; 
+    hallSNneighbour = NULL;
     hgoodSNneighbour = NULL;
     hgoodSN_vs_SNN = NULL;
     hallSN_vs_SNN = NULL;
@@ -625,9 +625,9 @@ MimosaAnalysis::MimosaAnalysis()
 
     hSN_vs_SNNReal = NULL;
 
-    //------------------------------------------------------------------------------ 
-    // Charge by ordered pixels Histos. 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
+    // Charge by ordered pixels Histos.
+    //------------------------------------------------------------------------------
     //-------------
     hGOODChargeOrder1 = NULL;
     hGOODChargeOrder2 = NULL;
@@ -643,29 +643,29 @@ MimosaAnalysis::MimosaAnalysis()
     hGOODChargeCor_1_4 = NULL;
     hGOODChargeCor_2_3 = NULL;
     hGOODChargeSum_4 = NULL;
-    hGOODChargeRap_1_over_2 = NULL; 
+    hGOODChargeRap_1_over_2 = NULL;
     hGOODChargeRap_1_over_3 = NULL;
     hGOODChargeRap_1_over_4 = NULL;
     hGOODChargeRap_2_over_3 = NULL;
-   
+
   //------------------------------------------------------------------------------
   //----- ?
   //------------------------------------------------------------------------------
 
-  // histograms needed for charge distribution function: 
-  hS2N2All = NULL; 
+  // histograms needed for charge distribution function:
+  hS2N2All = NULL;
   hS2N2nd = NULL;
   hS2N2RH = NULL;
   hPedestal = NULL;
 
-  //----ALL HITS: Signal / noise seed vs Signal / noise in the pixel range [i-j]  
+  //----ALL HITS: Signal / noise seed vs Signal / noise in the pixel range [i-j]
   for(int i=0;i<jpixmax;i++) {
     hsnALL_seed_vs_pix_0[i] = NULL;
     hsnALL_seed_vs_pix_1[i] = NULL;
   }
   hChargeIntegral1 = NULL;
   hChargeNorm1 = NULL;
-  hChargeIntegral2 = NULL; 
+  hChargeIntegral2 = NULL;
   hChargeNorm2 = NULL;
   hChargeIntegral3 = NULL;
   hChargeNorm3 = NULL;
@@ -683,18 +683,18 @@ MimosaAnalysis::MimosaAnalysis()
     ProfHOM_ResU_tu = NULL;
     ProfHOM_ResV_tv = NULL;
 
-    hHOM_modUCG_modtu = NULL;	    
-    hHOM_modVCG_modtv = NULL; 	    
+    hHOM_modUCG_modtu = NULL;
+    hHOM_modVCG_modtv = NULL;
     hHOM_modUeta3_modtu = NULL;
     hHOM_modVeta3_modtv = NULL;
-    hHOM_modUeta3_realtu = NULL;	    
-    hHOM_modVeta3_realtv = NULL; 	    
-    hHOM_modUCG_realtu = NULL;	    
-    hHOM_modVCG_realtv = NULL;	    
-    hHOM_modUeta3_Eta3U = NULL;	    
-    hHOM_modVeta3_Eta3V = NULL;	    
-    hHOM_modUeta3_modVeta3 = NULL;  
-    hHOM_modUCG_modVCG = NULL;         
+    hHOM_modUeta3_realtu = NULL;
+    hHOM_modVeta3_realtv = NULL;
+    hHOM_modUCG_realtu = NULL;
+    hHOM_modVCG_realtv = NULL;
+    hHOM_modUeta3_Eta3U = NULL;
+    hHOM_modVeta3_Eta3V = NULL;
+    hHOM_modUeta3_modVeta3 = NULL;
+    hHOM_modUCG_modVCG = NULL;
     hHOM_modUeta3_modUCG = NULL;
     hHOM_modVeta3_modVCG = NULL;
 
@@ -732,25 +732,25 @@ MimosaAnalysis::MimosaAnalysis()
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown = NULL;
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown = NULL;
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown = NULL;
-    
+
   hDistVSeedOtherOldCalc = NULL;
-  hDistVSeedOtherNewCalc = NULL;  
-  
+  hDistVSeedOtherNewCalc = NULL;
+
   h2dCharge_Charge_DiodePosition_Track = NULL;
   h2dCharge_Charge_DiodePosition_CluSize = NULL;
-  
+
   hNpixInClu = NULL;
   hQpixInClu = NULL;
-  
+
   ProfhGOODCharge_Charge_DiodePositionSimpDist = NULL;
-  
+
   hHOM_Charge_diodedist3D = NULL;
   hHOM_Charge2_diodedist3D = NULL;
   hHOM_Charge4_diodedist3D = NULL;
   hHOM_Charge9_diodedist3D = NULL;
-  hHOM_Charge25_diodedist3D = NULL;  
+  hHOM_Charge25_diodedist3D = NULL;
     // end CLM 2013/01/23
-  
+
     //TProfile *ProfHOM_Charge_diodedist_alg = NULL;  // JB 2010/03/11
     //TProfile *ProfHOM_Charge_diodedist_alg_v = NULL;  //clm 2013/01/23
     //TProfile *ProfHOM_Charge_diodedist_alg_u = NULL;  //clm 2013/01/23
@@ -778,10 +778,10 @@ MimosaAnalysis::MimosaAnalysis()
     hHOM_DV_Nevent = NULL;
     hHOM_modtu_Nevent = NULL;
     hHOM_modtv_Nevent = NULL;
-    
+
     hHOM_modUCG_Nevent = NULL;
     hHOM_modVCG_Nevent = NULL;
- 
+
     hHOM_ResEta25_U = NULL;
     hHOM_ResEta25_V = NULL;
 
@@ -839,9 +839,9 @@ MimosaAnalysis::MimosaAnalysis()
     projL = NULL;
     projC = NULL;
 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     // Binary output histos.
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     hBinary_test = NULL;
     hBinary_NumberOf_1_ALL = NULL;
     hBinary_NumberOf_1_goodhit = NULL;
@@ -850,9 +850,9 @@ MimosaAnalysis::MimosaAnalysis()
     hBinary_NhitRateperpixel_submatrix = NULL;
 
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MiniVectors Histograms  = NULL; NCS , 2010/01/21
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   hDiffPosX = NULL; // NCS 210110
   hDiffPosY = NULL;// NCS 210110
   hDiffAngleX = NULL; // NCS 210110
@@ -868,13 +868,13 @@ MimosaAnalysis::MimosaAnalysis()
   hDiffAngleXg1g1 = NULL; // JB 2011/11/01
   hDiffAngleYg1g1 = NULL;
   hxtxPL3  = NULL; // NCS 260110 not CG position only Hu Hv
-  hytyPL3  = NULL; // NCS 260110 
-  hxtxPL4  = NULL; // NCS 260110 
-  hytyPL4  = NULL; // NCS 260110 
+  hytyPL3  = NULL; // NCS 260110
+  hxtxPL4  = NULL; // NCS 260110
+  hytyPL4  = NULL; // NCS 260110
   hutuPL3  = NULL; // NCS 260110 not CG position only Hu Hv
-  hvtvPL3  = NULL; // NCS 260110 
-  hutuPL4  = NULL; // NCS 260110 
-  hvtvPL4  = NULL; // NCS 260110 
+  hvtvPL3  = NULL; // NCS 260110
+  hutuPL4  = NULL; // NCS 260110
+  hvtvPL4  = NULL; // NCS 260110
   //TH2F* hdiffydiffx = NULL; // JB 2011/11/01
   //TH2F* hdiffydiffx11 = NULL; // JB 2011/11/01
   //TH2F* hdiffydiffx12 = NULL; // JB 2011/11/01
@@ -882,9 +882,9 @@ MimosaAnalysis::MimosaAnalysis()
   //TH2F* hdiffydiffx22 = NULL; // JB 2011/11/01
   //TH2F* hdiffydiffxg1g1 = NULL; // JB 2011/11/01
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MimosaVertexFinder Histograms  = NULL; LC , 2012/09/06
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
 
   hVertexPosX = NULL;
   hVertexPosY = NULL;
@@ -898,9 +898,9 @@ MimosaAnalysis::MimosaAnalysis()
   cMiniVec = NULL;
   cMiniVec1 = NULL;
 
-  //------------------------------------------------------------------------------ 
-  // canvas 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
+  // canvas
+  //------------------------------------------------------------------------------
   c2 = NULL;
   casym = NULL;
   ceffi = NULL;
@@ -919,7 +919,7 @@ MimosaAnalysis::MimosaAnalysis()
   c7 = NULL;
 
   for(int i=0;i<numcanvasSN;i++)       cSN[i] = NULL; //!
-  for(int i=0;i<numcanvas;i++)         cRef[i] = NULL;   //!   
+  for(int i=0;i<numcanvas;i++)         cRef[i] = NULL;   //!
   for(int i=0;i<numcanvasOptimize;i++) cOptimize[i] = NULL; //!
 
   cM8 = NULL;
@@ -937,11 +937,11 @@ MimosaAnalysis::MimosaAnalysis()
   grevt  = NULL;
   ChargeSpread = NULL;
 
-  bar2 = NULL; 
+  bar2 = NULL;
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MC Geneation for telescope resolution evaluation
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   hTrackChi2_MC = NULL;
   hTrackSlopeX_MC = NULL;
   hTrackSlopeY_MC = NULL;
@@ -983,30 +983,30 @@ MimosaAnalysis::MimosaAnalysis()
   }
   leg_TelResMC = NULL;
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // User histograms
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   cUser = NULL;
   hUserHitCorrelationLine = NULL;
   hUserHitCorrelationCol = NULL;
-  
+
   NPages = 0;
-  
+
 }
 
 //______________________________________________________________________________
 //
 void MimosaAnalysis::MergingPDFFiles(void)
 {
-  
+
   char fOutName[200];
   sprintf(fOutName,"run%dPl%d_ClCharge",RunNumber,ThePlaneNumber);
   sprintf(fOutName,"%s",fTool.LocalizeDirName(fOutName));
   TString EPSName_final = TString(CreateGlobalResultDir()) + TString(fOutName) + TString(".pdf");
- 
+
   TString command;
   TString ListOfFiles("");
-  
+
   //cout << endl;
   for(int i=0;i<NPages;i++) {
     TString TmpFileName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(i+1) + (".pdf");
@@ -1014,7 +1014,7 @@ void MimosaAnalysis::MergingPDFFiles(void)
     ListOfFiles += TmpFileName + TString("   ");
   }
   //cout << endl;
-  
+
   //cout << endl;
   command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_final + TString(" -dBATCH ");
   command += ListOfFiles;
@@ -1026,11 +1026,11 @@ void MimosaAnalysis::MergingPDFFiles(void)
   gSystem->Exec(command.Data());
   //cout << endl;
 
-  
+
 }
 //______________________________________________________________________________
 //
-Int_t MimosaAnalysis::OpenInputFile() 
+Int_t MimosaAnalysis::OpenInputFile()
 {
   // Open the input file containing the TTree:
   // returns the number of entries in the tree
@@ -1046,21 +1046,21 @@ Int_t MimosaAnalysis::OpenInputFile()
 
   // If RootFile not yet define, use a number to set it
   if( strlen(RootFile)==0 && fileNumber ) {
-    
+
     sprintf(RootFile,"%s/run%d_0%d.root",(const char*)fSession->GetSummaryFilePath(),fSession->GetRunNumber(),GetFileNumber());
     sprintf(RootFile,"%s", fTool.LocalizeDirName( RootFile)); // JB 2011/07/07
   }
-  
+
   // Open the file if existing
   if( strlen(RootFile)!=0 ) {
-    TFile *fileInputTree = new TFile(RootFile); 
+    TFile *fileInputTree = new TFile(RootFile);
     Info("MimosaAnalysis","Input file %s opened", RootFile);
-    
+
     t = (TTree*) fileInputTree->Get("T");
     Evt = new DEvent() ;
     branch = t->GetBranch("fEvent");
     branch->SetAddress(&Evt);
-    
+
     Nevt = (Int_t)t->GetEntries();
     if( Nevt<=0) {
       Error("MimosaPro"," The input file contains an incorrect number of events %d!",Nevt);
@@ -1071,18 +1071,18 @@ Int_t MimosaAnalysis::OpenInputFile()
 
     return Nevt;
   }
-  
+
   // Otherwise return 0
   else {
     Error("MAnalysis","No input file specified ! --> STOP.");
     return 0;
   }
-  
+
 }
 
 //______________________________________________________________________________
 //
-const char* MimosaAnalysis::CreateGlobalResultDir() 
+const char* MimosaAnalysis::CreateGlobalResultDir()
 {
   // Create Results/#### directory to store results
   //
@@ -1091,12 +1091,12 @@ const char* MimosaAnalysis::CreateGlobalResultDir()
   if(!CheckIfDone("init")) return ""; // correction from 0;, JB 2009/07/17
 
   if(!MimosaType) Error("CreateGlobalResultDir","MimosaType not set! Please run MimosaPro first");
-  
+
   ResultDirName = fWorkingDirectory + "/results_ana_M"; // VR 2014/06/30 Replace DTDIR by fWorkingDirectory
   ResultDirName += MimosaType;
   ResultDirName += "/";
   fTool.LocalizeDirName(  &ResultDirName); // JB 2011/07/07
-  
+
   if(MimoDebug) cout<<"Global Result Dir : "<<ResultDirName.Data()<<endl;
 
   gSystem->mkdir( ResultDirName.Data(), 1);
@@ -1130,9 +1130,9 @@ void MimosaAnalysis::PrepareOnlineDisplay()
 //______________________________________________________________________________
 //
 void MimosaAnalysis::SetPlaneNumber(Int_t aPlaneNumber) {
-  
+
   // JB 2012/10/30
-  
+
   if( 0<aPlaneNumber && aPlaneNumber<=fSession->GetTracker()->GetPlanesN() ) {
    ThePlaneNumber  = aPlaneNumber;
   }
@@ -1140,13 +1140,13 @@ void MimosaAnalysis::SetPlaneNumber(Int_t aPlaneNumber) {
     Warning("SetPlaneNumber","The required plane %d does not exist! Nothing done.", aPlaneNumber);
   }
 }
-  
+
 //______________________________________________________________________________
 //
 void MimosaAnalysis::SetLadderNumber(Int_t aNumber) {
-  
+
   // JB 2014/01/10
-  
+
   if( 0<aNumber && aNumber<=fSession->GetTracker()->GetNumberOfLadders() ) {
     TheLadderNumber  = aNumber;
   }
@@ -1170,42 +1170,42 @@ void MimosaAnalysis::GetAlignment()
 
   if(theCorFile->IsOpen()){
     if(theCorFile->FindKey("alignement") && CorStatus!=2){ // if the CorPar files is already initialized with proper objects
-      Info("GetAlignment","Getting alignment from CorPar file.");  
-      alignement =(DPrecAlign*)theCorFile->Get("alignement"); 
+      Info("GetAlignment","Getting alignment from CorPar file.");
+      alignement =(DPrecAlign*)theCorFile->Get("alignement");
       cout << "===========================================" << endl;
       cout << "The parameters are taken from CorPar" << RunNumber << "_" << ThePlaneNumber <<".root" << endl;
       cout << "===========================================" << endl;
       gotAlignment = kTRUE;
     }
   }
-  
+
   if ( !gotAlignment ) { // take the config file information for alignment
     // Corrected for angles swap and convolution with alignmentU,V,Tilt, JB 2011/06/30
-    Info("GetAlignment","Getting alignment from configuration file.");  
-  
+    Info("GetAlignment","Getting alignment from configuration file.");
+
     Int_t DPrecAlignMethod = fSession->GetSetup()->GetTrackerPar().DPrecAlignMethod;   // LC 2015/01/31
     alignement = new DPrecAlign(DPrecAlignMethod);
-    
+
       // Decide if analysis on Plane or Ladder
     if( ThePlaneNumber ) {
       alignement->SetTranslation( fSession->GetSetup()->GetPlanePar(ThePlaneNumber).Position(0),
-				  fSession->GetSetup()->GetPlanePar(ThePlaneNumber).Position(1), 
+				  fSession->GetSetup()->GetPlanePar(ThePlaneNumber).Position(1),
 				  fSession->GetSetup()->GetPlanePar(ThePlaneNumber).Position(2)
 				);
       alignement->SetRotations( fSession->GetSetup()->GetPlanePar(ThePlaneNumber).Tilt(0),
 				fSession->GetSetup()->GetPlanePar(ThePlaneNumber).Tilt(1),
 				fSession->GetSetup()->GetPlanePar(ThePlaneNumber).Tilt(2)
 			      );
-      alignement->ConvoluteUVWAlignment( fSession->GetSetup()->GetPlanePar(ThePlaneNumber).AlignmentU, 
-					 fSession->GetSetup()->GetPlanePar(ThePlaneNumber).AlignmentV,  
+      alignement->ConvoluteUVWAlignment( fSession->GetSetup()->GetPlanePar(ThePlaneNumber).AlignmentU,
+					 fSession->GetSetup()->GetPlanePar(ThePlaneNumber).AlignmentV,
 					 fSession->GetSetup()->GetPlanePar(ThePlaneNumber).AlignmentTilt );
     }
-    
+
     else if( TheLadderNumber ) {
       alignement->SetTranslation( fSession->GetSetup()->GetLadderPar(TheLadderNumber).Position);
       alignement->SetRotations( fSession->GetSetup()->GetLadderPar(TheLadderNumber).Tilt);
     }
-    
+
     cout << "===========================================" << endl;
     cout << "Initial values for the parameters are taken" << endl;
     cout << "===========================================" << endl;
@@ -1213,7 +1213,7 @@ void MimosaAnalysis::GetAlignment()
 
   alignement->PrintAll();
 
-  Info("GetAlignment","Alignment read");  
+  Info("GetAlignment","Alignment read");
 
 }
 
@@ -1230,13 +1230,13 @@ void MimosaAnalysis::GetMiEta()
   if (!theCorFile) InitCorPar(fSession->GetRunNumber(),fSession->GetPlaneNumber());
   Info("GetMiEta","Status of InitCorPar = %d", CorStatus);
 
-#if ROOT_VERSION_CODE < ROOT_VERSION(4,03,4) 
+#if ROOT_VERSION_CODE < ROOT_VERSION(4,03,4)
   if(MimoDebug)   cout << ROOT_VERSION_CODE << " : bad version" <<endl;
   MimoDebug <= 1 ? gErrorIgnoreLevel=kSysError : 0;
 #endif
- 
+
   //cout<<"------getmieta test 0 "<<CorStatus<<endl;
- 
+
   TProfile *prACG=0;
   TProfile *prUCG=0;
   TProfile *prVCG=0;
@@ -1245,16 +1245,16 @@ void MimosaAnalysis::GetMiEta()
   TH1F    *hE3VInt=0;
   TH1F    *hE2UInt=0;
   TH1F    *hE2VInt=0;
- 
+
   if(CorStatus!=2){
-    prACG = (TProfile*)theCorFile->Get("ProfACG");  
-    prUCG = (TProfile*)theCorFile->Get("ProfUCG");    
-    prVCG = (TProfile*)theCorFile->Get("ProfVCG");   
+    prACG = (TProfile*)theCorFile->Get("ProfACG");
+    prUCG = (TProfile*)theCorFile->Get("ProfUCG");
+    prVCG = (TProfile*)theCorFile->Get("ProfVCG");
     hE3Int = (TH1F*)theCorFile->Get("hEta3Int");
     hE3UInt = (TH1F*)theCorFile->Get("hEta3UInt");
     hE3VInt = (TH1F*)theCorFile->Get("hEta3VInt");
     hE2UInt = (TH1F*)theCorFile->Get("hEta2x2IntU");
-    hE2VInt = (TH1F*)theCorFile->Get("hEta2x2IntV"); 
+    hE2VInt = (TH1F*)theCorFile->Get("hEta2x2IntV");
   }
 
   // Test the histo are there, otherwise quit !
@@ -1262,7 +1262,7 @@ void MimosaAnalysis::GetMiEta()
     Warning("GetMiEta","WARNING: the expected histograms to compute the Eta correction were not found! --> No Eta correction available");
     return;
   }
-  
+
   dir->cd();
  if(MimoDebug) cout << "GetMiEta Drawing"<<endl;
   MainCanvas->Divide(2,2);
@@ -1275,7 +1275,7 @@ void MimosaAnalysis::GetMiEta()
   MainCanvas->Update();
   MainCanvas->cd(3);
   if(CorStatus!=2){hE2UInt->Draw(); }
-  MainCanvas->Update(); 
+  MainCanvas->Update();
   MainCanvas->cd(4);
   if(CorStatus!=2){hE2VInt->Draw();}
 
@@ -1286,10 +1286,10 @@ void MimosaAnalysis::GetMiEta()
 
   if(CorStatus!=2){
     fitfa = prACG->GetFunction("pol6"); // Take parameters  from the file
-    fitfu = prUCG->GetFunction("pol6"); 
-    fitfv = prVCG->GetFunction("pol6"); 
+    fitfu = prUCG->GetFunction("pol6");
+    fitfv = prVCG->GetFunction("pol6");
   }
-#if ROOT_VERSION_CODE <  ROOT_VERSION(4,03,4) 
+#if ROOT_VERSION_CODE <  ROOT_VERSION(4,03,4)
   MimoDebug <= 1 ? gErrorIgnoreLevel=0 : 0 ;
 #endif
 
@@ -1300,7 +1300,7 @@ void MimosaAnalysis::GetMiEta()
       FitParamU[ii]=fitfu->GetParameter(ii);
       FitParamV[ii]=fitfv->GetParameter(ii);
     }
-  }  
+  }
   // Get eta2x2 integral:
   else{
     for(Int_t ii=0; ii<7; ii++){
@@ -1322,7 +1322,7 @@ void MimosaAnalysis::GetMiEta()
   Float_t* Contents2x2  = new Float_t[NBins2x2];
   Contents2x2U = new Float_t[NBins2x2];
   Contents2x2V = new Float_t[NBins2x2];
-  
+
  if(CorStatus!=2){
    for(Int_t i = 0; i<NBins2x2; i++){
      Edges2x2[i]   = hE2UInt->GetBinLowEdge(i);
@@ -1348,7 +1348,7 @@ void MimosaAnalysis::GetMiEta()
      Contents3x3V[i]= hE3VInt->GetBinContent(i);
    }
  }
- //Float_t FitParEta3[PolDeg]; 
+ //Float_t FitParEta3[PolDeg];
  if(CorStatus!=2 && hE3Int->Integral()>10 && hE3UInt->Integral()>10 && hE3VInt->Integral()>10){
    MainCanvas->cd(1);
    if(hE3Int->Integral()>10) hE3Int->Fit("pol6");
@@ -1356,7 +1356,7 @@ void MimosaAnalysis::GetMiEta()
    //for(Int_t ii=0; ii<PolDeg; ii++){
    //  FitParEta3[ii]=fitEta3->GetParameter(ii);
    //}
-   
+
    MainCanvas->cd(1);
    if(hE3UInt->Integral()>10) hE3UInt->Fit("pol6");
    TF1 *fitEta3U = hE3UInt->GetFunction("pol6");
@@ -1388,7 +1388,7 @@ void MimosaAnalysis::GetMiEta()
    TTree *Etatree;
    Etatree = (TTree*)theCorFile->Get("TreeEta");
    Int_t nEtatreeentries = (Int_t)Etatree->GetEntries();
-   
+
    Float_t n_EtaU;
    Float_t n_EtaV;
    READnListe_CoG = nEtatreeentries;
@@ -1409,7 +1409,7 @@ void MimosaAnalysis::GetMiEta()
    }
    if(Etatree->GetBranch("n_Eta2x2V")){
    Etatree->SetBranchAddress("n_Eta2x2V",&n_Eta2x2V);
-   }   
+   }
    if(Etatree->GetBranch("n_Eta5x5U")){
    Etatree->SetBranchAddress("n_Eta5x5U",&n_Eta5x5U);
    }
@@ -1452,7 +1452,7 @@ void MimosaAnalysis::GetMiEta()
     }*/
  }
 
-  //---etaab debut nListe_CoG 
+  //---etaab debut nListe_CoG
   nListe_CoG = 0;
   nListe_CoG_eta2x2=0;
   nListe_CoG_eta5x5=0;
@@ -1476,7 +1476,7 @@ void MimosaAnalysis::CreateNewEta()
   if( NofClMatchTrack<50 ) {
     Info("CreateNewEta", "Not enough data (%d) to estimate eta parameters -> nothing done.", NofClMatchTrack);
     return;
-  } 
+  }
   Info("CreateNewEta", "New Eta parameters are to be computed with %d cluster.", NofClMatchTrack );
 
   const  Int_t PolN = 7; // Polynom degree
@@ -1528,7 +1528,7 @@ void MimosaAnalysis::CreateNewEta()
   // 3x3 eta functions. OLD
   //----------------------
   if(MimoDebug>1) printf("CreateNewEta: computing correction function for 3x3(old)\n");
-  
+
   // Eta:
   Float_t tmpEta(0.),tmpEtaU(0.),tmpEtaV(0.);
   hEta3DigU->Draw();
@@ -1554,12 +1554,12 @@ void MimosaAnalysis::CreateNewEta()
 
   for(Int_t i=1; i<= hEta3DigV->GetXaxis()->GetNbins(); i++){
     tmpEtaV += hEta3DigV->GetBinContent(i);
-    
+
     if(EtaVTotal != 0.){
       hEta3VInt->SetBinContent(i,tmpEtaV/EtaVTotal*PixelSizeV-PixelSizeV/2.0);
     }
   }
-  
+
   //TF1 *fitEta3;
   //Float_t FitParEta3[PolN]; // PolN=7
   if(hEta3Int->Integral()>10) {
@@ -1616,7 +1616,7 @@ void MimosaAnalysis::CreateNewEta()
   TH1F *hEta2x2IntV  = new TH1F("hEta2x2IntV","Eta for 2x2 cluster",NbOfBinInEta2x2,0.,1.);
 
   Float_t* EtaContent2x2 = new Float_t[NbOfBinInEta2x2];
-  Float_t EtaTotal2x2 = hEta2x2U->GetEntries()*1.; 
+  Float_t EtaTotal2x2 = hEta2x2U->GetEntries()*1.;
 
   // Integral of Eta-distribution
   for(Int_t i=0; i< NbOfBinInEta2x2; i++){
@@ -1655,7 +1655,7 @@ void MimosaAnalysis::CreateNewEta()
   Float_t tempCoG, lowestCoGU, lowestCoGV;
   while(iscan < nListe_CoG ){
     lowestCoGU = 10.0 * PixelSizeU;
-    lowestCoGV = 10.0 * PixelSizeV;   
+    lowestCoGV = 10.0 * PixelSizeV;
 
     for(Int_t i=iscan; i<  nListe_CoG; i++){
       if(Liste_CoGU[i] < lowestCoGU){
@@ -1666,7 +1666,7 @@ void MimosaAnalysis::CreateNewEta()
     tempCoG = Liste_CoGU[iscan];
     Liste_CoGU[iscan] = lowestCoGU;
     Liste_CoGU[ilowestCoGU] = tempCoG;
-   
+
     for(Int_t i=iscan; i<  nListe_CoG; i++){
       if(Liste_CoGV[i] < lowestCoGV){
 	lowestCoGV = Liste_CoGV[i];
@@ -1678,7 +1678,7 @@ void MimosaAnalysis::CreateNewEta()
     Liste_CoGV[ilowestCoGV] = tempCoG;
     iscan++;
   }
- 
+
   //---etaab debut CreateNewEta()
   Int_t iscan2x2,ilowestCoGU2x2, ilowestCoGV2x2;
   iscan2x2 = 0;
@@ -1687,7 +1687,7 @@ void MimosaAnalysis::CreateNewEta()
   Float_t tempCoG2x2, lowestCoGU2x2, lowestCoGV2x2;
   while(iscan2x2 < nListe_CoG_eta2x2 ){
     lowestCoGU2x2 = 10.0 * PixelSizeU;
-    lowestCoGV2x2 = 10.0 * PixelSizeV;   
+    lowestCoGV2x2 = 10.0 * PixelSizeV;
 
     for(Int_t i=iscan2x2; i<  nListe_CoG_eta2x2; i++){
       if(Liste_CoGU_eta2x2[i] < lowestCoGU2x2){
@@ -1698,7 +1698,7 @@ void MimosaAnalysis::CreateNewEta()
     tempCoG2x2 = Liste_CoGU_eta2x2[iscan2x2];
     Liste_CoGU_eta2x2[iscan2x2] = lowestCoGU2x2;
     Liste_CoGU_eta2x2[ilowestCoGU2x2] = tempCoG2x2;
-   
+
     for(Int_t i=iscan2x2; i<  nListe_CoG_eta2x2; i++){
       if(Liste_CoGV_eta2x2[i] < lowestCoGV2x2){
 	lowestCoGV2x2 = Liste_CoGV_eta2x2[i];
@@ -1719,7 +1719,7 @@ void MimosaAnalysis::CreateNewEta()
   Float_t tempCoG5x5, lowestCoGU5x5, lowestCoGV5x5;
   while(iscan5x5 < nListe_CoG_eta5x5 ){
     lowestCoGU5x5 = 10.0 * PixelSizeU;
-    lowestCoGV5x5 = 10.0 * PixelSizeV;   
+    lowestCoGV5x5 = 10.0 * PixelSizeV;
 
     for(Int_t i=iscan5x5; i<  nListe_CoG_eta5x5; i++){
       if(Liste_CoGU_eta5x5[i] < lowestCoGU5x5){
@@ -1730,7 +1730,7 @@ void MimosaAnalysis::CreateNewEta()
     tempCoG5x5 = Liste_CoGU_eta5x5[iscan5x5];
     Liste_CoGU_eta5x5[iscan5x5] = lowestCoGU5x5;
     Liste_CoGU_eta5x5[ilowestCoGU5x5] = tempCoG5x5;
-   
+
     for(Int_t i=iscan5x5; i<  nListe_CoG_eta5x5; i++){
       if(Liste_CoGV_eta5x5[i] < lowestCoGV5x5){
 	lowestCoGV5x5 = Liste_CoGV_eta5x5[i];
@@ -1744,7 +1744,7 @@ void MimosaAnalysis::CreateNewEta()
   }
 
 
- 
+
   //---etaab fin CreateNewEta()
 
   /*  for(Int_t i=0; i<  nListe_CoG; i++){
@@ -1809,7 +1809,7 @@ void MimosaAnalysis::CreateNewEta()
   hEta2x2V->Draw();
   cEta->cd(4);
   hEta2x2IntV->Draw();
-  
+
   cEta->Update();
 
   //----------------------
@@ -1822,24 +1822,24 @@ void MimosaAnalysis::CreateNewEta()
     if( theCorFile->ReOpen("UPDATE") == -1 ) { // test added, JB 2011/04/12
       Fatal( "CreateNewEta", "Cannot reopen CorPar file!");
     }
-  } 
+  }
   theCorFile->cd();
 
   TreeEta->Write("TreeEta",kOverwrite);
 
-  ProfACGn->Write("ProfACG",kOverwrite); 
-  ProfUCG->Write("ProfUCG",kOverwrite); 
-  ProfVCG->Write("ProfVCG",kOverwrite); 
+  ProfACGn->Write("ProfACG",kOverwrite);
+  ProfUCG->Write("ProfUCG",kOverwrite);
+  ProfVCG->Write("ProfVCG",kOverwrite);
 
   hEta3Int->Write("hEta3Int",kOverwrite);
-  hEta3UInt->Write("hEta3UInt",kOverwrite); 
+  hEta3UInt->Write("hEta3UInt",kOverwrite);
   hEta3VInt->Write("hEta3VInt",kOverwrite);
 
-  hEta2x2IntU->Write("hEta2x2IntU",kOverwrite); 
+  hEta2x2IntU->Write("hEta2x2IntU",kOverwrite);
   hEta2x2IntV->Write("hEta2x2IntV",kOverwrite);
 
   cEta->Write("cEta",kOverwrite);
-  
+
   Info("CreateNewEta","New Eta parameters stored into %s, enjoy!", theCorFile->GetName());
 
 }
@@ -1856,28 +1856,28 @@ void MimosaAnalysis::HotPixel_init( Int_t useMap)
   // Note the two cut values are hardcoded here for the moment.
   //
   // JB 2011/11/23 imported from A. Besson june 2004
-  
+
   TheUsePixelMap = (useMap > 0);
   Option_read_Pixel_map = (useMap == 1);
-  
+
   // If the rate limits are still 0, use the hardcoded initialization below,
   // otherwise keep the previous value.
   if( CUT_MaxHitRatePerPixel < 1.e-3 ) {
     CUT_MaxHitRatePerPixel = 0.05; // if the pixel is a seed too many times in the run, remove the hit.
-    CUT_MinHitRatePerPixel = 0.; // you can also remove pixels with low occupancy for testing    
+    CUT_MinHitRatePerPixel = 0.; // you can also remove pixels with low occupancy for testing
   }
 
   sprintf(HotPixelFileName,"hotPixelMap_run%d_pl%d.root",RunNumber,ThePlaneNumber);
   sprintf(HotPixelFileName,"%s", fTool.LocalizeDirName( HotPixelFileName));
   gSystem->cd(CreateGlobalResultDir());
-  
+
   if( TheUsePixelMap  && Option_read_Pixel_map==1 ){
     HotPixelFile = new TFile(HotPixelFileName,"READ");
     h2HotPixelMap = (TH2F*)HotPixelFile->Get("h2HotPixelMap");
   }
-  
+
   Info("HotPixel_init","End hot pixel map preparation, usage = %d and %d.", TheUsePixelMap, Option_read_Pixel_map);
-  
+
 }
 
 //______________________________________________________________________________
@@ -1888,7 +1888,7 @@ Int_t MimosaAnalysis::HotPixel_test( Int_t aPixelIndex)
   // Always returns 0 if TheUsePixelMap==0.
   //
   // JB 2011/11/23 imported from A. Besson june 2004
-  
+
   Int_t iRow = aPixelIndex%NofPixelInRaw +1;
   Int_t iCol = aPixelIndex/NofPixelInRaw +1;
   if(    TheUsePixelMap ==  1 && Option_read_Pixel_map == 1
@@ -1896,8 +1896,8 @@ Int_t MimosaAnalysis::HotPixel_test( Int_t aPixelIndex)
 	  || h2HotPixelMap->GetBinContent( iRow, iCol) < CUT_MinHitRatePerPixel)
      ){
 	return 1;
-  }  
-  
+  }
+
   return 0;
 }
 
@@ -1908,9 +1908,9 @@ void MimosaAnalysis::HotPixel_end( Int_t eventsRead)
   // If the hot pixel map was not used, do nothing.
   // If the hot pixel map was only read, simply close the file.
   // If the hot pixel map was generated, save the histogram and close the file.
-  // 
+  //
   // JB 2011/11/23 imported from A. Besson june 2004
-  
+
   if( TheUsePixelMap ) { // if map used
 
     if( Option_read_Pixel_map==1 ) { // map only read
@@ -1928,11 +1928,11 @@ void MimosaAnalysis::HotPixel_end( Int_t eventsRead)
 
     HotPixelFile->Close();
   } // end if map used
-  
+
   else { // if map not used
     cout << "-------- The HOT HIT MAP WAS NOT USED !"<<endl;
   }
-  
+
 }
 
 //_____________________________________________________________________________
@@ -1944,7 +1944,7 @@ DPrecAlign*  MimosaAnalysis::AlignMimosa(Int_t aDistance)
    // Modified: JB 2009/09/01, get rid of GetParameters() call
    // Modified: JB 2010/09/08, add the passage of the Z plane coordinate (alignPar(6))
    // Modified: JB 2011/11/25, check there are data points to fit, otherwise, returns current alignemnt
-   
+
     if(!CheckIfDone("init,mimosapro")) {return 0;}
 
     TVectorD alignPar(6);
@@ -1963,7 +1963,7 @@ DPrecAlign*  MimosaAnalysis::AlignMimosa(Int_t aDistance)
      return NULL; // added JB 2012/08/18
    }
    else {
-     return MimosaAlignAnalysis::Instance( fSession)->AlignMimosa(alignement, GetCorParFile(), CreateGlobalResultDir(), aDistance); // arguments for alignment changed, JB 2011/06/18     
+     return MimosaAlignAnalysis::Instance( fSession)->AlignMimosa(alignement, GetCorParFile(), CreateGlobalResultDir(), aDistance); // arguments for alignment changed, JB 2011/06/18
    }
 
   }
@@ -1979,32 +1979,32 @@ Int_t MimosaAnalysis::GetFileNumber()
   // Modified: JB 2012/11/21 to find files event if low numbers do no exist
 
   Char_t New_File_Name[1000];
-  Int_t FileNumber = 1; 
+  Int_t FileNumber = 1;
   Int_t missedFiles = 0;
   Int_t Returned_FileNumber = 0;
   int exist = 1;
   while(exist) {
     sprintf(New_File_Name,"%srun%d_0%d.root",(const char*)fSession->GetSummaryFilePath(),fSession->GetRunNumber(),FileNumber);
     sprintf(New_File_Name,"%s", fTool.LocalizeDirName( New_File_Name)); // JB 2011/07/07
-    if (!gSystem->AccessPathName(New_File_Name)){ missedFiles=-1; FileNumber++; } 
+    if (!gSystem->AccessPathName(New_File_Name)){ missedFiles=-1; FileNumber++; }
     else if( 0<=missedFiles && missedFiles<100 ) { missedFiles++; FileNumber++; }
     else {exist=0;}
-    
+
   };
-  
+
   // Check if the user asked for a specific number
-  if(!fUserFileNumber) { Returned_FileNumber = FileNumber-1;} 
+  if(!fUserFileNumber) { Returned_FileNumber = FileNumber-1;}
   else { Returned_FileNumber=TMath::Min(FileNumber-1,fUserFileNumber);}
 
   // Check the file exists
   sprintf(New_File_Name,"%srun%d_0%d.root",(const char*)fSession->GetSummaryFilePath(),fSession->GetRunNumber(),Returned_FileNumber);
-  sprintf(New_File_Name,"%s", fTool.LocalizeDirName( New_File_Name));  
-  if (gSystem->AccessPathName(New_File_Name)){ 
+  sprintf(New_File_Name,"%s", fTool.LocalizeDirName( New_File_Name));
+  if (gSystem->AccessPathName(New_File_Name)){
     //Info( "GetFileNumber", "WARNING: file %s does not exist!", New_File_Name);
-    Returned_FileNumber=0; 
-  } 
-  
-  return Returned_FileNumber;  
+    Returned_FileNumber=0;
+  }
+
+  return Returned_FileNumber;
 }
 
 
@@ -2013,7 +2013,7 @@ Int_t MimosaAnalysis::GetFileNumber()
 Bool_t MimosaAnalysis::CheckIfDone(const Option_t* Option)
 {
 
-  // Checks if the requiered methods have been called before processing 
+  // Checks if the requiered methods have been called before processing
   //
   // Modified: JB 2010/07/27 for Fakerate and Calibration
   // Modified: JB 2010/08/30 for MiniVectos
@@ -2023,56 +2023,56 @@ Bool_t MimosaAnalysis::CheckIfDone(const Option_t* Option)
  opts.ToLower();
  Bool_t aReturnCode = kTRUE;
 
- if(opts.Contains("clear")) 
-    { if (!fClearDone) 
+ if(opts.Contains("clear"))
+    { if (!fClearDone)
 	{ Warning("CheckIfDone()","Please run Clear() First");aReturnCode = kFALSE;};
     }
 
- if(opts.Contains("init")) 
-    { if (!fInitDone) 
+ if(opts.Contains("init"))
+    { if (!fInitDone)
 	{ Warning("CheckIfDone()","Please run InitSession() First");aReturnCode = kFALSE;};
     }
 
  if(opts.Contains("mimosall")) // JB 2010/09/10
-    { if (!fMimosaDone) 
+    { if (!fMimosaDone)
 	{ Warning("CheckIfDone()","Please run an anlysis method MimosaXXX() First");aReturnCode = kFALSE;};
     }
-    
- if(opts.Contains("mimosapro")) 
-    { if (!fMimosaProDone) 
+
+ if(opts.Contains("mimosapro"))
+    { if (!fMimosaProDone)
 	{ Warning("CheckIfDone()","Please run MimosaPro() First");aReturnCode = kFALSE;};
     }
-    
+
  if(opts.Contains("mimosafakerate")) // JB 2010/07/26
-    { if (!fMimosaFakerateDone) 
+    { if (!fMimosaFakerateDone)
 	{ Warning("CheckIfDone()","Please run MimosaFakerate() First");aReturnCode = kFALSE;};
     }
-    
+
  if(opts.Contains("mimosacalibration")) // JB 2010/07/27
-    { if (!fMimosaCalibrationDone) 
+    { if (!fMimosaCalibrationDone)
 	{ Warning("CheckIfDone()","Please run MimosaCalibration() First");aReturnCode = kFALSE;};
     }
-    
+
   if(opts.Contains("mimosaminivectors")) // JB 2010/08/30
-  { if (!fMimosaMiniVectorsDone) 
+  { if (!fMimosaMiniVectorsDone)
 	{ Warning("CheckIfDone()","Please run MimosaMiniVectors() First");aReturnCode = kFALSE;};
   }
-  
+
   if(opts.Contains("mimosapro2planes")) // JB 2013/05/01
-  { if (!fMimosaPro2PlanesDone) 
+  { if (!fMimosaPro2PlanesDone)
 	{ Warning("CheckIfDone()","Please run MimosaPro2Planes() First");aReturnCode = kFALSE;};
   }
-  
+
   if(opts.Contains("mimosaimaging")) // JB 2013/05/01
-  { if (!fMimosaImagingDone) 
+  { if (!fMimosaImagingDone)
 	{ Warning("CheckIfDone()","Please run MimosaImaging() First");aReturnCode = kFALSE;};
   }
 
   if(opts.Contains("MCGeneration")) // AP 2015/04/02
-  { if (!fIfMCGeneration) 
+  { if (!fIfMCGeneration)
 	{ Warning("CheckIfDone()","Please run MimosaGeneration() First");aReturnCode = kFALSE;};
   }
-  
+
  return aReturnCode;
 }
 
@@ -2081,19 +2081,19 @@ Bool_t MimosaAnalysis::CheckIfDone(const Option_t* Option)
 
 Bool_t MimosaAnalysis::TrackInMimo( Int_t aGeoMatrix, Float_t tuVal, Float_t tvVal, Int_t aSubMatrix)
 {
-  
+
   // Decide wether or not the track is in the area of interest of the DUT
   // this area is defined in the config file
   //
   // JB 2009/08/26
   // Modified: JB 2012/08/20 to allow any geomatrix
   // Modified: JB 2015/12/15 to allow any submatrix
-  
+
   if( aGeoMatrix<0 || aGeoMatrix>3 ) {
     printf("TrackInMimo: WARNING, you asked for a geomatrix (%d) which does not exist, changed to 0\n", aGeoMatrix);
     aGeoMatrix = 0;
   }
-  
+
   // The aGeomatrix may be different from the global one (ThesubmatrixNumber)
   // So we get the limits.
   Double_t gumin = fSession->GetSetup()->GetAnalysisPar().Umin[aSubMatrix][aGeoMatrix];
@@ -2101,7 +2101,7 @@ Bool_t MimosaAnalysis::TrackInMimo( Int_t aGeoMatrix, Float_t tuVal, Float_t tvV
   Double_t gvmin = fSession->GetSetup()->GetAnalysisPar().Vmin[aSubMatrix][aGeoMatrix];
   Double_t gvmax = fSession->GetSetup()->GetAnalysisPar().Vmax[aSubMatrix][aGeoMatrix];
 
-  
+
   Bool_t TrkCrossMimo = gvmin<tvVal && tvVal<gvmax && gumin<tuVal && tuVal<gumax;
 
   if(MimoDebug>2) {
@@ -2114,7 +2114,7 @@ Bool_t MimosaAnalysis::TrackInMimo( Int_t aGeoMatrix, Float_t tuVal, Float_t tvV
 	   gumin,
 	   tuVal,
 	   gumax,
-	   TrkCrossMimo); 
+	   TrkCrossMimo);
   }
 
   return TrkCrossMimo;
@@ -2128,7 +2128,7 @@ void MimosaAnalysis::RefPlane_fill()
   //
   // JB 2010/05/27 based on MPro original stuff
 
-  
+
 
 }
 
@@ -2164,7 +2164,7 @@ void MimosaAnalysis::ClusterShape_init()
   // JB 2010/04/13 based on cdritsa original stuff
   // Modified clm 2013/01/23 compute threshold according to noiseMPV input
   // Modified clm 2013/08/25 new histos
-  
+
   hitCounter = 0;
 
   nThresholds = 8; // shall be strictly below 11
@@ -2199,7 +2199,7 @@ void MimosaAnalysis::ClusterShape_init()
   {
     for (int i = 0 ;  i < 9 ; i++) thresholds[i] = noiseMPV * snrThresholds[i]; // clm 2013.03.19
   }
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     clusterMultiplicity[ithres] = 0;
     clusterMultiplicityCounter[ithres] = 0;
@@ -2224,23 +2224,23 @@ void MimosaAnalysis::ClusterShape_init()
   RMSU                    = 0;
   RMSVmean                = 0;
   RMSUmean                = 0;
- 
+
   Char_t title[200];
   // Change the title of some histo now that we know the thresholds
   for( Int_t i=0; i<nThresholds; i++) {
-   
+
     sprintf( title, "cluster multiplicity with Charge>%.1f e", thresholds[i]);
     hCountPixels[i]->SetTitle(title);
-    
+
     sprintf( title, "Percentage of pixels with SNR>%.1f", snrThresholds[i]);
     hPixelsOverSNR[i]->SetTitle(title);
-    
+
     sprintf( title, "Percentage of pixels with Charge>%.1f", thresholds[i]);
     hPixelsOverCharge[i]->SetTitle(title);
-    
+
     sprintf( title, "Form factor vs cluster multiplicity with SNR>%.1f)", snrThresholds[i]);
     hMultVsFormFactor[i]->SetTitle(title);
-    
+
     sprintf( title, "cluster multiplicity with SNR>%.1f", snrThresholds[i]);
     hMultVsFormFactor1D[i]->SetTitle(title); //clm added back 1D clu mult. 2013.08.25
  }
@@ -2269,7 +2269,7 @@ void MimosaAnalysis::ClusterShape_fill(DAuthenticHit *thehit)
     mult[ithres] = 0.;
     formFactor[ithres] = 0.;
   }
-				
+
   //===========
   for(Int_t i=0; i<NofPixelsInCluster; i++){ // loop on pixels in cluster
 
@@ -2302,12 +2302,12 @@ void MimosaAnalysis::ClusterShape_fill(DAuthenticHit *thehit)
         hChargeDistrIn3rdRightNeigh->Fill(qqordered[i]);
       }
     }
-    
+
     // Visualise the 6 first individual clusters
     if(hitCounter<=6){
       Cluster[hitCounter-1]->Fill(ColumnInClusterqordered[i], LineInClusterqordered[i], qqordered[i]);
     }
-    
+
     // ?
     if( i>1 && abs(ColumnInClusterqordered[i])<6 && abs(LineInClusterqordered[i])<6 ) {
       ChargeInCluster[i]          = ChargeInCluster[i-1] + qqordered[i];
@@ -2323,43 +2323,43 @@ void MimosaAnalysis::ClusterShape_fill(DAuthenticHit *thehit)
       ChargeTimesPositionUmean[i] = qqordered[i]*ColumnInClusterqordered[i];
       ChargeTimesPositionVmean[i] = qqordered[i]*LineInClusterqordered[i];
     }
-    
+
     //cout << "ChargeTimesPositionU[" << i << "] = " << ChargeTimesPositionU[i] << endl;
     //cout << "ChargeTimesPositionV[" << i << "] = " << ChargeTimesPositionV[i] << endl;
     //cout << "ChargeInCluster[" << i << "] = " << ChargeInCluster[i] << endl;
-    
-    
+
+
     // average cluster multiplicity: how many pixels are over threshold in average?
     for( Int_t ithres=0; ithres<nThresholds; ithres++) { // loop on thresholds
-      
+
       // Threshold = Q
       // +3 is added because histo must have x-axis between (0,7) .
-      if( qqordered[i]>thresholds[ithres] ) { 
-        hPixelsOverCharge[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 100); 
-        clusterMultiplicity[ithres] += 1; 
+      if( qqordered[i]>thresholds[ithres] ) {
+        hPixelsOverCharge[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 100);
+        clusterMultiplicity[ithres] += 1;
         clusterMultiplicityCounter[ithres] += 1; //counter is for absolute count of pixels above thresh; no average.
       }
-      else{ 
-        hPixelsOverCharge[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 0); 
+      else{
+        hPixelsOverCharge[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 0);
       }
-      
+
       // Threshold = SNR
-      if( snqordered[i]>snrThresholds[ithres] ) { 
-        hPixelsOverSNR[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 100); 
+      if( snqordered[i]>snrThresholds[ithres] ) {
+        hPixelsOverSNR[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 100);
         mult[ithres] += 1;
         if(ColumnInClusterqordered[i] == 0) {multV[ithres]++;}
         if(LineInClusterqordered[i]   == 0) {multU[ithres]++;}
       }
-      else { 
-        hPixelsOverSNR[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 0); 
+      else {
+        hPixelsOverSNR[ithres]->Fill( ColumnInClusterqordered[i], LineInClusterqordered[i], 0);
       }
-      
+
     } // end loop on thresholds
-    
-    
+
+
   }  // end loop on pixels in cluster
   //===========
-  
+
   //===========
   // Fill histograms
 
@@ -2373,7 +2373,7 @@ void MimosaAnalysis::ClusterShape_fill(DAuthenticHit *thehit)
   for( Int_t ithres=0; ithres<nThresholds; ithres++) { // loop on thresholds
 
     hCountPixels[ithres]->Fill(clusterMultiplicityCounter[ithres]);
-		
+
     if( multV[ithres]!=0 ){formFactor[ithres]=multU[ithres]/multV[ithres];}
     else{formFactor[ithres]=0; }
 
@@ -2382,16 +2382,16 @@ void MimosaAnalysis::ClusterShape_fill(DAuthenticHit *thehit)
 
   } // end loop on thresholds
 
-  if( ChargeInCluster[25]!=0 ) { 
-    RMSV =(ChargeTimesPositionV[25]/ChargeInCluster[25]); 
+  if( ChargeInCluster[25]!=0 ) {
+    RMSV =(ChargeTimesPositionV[25]/ChargeInCluster[25]);
     RMSU =(ChargeTimesPositionU[25]/ChargeInCluster[25]);
   }
-  else { 
-    RMSV = 0.; 
+  else {
+    RMSV = 0.;
     RMSU = 0.;
   }
-    
-  if( ChargeInCluster[24]!=0 ) { 
+
+  if( ChargeInCluster[24]!=0 ) {
     RMSVmean = (ChargeTimesPositionVmean[24]/ChargeInCluster[24])*(ChargeTimesPositionVmean[24]/ChargeInCluster[24]);
     RMSUmean = (ChargeTimesPositionUmean[24]/ChargeInCluster[24])*(ChargeTimesPositionUmean[24]/ChargeInCluster[24]);
   }
@@ -2399,12 +2399,12 @@ void MimosaAnalysis::ClusterShape_fill(DAuthenticHit *thehit)
     RMSVmean = 0.;
     RMSUmean = 0.;
   }
-    
+
   if( (qqordered[0]/nqordered[0]) >10){
     hChargeCoG_Correl->Fill( sqrt(RMSV),sqrt(RMSU) );
   }
   hChargeCoG_Correl2->Fill( sqrt(RMSV-RMSVmean),sqrt(RMSU-RMSUmean) );
-    
+
   //===========
 
 
@@ -2466,12 +2466,12 @@ void MimosaAnalysis::BinarySpecific_HitsOnly_fill(DAuthenticHit *ahit)
   // Called for each selected cluster
   //
   // JB 2010/06/03 based on A.Besson original stuff
-	
+
 	Float_t Charge_all_m8 = 0.0;
 	Float_t Charge_sub_m8 = 0.0;
 	Float_t hUdigital_m8 = 0.0;
 	Float_t hVdigital_m8 = 0.0;
-	
+
 	// Count the number of pixels inside the hit
 	for(Int_t i=0; i < NofPixelsInCluster; i++){
 		Charge_all_m8 += ahit->HqM[i];
@@ -2479,14 +2479,14 @@ void MimosaAnalysis::BinarySpecific_HitsOnly_fill(DAuthenticHit *ahit)
 		hUdigital_m8 = ((ahit->Hsk)%NofPixelInRaw)*PixelSizeU-FirstPixelShiftU;
 		// use track in mimo to see if the hit is inside the window.
 		if( TrackInMimo( Thegeomatrix, hUdigital_m8 ,  hVdigital_m8, ThesubmatrixNumber) ) {
-			Charge_sub_m8+= ahit->HqM[i];			
+			Charge_sub_m8+= ahit->HqM[i];
 		}
 	}
 
 	hBinary_NumberOf_1_ALL->Fill(Charge_all_m8); // all hits
 	hBinary_NumberOf_1_submatrix->Fill(Charge_sub_m8); // hits in the geomatrix
-	
-	
+
+
 }
 
 //_____________________________________________________________________________
@@ -2499,10 +2499,10 @@ void MimosaAnalysis::BinarySpecific_fill(DAuthenticHit *thehit)
   // Called for each cluster associated to a track
   //
   // JB 2010/06/03 based on A.Besson original stuff
-	
+
 	hBinary_NumberOf_1_goodhit->Fill(qonly[NofPixelsInCluster-1]);
 
-	
+
 }
 
 //_____________________________________________________________________________
@@ -2514,19 +2514,19 @@ void MimosaAnalysis::BinarySpecific_end()
   // Called once for all
   //
   // JB 2010/06/03 based on A.Besson original stuff
-	
+
   if( MimoDebug) Info("BinarySpecific_end","Finalizing histograms");
 
   if(NtrkInMimo!=0){
-		
+
     for(Int_t i= 1; i < NofPixelInColumn+1; i++){
       for(Int_t j= 1; j < NofPixelInRaw+1;j++){
         hBinary_Nhitperpixel_submatrix->Fill(h2DgoodSeedPixel->GetBinContent(j,i));
         hBinary_NhitRateperpixel_submatrix->Fill(h2DgoodSeedPixel->GetBinContent(j,i)/float(NtrkInMimo));
       }
-    }	
+    }
 
-  }	
+  }
 
   Float_t hM8_sub_integ;
   hM8_sub_integ = hBinary_NhitRateperpixel_submatrix->Integral();
@@ -2544,7 +2544,7 @@ void MimosaAnalysis::ClusterCharges_init()
   // Called once for all
   //
   // JB 2010/06/03 based on original MPro stuff
-	
+
 	q  = new Float_t[MaxNofPixelsInCluster] ; // cumulative cluster Charge in [index+1] pixels
 	n  = new Float_t[MaxNofPixelsInCluster] ; // cumulative cluster Noise in [index+1] pixels
 	sn = new Float_t[MaxNofPixelsInCluster] ; // cumulative signal/noise in [index+1] pixels
@@ -2557,7 +2557,7 @@ void MimosaAnalysis::ClusterCharges_init()
 	nsumspiral  = new Float_t[MaxNofPixelsInCluster] ;
 	snsumspiral = new Float_t[MaxNofPixelsInCluster] ;
 
-	UofPix=new Float_t[MaxNofPixelsInCluster];   // u of pixels in a cluster 
+	UofPix=new Float_t[MaxNofPixelsInCluster];   // u of pixels in a cluster
 	VofPix=new Float_t[MaxNofPixelsInCluster];   // v -------" --------
 	LineInCluster = new Int_t[MaxNofPixelsInCluster]; // line shift wrt seed
 	ColumnInCluster =  new Int_t[MaxNofPixelsInCluster]; // column shift wrt seed
@@ -2578,23 +2578,23 @@ void MimosaAnalysis::ClusterCharges_init()
 	noise= new Float_t[MaxNofPixelsInCluster] ;// Noise in the pixels of the cluster
 	snonly=new Float_t[MaxNofPixelsInCluster] ;// charge in the pixels of the cluster
 	qqordered = new Float_t[MaxNofPixelsInCluster] ;// charge in the pixels of the cluster ordered by S/N
-	nqordered = new Float_t[MaxNofPixelsInCluster] ;// Noise in the pixels of the cluster ordered by S/N	      
+	nqordered = new Float_t[MaxNofPixelsInCluster] ;// Noise in the pixels of the cluster ordered by S/N
 	snqordered = new Float_t[MaxNofPixelsInCluster] ;      // signal/noise ordered by S/N
 	IndexofPixqordered = new Int_t[MaxNofPixelsInCluster]; //
 	UofPixqordered = new Float_t[MaxNofPixelsInCluster];   // u of pixels in a cluster ordered by S/N
-	VofPixqordered = new Float_t[MaxNofPixelsInCluster];   // v -------" -------- ordered by S/N	
+	VofPixqordered = new Float_t[MaxNofPixelsInCluster];   // v -------" -------- ordered by S/N
 	LineInClusterqordered = new Int_t[MaxNofPixelsInCluster]; // line shift wrt seed
 	ColumnInClusterqordered =  new Int_t[MaxNofPixelsInCluster]; // column shift wrt seed
-	
+
 	qsnordered = new Float_t[MaxNofPixelsInCluster] ;// charge in the pixels of the cluster ordered by S/N
-	nsnordered = new Float_t[MaxNofPixelsInCluster] ;// Noise in the pixels of the cluster ordered by S/N	      
+	nsnordered = new Float_t[MaxNofPixelsInCluster] ;// Noise in the pixels of the cluster ordered by S/N
 	snsnordered = new Float_t[MaxNofPixelsInCluster] ;      // signal/noise ordered by S/N
 	IndexofPixsnordered = new Int_t[MaxNofPixelsInCluster]; //
 	UofPixsnordered = new Float_t[MaxNofPixelsInCluster];   // u of pixels in a cluster ordered by S/N
 	VofPixsnordered = new Float_t[MaxNofPixelsInCluster];   // v -------" -------- ordered by S/N
 	LineInClustersnordered = new Int_t[MaxNofPixelsInCluster]; // line shift wrt seed
 	ColumnInClustersnordered =  new Int_t[MaxNofPixelsInCluster]; // column shift wrt seed
-	
+
 	qspiral = new Float_t[MaxNofPixelsInCluster] ;// charge in the pixels of the cluster ordered by geometrical position
 	nspiral = new Float_t[MaxNofPixelsInCluster] ;// Noise in the pixels of the cluster ordered by geometrical position
 	snspiral = new Float_t[MaxNofPixelsInCluster] ;      // signal/noise ordered by geometrical position
@@ -2616,10 +2616,10 @@ void MimosaAnalysis::ClusterCharges_init()
    // Called for each matched clusters
    //
    // JB 2010/06/03 based on original MPro stuff
-   // Modified 2010/07/27: JB, for the "spiral" geomtrical ordering 
+   // Modified 2010/07/27: JB, for the "spiral" geomtrical ordering
    // Modified 2010/09/06: JB, usage of NoiseScope
    // Modified 2012/11/21: JB, use ComputePixelPosition method
-	
+
    if( MimoDebug) Info("ClusterCharges_compute"," Computing charges for hit %d with %d pixels\n", thehit->Hhk, NofPixelsInCluster);
 
 
@@ -2641,7 +2641,7 @@ void MimosaAnalysis::ClusterCharges_init()
      VofPix[iPix] = 0.;
      LineInCluster[iPix]   = 0;
      ColumnInCluster[iPix] = 0;
-		
+
      qqordered[iPix] = 0.;
      nqordered[iPix] = 0.;
      snqordered[iPix] = 0.;
@@ -2650,7 +2650,7 @@ void MimosaAnalysis::ClusterCharges_init()
      VofPixqordered[iPix] = 0.;
      LineInClusterqordered[iPix]   = 0;
      ColumnInClusterqordered[iPix] = 0;
-		
+
      q[iPix] = 0.;
      n[iPix] = 0.;
      sn[iPix] = 0.;
@@ -2682,7 +2682,7 @@ void MimosaAnalysis::ClusterCharges_init()
      snsumspiral[iPix] = 0.;
 
    }
-   
+
    for( Short_t i=0; i<4; i++) {
      Qof2x2[i] = 0.;
      UofPix2x2[i] = 0.;
@@ -2722,8 +2722,8 @@ void MimosaAnalysis::ClusterCharges_init()
    //------------
    //-- Fill the initial arrays
    Float_t ChargeOfMaxPixel=0.;
-   for (Int_t iq=0 ; iq<NofPixelsInCluster ; iq++){ // loop on pixels inside cluster	
-		
+   for (Int_t iq=0 ; iq<NofPixelsInCluster ; iq++){ // loop on pixels inside cluster
+
      qonly[iq] = thehit->HqM[iq]*calibration;
      //cout << " Init charge " <<  thehit->HqM[iq] << " * calib " << calibration << " = " << qonly[iq] << endl;
      noise[iq] = thehit->HnM[iq]*calibration*NoiseScope;
@@ -2746,8 +2746,8 @@ void MimosaAnalysis::ClusterCharges_init()
      // due to error in indexation in DPlane
      if (MimosaType==22) {
        //IndexofPix[iq]--;
-       if( IndexofPix[iq]<0 ) { 
-          Warning("ClusterCharges_compute", "WARNING negative index %d, set to 0", IndexofPix[iq]); 
+       if( IndexofPix[iq]<0 ) {
+          Warning("ClusterCharges_compute", "WARNING negative index %d, set to 0", IndexofPix[iq]);
          IndexofPix[iq] = 0;
        }
      }
@@ -2761,7 +2761,7 @@ void MimosaAnalysis::ClusterCharges_init()
      if( highestLineInCruster < LineInCluster[iq] ) highestLineInCruster = LineInCluster[iq] ;
      if( ColumnInCluster[iq] < lowestColumnInCruster ) lowestColumnInCruster = ColumnInCluster[iq] ;
      if( highestColumnInCruster < ColumnInCluster[iq] ) highestColumnInCruster = ColumnInCluster[iq] ;
-     
+
      TotalCharge += qonly[iq];
 
      // The pixel with the highest charge defines the seed
@@ -2770,19 +2770,19 @@ void MimosaAnalysis::ClusterCharges_init()
        ChargeOfMaxPixel=qonly[iq];
        IndexOfMaxPixel=iq;
      }
-		
-     if(UofPix[iq] < MinUofPix) MinUofPix=UofPix[iq]; 
+
+     if(UofPix[iq] < MinUofPix) MinUofPix=UofPix[iq];
      if(VofPix[iq] < MinVofPix) MinVofPix=VofPix[iq];
 
      qqordered[iq] = qonly[iq];
      nqordered[iq] = noise[iq];
-     snqordered[iq] = snonly[iq];	      
+     snqordered[iq] = snonly[iq];
      IndexofPixqordered[iq] = IndexofPix[iq];
      UofPixqordered[iq] = UofPix[iq];
      VofPixqordered[iq] = VofPix[iq];
      LineInClusterqordered[iq]   = LineInCluster[iq];
      ColumnInClusterqordered[iq] = ColumnInCluster[iq];
-		
+
      qsnordered[iq] = qonly[iq];
      nsnordered[iq] = noise[iq];
      snsnordered[iq] = snonly[iq];
@@ -2795,12 +2795,12 @@ void MimosaAnalysis::ClusterCharges_init()
      if( MimoDebug>1) printf(" un-ordered pix %d, q=%6.1f n=%4.1f sn=%6.1f index=%d u=%6.1f v=%6.1f line/seed=%d col/seed=%d\n", iq, qonly[iq], noise[iq], snonly[iq], IndexofPix[iq], UofPix[iq], VofPix[iq], LineInCluster[iq], ColumnInCluster[iq]);
 
    } // end loop on pixels inside cluster
-	
+
    // Size of cluster
    // JB 2014/03/31
    LineSizeOfCluster = highestLineInCruster - lowestLineInCruster + 1;
    ColumnSizeOfCluster = highestColumnInCruster - lowestColumnInCruster + 1;
-   
+
    // Geometrical type of cluster
    //  see the definition of clusterTypeDef in MAnalysis.h
    // JB 2014/03/31
@@ -2822,7 +2822,7 @@ void MimosaAnalysis::ClusterCharges_init()
    }
    else if ( NofPixelsInCluster==3 && LineSizeOfCluster==3 ) {
      ClusterGeometricalType = three_pix_col;
-   }  
+   }
    else if ( NofPixelsInCluster==4 && LineSizeOfCluster==2 && ColumnSizeOfCluster==2 ) {
      ClusterGeometricalType = four_pix_square;
    }
@@ -2837,7 +2837,7 @@ void MimosaAnalysis::ClusterCharges_init()
    }
    else {
      ClusterGeometricalType = more_than_four;
-     
+
      // From 5 pixels
      if ( NofPixelsInCluster==5 && LineSizeOfCluster==3 && ColumnSizeOfCluster==2 ) {
        ClusterGeometricalTypeBeyond4 = five_pix_squarerow;
@@ -2849,7 +2849,7 @@ void MimosaAnalysis::ClusterCharges_init()
        ClusterGeometricalTypeBeyond4 = five_others;
      }
      else if ( NofPixelsInCluster==6 && LineSizeOfCluster==2 && ColumnSizeOfCluster==3 ) {
-       ClusterGeometricalTypeBeyond4 = six_pix_3col2row;       
+       ClusterGeometricalTypeBeyond4 = six_pix_3col2row;
      }
      else if ( NofPixelsInCluster==6 && LineSizeOfCluster==3 && ColumnSizeOfCluster==2 ) {
        ClusterGeometricalTypeBeyond4 = six_pix_2col3row;
@@ -2860,29 +2860,29 @@ void MimosaAnalysis::ClusterCharges_init()
      else {
        ClusterGeometricalTypeBeyond4 = more_than_six;
      }
-     
+
    }
-   
+
    //------------
    //-- Reorder pixels by their charge:
    // index 0 is then the "true" seed
-   Bool_t continuer = kTRUE ;  
+   Bool_t continuer = kTRUE ;
    Float_t tmpq,tmpnoise,tmpsn,tmpU,tmpV;
    Int_t tmpi, tmplinei, tmpcolumni;
-   while (continuer) {  
-     continuer = kFALSE  ; 
-     for (Int_t iq=0 ; iq<NofPixelsInCluster-1 ; iq++){  
-       if (qqordered[iq]<qqordered[iq+1]) {  
-	 continuer = kTRUE ;  
-	 tmpq = qqordered[iq] ;  
+   while (continuer) {
+     continuer = kFALSE  ;
+     for (Int_t iq=0 ; iq<NofPixelsInCluster-1 ; iq++){
+       if (qqordered[iq]<qqordered[iq+1]) {
+	 continuer = kTRUE ;
+	 tmpq = qqordered[iq] ;
 	 tmpnoise = nqordered[iq];
 	 tmpi = IndexofPixqordered[iq];
-	 tmpsn = snqordered[iq] ;  
+	 tmpsn = snqordered[iq] ;
 	 tmpU = UofPixqordered[iq];
 	 tmpV = VofPixqordered[iq];
 	 tmplinei = LineInClusterqordered[iq];
 	 tmpcolumni = ColumnInClusterqordered[iq];
-	 qqordered[iq]  = qqordered[iq+1] ;  
+	 qqordered[iq]  = qqordered[iq+1] ;
 	 qqordered[iq+1]= tmpq;
 	 nqordered[iq] = nqordered[iq+1];
 	 nqordered[iq+1] = tmpnoise;
@@ -2893,32 +2893,32 @@ void MimosaAnalysis::ClusterCharges_init()
 	 UofPixqordered[iq] = UofPixqordered[iq+1];
 	 UofPixqordered[iq+1] = tmpU;
 	 VofPixqordered[iq] = VofPixqordered[iq+1];
-	 VofPixqordered[iq+1] = tmpV;		
-	 LineInClusterqordered[iq] = LineInClusterqordered[iq+1];		
-	 LineInClusterqordered[iq+1] = tmplinei;		
-	 ColumnInClusterqordered[iq] = ColumnInClusterqordered[iq+1];		
-	 ColumnInClusterqordered[iq+1] = tmpcolumni;		
-       }  
-     }  
-   } 
+	 VofPixqordered[iq+1] = tmpV;
+	 LineInClusterqordered[iq] = LineInClusterqordered[iq+1];
+	 LineInClusterqordered[iq+1] = tmplinei;
+	 ColumnInClusterqordered[iq] = ColumnInClusterqordered[iq+1];
+	 ColumnInClusterqordered[iq+1] = tmpcolumni;
+       }
+     }
+   }
 
    if( MimoDebug>1 ) {
-     for (Int_t iq=0 ; iq<NofPixelsInCluster-1 ; iq++){  
+     for (Int_t iq=0 ; iq<NofPixelsInCluster-1 ; iq++){
        printf(" q-ordered pix %d, q=%6.1f n=%4.1f sn=%6.1f index=%d u=%6.1f v=%6.1f line/seed=%d col/seed=%d\n", iq, qqordered[iq], noise[iq], snqordered[iq], IndexofPixqordered[iq], UofPixqordered[iq], VofPixqordered[iq], LineInClusterqordered[iq], ColumnInClusterqordered[iq]);
      }
    }
-   
+
    //------------
    //-- Reorder pixels by S/N
-   continuer = kTRUE; 
-   while (continuer) {  
-     continuer = kFALSE  ; 
-     for (Int_t iq=0 ; iq<NofPixelsInCluster-1 ; iq++){  
-       if (snsnordered[iq]<snsnordered[iq+1]) {  
-	 continuer = kTRUE ;  
+   continuer = kTRUE;
+   while (continuer) {
+     continuer = kFALSE  ;
+     for (Int_t iq=0 ; iq<NofPixelsInCluster-1 ; iq++){
+       if (snsnordered[iq]<snsnordered[iq+1]) {
+	 continuer = kTRUE ;
 	 tmpq = qsnordered[iq];
 	 tmpnoise = nsnordered[iq];
-	 tmpsn = snsnordered[iq] ;  
+	 tmpsn = snsnordered[iq] ;
 	 tmpi = IndexofPixsnordered[iq];
 	 tmpU = UofPixsnordered[iq];
 	 tmpV = VofPixsnordered[iq];
@@ -2926,7 +2926,7 @@ void MimosaAnalysis::ClusterCharges_init()
 	 tmpcolumni = ColumnInClustersnordered[iq];
 	 IndexofPixsnordered[iq]=IndexofPixsnordered[iq+1];
 	 IndexofPixsnordered[iq+1]=tmpi;
-	 qsnordered[iq]  = qsnordered[iq+1] ;  
+	 qsnordered[iq]  = qsnordered[iq+1] ;
 	 qsnordered[iq+1]= tmpq     ;
 	 nsnordered[iq] = nsnordered[iq+1];
 	 nsnordered[iq+1] = tmpnoise;
@@ -2936,14 +2936,14 @@ void MimosaAnalysis::ClusterCharges_init()
 	 UofPixsnordered[iq+1] = tmpU;
 	 VofPixsnordered[iq] = VofPixsnordered[iq+1];
 	 VofPixsnordered[iq+1] = tmpV;
-	 LineInClustersnordered[iq] = LineInClustersnordered[iq+1];		
-	 LineInClustersnordered[iq+1] = tmplinei;		
-	 ColumnInClustersnordered[iq] = ColumnInClustersnordered[iq+1];		
-	 ColumnInClustersnordered[iq+1] = tmpcolumni;		
-       }  
-     } 
+	 LineInClustersnordered[iq] = LineInClustersnordered[iq+1];
+	 LineInClustersnordered[iq+1] = tmplinei;
+	 ColumnInClustersnordered[iq] = ColumnInClustersnordered[iq+1];
+	 ColumnInClustersnordered[iq+1] = tmpcolumni;
+       }
+     }
    }
-	
+
 
    //------------
    //-- Reorder pixels geometrically
@@ -2966,11 +2966,11 @@ void MimosaAnalysis::ClusterCharges_init()
    Double_t as, dist, angle;
    Int_t nCrown, firstIndex, nofPixels, spiralIndex;
    Double_t pi = TMath::Pi();
-   for (Int_t iq=1 ; iq<NofPixelsInCluster; iq++){  
+   for (Int_t iq=1 ; iq<NofPixelsInCluster; iq++){
 
      // center (seed) pixel is a special case
      if( LineInClusterqordered[iq]==0 && ColumnInClusterqordered[iq]==0 ) {spiralIndex=0;}
-     
+
      // pixels on crowns
      else {
        dist = sqrt( LineInClusterqordered[iq]*LineInClusterqordered[iq] + ColumnInClusterqordered[iq]*ColumnInClusterqordered[iq] ); // distance to seed
@@ -2986,7 +2986,7 @@ void MimosaAnalysis::ClusterCharges_init()
 	 printf(" [ %2d, %2d] -> %3d\n", LineInClusterqordered[iq], ColumnInClusterqordered[iq], spiralIndex);
        }
      }
-     
+
      if( spiralIndex<MaxNofPixelsInCluster ) { // check the index make sense, otherwise do nothing
        qspiral[spiralIndex] = qqordered[iq];
        nspiral[spiralIndex] = nqordered[iq];
@@ -3006,10 +3006,10 @@ void MimosaAnalysis::ClusterCharges_init()
    //------------
    //-- Reorder pixels by their distance from center:
    /*
-     Bool_t continuer = kTRUE ;  
-     while (continuer) {  
-     continuer = kFALSE  ; 
-     for (Int_t iq=0 ; iq<NofPixelsInCluster-2 ; iq++){  
+     Bool_t continuer = kTRUE ;
+     while (continuer) {
+     continuer = kFALSE  ;
+     for (Int_t iq=0 ; iq<NofPixelsInCluster-2 ; iq++){
      Float_t tmp,tmpnoise;
      Int_t itmp;
      //		  cout << "d[" << iq<< "]=" << sqrt((hUdigital-UofPix[iq])*(hUdigital-UofPix[iq]) +
@@ -3020,15 +3020,15 @@ void MimosaAnalysis::ClusterCharges_init()
      (hVdigital-VofPix[iq])*(hVdigital-VofPix[iq]))>
      sqrt((hUdigital-UofPix[iq+1])*(hUdigital-UofPix[iq+1]) +
      (hVdigital-VofPix[iq+1])*(hVdigital-VofPix[iq+1]))
-     ){  
-     continuer = kTRUE ;  
-     tmp = q[iq] ;  
+     ){
+     continuer = kTRUE ;
+     tmp = q[iq] ;
      tmpnoise = noise[iq];
      itmp = IndexInCluster[iq];
      //	    cout << "index= " << IndexInCluster[iq] << endl;
      IndexInCluster[iq]=IndexInCluster[iq+1];
      IndexInCluster[iq+1]=itmp;
-     q[iq]  = q[iq+1] ;  
+     q[iq]  = q[iq+1] ;
      q[iq+1]= tmp     ;
      noise[iq] = noise[iq+1];
      noise[iq+1] = tmpnoise;
@@ -3041,8 +3041,8 @@ void MimosaAnalysis::ClusterCharges_init()
      //		    cout << " ------- ievt= " << ievt << endl;
      //		    cout << "Index=" << IndexInCluster[iq] << "q[" << iq << "]=" << q[iq] << endl;
      //		    cout << "Index=" << IndexInCluster[iq+1] << "   q[" << iq+1 << "]=" << q[iq+1] << endl;
-     }  
-     }  
+     }
+     }
      }
    */
 
@@ -3080,7 +3080,7 @@ void MimosaAnalysis::ClusterCharges_init()
      if( nsumspiral[iq]>1.e-2 ) { snsumspiral[iq] = qsumspiral[iq] / nsumspiral[iq]; }
      else { snsumspiral[iq] = 0.; }
    } // end loop on pixels
-	
+
 
    //------------
    // compute some charges relevant for the cluster
@@ -3093,7 +3093,7 @@ void MimosaAnalysis::ClusterCharges_init()
 
 
    //-- compute charges limited to 3x3 cluster
-   // (Note that if NofPixelsInCluster<25, arrays are updated with 0s) 
+   // (Note that if NofPixelsInCluster<25, arrays are updated with 0s)
    // pixel with index 0 is the seed, in the center
    for( Short_t i=0; i<25; i++) {
      UofPix5x5[i] = UofPixspiral[i];
@@ -3103,7 +3103,7 @@ void MimosaAnalysis::ClusterCharges_init()
    }
 
    //-- compute charges limited to 3x3 cluster
-   // (Note that if NofPixelsInCluster<9, arrays are updated with 0s) 
+   // (Note that if NofPixelsInCluster<9, arrays are updated with 0s)
    // pixel with index 0 is the seed, in the center
    for( Short_t i=0; i<9; i++) {
      UofPix3x3[i] = UofPixspiral[i];
@@ -3140,7 +3140,7 @@ void MimosaAnalysis::ClusterCharges_init()
      UofPix2x2[i] = UofPixspiral[2*IndexOfCluster2x2+i];
      VofPix2x2[i] = VofPixspiral[2*IndexOfCluster2x2+i];
    }
-	
+
 
  }
 
@@ -3155,7 +3155,7 @@ void MimosaAnalysis::ClusterCharges_init()
    //
    // JB 2010/06/03 based on original MPro stuff
    // Modified: JB 2013/11/08 some new histograms
-	
+
    if( MimoDebug) Info("ClusterCharges_fill"," Filling histos with charges for hit %d", thehit->Hhk);
 
    // -----------------------------
@@ -3205,9 +3205,9 @@ void MimosaAnalysis::ClusterCharges_init()
      hChargeRap_1_over_4->Fill(qqordered[0] / qqordered[3]);
      hChargeRap_2_over_3->Fill(qqordered[1] / qqordered[2]);
    }
-		
+
    if( fabs(snqordered[1])>0. ) h_SNRratioL->Fill( snqordered[0]/snqordered[1] );
-   
+
 
    // Restricted to 3x3 pixels cluster around seed
    for( Short_t i=0; i<9; i++) {
@@ -3228,7 +3228,7 @@ void MimosaAnalysis::ClusterCharges_init()
      hQ3x35->Fill(Qof3x3[5]);
    }
 
-	
+
    // -----------------------------
    // Cluster charge
    // -----------------------------
@@ -3251,9 +3251,9 @@ void MimosaAnalysis::ClusterCharges_init()
    hSNneighbour->Fill(thehit->HSNneighbour); // cluster charge without seed from TTree
    hSNseedvsSNneighbour->Fill(snsnordered[0],thehit->HSNneighbour); // JB 2013/11/07
    hQseedvsQcluster->Fill(thehit->Hqc * calibration,ChargeAroundSeed); // JB 2014/05/22
-   hQseedvsQneighbour->Fill(qsnordered[0],ChargeAroundSeed); // JB 2013/11/08	
+   hQseedvsQneighbour->Fill(qsnordered[0],ChargeAroundSeed); // JB 2013/11/08
    hSNseedvsQcluster->Fill(snsnordered[0],thehit->Hqc * calibration); // JB 2014/05/22
-   
+
    // -----------------------------
    // Pixel multiplicity
    // -----------------------------
@@ -3281,24 +3281,24 @@ void MimosaAnalysis::ClusterCharges_init()
    }
    hnWindows_c->Fill(NWindows);
    //}
-	
+
    // -----------------------------
    // Correlation between different charges
    // -----------------------------
-   //-------Signal / noise for different combinations of pixels: (0=seed) ordered 
+   //-------Signal / noise for different combinations of pixels: (0=seed) ordered
 
    hS2N2RH->Fill(snqordered[0],qqordered[1]);
-   hseedQvsS2NGood->Fill(snqordered[0],qqordered[0]);	      
+   hseedQvsS2NGood->Fill(snqordered[0],qqordered[0]);
    hSN_vs_SNNReal->Fill(snsnordered[1],snsnordered[0]);
 
    Float_t temp_pulsesum=0;
    Float_t temp_noisesqsum=0;
-   for (Int_t ip=0 ; ip<2 ; ip++){    		
-     for (Int_t jp=0 ; jp<jpixmax ; jp++){    
+   for (Int_t ip=0 ; ip<2 ; ip++){
+     for (Int_t jp=0 ; jp<jpixmax ; jp++){
        temp_pulsesum=0;
        temp_noisesqsum=0;
        Int_t counterpulse;
-       for (counterpulse=ip ; counterpulse<jp+2;counterpulse++){ 
+       for (counterpulse=ip ; counterpulse<jp+2;counterpulse++){
          //oredered by charge:
          //		      temp_pulsesum += qqordered[counterpulse];
          //		      temp_noisesqsum += nqordered[counterpulse] * nqordered[counterpulse];
@@ -3319,9 +3319,9 @@ void MimosaAnalysis::ClusterCharges_init()
        }
      }
    }
-				
 
-				
+
+
  }
 
 
@@ -3346,11 +3346,11 @@ void MimosaAnalysis::ClusterPosition_init()
   // Initializer to be called once for all
   //
   // Created: JB 2014/01/10
-  
+
   hitCounterPos = 0;
 
 }
-  
+
 //_____________________________________________________________________________
  //
  void MimosaAnalysis::ClusterPosition_compute(DAuthenticHit *thehit, DPrecAlign *align)
@@ -3363,15 +3363,15 @@ void MimosaAnalysis::ClusterPosition_init()
    // Modified: JB 2010/09/10, correct digital position from Ttree information (thehit)
    // Modified: JB 2013/05/01, convert position in tracker frame (require alignment)
    // Modified: JB 2013/01/10, increment hit counter
-   
+
    if( MimoDebug) Info("ClusterPosition_compute"," Computing positions for hit %d in event, %d /total", thehit->Hhk, hitCounterPos);
 
    hitCounterPos++; // JB 2014/01/10
-   
+
    // digital position
    hUdigital = thehit->Hsu;
    hVdigital = thehit->Hsv;
-	
+
    // position as computed by clustering algo
    hU = thehit->Hu;
    hV = thehit->Hv;
@@ -3418,7 +3418,7 @@ void MimosaAnalysis::ClusterPosition_init()
    ClusterPosition_aht( thehit);
 
 
-	
+
  }
 
  //_____________________________________________________________________________
@@ -3431,8 +3431,8 @@ void MimosaAnalysis::ClusterPosition_init()
    //
    // JB 2010/06/03 based on original MPro stuff
    // Modified JB 2010/08/27 to avoid crash when CorPar not ready
-	
-	
+
+
    if( MimoDebug) Info("ClusterPosition_eta"," Computing eta positions for hit %d (CorPar file staus=%d)", thehit->Hhk, CorStatus);
 
    // Quit if CorPar file not ready (status==2)
@@ -3440,7 +3440,7 @@ void MimosaAnalysis::ClusterPosition_init()
    if( CorStatus==2 ) return;
 
    // ---------------------------
-   // Init for new positions	
+   // Init for new positions
    UofHitEta3 = 0.; // Eta method for 3 "strips"
    VofHitEta3 = 0.;
    UofHitEta2x2 = 0.;// Eta method for 2x2
@@ -3477,7 +3477,7 @@ void MimosaAnalysis::ClusterPosition_init()
      }
    }
    for(Int_t i=0; i < Nofeta2x2; i++){
-     UofHitEta2x2_new += Qofeta2x2[i]*UofPixeta2x2[i] ;  
+     UofHitEta2x2_new += Qofeta2x2[i]*UofPixeta2x2[i] ;
      VofHitEta2x2_new += Qofeta2x2[i]*VofPixeta2x2[i] ;
      TotalCharge_eta2x2 +=Qofeta2x2[i];
    }
@@ -3486,7 +3486,7 @@ void MimosaAnalysis::ClusterPosition_init()
      VofHitEta2x2_new = VofHitEta2x2_new /  TotalCharge_eta2x2;
    }
    if( MimoDebug>1) printf("ClusterPosition_eta: Eta_2x2_new = %.1f, %.1f\n", UofHitEta2x2_new, VofHitEta2x2_new);
-	
+
 
    // ---------------------------
    // Eta 5x5 NEW
@@ -3513,7 +3513,7 @@ void MimosaAnalysis::ClusterPosition_init()
    }
    for(Int_t i=0; i < Nofeta5x5; i++){
      if((qonly[i]/noise[i])>1.0){
-       UofHitEta5x5_new += TMath::Power(Qofeta5x5[i],1.0)*UofPixeta5x5[i] ;  
+       UofHitEta5x5_new += TMath::Power(Qofeta5x5[i],1.0)*UofPixeta5x5[i] ;
        VofHitEta5x5_new += TMath::Power(Qofeta5x5[i],1.0)*VofPixeta5x5[i] ;
        TotalCharge_eta5x5 += TMath::Power(Qofeta5x5[i],1.0);
        //cout<<"** "<<q[i]/noise[i];
@@ -3530,31 +3530,31 @@ void MimosaAnalysis::ClusterPosition_init()
    //2x2 calculations:
    Float_t Eta2x2U = 0.;
    Float_t Eta2x2V = 0.;
-   if(TotalCharge2x2!=0){	
+   if(TotalCharge2x2!=0){
      switch(IndexOfCluster2x2){
      case 0:
        Eta2x2U=(TotalCharge2x2-ExternalCharge2x2+
 		Qof3x3[IndexU2x2[IndexOfCluster2x2]])
-	 /TotalCharge2x2; 
+	 /TotalCharge2x2;
        Eta2x2V=(TotalCharge2x2-ExternalCharge2x2+
 		Qof3x3[IndexV2x2[IndexOfCluster2x2]])
-	 /TotalCharge2x2; 
+	 /TotalCharge2x2;
        break;
      case 1:
        Eta2x2U = (ExternalCharge2x2-Qof3x3[IndexU2x2[IndexOfCluster2x2]])
-	 /TotalCharge2x2; 
+	 /TotalCharge2x2;
        Eta2x2V=(TotalCharge2x2-ExternalCharge2x2+Qof3x3[IndexV2x2[IndexOfCluster2x2]])
-	 /TotalCharge2x2; 
+	 /TotalCharge2x2;
        break;
      case 2:
        Eta2x2U=(TotalCharge2x2-ExternalCharge2x2+Qof3x3[IndexU2x2[IndexOfCluster2x2]])
-	 /TotalCharge2x2; 
+	 /TotalCharge2x2;
        Eta2x2V=(ExternalCharge2x2-Qof3x3[IndexV2x2[IndexOfCluster2x2]])
 	 /TotalCharge2x2;
        break;
      case 3:
        Eta2x2U=(ExternalCharge2x2-Qof3x3[IndexU2x2[IndexOfCluster2x2]])
-	 /TotalCharge2x2; 
+	 /TotalCharge2x2;
        Eta2x2V = (ExternalCharge2x2-Qof3x3[IndexV2x2[IndexOfCluster2x2]])
 	 /TotalCharge2x2;
        break;
@@ -3563,9 +3563,9 @@ void MimosaAnalysis::ClusterPosition_init()
    else{
      if(thehit->HNNS > 0) cout<<"segment WARNING TotalCharge2x2 = 0"<<endl;
    }
-				
+
    Int_t iBin2x2(0);
-		    
+
    while(Eta2x2U > Edges2x2[iBin2x2] && iBin2x2<NBins2x2-1){
      iBin2x2++;
    }
@@ -3581,7 +3581,7 @@ void MimosaAnalysis::ClusterPosition_init()
      -PixelSizeV/2.+VofPix2x2[IndexOfCluster2x2]/2.+hVdigital;
    if( MimoDebug>1) printf("ClusterPosition_eta: Eta2x2 = %.1f, %.1f\n", UofHitEta2x2, VofHitEta2x2);
 
-		    
+
    // ---------------------------
    // calculate the coordinate by eta and profile:
    Float_t xxx = UofHitCG-hUdigital;
@@ -3612,7 +3612,7 @@ void MimosaAnalysis::ClusterPosition_init()
    UofHitEta3 = hUdigital;
    VofHitEta3 = hVdigital;
 
-		    
+
    for(Int_t i=0; i<7; i++)
      {
        UofHitEta3 += FitParEta3U[i]*TMath::Power(xxx,i);
@@ -3624,9 +3624,9 @@ void MimosaAnalysis::ClusterPosition_init()
 	 cout<<" UofHitCG VofHitCG "<<UofHitCG<<" "<<VofHitCG<<endl;
 	 cout<<" xxx yxx "<<xxx <<" "<<yxx<<endl;
 	 cout<<"FitParEta3U[i] FitParEta3V[i] "<<FitParEta3U[i] <<" "<<FitParEta3V[i] <<endl;
-	 cout<<"TMath::Power(xxx,i) TMath::Power(yxx,i)"<< TMath::Power(xxx,i) <<" "<<TMath::Power(yxx,i)<<endl; 
+	 cout<<"TMath::Power(xxx,i) TMath::Power(yxx,i)"<< TMath::Power(xxx,i) <<" "<<TMath::Power(yxx,i)<<endl;
 	 cout<<"  -------------- "<<endl;
-					 
+
 	 }
 	 //--------------------- */
      }
@@ -3650,7 +3650,7 @@ void MimosaAnalysis::ClusterPosition_init()
 	 etacounter++;
 	 if(etacounter>=READnListe_CoG){etastop=0;}
        }
-			
+
      }
 
      UofHitEta3+= PixelSizeU* (float(etacounter)/float(READnListe_CoG)) - PixelSizeU/2.;
@@ -3666,7 +3666,7 @@ void MimosaAnalysis::ClusterPosition_init()
 	 etacounter++;
 	 if(etacounter>=READnListe_CoG){etastop=0;}
        }
-			
+
      }
      VofHitEta3+= PixelSizeV* (float(etacounter)/float(READnListe_CoG)) - PixelSizeV/2.;
 
@@ -3703,7 +3703,7 @@ void MimosaAnalysis::ClusterPosition_init()
 
      if( MimoDebug>1) printf("ClusterPosition_eta: Eta2x2_newR = %.1f, %.1f\n", UofHitEta2x2_newR, VofHitEta2x2_newR);
 
-		
+
      //---U eta 5x5
      etacounter = 0;
      etastop = 1;
@@ -3717,7 +3717,7 @@ void MimosaAnalysis::ClusterPosition_init()
        }
      }
      UofHitEta5x5_newR += PixelSizeU* (float(etacounter)/float(READnListe_CoG_eta5x5)) - PixelSizeU/2.;
-		
+
      //---V eta 5x5
      etacounter = 0;
      etastop = 1;
@@ -3733,13 +3733,13 @@ void MimosaAnalysis::ClusterPosition_init()
      VofHitEta5x5_newR += PixelSizeV* (float(etacounter)/float(READnListe_CoG_eta5x5)) - PixelSizeV/2.;
 
      if( MimoDebug>1) printf("ClusterPosition_eta: Eta2x2_newR = %.1f, %.1f\n", UofHitEta5x5_newR, VofHitEta5x5_newR);
-		
+
    } // end if corPar OK and EtaList filled
    else {
      if( MimoDebug) printf("ClusterPosition_eta: Cannot compute new Eta with list either because CorPar has wrong status %d or because list has %d entries\n", CorStatus, READnListe_CoG);
    }
-   //---------------------------------END OF New ETA METHOD WITHOUT FIT BIAS 
-	
+   //---------------------------------END OF New ETA METHOD WITHOUT FIT BIAS
+
 
    // ---------------------------
    // Update of liste to compute a better Eta correction ???
@@ -3775,7 +3775,7 @@ void MimosaAnalysis::ClusterPosition_init()
    //
    // JB 2010/06/04 based on original MPro stuff
    // Modified: SS 2011/10/26
-		
+
    if( MimoDebug) Info("ClusterPosition_cog"," Computing cog positions for hit %d", thehit->Hhk);
 
    // Init for new positions
@@ -3791,7 +3791,7 @@ void MimosaAnalysis::ClusterPosition_init()
    VofHitCG = 0.;
    UCGcorr = 0.;
    VCGcorr = 0.;
-	
+
 
    // center of gravity with all pixels in the cluster
    if(TotalCharge>0.){
@@ -3804,10 +3804,10 @@ void MimosaAnalysis::ClusterPosition_init()
    }
    if( MimoDebug>1) printf("ClusterPosition_cog: CG = %.1f, %.1f\n", UofHitCG, VofHitCG);
 
-	
+
    // center of gravity with the sub-cluster of 2x2 pixels with the highest charge
    if(TotalCharge2x2 > 0.){
-     for(Int_t i=0; i<4; i++){ //SS 2011/10/26 correction to the i limit 
+     for(Int_t i=0; i<4; i++){ //SS 2011/10/26 correction to the i limit
        UCG2x2 += Qof2x2[i]*UofPix2x2[i]/TotalCharge2x2;
        VCG2x2 += Qof2x2[i]*VofPix2x2[i]/TotalCharge2x2;
      }
@@ -3822,17 +3822,17 @@ void MimosaAnalysis::ClusterPosition_init()
      }
    }
    if( MimoDebug>1) printf("ClusterPosition_cog: CG3 = %.1f, %.1f\n", UofHitCG3, VofHitCG3);
-	
-	
+
+
    // center of gravity with a sub-cluster of 5x5 pixels
    if(TotalCharge5x5>0.){
-     for(Int_t i=0; i<25; i++){ //SS 2011/10/26 correction to the i limit 
+     for(Int_t i=0; i<25; i++){ //SS 2011/10/26 correction to the i limit
        UofHitCG5 += Qof5x5[i]*UofPix5x5[i]/TotalCharge5x5;
        VofHitCG5 += Qof5x5[i]*VofPix5x5[i]/TotalCharge5x5;
      }
    }
    if( MimoDebug>1) printf("ClusterPosition_cog: CG5 = %.1f, %.1f\n", UofHitCG5, VofHitCG5);
-	
+
 
    // center of gravity corrected from profile histograms (?)
    // Int_t PolN = 6 ; // Polynom degree
@@ -3844,9 +3844,9 @@ void MimosaAnalysis::ClusterPosition_init()
        VCGcorr += FitParamV[i]*TMath::Power(VofHitCG-hVdigital,i);
      }
    if( MimoDebug>1) printf("ClusterPosition_cog: CGCorr = %.1f, %.1f\n", UCGcorr, VCGcorr);
-		    
 
-	
+
+
  }
 
  //_____________________________________________________________________________
@@ -3858,7 +3858,7 @@ void MimosaAnalysis::ClusterPosition_init()
    // Called for each clusters
    //
    // JB 2010/06/04 based on original MPro stuff
-	
+
    if( MimoDebug) Info("ClusterPosition_aht"," Computing aht positions for hit %d", thehit->Hhk);
 
    Uaht = 0.;
@@ -3866,28 +3866,28 @@ void MimosaAnalysis::ClusterPosition_init()
 
    // the following variables are the indexes of the pixels mostly on
    // the right, the left, the top or the bottom of the cluster
-   Int_t iLeft, iRight, iTop, iBottom;   
+   Int_t iLeft, iRight, iTop, iBottom;
    iLeft = iRight = iTop = iBottom = 0; // initialize to seed
 
    // this is the cut on SNR to consider the pixel or not
    Double_t snrCutAht = 3.;
    for(Int_t i=1; i<NofPixelsInCluster; i++){
      if( snonly[i] > snrCutAht ) {
-       if(IndexofPix[i]%NofPixelInRaw < iLeft)   iLeft=i; 
-       if(IndexofPix[i]%NofPixelInRaw > iRight)  iRight=i; 
+       if(IndexofPix[i]%NofPixelInRaw < iLeft)   iLeft=i;
+       if(IndexofPix[i]%NofPixelInRaw > iRight)  iRight=i;
        if(IndexofPix[i]/NofPixelInRaw < iBottom) iBottom=i; // % replaced by /
        if(IndexofPix[i]/NofPixelInRaw > iTop)    iTop=i; // % replaced by /
      }
    }
 
    // the aht position is the average between the two extreme pixels
-   // corrected by the difference of charges 
+   // corrected by the difference of charges
    Uaht = (UofPix[iLeft]+UofPix[iRight])/2. + (q[iLeft]-q[iRight])/TotalCharge*PixelSizeU;
    Vaht = (VofPix[iBottom]+VofPix[iTop])/2. + (q[iBottom]-q[iTop])/TotalCharge*PixelSizeV;
 
    if(MimoDebug>2) printf(" pixLR %2d-%2d, pixBT  %2d-%2d, (u,v) = (%.1f, %.1f), du=%.1f, dv=%.1f\n", iLeft, iRight, iBottom, iTop, Uaht, Vaht, Uaht-tu, Vaht-tv);
-	
-	
+
+
  }
 
 
@@ -3895,13 +3895,13 @@ void MimosaAnalysis::ClusterPosition_init()
  //
  void MimosaAnalysis::ClusterPosition_fill(DAuthenticHit *thehit)
  {
-   // fill the different selected cluster positions 
+   // fill the different selected cluster positions
    //
    // Called for each cluster
    //
    // JB 2010/07/21 based on original MPro stuff
    // Modified: JB 2013/05/01 add histo in tracker frame
-	
+
    if( MimoDebug) Info("ClusterPosition_fill"," Filling the positions for hit %d", thehit->Hhk);
 
    // Optimal(?) position
@@ -3914,22 +3914,22 @@ void MimosaAnalysis::ClusterPosition_init()
    hxy->Fill(hX,hY);
    hhx->Fill(hX);
    hhy->Fill(hY);
-   
+
    // Digital position
    h2dmatchedhits->Fill(hUdigital,hVdigital);
    hhuS->Fill(hUdigital);
    hhvS->Fill(hVdigital);
 
    // Eta position
-   hEta2x2U->Fill(Eta2x2U); 
+   hEta2x2U->Fill(Eta2x2U);
    hEta2x2V->Fill(Eta2x2V);
 
    // 2D picture obtained from cumulated charges of hits
    // JB 2014/01/10
-   for(Int_t i=0; i<NofPixelsInCluster; i++){ // loop on pixels in cluster     
+   for(Int_t i=0; i<NofPixelsInCluster; i++){ // loop on pixels in cluster
      h2DpictureMatched->Fill( IndexofPix[i]%NofPixelInRaw, IndexofPix[i]/NofPixelInRaw , qqordered[i]);
    }
-   
+
    // Digital compared to CoG
    hdCGDigU->Fill(UofHitCG-hUdigital);
    hdCGDigV->Fill(VofHitCG-hVdigital);
@@ -3973,14 +3973,14 @@ void MimosaAnalysis::ClusterPosition_end()
   // JB 2014/01/10
 
   cout << "******* hitCounterPos for cluster position study ******* " << hitCounterPos << endl;
-  
+
   if( !hitCounterPos ) return; // leave if no hits were selected
-  
+
   Double_t normfactor=(double)1./hitCounterPos;
-  
+
   h2DpictureMatched->SetEntries(hitCounterPos);
   h2DpictureMatched->Scale(normfactor);
-  
+
   cout << "Done" << endl;
 
 }
@@ -4022,12 +4022,12 @@ void MimosaAnalysis::Inefficent_end(){
    // Modified CLM 2013/01/23 additional histos for charge PSF
    // Modified JB 2013/07/16 additional alignment check histo
    // Modified JB 2014/04/01, #hits/track added
-	
+
    if( MimoDebug) Info("TrackHitPosition_fill"," Filling the positions for track matched to hit %d", thehit->Hhk);
 
    //------------------------
    //-- resolution study
-   
+
    // Digital from TTree
    hAllHuvsAllTu1->Fill(tu-thehit->Hsu);
    hAllHvvsAllTv1->Fill(tv-thehit->Hsv);
@@ -4071,7 +4071,7 @@ void MimosaAnalysis::Inefficent_end(){
    huvCGtuv->Fill(u,v);
 
    int idx_TrksInSensorPerEvt = hnTracksInGeomatrixVsTrackPerEvent->FindBin(NTracksPerEventInSensor) - 1;
-   if(idx_TrksInSensorPerEvt >= 0 && 
+   if(idx_TrksInSensorPerEvt >= 0 &&
       idx_TrksInSensorPerEvt <= hnTracksInGeomatrixVsTrackPerEvent->GetXaxis()->GetNbins() - 1) {
      huCGtu1_vs_TracksPerEvent[idx_TrksInSensorPerEvt]->Fill(tu-thehit->HuCG);
      hvCGtv1_vs_TracksPerEvent[idx_TrksInSensorPerEvt]->Fill(tv-thehit->HvCG);
@@ -4080,11 +4080,11 @@ void MimosaAnalysis::Inefficent_end(){
    //CG full cluster
    huCGtu2->Fill(tu-UofHitCG);
    hvCGtv2->Fill(tv-VofHitCG); // correction tv-UCG, 2011/10/06
-   
+
    //CG 2x2 sub-cluster
    hCG2x2tu1->Fill(tu-UCG2x2);
    hCG2x2tv1->Fill(tv-VCG2x2);
-   
+
    // CG 5x5 sub-cluster
    hCG5URes->Fill(tu-UofHitCG5);
    hCG5VRes->Fill(tv-VofHitCG5);
@@ -4092,15 +4092,15 @@ void MimosaAnalysis::Inefficent_end(){
    // CG corrected(?)
    hTuHuCorr->Fill(tu-UCGcorr);
    hTvHvCorr->Fill(tv-VCGcorr);
-   
+
    // Eta from TTree
    hEtaURes->Fill( tu-thehit->HuEta);
    hEtaVRes->Fill( tv-thehit->HvEta);
-   
+
    // Eta 2x2
    hEta2x2tu1->Fill(tu-UofHitEta2x2);
    hEta2x2tv1->Fill(tv-VofHitEta2x2);
-   
+
    // Eta 2x2_newR
    hEtaU_2x2Res->Fill(tu-UofHitEta2x2_newR);
    hEtaV_2x2Res->Fill(tv-VofHitEta2x2_newR);
@@ -4108,7 +4108,7 @@ void MimosaAnalysis::Inefficent_end(){
    // Eta 5x5_newR
    hEtaU_5x5Res->Fill(tu-UofHitEta5x5_newR);
    hEtaV_5x5Res->Fill(tv-VofHitEta5x5_newR);
-					
+
    // Eta3
    hEta3URes->Fill( tu-UofHitEta3);
    hEta3VRes->Fill( tv-VofHitEta3);
@@ -4116,7 +4116,7 @@ void MimosaAnalysis::Inefficent_end(){
    // AHT
    hAHTURes->Fill(tu-Uaht);
    hAHTVRes->Fill(tv-Vaht);
-   
+
 
    //------------------------
    //-- Track to hit distance study
@@ -4126,8 +4126,8 @@ void MimosaAnalysis::Inefficent_end(){
    Float_t adist2 = sqrt((hUdigital-tu)*(hUdigital-tu)+
 			 (hVdigital-tv)*(hVdigital-tv)) ;
    htmp5->Fill(adist2);
-   
-   
+
+
    //------------------------
    //-- Track parameters
 
@@ -4137,7 +4137,7 @@ void MimosaAnalysis::Inefficent_end(){
 
    //------------------------
    //-- Alignment
-   
+
    hAlignHuTuvsTv->Fill( tv, tu-thehit->Hu);
    hAlignHvTvvsTu->Fill( tu, tv-thehit->Hv);
    hAlignHuTuvsTu->Fill( tu, tu-thehit->Hu); // JB 2013/07/16
@@ -4149,7 +4149,7 @@ void MimosaAnalysis::Inefficent_end(){
 
    //------------------------
    //-- Correlation study
-   
+
    vec->Fill(tu-hUdigital,tv-hVdigital);
    tudv->Fill(tu,tv-hVdigital);
    tvdu->Fill(tv,tu-hUdigital);
@@ -4165,12 +4165,12 @@ void MimosaAnalysis::Inefficent_end(){
 
    hEta2x2tu2->Fill(UofHitEta2x2-hUdigital,tu-hUdigital);
    hEta2x2tv2->Fill(VofHitEta2x2-hVdigital,tv-hVdigital);
-				
-	      
+
+
    huCGtu->Fill(UofHitCG,tu);
    hvCGtv->Fill(VofHitCG,tv);
    huCG5tu->Fill(UofHitCG5,tu);
-   hvCG5tv->Fill(VofHitCG5,tv);		
+   hvCG5tv->Fill(VofHitCG5,tv);
 
    //   3x3 calculations:
    // Fill Profile of correlation plot:
@@ -4185,21 +4185,21 @@ void MimosaAnalysis::Inefficent_end(){
 
    hUeta3TuInPix->Fill(UofHitEta3-hUdigital,tu-hUdigital);
    hVeta3TvInPix->Fill(VofHitEta3-hVdigital,tv-hVdigital);
-					
+
    hChargeVsPosition->Fill(tu-hUdigital,tv-hVdigital,Qof3x3[0]/TotalCharge3x3);
    hChargeVsDistance->Fill(TMath::Sqrt( (tu-hUdigital)*(tu-hUdigital)+(tv-hVdigital)*(tv-hVdigital)),Qof3x3[0]); // clm 2013/07/16
    hAllHitsInPixel->Fill(tu-hUdigital,tv-hVdigital,1.);
    hUcorTuInPix->Fill(UCGcorr-hUdigital,tu-hUdigital);
    hVcorTvInPix->Fill(VCGcorr-hVdigital,tv-hVdigital);
    hTHCorr2->Fill(tu-UCGcorr,tv-VCGcorr);
-					
+
    //---------------------------
    //-- Charge distribution:
 
    if(NofPixelsInCluster == MaxNofPixelsInCluster){
      Int_t NPixelsInLine   = (Int_t) sqrt((float)NofPixelsInCluster); // a verif
-     Int_t NPixelsInColumn = (Int_t) sqrt((float)NofPixelsInCluster); // a verif 
-     for(Int_t iColumn=0; iColumn<NPixelsInColumn; iColumn++){    
+     Int_t NPixelsInColumn = (Int_t) sqrt((float)NofPixelsInCluster); // a verif
+     for(Int_t iColumn=0; iColumn<NPixelsInColumn; iColumn++){
        for(Int_t iLine=0; iLine<NPixelsInLine; iLine++){
 	 Float_t uuu=MinUofPix+PixelSizeU/2. + iLine*PixelSizeU;
 	 Float_t vvv=MinVofPix+PixelSizeV/2. + iColumn*PixelSizeV;
@@ -4220,7 +4220,7 @@ void MimosaAnalysis::Inefficent_end(){
 	   if(UofPix[i]>uuu && VofPix[i]>vvv){
 	     Charge4 += qonly[i];
 	   }
-	 }		       		      
+	 }
 	 if(TotalCharge>0.){
 	   hChargeIntegral1->Fill(uuu-tu,vvv-tv,Charge1/TotalCharge);
 	   hChargeNorm1->Fill(uuu-tu,vvv-tv);
@@ -4237,7 +4237,7 @@ void MimosaAnalysis::Inefficent_end(){
 
    //------------------------
    //-- Pixel response homogeneity study
-   
+
    hHOM_tu_tv_modulo->Fill(tu-hUdigital,tv-hVdigital);
    hHOM_ResU_tu->Fill(tu-hUdigital,tu-UofHitEta3);
    hHOM_ResV_tv->Fill(tv-hVdigital,tv-VofHitEta3);
@@ -4252,7 +4252,7 @@ void MimosaAnalysis::Inefficent_end(){
    for( int iPix=0; iPix<NofPixelsInCluster; iPix++) {
      GOOD_The_Total_Charge+=qonly[iPix];
    }
-   
+
    hNpixInClu->Fill(NofPixelsInCluster);
    for( int iPix=0; iPix<NofPixelsInCluster; iPix++) { //NofPixelsInCluster
      //printf("  pix %d, q=%.0f, lin %.1f, col %.1f, tu-tv=%.0f-%.0f, hu-hv=%.0f-%.0f, pitch=%.1f, diodedist(u-v)=%.1f-%.1f\n", iPix, qonly[iPix], LineInCluster[iPix], ColumnInCluster[iPix], tu, tv, hUdigital, hVdigital, PixelSizeU, tu-hUdigital-ColumnInCluster[iPix]*PixelSizeV, tv-hVdigital-LineInCluster[iPix]*PixelSizeV);
@@ -4263,7 +4263,7 @@ void MimosaAnalysis::Inefficent_end(){
      ProfHOM_Charge_diodedist_alg->Fill(sqrt(pow(tu-hUdigital-ColumnInCluster[iPix]*PixelSizeU,2)+pow(tv-hVdigital-LineInCluster[iPix]*PixelSizeV,2)),qonly[iPix],1);
      ProfHOM_Charge_diodedist_alg_u->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,qonly[iPix],1);  //clm
      ProfHOM_Charge_diodedist_alg_v->Fill(tv-hVdigital- LineInCluster[iPix]*PixelSizeV,  qonly[iPix],1); //clm
-     
+
      hHOM_Charge_diodedist_alg->Fill(sqrt(pow(tu-hUdigital-ColumnInCluster[iPix]*PixelSizeU,2)+pow(tv-hVdigital-LineInCluster[iPix]*PixelSizeV,2)),qonly[iPix]);
      hHOM_Charge_diodedist_alg_u->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,qonly[iPix]);//clm
      hHOM_Charge_diodedist_alg_v->Fill(tv-hVdigital-LineInCluster[iPix]*PixelSizeV,qonly[iPix]);//clm
@@ -4272,24 +4272,24 @@ void MimosaAnalysis::Inefficent_end(){
      // ProfhGOODCharge_Charge_DiodePosition        ->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,tv-hVdigital-LineInCluster[iPix]*PixelSizeV,qonly[iPix]/GOOD_The_Total_Charge); //clm
      // clm test
      ProfhGOODCharge_Charge_DiodePosition        ->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
-          
+
      if(qonly[0] < 300 )ProfhGOODCharge_Charge_DiodePositionSeedQLT300->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,tv-hVdigital-LineInCluster[iPix]*PixelSizeV,qonly[iPix]/GOOD_The_Total_Charge); //clm
-     
+
      if(qonly[0]>2000) ProfhGOODCharge_Charge_DiodePositionSeedQGT2000->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,tv-hVdigital-LineInCluster[iPix]*PixelSizeV,qonly[iPix]/GOOD_The_Total_Charge); //clm
-          
+
      //clm calculate if the row/col is odd or even
      Int_t myLineInClusterSeed   = (thehit->HkM[0])/NofPixelInRaw;
      Int_t myColumnInClusterSeed = (thehit->HkM[0])%NofPixelInRaw;
      Int_t mylin = LineInCluster[iPix] + myLineInClusterSeed;//  as in ClusterCharge_compute method
      Int_t mycol = ColumnInCluster[iPix] + myColumnInClusterSeed;//
-     
+
      // if (myColumnInClusterSeed%2==0 &&  mycol%2==0 ) printf("same even col as seed, V dist: PixelSizeV %lf from VofPix[iPix] %lf \n",(hVdigital-LineInCluster[iPix]*PixelSizeV),(hVdigital-VofPix[iPix]));
-     
+
      // if (myColumnInClusterSeed%2==0 &&  mycol%2!=0 ) printf("diff even col as seed, V dist: PixelSizeV %lf from VofPix[iPix] %lf \n",(hVdigital-LineInCluster[iPix]*PixelSizeV)/LineInCluster[iPix],(hVdigital-VofPix[iPix])/LineInCluster[iPix]);
-     
+
      hDistVSeedOtherOldCalc->Fill(hVdigital-LineInCluster[iPix]*PixelSizeV,LineInCluster[iPix]);
      hDistVSeedOtherNewCalc->Fill(hVdigital-VofPix[iPix],LineInCluster[iPix]);
-     
+
      //Corrected pixel position
      // all pixels
      if ( mycol%2 == 0 && mylin%2 == 0 ) ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
@@ -4311,7 +4311,7 @@ void MimosaAnalysis::Inefficent_end(){
        if ( mycol%2 == 0 && mylin%2 != 0 ) ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
        if ( mycol%2 != 0 && mylin%2 == 0 )  ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
        if ( mycol%2 != 0 && mylin%2 != 0 ) ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
-       
+
      }
      //2nd crown
      if ( IsPixelIn2ndCrown(ColumnInCluster[iPix],LineInCluster[iPix]) == kTRUE)
@@ -4320,23 +4320,23 @@ void MimosaAnalysis::Inefficent_end(){
        if ( mycol%2 == 0 && mylin%2 != 0 ) ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
        if ( mycol%2 != 0 && mylin%2 == 0 )  ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
        if ( mycol%2 != 0 && mylin%2 != 0 ) ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown->Fill(tu-UofPix[iPix],tv-VofPix[iPix],qonly[iPix]/GOOD_The_Total_Charge); //clm
-       
+
      }
-     
+
      h2dCharge_Charge_DiodePosition_Track->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,tv-hVdigital-LineInCluster[iPix]*PixelSizeV);
-     
+
      h2dCharge_Charge_DiodePosition_CluSize->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,tv-hVdigital-LineInCluster[iPix]*PixelSizeV,NofPixelsInCluster);
-     
+
      ProfhGOODCharge_Charge_DiodePositionSimpDist->Fill(tu-hUdigital                                  ,tv-hVdigital                               ,qonly[iPix]/GOOD_The_Total_Charge); //clm
-     
+
      hHOM_Charge_diodedist3D             ->Fill(tu-hUdigital- ColumnInCluster[iPix]*PixelSizeU,tv-hVdigital-LineInCluster[iPix]*PixelSizeV,qonly[iPix]); //clm
 
-     
+
      //                if( tv-hVdigital>PixelSizeV ) {
      //                  printf("  far away pix %d, q=%.0f, lin %.0f, col %.0f, tu-tv=%.0f-%.0f, hu-hv=%.0f-%.0f, pitch=%.1f, diodedist(u-v)=%.1f-%.1f\n", iPix, qonly[iPix], LineInCluster[iPix], ColumnInCluster[iPix], tu, tv, hUdigital, hVdigital, PixelSizeV, tu-hUdigital-ColumnInCluster[iPix]*PixelSizeU, tv-hVdigital-LineInCluster[iPix]*PixelSizeV);
      //                }
    }
-					
+
    if(NofPixelsInCluster>1){
      hHOM_Charge2_diodedist->Fill(diodedist,q[1]);
      ProfHOM_Charge2_diodedist->Fill(diodedist,q[1],1);
@@ -4359,9 +4359,9 @@ void MimosaAnalysis::Inefficent_end(){
    }
    hHOM_SNseed_diodedist->Fill(diodedist,snsnordered[0]);
    ProfHOM_SNseed_diodedist->Fill(diodedist,snsnordered[0],1);
-					
+
    hHOM_Noise_diodedist->Fill(diodedist,thehit->Hsn *calibration);
-					
+
    if(diodedist < (0.1*PixelSize/sqrt(2.0)) ){
      hHOM_Charge_diodedist_00_10->Fill(qonly[0]);
    }else if(diodedist < (0.2*PixelSize/sqrt(2.0))){
@@ -4383,8 +4383,8 @@ void MimosaAnalysis::Inefficent_end(){
    }else{
      hHOM_Charge_diodedist_90_inf->Fill(qonly[0]);
    }
-					
-					
+
+
    hHOM_modUCG_modtu->Fill(tu-hUdigital,UofHitCG-hUdigital);
    hHOM_modVCG_modtv->Fill(tv-hVdigital,VofHitCG-hVdigital);
    hHOM_modUeta3_modtu->Fill(tu-hUdigital,UofHitEta3-hUdigital);
@@ -4406,7 +4406,7 @@ void MimosaAnalysis::Inefficent_end(){
    hHOM_modUCG_Nevent->Fill(ievt,UofHitCG-hUdigital);
    hHOM_modVCG_Nevent->Fill(ievt,VofHitCG-hVdigital);
 
-   //---etaab	 debut	store eta list	 
+   //---etaab	 debut	store eta list
    hHOM_modUeta2x2_modVeta2x2->Fill(VofHitEta2x2_newR-hVdigital,UofHitEta2x2_newR-hUdigital);
    hHOM_modUCG2x2_modVCG2x2->Fill(VofHitEta2x2_new-hVdigital,UofHitEta2x2_new-hUdigital);
    hHOM_modUeta5x5_modVeta5x5->Fill(VofHitEta5x5_newR-hVdigital,UofHitEta5x5_newR-hUdigital);
@@ -4437,13 +4437,13 @@ void MimosaAnalysis::FakeRate_end( Int_t rateNormalisation)
       hNhitRateperpixel->Fill( h2DgoodSeedPixel->GetBinContent(j,i)/Float_t(rateNormalisation));
     }
   }
-  
+
   // Fill the cumulative distribution
   for( Short_t ib=1; ib<=hNhitRateperpixel->GetNbinsX(); ib++) {
     int idx = hNhitRateperpixel->GetNbinsX() - ib - 1;
     //for( Short_t jb=1; jb<=ib; jb++) {
     for( Short_t jb=1; jb<=idx; jb++) {
-      hPixelsPerFakeRate->AddBinContent( ib, hNhitRateperpixel->GetBinContent( jb) ); 
+      hPixelsPerFakeRate->AddBinContent( ib, hNhitRateperpixel->GetBinContent( jb) );
     }
   }
 
@@ -4473,10 +4473,10 @@ void MimosaAnalysis::TrackParameters_compute(DTransparentPlane *atrack, DPrecAli
    tdv = atrack->Tdv ;
    tk1  = atrack->Tk1;
    tx  = atrack->Tx ;
-   ty  = atrack->Ty ;	  
+   ty  = atrack->Ty ;
    tz  = atrack->Tz ;
    tdx = atrack->Tdx ;
-   tdy = atrack->Tdy ;		
+   tdy = atrack->Tdy ;
    trackAngleXZ        = (TMath::ATan(tdx))*180/TMath::Pi(); // JB 2011/10/30
    trackAngleYZ        = (TMath::ATan(tdy))*180/TMath::Pi(); // moved here from MiniVector
 
@@ -4490,14 +4490,14 @@ void MimosaAnalysis::TrackParameters_compute(DTransparentPlane *atrack, DPrecAli
    //cout << " track in plane (Teles frame) " << align->GetTrackPosition()(0) << ", " << align->GetTrackPosition()(1) << ", " << align->GetTrackPosition()(2) << "." << endl;
    TrackPos=align->TransformTrackToPlane();
    //cout << " track in plane (Plane frame) " << TrackPos(0) << ", " << TrackPos(1) << ", " << TrackPos(2) << "." << endl;
-   tu=TrackPos(0);  
-   tv=TrackPos(1);  
+   tu=TrackPos(0);
+   tv=TrackPos(1);
 
    // Temporary fix, bypass CorPar File alignement JB 2009/08/25
    //tu = atrack->Tu;
    //tv = atrack->Tv;
 
-   if(MimoDebug>1) cout << " Old track pos = " << atrack->Tu << ";" << atrack->Tv << " new track pos = " << tu << ";" << tv << endl;		
+   if(MimoDebug>1) cout << " Old track pos = " << atrack->Tu << ";" << atrack->Tv << " new track pos = " << tu << ";" << tv << endl;
 
  }
 
@@ -4509,7 +4509,7 @@ void MimosaAnalysis::TrackParameters_compute(DTransparentPlane *atrack, DPrecAli
    //
    // JB 2010/07/23 based on original MPro stuff
    // Modified JB 2014/04/01, #hits/track added
-	
+
    if( MimoDebug) Info("TrackParameters_allfill"," Filling parameters for (all) track %d", atrack->Ttk);
 
    hchi2->Fill(atrack->Tchi2);
@@ -4529,7 +4529,7 @@ void MimosaAnalysis::TrackParameters_compute(DTransparentPlane *atrack, DPrecAli
    // JB 2010/07/23 based on original MPro stuff
    // Modified JB 2011/10/30, angles added
    // Modified JB 2014/04/01, #hits/track added
-   
+
    if( MimoDebug) Info("TrackParameters_goodfill"," Filling parameters for good track %d", atrack->Ttk);
 
    hGoodChi2TvTu->Fill(tu,tv);
@@ -4537,7 +4537,7 @@ void MimosaAnalysis::TrackParameters_compute(DTransparentPlane *atrack, DPrecAli
    hGoodChi2Tv->Fill(tv);
    hGoodChi2Tx->Fill(tx);
    hGoodChi2Ty->Fill(ty);
-   
+
    hGoodChi2AngleXZ->Fill(trackAngleXZ); // JB 2011/10/30
    hGoodChi2AngleYZ->Fill(trackAngleYZ);
 
@@ -4548,12 +4548,12 @@ void MimosaAnalysis::TrackParameters_compute(DTransparentPlane *atrack, DPrecAli
 //_____________________________________________________________________________
 //
 void MimosaAnalysis::TrackParameters_end() {
-  
+
   if( MimoDebug ) {
     cout << "******* Normalization for cluster charges in track-hit study: " << hChargeNorm1->Integral() << ": " << hChargeNorm2->Integral() << ": " << hChargeNorm3->Integral() << ": " << hChargeNorm4->Integral() << endl;
     cout << "******* Integral for cluster charges in track-hit study: " << hChargeIntegral1->Integral() << ": " << hChargeIntegral2->Integral() << ": " << hChargeIntegral3->Integral() << ": " << hChargeIntegral4->Integral() << endl;
   }
-  
+
   if( hChargeNorm1->Integral()>0.) hChargeIntegral1->Divide(hChargeNorm1);
   if( hChargeNorm2->Integral()>0.) hChargeIntegral2->Divide(hChargeNorm2);
   if( hChargeNorm3->Integral()>0.) hChargeIntegral3->Divide(hChargeNorm3);
@@ -4585,22 +4585,22 @@ void MimosaAnalysis::MiniVector_compute()
 
    vectorAngleXZ   = (TMath::ATan(vectorSlopeXZ))*180/TMath::Pi();
    vectorAngleYZ   = (TMath::ATan(vectorSlopeYZ))*180/TMath::Pi();
-	
-   Double_t x =  vectorSlopeXZ*(hitPosXYZ[1](2)+hitPosXYZ[0](2))/2. 
-     + (hitPosXYZ[0](0)*hitPosXYZ[1](2)-hitPosXYZ[1](0)*hitPosXYZ[0](2))/(hitPosXYZ[1](2)-hitPosXYZ[0](2)); 
-   Double_t y = vectorSlopeYZ*(hitPosXYZ[1](2)+hitPosXYZ[0](2))/2. 
-     + (hitPosXYZ[0](1)*hitPosXYZ[1](2)-hitPosXYZ[1](1)*hitPosXYZ[0](2))/(hitPosXYZ[1](2)-hitPosXYZ[0](2)); 
+
+   Double_t x =  vectorSlopeXZ*(hitPosXYZ[1](2)+hitPosXYZ[0](2))/2.
+     + (hitPosXYZ[0](0)*hitPosXYZ[1](2)-hitPosXYZ[1](0)*hitPosXYZ[0](2))/(hitPosXYZ[1](2)-hitPosXYZ[0](2));
+   Double_t y = vectorSlopeYZ*(hitPosXYZ[1](2)+hitPosXYZ[0](2))/2.
+     + (hitPosXYZ[0](1)*hitPosXYZ[1](2)-hitPosXYZ[1](1)*hitPosXYZ[0](2))/(hitPosXYZ[1](2)-hitPosXYZ[0](2));
    Double_t z = (hitPosXYZ[1](2)+hitPosXYZ[0](2))/2.;
    vectorPosXYZ.SetValue( x, y, z);
 
    // --- compute track extrapolation in the middle point
    trackMeanPosXYZ.SetValue( tx+tdx*vectorPosXYZ(2), ty+tdy*vectorPosXYZ(2), vectorPosXYZ(2));
-	
+
 
    if( MimoDebug>1) {
      for( Short_t iplane=0; iplane<2; iplane++) { // loop on planes
        cout << "MiniVector_compute: position for plane: " << iplane << endl;
-       //cout << "  plane pos: " << << ", " << << ", " << << " and tilt " << << ", " << << ", " << << endl; 
+       //cout << "  plane pos: " << << ", " << << ", " << << " and tilt " << << ", " << << ", " << << endl;
        cout << "  hit   UVW: " << hitPosUVW[iplane](0) << ", "<< hitPosUVW[iplane](1) << ", " << hitPosUVW[iplane](2) << endl;
        cout << "  track UVW: " << trackPosUVW[iplane](0) << ", "<< trackPosUVW[iplane](1) << ", " << trackPosUVW[iplane](2) << endl;
        cout << "  hit   XYZ: " << hitPosXYZ[iplane](0) << ", "<< hitPosXYZ[iplane](1) << ", " << hitPosXYZ[iplane](2) << endl;
@@ -4631,7 +4631,7 @@ void MimosaAnalysis::MiniVector_compute()
    //
    // JB 2010/07/21 based on original MPro stuff
    // Modified: JB 2013/11/08 HnS was replaced by HNNS due to new def in TTree
-	
+
    if( MimoDebug) Info("MiniVector_fill"," Filling the minivectors information.");
 
    // ---- Filling histo ---- //
@@ -4653,55 +4653,55 @@ void MimosaAnalysis::MiniVector_compute()
    hdiffydiffx->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0)); // JB 2011/11/01
    if( hit1->HNNS==1) {
     if( hit2->HNNS==1) {
-      hdiffydiffx11->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));     
+      hdiffydiffx11->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));
       hDiffAngleX11->Fill(trackAngleXZ-vectorAngleXZ);
       hDiffAngleY11->Fill(trackAngleYZ-vectorAngleYZ);
     }
     else if( hit2->HNNS==2) {
-      hdiffydiffx12->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));           
+      hdiffydiffx12->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));
       hDiffAngleX12->Fill(trackAngleXZ-vectorAngleXZ);
       hDiffAngleY12->Fill(trackAngleYZ-vectorAngleYZ);
     }
    }
    else if( hit1->HNNS==2 ) {
      if( hit2->HNNS==1) {
-       hdiffydiffx21->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));     
+       hdiffydiffx21->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));
        hDiffAngleX21->Fill(trackAngleXZ-vectorAngleXZ);
        hDiffAngleY21->Fill(trackAngleYZ-vectorAngleYZ);
      }
      else if( hit2->HNNS==2) {
-       hdiffydiffx22->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));           
+       hdiffydiffx22->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));
        hDiffAngleX22->Fill(trackAngleXZ-vectorAngleXZ);
        hDiffAngleY22->Fill(trackAngleYZ-vectorAngleYZ);
      }
    }
    else if( hit2->HNNS>2) {
-     hdiffydiffxg1g1->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));     
+     hdiffydiffxg1g1->Fill( hitPosXYZ[1](1)-hitPosXYZ[0](1), hitPosXYZ[1](0)-hitPosXYZ[0](0));
      hDiffAngleXg1g1->Fill(trackAngleXZ-vectorAngleXZ);
      hDiffAngleYg1g1->Fill(trackAngleYZ-vectorAngleYZ);
    }
-   
+
 
    // ---- Filling TTree ---- // NCS 250110
    /*
    evt     = ievt;
    Hx3     = hitPosXYZ[0](0);
    Hy3     = hitPosXYZ[0](1);
-   Hz3     = hitPosXYZ[0](2);	
+   Hz3     = hitPosXYZ[0](2);
    Hx4     = hitPosXYZ[1](0);
    Hy4     = hitPosXYZ[1](1);
-   Hz4     = hitPosXYZ[1](2);	
-   Hxm     = vectorPosXYZ(0); 
-   Hym     = vectorPosXYZ(1); 
-   Hzm     = vectorPosXYZ(2); 
+   Hz4     = hitPosXYZ[1](2);
+   Hxm     = vectorPosXYZ(0);
+   Hym     = vectorPosXYZ(1);
+   Hzm     = vectorPosXYZ(2);
    Tx3     = trackPosXYZ[0](0);
    Ty3     = trackPosXYZ[0](1);
    Tz3     = hitPosXYZ[0](2);
    Tx4     = trackPosXYZ[1](0);
    Ty4     = trackPosXYZ[1](1);
    Tz4     = hitPosXYZ[1](2);
-   Txm     = trackMeanPosXYZ(0); 
-   Tym     = trackMeanPosXYZ(1); 
+   Txm     = trackMeanPosXYZ(0);
+   Tym     = trackMeanPosXYZ(1);
    Tzm     = trackMeanPosXYZ(2);
    HSlopeX = vectorSlopeXZ;
    HSlopeY = vectorSlopeYZ;
@@ -4713,7 +4713,7 @@ void MimosaAnalysis::MiniVector_compute()
    TAngleY = trackAngleYZ;
    tree_plume->Fill();
    if( MimoDebug) Info("MiniVector_compute","TTree filled.");
-   */	
+   */
 
  }
 
@@ -4750,8 +4750,8 @@ void MimosaAnalysis::Efficiency_init()
     temp_NofClMatchTrack[i]=0.;
     temp_NtrkInMimo[i]=0.;
   }
-  
-  
+
+
 }
 
 //_____________________________________________________________________________
@@ -4763,34 +4763,34 @@ void MimosaAnalysis::Efficiency_end( Int_t eventsRead)
   // Called once after the loop on events
   //
   // JB 2011/1/04 based on original MPro(AB) stuff
-  // Modified JB 2013/09/12 protection on array size temp_Efficiency_array 
-    
+  // Modified JB 2013/09/12 protection on array size temp_Efficiency_array
+
   if( MimoDebug) Info("Efficiency_end"," Finalizing efficiency computation for %d events", eventsRead);
 
   // -- overall efficiency
-  
+
   if( NtrkInMimo!=0 ){
     MimosaEfficiency     = 1.*NofClMatchTrack/NtrkInMimo;
     MimosaEfficiency_ERR = sqrt( MimosaEfficiency * (1.0 - MimosaEfficiency) / NtrkInMimo );
   }
-  
+
   // Special case when efficiency is close to 100 %
   // the uncertainty goes like 1/(N) and not anymore follows the binomial variance using the estimated efficiency
 //   if(MimosaEfficiency>=0.99){
 //     MimosaEfficiency_ERR = 1. / NtrkInMimo;
 //   }
-  
-  
+
+
   //---ab   running efficiency
- 
+
   Int_t const numpoints = eventsRead / NeventRangeForEfficiency;
-  
+
   Float_t* xnum = new Float_t[numpoints];
   Float_t* xerr = new Float_t[numpoints];
   Float_t* yerr = new Float_t[numpoints];
   Float_t* ynumerr = new Float_t[numpoints];
   Float_t* ytraerr = new Float_t[numpoints];
-  
+
   if(MimoDebug) cout<<" temp_Efficiency_array (step = "<<NeventRangeForEfficiency<<" ) "<<endl;
   for(Int_t ie=0 ; ie<( eventsRead / NeventRangeForEfficiency) && ie<temp_maxarray; ie++){
     if(temp_NofClMatchTrack[ie] >0){
@@ -4800,7 +4800,7 @@ void MimosaAnalysis::Efficiency_end( Int_t eventsRead)
       ytraerr[ie] = 0.;
     }
     else{
-      temp_Efficiency_array[ie] = 2.0; 
+      temp_Efficiency_array[ie] = 2.0;
       yerr[ie] = 0;
       ynumerr[ie] = 0;
       ytraerr[ie] = 0.;
@@ -4821,11 +4821,14 @@ void MimosaAnalysis::Efficiency_end( Int_t eventsRead)
       cout<<temp_NtrkInMimo[ie]<<" ";
     }
   }
-  
+
   greff = new TGraphErrors(numpoints,xnum,temp_Efficiency_array,xerr,yerr);
+  greff->SetName("geffevt");
   grnum = new TGraphErrors(numpoints,xnum,temp_NofClMatchTrack,xerr,ynumerr);
+  grnum->SetName("gmatchedtrackevt");
   grevt = new TGraphErrors(numpoints,xnum,temp_NtrkInMimo,xerr,ynumerr);
-  
+  grevt->SetName("gmimotrackevt");
+
   Char_t efficiency_title[100];
   sprintf(efficiency_title,"Efficieny. Run %d Plane %d, range = %d evts",RunNumber,ThePlaneNumber,NeventRangeForEfficiency);
   greff->SetTitle(efficiency_title);
@@ -4834,7 +4837,7 @@ void MimosaAnalysis::Efficiency_end( Int_t eventsRead)
   //greff->Draw("ALP");
   cout<<endl<<endl;
 
-  
+
   effimap->Add( goodtracks); // MG 2011/07/08
   effimap->Divide( TrkInMimo);
 
@@ -4845,7 +4848,7 @@ void MimosaAnalysis::Efficiency_end( Int_t eventsRead)
 void MimosaAnalysis::GetAnalysisGoal()
 {
 
-  // If the setup parameter is not void, 
+  // If the setup parameter is not void,
   // use it to switch on only some flags controling the analysis
   //
   // JB 2014/01/11
@@ -4882,7 +4885,7 @@ void MimosaAnalysis::GetAnalysisGoal()
     fIfFake = kFALSE;
     fIfImaging = kFALSE;
     cout << "Analysis goal is calibration -> switching off all track related histos." << endl;
-  } 
+  }
   // laser spot are analysed
   else if( strstr(goal, "laser") || strstr(goal, "Laser") ) {
     fIfReferenceTrack = kFALSE;
@@ -4893,7 +4896,7 @@ void MimosaAnalysis::GetAnalysisGoal()
     fIfFake = kFALSE;
     fIfImaging = kFALSE;
     cout << "Analysis goal is laser -> switching off all track related histos." << endl;
-  } 
+  }
   // minivectors are analysed, need also tracks
   else if( strstr(goal, "vector") || strstr(goal, "Vector") ) {
     fIfReferenceTrack = kTRUE;
@@ -4904,7 +4907,7 @@ void MimosaAnalysis::GetAnalysisGoal()
     fIfFake = kFALSE;
     fIfImaging = kFALSE;
     cout << "Analysis goal is minivector -> switching on related histos." << endl;
-  } 
+  }
   // vertices are analysed, need also tracks
   else if( strstr(goal, "vertex") || strstr(goal, "Vertex") || strstr(goal, "vertice") || strstr(goal, "Vertice") ) {
     fIfReferenceTrack = kTRUE;
@@ -4915,7 +4918,7 @@ void MimosaAnalysis::GetAnalysisGoal()
     fIfFake = kFALSE;
     fIfImaging = kFALSE;
     cout << "Analysis goal is vertex -> switching on related histos." << endl;
-  } 
+  }
   // fake hit analysis
   else if( strstr(goal, "fake") || strstr(goal, "Fake") ) {
     fIfReferenceTrack = kTRUE;
@@ -4937,9 +4940,9 @@ void MimosaAnalysis::GetAnalysisGoal()
     fIfFake = kFALSE;
     fIfImaging = kTRUE;
     cout << "Analysis goal is imaging -> switching on related histos." << endl;
-  } 
+  }
   else if( fIfReferenceTrack == kTRUE ) {
-    cout << "Analysis goal needs reference tracks -> switching on related histos." << endl;    
+    cout << "Analysis goal needs reference tracks -> switching on related histos." << endl;
   }
 
 }
@@ -4967,22 +4970,22 @@ void MimosaAnalysis::GetAnalysisGoal()
   if( ThesubmatrixNumber<0 || fSession->GetSetup()->GetAnalysisPar().Submatrices<=ThesubmatrixNumber ) {
     Error("MAnalysis:GetParameters","The submatrix specified is not in the existing range [%d, %d] ! --> STOP.", 0, fSession->GetSetup()->GetAnalysisPar().Submatrices);
   }
-   
+
   // --------------
   // parameters of the submatrix
-   
+
   PixelSizeU = fSession->GetSetup()->GetAnalysisPar().PixelSizeU[ThesubmatrixNumber];
   PixelSizeV = fSession->GetSetup()->GetAnalysisPar().PixelSizeV[ThesubmatrixNumber];
   PixelSize = PixelSizeU;
   NofPixelInRaw = fSession->GetSetup()->GetAnalysisPar().PixelsInRaw[ThesubmatrixNumber];
   NofPixelInColumn = fSession->GetSetup()->GetAnalysisPar().PixelsInColumn[ThesubmatrixNumber]; // bug corrected, JB 2009/09/15
   NofPixels = NofPixelInRaw*NofPixelInColumn; // JB 2010/07/23
-    
+
   FirstPixelShiftV=(NofPixelInColumn-1)*PixelSizeV/2;
   FirstPixelShiftU=(NofPixelInRaw-1)*PixelSizeU/2;
 
-  MimosaSizeV = NofPixelInColumn/2.*PixelSizeV;   
-  MimosaSizeU = NofPixelInRaw/2.*PixelSizeU;       
+  MimosaSizeV = NofPixelInColumn/2.*PixelSizeV;
+  MimosaSizeU = NofPixelInRaw/2.*PixelSizeU;
 
   calibration = fSession->GetSetup()->GetAnalysisPar().Calibration[ThesubmatrixNumber];
   NoiseScope =  fSession->GetSetup()->GetAnalysisPar().NoiseScope[ThesubmatrixNumber];
@@ -4991,7 +4994,7 @@ void MimosaAnalysis::GetAnalysisGoal()
 
   // User flag, JB 2013/07/17
   UserFlag = fSession->GetSetup()->GetAnalysisPar().UserFlag;
-  
+
    //if(MimoDebug) {
   cout << " DUT - submatrix " << ThesubmatrixNumber << " has:" << endl;
   cout << "     # pixels: " << NofPixelInRaw << " in raw " << NofPixelInColumn << " in column" << endl << ", total " << NofPixels << endl;
@@ -5003,10 +5006,10 @@ void MimosaAnalysis::GetAnalysisGoal()
   cout << "     noise scope " << NoiseScope << endl;
   cout << " UserFlag is " << UserFlag << endl;
   //}
-   
+
    // --------------
    // cut values
-   
+
    // on hits
    CUT_MaxNbOfHits = fSession->GetSetup()->GetAnalysisPar().MaxNbOfHits; // take 50 to clean picture //for Mimosa 5, 400 hits crashes.
    CUT_MinNbOfHits = fSession->GetSetup()->GetAnalysisPar().MinNbOfHits; // for tests. put 0 by defaults.
@@ -5033,9 +5036,9 @@ void MimosaAnalysis::GetAnalysisGoal()
    CUT_Q_seed = fSession->GetSetup()->GetAnalysisPar().MinSeedCharge[ThesubmatrixNumber]; // JB 2013/11/08
    CUT_Q_cluster = fSession->GetSetup()->GetAnalysisPar().MinClusterCharge[ThesubmatrixNumber]; // JB 2014/01/21
    CUT_MinQ_neighbour = fSession->GetSetup()->GetAnalysisPar().MinNeighbourCharge[ThesubmatrixNumber]; // JB 2013/11/08
-   
+
    // on tracks
-   MinHitsPerTrack = fSession->GetSetup()->GetAnalysisPar().MinHitsPerTrack; // JB 2013/06/22 
+   MinHitsPerTrack = fSession->GetSetup()->GetAnalysisPar().MinHitsPerTrack; // JB 2013/06/22
    TrackChi2Limit = fSession->GetSetup()->GetAnalysisPar().TrackChi2Limit;
    // the two next cut values are now read from configuration file, JB 2013/06/21
    MaxNbOfTracksInGeom  = fSession->GetSetup()->GetAnalysisPar().MaxTracksExGeom;
@@ -5044,38 +5047,38 @@ void MimosaAnalysis::GetAnalysisGoal()
    exgeomUmax = fSession->GetSetup()->GetAnalysisPar().Umax[ThesubmatrixNumber][GeoMatrixForTrackCut];
    exgeomVmin = fSession->GetSetup()->GetAnalysisPar().Vmin[ThesubmatrixNumber][GeoMatrixForTrackCut];
    exgeomVmax = fSession->GetSetup()->GetAnalysisPar().Vmax[ThesubmatrixNumber][GeoMatrixForTrackCut];
-   
+
    // on geometry
    geomUmin = fSession->GetSetup()->GetAnalysisPar().Umin[ThesubmatrixNumber][Thegeomatrix];
    geomUmax = fSession->GetSetup()->GetAnalysisPar().Umax[ThesubmatrixNumber][Thegeomatrix];
    geomVmin = fSession->GetSetup()->GetAnalysisPar().Vmin[ThesubmatrixNumber][Thegeomatrix];
    geomVmax = fSession->GetSetup()->GetAnalysisPar().Vmax[ThesubmatrixNumber][Thegeomatrix];
-   
+
    cout << "----------- CUTS:" << endl;
    cout << "  # hits (min, max): " << CUT_MinNbOfHits << " - " << CUT_MaxNbOfHits << endl;
    cout << "  min charge on seed: " << CUT_Q_seed << ", on neighbour: " << CUT_MinQ_neighbour << ", on cluster: " << CUT_Q_cluster << endl;
    cout << "  min - max # pixels in a hit: " << MinNofPixelsInCluster << " - " << MaxNofPixelsInCluster << endl;
    cout << "  max track chi2 " << TrackChi2Limit << endl;
    cout << "  geomatrix is " << Thegeomatrix << ", limits in U: " << geomUmin << ", " << geomUmax << ", limits in V: " << geomVmin << ", " << geomVmax << endl;
-   
+
 
   Info("MimosaParameters","Parameters read");
 
  }
 
 //______________________________________________________________________________
-//  
+//
 
-void MimosaAnalysis::ComputePixelPosition(Int_t col, Int_t lin, Float_t &u, Float_t &v) 
+void MimosaAnalysis::ComputePixelPosition(Int_t col, Int_t lin, Float_t &u, Float_t &v)
 {
 
   Double_t uu, vv, ww;
-  
+
   fTool.ComputeStripPosition( Matrixtype, col, lin, uu, vv, ww, NofPixelInRaw, NofPixelInColumn, (Double_t)PixelSizeU, (Double_t)PixelSizeV, 1.);
-  
+
   u = uu;
   v = vv;
-  
+
 /*
   // Compute the 2D position of the strip at column "col" and line "lin",
   //  set the values in the "u, v" variables.
@@ -5088,69 +5091,69 @@ void MimosaAnalysis::ComputePixelPosition(Int_t col, Int_t lin, Float_t &u, Floa
   //
   // JB 2012/11/21
   // Modified: 2012/11/24 CLM correct version for P31 M32ter
-	
-  //Int_t mapping = 1;// for p32 and for p1 //clm 
+
+  //Int_t mapping = 1;// for p32 and for p1 //clm
   //Int_t mapping = 2;// for p31 //clm
   //
   Int_t mapping = Matrixtype; // JB 2013/07/17
-	
+
   switch (mapping) {
-			
+
     // When pixels are organized on an orthogonal grid
     case 1:
     default:
-      u = col * PixelSizeU - FirstPixelShiftU;  
+      u = col * PixelSizeU - FirstPixelShiftU;
       v = lin * PixelSizeV - FirstPixelShiftV;
       break;
-			
+
       // When pixels are staggered from one column to the other
     case 2:
-      u = col * PixelSizeU - FirstPixelShiftU;  
+      u = col * PixelSizeU - FirstPixelShiftU;
       // v = (lin + 1./4. - (lin%2)/2.) * PixelSizeV - FirstPixelShiftV;
       // v = (lin - 1./4. + (lin%2)/2.) * PixelSizeV - FirstPixelShiftV; //clm better resolution first try
-      
+
       // v center line = (lin * PixelSizeV - FirstPixelShiftV )
       // shift down by FirstPixelShiftV move up to center
       if ( col%2 == 0 ) v =  (lin * PixelSizeV - FirstPixelShiftV ) + 0.30 * PixelSizeV ;      //clm 2012.11.24
       else              v =  (lin * PixelSizeV - FirstPixelShiftV ) - 0.19 * PixelSizeV ;      //clm 2012.11.24
-			
+
       break;
-      
+
       //clm mapping for M32 L8_2
     case 3:
-      u = (col+1) * PixelSizeU - FirstPixelShiftU; 
+      u = (col+1) * PixelSizeU - FirstPixelShiftU;
       v = lin * PixelSizeV - FirstPixelShiftV;
       break;
 
       // MonteCarlo Simulation. // LC 2014/01/10.
     case 4:
-      u = ((2*col - NofPixelInRaw    + 2 ) * PixelSizeU)/2;                                                                           
+      u = ((2*col - NofPixelInRaw    + 2 ) * PixelSizeU)/2;
       v = ((2*lin - NofPixelInColumn + 2 ) * PixelSizeV)/2;
       break;
-      
+
     case 5:
-      { 
+      {
 	u = (2*col + 1 - NofPixelInRaw) * PixelSizeU/2.0;
-	
+
 	double fraction = 0.25;
 	//double fraction = 0.75;
 	if ( col%2 == 0 ) v = (NofPixelInColumn - 2*lin - 2*(fraction    )) * PixelSizeV/2.0;
 	else              v = (NofPixelInColumn - 2*lin - 2*(1 - fraction)) * PixelSizeV/2.0;
-	break;			
+	break;
       }
   case 7:  //M22-THRB6 and B7 -> set the matrix type and Mapping accordingly in the config file !
-    u = col * PixelSizeU - FirstPixelShiftU;  
-    if ( col%2 == 0 ) v =  (lin * PixelSizeV - FirstPixelShiftV ) - 0.50 * PixelSizeV ;    //correct +0.5 
+    u = col * PixelSizeU - FirstPixelShiftU;
+    if ( col%2 == 0 ) v =  (lin * PixelSizeV - FirstPixelShiftV ) - 0.50 * PixelSizeV ;    //correct +0.5
     else              v =  (lin * PixelSizeV - FirstPixelShiftV ) - 0.0 * PixelSizeV ;     // correct -0.5
     //cout<<" MimosaAnalysis::ComputePixelPosition "<<u<<" "<<v<<" "<<col<<" "<<lin<<endl;
     break;
-    
+
   }
- 
+
 */
-  
+
   return;
-  
+
 }
 
 
@@ -5158,14 +5161,14 @@ void MimosaAnalysis::ComputePixelPosition_UVToColRow( Double_t u, Double_t v, do
 {
 
  fTool.ComputeStripPosition_UVToColRow( Matrixtype, u, v, col, lin, NofPixelInRaw, NofPixelInColumn, PixelSizeU, PixelSizeV);
- 
+
  /*
   // Compute the 2D position of a strip in the variables u and v to the set of variables column and line
   // The strip position depends on the mapping, look below.
   // AP 2012/06/26
-  
+
   Int_t mapping = Matrixtype;
-  
+
   switch (mapping) {
     // When pixels are organized on an orthogonal grid
     case 1:
@@ -5194,7 +5197,7 @@ void MimosaAnalysis::ComputePixelPosition_UVToColRow( Double_t u, Double_t v, do
 	col = (u/PixelSizeU) + ((NofPixelInRaw - 1)/2.);
 
 	double fraction = 0.25;
-	//double fraction = 0.75;    
+	//double fraction = 0.75;
 	if(int(col)%2 == 0) lin = ((NofPixelInColumn - 2*(fraction    ))/2.0)  -  (v/PixelSizeV);
 	else                lin = ((NofPixelInColumn - 2*(1 - fraction))/2.0)  -  (v/PixelSizeV);
 	break;
@@ -5208,22 +5211,22 @@ void MimosaAnalysis::ComputePixelPosition_UVToColRow( Double_t u, Double_t v, do
   }
 
 */
-  
+
   return;
 
 }
 
 //______________________________________________________________________________
-//  
+//
 Bool_t MimosaAnalysis::IsPixelIn1stCrown(Int_t u, Int_t v)
 {
   //
   //  Check if pixel is in the 1st crown ... simple...
   //
   // clm 2013/01/23
-  
+
   Bool_t isPixOk = kFALSE;
-  
+
   if (
       (u == 1 && v == 0 ) ||
       (u == 1 && v == 1 ) ||
@@ -5234,19 +5237,19 @@ Bool_t MimosaAnalysis::IsPixelIn1stCrown(Int_t u, Int_t v)
       (u == 0 && v == -1 ) ||
       (u == 1 && v == -1 )
       )isPixOk = kTRUE;
-  
+
   return isPixOk;
 }
 
 //______________________________________________________________________________
-//  
+//
 Bool_t MimosaAnalysis::IsPixelIn2ndCrown(Int_t u, Int_t v)
 {
   //
   //  Check if pixel is in the 1st crown ... simple...
   //
   // clm 2013/01/23
-  
+
   Bool_t isPixOk = kFALSE;
   if (
       (u == 2 && v == 0 ) ||
@@ -5265,37 +5268,37 @@ Bool_t MimosaAnalysis::IsPixelIn2ndCrown(Int_t u, Int_t v)
       (u == 1 && v == -2 ) ||
       (u == 2 && v == -2 ) ||
       (u == 2 && v == -1 )    )isPixOk = kTRUE;
-  
-  
+
+
   return isPixOk;
-  
+
 }
 
 
 //______________________________________________________________________________
-//  
+//
 Bool_t MimosaAnalysis::IsPlaneInLadder(Int_t aPlaneNumber, Int_t aLadderNumber)
 {
-  
+
   // Check the plane identified by aPlaneNumber
   // is in the list of planes of the ladder identified by aLadderNumber.
   // Return true or false.
   //
   // JB 2014/02/10
-  
+
   DLadder *aLadder = fSession->GetTracker()->GetLadder( aLadderNumber);
   Bool_t planeFound = kFALSE;
-  
-  Int_t iplane=0; 
+
+  Int_t iplane=0;
   while ( iplane<aLadder->GetNumberOfPlanes() && !planeFound ) {
     if( aLadder->GetPlane( iplane+1)->GetPlaneNumber() == aPlaneNumber ) {
       planeFound = kTRUE;
     }
     iplane++;
   }
-  
+
   return planeFound;
-  
+
 }
 
 
@@ -5308,7 +5311,7 @@ void MimosaAnalysis::ProjectionImaging_init()
   // Called once for all
   //
   // JH 2014/07/21
-  
+
   //for (Int_t i=0; i<5; i++) NOfHitsMult[5];
 }
 
@@ -5323,13 +5326,13 @@ void MimosaAnalysis::ProjectionImaging_Fill( DAuthenticHit *thehit, Double_t ang
   // Called for each hit
   //
   // JH 2014/07/21
-  
+
   Double_t ImHu = (thehit->HuCG)*TMath::Cos(angle*TMath::Pi()/180.0) + (thehit->HvCG)*TMath::Sin(angle*TMath::Pi()/180.0);
   Double_t ImHv = -(thehit->HuCG)*TMath::Sin(angle*TMath::Pi()/180.0) + (thehit->HvCG)*TMath::Cos(angle*TMath::Pi()/180.0);
-  
+
   h1ProjectionOnX->Fill(ImHu);
   h1ProjectionOnY->Fill(ImHv);
-  
+
   Int_t multiplicity = thehit->HNNS;
 
   if ( multiplicity == 1 ) {
@@ -5360,7 +5363,7 @@ void MimosaAnalysis::ProjectionImaging_Fill( DAuthenticHit *thehit, Double_t ang
     hdCGDigUVMult[3]->Fill(UofHitCG-hUdigital,VofHitCG-hVdigital);
     NOfHitsMult[3]++;
   }
-  else if ( multiplicity == 5 ) { 
+  else if ( multiplicity == 5 ) {
     hdCGDigUVMult[4]->Fill(UofHitCG-hUdigital,VofHitCG-hVdigital);
     NOfHitsMult[4]++;
   }
@@ -5368,7 +5371,7 @@ void MimosaAnalysis::ProjectionImaging_Fill( DAuthenticHit *thehit, Double_t ang
     hdCGDigUVMult[5]->Fill(UofHitCG-hUdigital,VofHitCG-hVdigital);
     NOfHitsMult[4]++;
   }
-  
+
 }
 
 
@@ -5381,20 +5384,20 @@ void MimosaAnalysis::ProjectionImaging_end( Int_t numberOfHits )
   // Called once for all
   //
   // JH 2014/07/21
-  
+
   for (Int_t i=0; i<5; i++) {
-    
+
     NOfHitsMult[i] /= 1.0*numberOfHits;
     h1NumberOfHitsMult->SetBinError(i+1, 100.0*sqrt(NOfHitsMult[i]*(1.0-NOfHitsMult[i])/(1.0*numberOfHits))); // Poisson's distribution
-    
+
     NOfHitsMult[i] *= 100.0;
     h1NumberOfHitsMult->SetBinContent(i+1, NOfHitsMult[i]);
-    
+
   }
-  
+
   hnGOODhit->SetLineColor(kBlue);
   hnGOODhit->SetMarkerColor(kBlue);
-  
+
 }
 //__________________________________________________________________________
 //
@@ -5416,10 +5419,10 @@ float MimosaAnalysis::GetTrackDistantToClosestDiode(float tu,
   lin = int(lin_p);
 
   //cout << endl;
-  //Now loop over the pixels around the pixel which the track intersects and 
+  //Now loop over the pixels around the pixel which the track intersects and
   //look for the one with the closest diode's distance to the track
   for(int iii=-1;iii<2;iii++) {
-    //Looping on the colums to the left and to the right of the main pixel 
+    //Looping on the colums to the left and to the right of the main pixel
     int col_tmp = col + iii;
 
     //Cut to ensure that the columns tested are inbetween 0 - Ncolumns-1

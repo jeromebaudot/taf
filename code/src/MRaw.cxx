@@ -135,10 +135,10 @@ void  MRaw::PrepareRaw()
       bar3->AddButton("BINARY FAKE", "gTAF->GetRaw()->FakeRateBinaryFromRawData(100000, 100, 0.01)", "Compute the fake rate for binary output sensors");
       bar3->AddButton("CUMULATE LINE OVERFLOW", "gTAF->GetRaw()->DisplayCumulatedOverflow()", "Display line overflow cumulated over 500 events in several views");
       bar3->AddButton("RAW SPECTRUM", "gTAF->GetRaw()->DisplaySpectrum( 1000, 3, 2048, 0)", "Display the spectrum from raw data");
-      
+
       bar3->AddButton("CUMULATE MONTE CARLO", "gTAF->GetRaw()->DisplayCumulatedMonteCarlo2D(500)", "Display Monte Carlo hits cumulated over 500 events in several views");
-      
-      
+
+
       if( strstr(goal, "track") || strstr(goal, "Track") ) {
         bar3->AddButton("TRACKS", "gTAF->GetRaw()->DisplayTracks()", "Display tracks per event in several views");
         bar3->AddButton("CUMULATE TRACKS", "gTAF->GetRaw()->DisplayCumulatedTracks()", "Display tracks cumulated over 500 events in several views");
@@ -150,16 +150,16 @@ void  MRaw::PrepareRaw()
       if( strstr(goal, "vertex") || strstr(goal, "Vertex") ) {
         bar3->AddButton("VERTEX STUDY", "gTAF->GetRaw()->VertexStudy()","Vertices from tracks and a fixed beam line");
       }
-      
+
       if( strstr(goal, "laser") || strstr(goal, "Laser") ) {
         bar3->AddButton("LASER STUDY", "gTAF->GetRaw()->LaserStudy( 125, 125, 100)", "Laser detection efficiency");
       }
-      
+
       if( strstr(goal, "calib") || strstr(goal, "Calib") ) {
         bar3->AddButton("X-ray", "gTAF->GetRaw()->XrayAnalysis(500)", "Analysis for X-ray source over 500 events");
         bar3->AddButton("Gain Map", "gTAF->GetRaw()->BuildPixelGainMap( 100000)", "Build gain map for each pixel");
       }
-      
+
       bar3->AddButton("DISPLAY IMAGE", "gTAF->GetRaw()->DisplayImage(100)","Build a GIF image with 100 events");
       bar3->AddButton("DISPLAY GEOMETRY", "gTAF->GetRaw()->DisplayGeometry()","Telescope geometry");
       bar3->AddButton("USER PLOT", "gTAF->GetRaw()->UserPlot()", "Plots built by user function");
@@ -1734,11 +1734,11 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
     tPlane = tTracker->GetPlane(iPlane);
 
     if ( tPlane->GetReadout() >= 100 || tPlane->GetDigitalThresholdNb() > 0 ){ // sparsified readout RDM210509, and digitized non-sparse readout JB 2013/08/29
-      
+
       std::vector<DPixel*> *aList = tPlane->GetListOfPixels();
       if(fVerbose) cout << "Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
       fprintf( outFile, "\n** plane %2d", iPlane);
-      
+
       for( Int_t iPix=0; iPix<(Int_t)aList->size(); iPix++) { // loop on fired pixels
         iCol = aList->at(iPix)->GetPixelColumn();
         iRow = aList->at(iPix)->GetPixelLine();
@@ -1759,12 +1759,12 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
             hRawDataMultiFrame[ aList->at(iPix)->GetTimestamp() ]->SetBinContent( idx_U, idx_V, aList->at(iPix)->GetPulseHeight());
           }
         }
-        
+
       } //end loop on fired pixels
-      
+
     } //end of sparsified readout
     else if ( tPlane->GetReadout() < 100 && tPlane->GetReadout() > 0 ){ // if non-sparsified readout, test if not 0 added (JB 2013/05/26)
-      
+
       for( Int_t iStrip=0; iStrip<tPlane->GetStripsN(); iStrip++) {
         iCol = iStrip%tPlane->GetStripsNu();
         iRow = iStrip/tPlane->GetStripsNu();
@@ -1803,9 +1803,9 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
         if ( clusterMultiplicity == -1 )                    testMult = kTRUE;
         else if ( Npixels_in_Hit == clusterMultiplicity )   testMult = kTRUE;
         else                                                testMult = kFALSE;
-        
+
 //        printf(" hit %d, (col,row)=(%3d, %3d), (u,v)=(%.1f, %.1f), Npixels=%d, testMult=%d\n", iHit, (int)TheCol, (int)TheRow, u, v, Npixels_in_Hit, testMult);
-        
+
         if ( testMult ) {
 	  int TS = 0;
 	  if(tPlane->GetReadout() > 100) aHit->GetPSeed()->GetTimestamp();
@@ -1832,7 +1832,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
               Pixel_row = aList->at(idex_pixel)->GetPixelLine();
             }
 //            printf("    pix %d, index = %d, (col,row)=(%3d, %3d)\n", ipixInHit, idex_pixel, Pixel_col, Pixel_row );
-            
+
             _PixelsInHitPositions_U[iPlane-1].push_back(Pixel_col);
             _PixelsInHitPositions_V[iPlane-1].push_back(Pixel_row);
             _PixelsInHitTS[iPlane-1].push_back(aHit->GetTimestamp());
@@ -1862,7 +1862,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
         if((TheCol >= hTrackMapIndex[iPlane-1]->GetXaxis()->GetXmin() && TheCol <= hTrackMapIndex[iPlane-1]->GetXaxis()->GetXmax()) &&
            (TheRow >= hTrackMapIndex[iPlane-1]->GetYaxis()->GetXmin() && TheRow <= hTrackMapIndex[iPlane-1]->GetYaxis()->GetXmax())) {
           hTrackMapIndex[iPlane-1]->Fill(TheCol, TheRow, 1);
-          
+
           _TrkPositions_U[iPlane-1].push_back(TheCol);
           _TrkPositions_V[iPlane-1].push_back(TheRow);
           _TrkIdx[iPlane-1].push_back(iTrack);
@@ -1872,7 +1872,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
       } // end loop on tracks
     } // end if withTracks
 
-    
+
     if(iPlane==MultiFramePlane ) {
 
       //double Minimum = +1.0e+20;
@@ -1901,7 +1901,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
         //hRawDataMultiFrame[iFrame]->SetMaximum(Maximum);
         hRawDataMultiFrame[iFrame]->DrawCopy("colz");
         hRawDataMultiFrame[iFrame]->Delete();
-        
+
         if( withHits ) {
           //Plot positions of pixels beloning to the rec hits:
           for(int iPixelInHits=0;iPixelInHits<int(_PixelsInHitPositions_U[iPlane-1].size());iPixelInHits++) {
@@ -1911,7 +1911,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
                              _PixelsInHitPositions_V[iPlane-1][iPixelInHits],
                              "X");
           }
-          
+
           //Plot positions of rec hits:
           //latex->SetTextColor(kBlue);
           for(int iHits=0;iHits<int(_HitPositions_U[iPlane-1].size());iHits++) {
@@ -1922,7 +1922,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
                              "O");
           }
         } // end if withHits
-        
+
         if(withTracks) {
           for(int iTrk=0;iTrk<int(_TrkPositions_U[iPlane-1].size());iTrk++) {
             double shift = 2.0*(tPlane->GetStripsNv()/(tPlane->GetStripsNv()*NbinsReductionFactor));
@@ -1935,7 +1935,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
                               ttt);
           }
         } // end if withTracks
-        
+
       } // End of Loop over frame of multi-frame event
 
       cdisplaymultiframe->Update();
@@ -3594,14 +3594,15 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     NbinsX = bins;
     NbinsY = bins;
   }
-  
+
   int Qbins = 200;
   double Qmax = 0.;
   if(Define_QRange) {
     Qmax  = qmax;
     Qbins = qbins;
   }
-  
+
+  TH2F *hHitMapDUT;
   TH2F **hHitMap = new TH2F*[nPlanes];
   TH2F **hTrackMap = new TH2F*[nPlanes]; // JB 2011/11/02
   TH1F **hHitPixMult = new TH1F*[nPlanes];
@@ -3636,6 +3637,15 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     hHitMap[iPlane-1]->SetMarkerColor(1);
     hHitMap[iPlane-1]->SetStats(kFALSE);
     //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+
+    sprintf( name, "hhitmapdut");
+    sprintf( title, "Hit map for DUTs;X (#mum);Y (#mum)");
+    // check if the histo is existing or not
+    hHitMapDUT = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
+    hHitMapDUT->SetMarkerStyle(20);
+    hHitMapDUT->SetMarkerSize(.2);
+    hHitMapDUT->SetMarkerColor(1);
+    hHitMapDUT->SetStats(kFALSE);
 
     // -- Histo for tracks with microns, JB 2011/11/02
     sprintf( name, "htrackmappl%d", iPlane);
@@ -3785,6 +3795,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
           aHit = (DHit*)tPlane->GetHit( iHit);
           //printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
           hHitMap[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1); // weight could be aHit->GetClusterPulseSum()
+          if( tPlane->GetStatus()==3 ) hHitMapDUT->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1);
 
           // Filling hit properties depends on analysis mode
           // JB 2012/08/17
@@ -3949,7 +3960,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
       pad3->cd(iPlane);
-      
+
       double MyMaxRange = -999.0;
       for(int i=0;i<hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins();i++) {
         int index = hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins() - i;
@@ -4054,7 +4065,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
       cHitProperties[iPlane-1]->Clear();
       cHitProperties[iPlane-1]->UseCurrentStyle();
       cHitProperties[iPlane-1]->Divide(4,3);
-      
+
       cHitProperties[iPlane-1]->cd(1); //1-1
       if( hHitSeedSN[iPlane-1]->GetEntries()>0 ) hHitSeedSN[iPlane-1]->DrawCopy();
       cHitProperties[iPlane-1]->cd(2); //1-2
@@ -4098,6 +4109,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
 
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
+    hHitMapDUT->Write();
     if( 0 < tPlane->GetAnalysisMode()  ) {
       hHitMap[iPlane-1]->Write();
       hTrackMap[iPlane-1]->Write(); // JB 2011/11/02
@@ -4134,12 +4146,12 @@ void MRaw::CumulateTxtFrames( Int_t nEvents, Int_t nCumulFrames)
   // Store nCumulFrames frames under Txt fromat
   //
   // JB, 2017/11/09
-  
+
   fSession->SetEvents(nEvents);
-  
+
   FILE *txtFile;
   txtFile = fopen("mimosa.txt","w");
-  
+
   DTracker *tTracker  =  fSession->GetTracker();
   DPlane* tPlane = tPlane = tTracker->GetPlane(1);
   DHit *aHit = NULL;
@@ -4151,13 +4163,13 @@ void MRaw::CumulateTxtFrames( Int_t nEvents, Int_t nCumulFrames)
 
   Int_t frameCounter = 0;
   Int_t hitCounter = 0;
-  
+
   //Loop over the requested number of events
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
     if( !(fSession->NextRawEvent()) ) break;
     frameCounter++;
     if( fDebugRaw) printf("   Reading frame %d (so far %d hits)\n", frameCounter, hitCounter);
-    
+
     // If enough frames added in superFrame, generate a new superFrame
     if ( frameCounter==nCumulFrames ) {
       if( fDebugRaw) printf("SuperFrame completed with %d frame, including %d hits\n", frameCounter, hitCounter);
@@ -4173,38 +4185,38 @@ void MRaw::CumulateTxtFrames( Int_t nEvents, Int_t nCumulFrames)
       frameCounter = 0;
       hitCounter = 0;
     }
-    
-    
+
+
     tTracker->Update();
-    
+
       if( tPlane->GetHitsN()>0 ) {
 
         for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
           aHit = (DHit*)tPlane->GetHit( iHit);
           hitCounter += aHit->GetStripsInCluster();
           if( fDebugRaw) printf("      found hit %d with %d pixels\n", iHit, aHit->GetStripsInCluster());
-          
+
           for( Int_t iStrip=0; iStrip<=aHit->GetStripsInCluster(); iStrip++ ) {
               aIndex = aHit->GetIndex( iStrip);
               hFrame->Fill( aIndex%tPlane->GetStripsNu(), aIndex/tPlane->GetStripsNu(), aHit->GetPulseHeight(iStrip));
               if( fDebugRaw>1) printf("        strip[%d,%d] = %d\n", aIndex%tPlane->GetStripsNu(), aIndex/tPlane->GetStripsNu(), (Int_t)aHit->GetPulseHeight(iStrip));
           }
-          
+
         } //end loop on hits
       }
-    
+
   } // END LOOP ON EVENTS
-  
+
   fSession->GetDataAcquisition()->PrintStatistics();
   tTracker->PrintStatistics();
-  
+
   fclose(txtFile);
 
 }
 
 
 //______________________________________________________________________________
-// 
+//
 void MRaw::DisplayLadderCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack, Bool_t Define_Range, Int_t bins, Double_t Xmin, Double_t Xmax, Double_t Ymin, Double_t Ymax)
 {
   fSession->SetEvents(nEvents);
@@ -4565,7 +4577,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
     hRDMap[iPlane-1]->SetMarkerSize(.1);
     hRDMap[iPlane-1]->SetMarkerColor(1);
     hRDMap[iPlane-1]->SetStats(kFALSE);
-    
+
     sprintf( name, "hpixelspereventpl%d", iPlane);
     sprintf( title, "Nb of pixels per event of plane %d; # pixels; # events", iPlane, tPlane->GetPlanePurpose(), minSN);
     h1FiredPixelsPerEvent[iPlane-1] = new TH1F( name, title, 1000, 0, 10000);
@@ -4605,8 +4617,8 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
 
         aList = tPlane->GetListOfPixels();
         h1FiredPixelsPerEvent[iPlane-1]->Fill( aList->size());
-        
-        // Specific test for first event in order to generate 
+
+        // Specific test for first event in order to generate
         //  list of DAQ index ordered pixel map
         if( storeOccurence && !ifUseDaqIndex[iPlane-1]
            && aList->size()>0 && aList->at(0)->GetDAQIndex()>=0 ) {
@@ -5423,7 +5435,7 @@ void MRaw::DisplayNoise( Int_t thePlaneNumber, Float_t calibFactor, Float_t maxA
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
 
     tPlane        = tTracker->GetPlane(iPlane);
-    
+
     double R_pedestal[2];
     double R_noise[2];
     R_pedestal[0] = R_noise[0] = +1.0e+20;
@@ -5432,17 +5444,17 @@ void MRaw::DisplayNoise( Int_t thePlaneNumber, Float_t calibFactor, Float_t maxA
       for( Int_t iStrip=1; iStrip<=tPlane->GetStripsNu(); iStrip++) {
         if(R_pedestal[0] > tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[0] = tPlane->GetPedestal(iStrip) * calibFactor;
         if(R_pedestal[1] < tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[1] = tPlane->GetPedestal(iStrip) * calibFactor;
-        
+
         if(R_noise[0] > tPlane->GetNoise(iStrip) * calibFactor) R_noise[0] = tPlane->GetNoise(iStrip) * calibFactor;
         if(R_noise[1] < tPlane->GetNoise(iStrip) * calibFactor) R_noise[1] = tPlane->GetNoise(iStrip) * calibFactor;
       }
     }
     else if ( (tMode[iPlane-1]==2 || tPlane->GetDigitalThresholdNb()>0) && tReadout[iPlane-1]>0 ) { // PIXELS with analog output
       for( Int_t iStrip=1; iStrip<=tPlane->GetStripsNu()*tPlane->GetStripsNv(); iStrip++) {
-        
+
         if(R_pedestal[0] > tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[0] = tPlane->GetPedestal(iStrip) * calibFactor;
         if(R_pedestal[1] < tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[1] = tPlane->GetPedestal(iStrip) * calibFactor;
-        
+
         if(R_noise[0] > tPlane->GetNoise(iStrip) * calibFactor) R_noise[0] = tPlane->GetNoise(iStrip) * calibFactor;
         if(R_noise[1] < tPlane->GetNoise(iStrip) * calibFactor) R_noise[1] = tPlane->GetNoise(iStrip) * calibFactor;
       }
@@ -5460,9 +5472,9 @@ void MRaw::DisplayNoise( Int_t thePlaneNumber, Float_t calibFactor, Float_t maxA
     delta = R_noise[1] - R_noise[0];
     R_noise[0] =  0.0;
 //    R_noise[1] += delta*porcent; // does not always work
-    
+
     printf(" Limits for distributions of plane %d:\n", iPlane);
-    
+
     sprintf( name, "hPedDistripl%d", iPlane);
     sprintf( title, "Pedestal distribution of plane %d", iPlane);
     if ( maxAxisPed>0 ) {
@@ -6947,13 +6959,52 @@ void MRaw::UserPlot( Int_t nEvents)
   //
 
   // ------------------------------------------------------
+  // Example to plot frame differences between IHEP ladders wrt event numbers
+
+  TCanvas *cdisplayuser = new TCanvas("cdisplayuser", "User plot", 5, 5, 900, 700);
+  cdisplayuser->Divide(1,2);
+  cdisplayuser->UseCurrentStyle();
+  TProfile *hptdiffevt = new TProfile( "hptdiffevt", "Frame differences between ladders wrt event numbers;evt# x1000;#Delta Frame", 500, 0, 500, -100, 100);
+  hptdiffevt->SetMarkerStyle(20);
+  TH1F *h1tdiffracevt = new TH1F( "h1tdiffracevt", "Fraction of frame differences between ladders wrt event numbers;evt# x1000;#Delta Frame", 500, 0, 500);
+  h1tdiffracevt->SetMarkerStyle(20);
+  fSession->SetEvents(nEvents);
+  DAcq *acq = fSession->GetDataAcquisition();
+  Int_t currentEvtNb = fSession->GetCurrentEventNumber();
+  ToggleVerbosity();
+  while ( currentEvtNb<nEvents) { // loop on events
+    fSession->NextRawEvent();
+    currentEvtNb = fSession->GetCurrentEventNumber();
+    double diff = acq->GetFrameAt(4)-acq->GetFrameAt(0);
+    // printf(" event %5d, frameRef %d, frameDUT %d, diff %d\n", currentEvtNb, acq->GetFrameAt(0), acq->GetFrameAt(4), diff);
+    hptdiffevt->Fill( currentEvtNb/1000, diff);
+  } // end loop on events
+  for (size_t i = 1; i <= 500; i++) {
+    printf( "bin %d: %f - %d = %f\n", i, hptdiffevt->GetBinContent(i), (int)(hptdiffevt->GetBinContent(i)), hptdiffevt->GetBinContent(i)-(int)(hptdiffevt->GetBinContent(i)));
+    h1tdiffracevt->SetBinContent( i, hptdiffevt->GetBinContent(i)-(int)(hptdiffevt->GetBinContent(i)) );
+  }
+  // Display
+  cdisplayuser->cd(1);
+  hptdiffevt->Draw("P");
+  cdisplayuser->cd(2);
+  h1tdiffracevt->Draw("P");
+  cdisplayuser->Update();
+  // Save the canvas
+  TFile outfile(TString::Format("run%d_user.root", fSession->GetRunNumber()), "RECREATE");
+  cdisplayuser->Write();
+  h1tdiffracevt->Write();
+  hptdiffevt->Write();
+  outfile.Close();
+  // cdisplayuser->SaveAs( TString::Format("run%d_%d_user.root", fSession->GetRunNumber(), nEvents) );
+
+  // ------------------------------------------------------
   // Example to build two maps of pixel signals
   //  - one map is the average signal received per pixel and per event
   //  - the other maps pixels with signal higher than a given threshold
   //   no clustering is involved here BUT note that DisplayNoise() is called
   // JB 2018/05/02
 
-
+/*
   //-- Init
   Int_t iPlane=1;
   Float_t threshold = 400;
@@ -6961,13 +7012,13 @@ void MRaw::UserPlot( Int_t nEvents)
   DTracker *tTracker  =  fSession->GetTracker();
   DPlane   *tPlane = tTracker->GetPlane(iPlane);
 
-  
+
   //-- Book histograms
 
   TCanvas *cdisplayraw = new TCanvas("cdisplayraw", "Inspect Raw Data", 5, 5, 900, 700);
   cdisplayraw->UseCurrentStyle();
   cdisplayraw->Divide(2,1);
-  
+
   Char_t name[50], title[100];
   sprintf( name, "hrawdatapl%d", iPlane);
   sprintf( title, "Average signal map of plane (%d) %s;col index;row index", iPlane, tPlane->GetPlanePurpose());
@@ -7006,7 +7057,7 @@ void MRaw::UserPlot( Int_t nEvents)
 
   // Averaging
   hRawData->Scale(1./nEvents);
-  
+
   // Display
   cdisplayraw->cd(1);
   hRawData->Draw("colz");
@@ -7016,6 +7067,8 @@ void MRaw::UserPlot( Int_t nEvents)
 
   // Save the canvas
   cdisplayraw->SaveAs( TString::Format("run%d_%ds.root", fSession->GetRunNumber(), nEvents) );
+*/
+
 
 }
 
@@ -9125,15 +9178,15 @@ void MRaw::XrayAnalysis( Int_t nEvents,
                         Float_t cutLimit,
                         Int_t fitXray)//fitXray: 0==no fitting, 1==55Fe, 2==Cr, 3==Cu, 4==Mo
 {
-  
-  
-  
+
+
+
   // Analysis specific for X-ray data
   // Call by gTAF->GetRaw()->XrayAnalysis()
   // JH, 2016/07/20 originally copied from DisplayCumulatedHits2D
   //JH, 4/4/2018 => Added fitting of hhitseedq with multiple parameters
-  
-  
+
+
   if(ProduceTree) {
     fSession->MakeTree();
     //fSession->SetFillLevel( fillLevel); // JB 2011/07/21
@@ -9147,12 +9200,12 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       printf("\nDSFProduction: both fixed and variable reference planes will be used for tracking.\n");
     }
   }
-  
+
   fSession->SetEvents(nEvents);
-  
+
   Int_t nHitsReconstructed = 0;
   Float_t normFromFile=0;
-  
+
   if (readNormFromFile==kTRUE)	{
     ifstream normTempFileIn;
     normTempFileIn.open("Scripts/normtemp.txt");
@@ -9163,9 +9216,9 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     cout<<"norm Str : "<<normStr<<endl;
   }
   else {
-    
+
   }
-  
+
   TCanvas *ccumulhit;
   TObject* g = gROOT->FindObject("ccumulhit") ;
   if (g) {
@@ -9182,7 +9235,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
   TPad *pad = new TPad("pad","",0.,0.,1.,0.965);
   pad->Draw();
-  
+
   DTracker *tTracker  =  fSession->GetTracker();
   DPlane* tPlane = NULL;
   DTrack *aTrack = NULL;
@@ -9190,7 +9243,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   //DPixel *aPixel;
   Double_t seedSN;
   //Double_t seedN;
-  
+
   Int_t nPlanes = tTracker->GetPlanesN();
   if( nPlanes>6 ) {
     pad->Divide( (Int_t)ceil(nPlanes/4.), (nPlanes>4)?4:nPlanes);  // LC 4 lines instead of 2.
@@ -9198,7 +9251,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   else {
     pad->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
   }
-  
+
   // Get the first DUT among the planes and remember it,
   //  it considered as the one providing the coordinate frame for the geomatrix
   // If no DUT (status=3), set to first plane
@@ -9221,7 +9274,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   printf("Geomatrix: U-range %.0f, %.0f, V-range %.0f, %.0f\n", gUVWmin(0), gUVWmax(0), gUVWmin(1), gUVWmax(1));
   printf("Geomatrix: X-range %.0f, %.0f, Y-range %.0f, %.0f\n", gXYZmin(0), gXYZmax(0), gXYZmin(1), gXYZmax(1));
   cout << " DUT plane is got as plane " << DUTplane->GetPlaneNumber() << endl;
-  
+
   TBox **geomBox = new TBox*[nPlanes];
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
     geomBox[iPlane-1] = new TBox( gXYZmin(0), gXYZmin(1), gXYZmax(0), gXYZmax(1) );
@@ -9230,7 +9283,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     geomBox[iPlane-1]->SetLineWidth(2);
     geomBox[iPlane-1]->SetLineColor(1);
   } // end loop on planes
-  
+
   // Determine extrema of planes position in telescope frame
   Double_t xmin=1e6, xmax=-1e6;
   Double_t ymin=1e6, ymax=-1e6;
@@ -9264,7 +9317,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     geomPlaneBox[iPlane-1] = new TBox( planeBox[0][0], planeBox[1][0], planeBox[0][1], planeBox[1][1]);
     geomPlaneBox[iPlane-1]->SetFillStyle(0);
   } // end loop on planes
-  
+
   int NbinsX = tPlane->GetStripsNu();
   int NbinsY = tPlane->GetStripsNv();
   if(Define_Range) {
@@ -9275,7 +9328,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     NbinsX = bins;
     NbinsY = bins;
   }
-  
+
   TH2F **hHitMap = new TH2F*[nPlanes];
   TH2F **hTrackMap = new TH2F*[nPlanes]; // JB 2011/11/02
   TH1F **hHitPixMult = new TH1F*[nPlanes];
@@ -9303,7 +9356,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   int counter_planes_pairs = 0;
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
-    
+
     // -- Histo with microns
     sprintf( name, "hhitmappl%d", iPlane);
     sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
@@ -9314,7 +9367,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     hHitMap[iPlane-1]->SetMarkerColor(1);
     hHitMap[iPlane-1]->SetStats(kFALSE);
     //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
-    
+
     // -- Histo for tracks with microns, JB 2011/11/02
     sprintf( name, "htrackmappl%d", iPlane);
     sprintf( title, "Track map of plane (%d) %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
@@ -9326,7 +9379,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     hTrackMap[iPlane-1]->SetMarkerSize(.2);
     hTrackMap[iPlane-1]->SetMarkerColor(2);
     hTrackMap[iPlane-1]->SetStats(kFALSE);
-    
+
     // -- Pixel multiplicity in hits
     Int_t nPixMax = fSession->GetSetup()->GetPlanePar(iPlane).MaxNStrips;
     sprintf( name, "hhitpixpl%d", iPlane);
@@ -9338,27 +9391,27 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       hHitPixMult[iPlane-1] = new TH1F(name, title, nPixMax+1, -.5, nPixMax+0.5);
     }
     hHitPixMult[iPlane-1]->SetXTitle("# pixels in hit");
-    
+
     // -- Pixel time stamp
     // JB 2015/05/25
     sprintf( name, "hhittimepl%d", iPlane);
     sprintf( title, "Hit time stamp of plane %d - %s - %s; Time stamp", iPlane, tPlane->GetPlaneName(), tPlane->GetPlanePurpose());
     hHitTimeStamp[iPlane-1] = new TH1F(name, title, 100, 0, 0);
-    
+
     // -- #Hits VS #Event
     // QL 2015/10/23
     sprintf( name, "hNHitsVSEventNPl%d", iPlane);
     sprintf( title, "Number of Clusters VS Event Number for plane %d - %s - %s", iPlane, tPlane->GetPlaneName(), tPlane->GetPlanePurpose());
     hNHitsVSEventN[iPlane-1] = new TH1F(name, title, nEvents, 0, nEvents );
     hNHitsVSEventN[iPlane-1]->SetXTitle("Event Number");
-    
+
     // -- Number of hits per event
     sprintf( name, "hnhitspereventpl%d", iPlane);
     sprintf( title, "Number of hits per event of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     //hNHitsPerEvent[iPlane-1] = new TH1F(name, title, 100, 0, 0);
     hNHitsPerEvent[iPlane-1] = new TH1F(name, title, 751, -0.5, 750.5); // QL 2015/10/23, High trigger rate
     hNHitsPerEvent[iPlane-1]->SetXTitle("# hits per event");
-    
+
     // -- Analog hit properties
     sprintf( name, "hhitseedsn%d", iPlane);
     sprintf( title, "Hit S/N for seed pixel of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
@@ -9378,19 +9431,19 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     hHitCharge[iPlane-1] = new TH1F(name, title, 16001, 0., 16000.);
     hHitCharge[iPlane-1]->SetXTitle("ADC unit");
     // JB 2013/10/08
-    
+
     sprintf( name, "hhitseedqcut%d", iPlane);
     sprintf( title, "Seed pixel charge cut at %f of plane %d - %s; seed charge (ADCu); counts", cutLimit,iPlane, tPlane->GetPlanePurpose());
     hHitSeedCharge_CUT[iPlane-1] = new TH1F(name, title, 16001, 0, 16000);
-    
-    
+
+
     sprintf( name, "hhitqratio%d", iPlane);
     sprintf( title, "Ratio of charges in the seed in the cluster of plane %d - %s; Ratio; counts", iPlane, tPlane->GetPlanePurpose());
     hHitChargeRatio[iPlane-1] = new TH1F(name, title, 100, 0, 1);
-    
-    
-    
-    
+
+
+
+
     sprintf( name, "hhitseedq%d", iPlane);
     if (readNormFromFile==kFALSE)	{
       sprintf( title, "Seed pixel charge of plane %d - %s; seed charge (ADCu); counts", iPlane, tPlane->GetPlanePurpose());
@@ -9403,7 +9456,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         Int_t BinToApply=::atof(binningStr.c_str());
         cout<<"norm Str : "<<BinToApply<<endl;
         hHitSeedCharge[iPlane-1] = new TH1F(name, title, BinToApply, 0, BinToApply);
-        
+
       }
       else {
         hHitSeedCharge[iPlane-1] = new TH1F(name, title, 16001, 0, 16000);
@@ -9413,9 +9466,9 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       sprintf( title, "Seed pixel charge of plane %d - %s; energy (eV); counts/10 eV", iPlane, tPlane->GetPlanePurpose());
       hHitSeedCharge[iPlane-1] = new TH1F(name, title, 700, 0., 7000.);
     }
-    
-    
-    
+
+
+
     sprintf( name, "hhitneighbourq%d", iPlane);
     sprintf( title, "Neighbour pixels charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitNeighbourCharge[iPlane-1] = new TH1F(name, title, 16001, 0, 16000);
@@ -9440,11 +9493,11 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     hHitSeedSNVsSeedCharge[iPlane-1] = new TH2F(name, title, 100, 0, 0, 100, 0, 0);
     hHitSeedSNVsSeedCharge[iPlane-1]->SetXTitle("seed charge (ADCu)");
     hHitSeedSNVsSeedCharge[iPlane-1]->SetYTitle("seed S/N");
-    
+
     for( Int_t iPlane2=1; iPlane2<=nPlanes; iPlane2++) {
       if(iPlane >= iPlane2) continue;
       DPlane* tPlane2 = tTracker->GetPlane(iPlane2);
-      
+
       // -- Correlations among the planes of number of hits per event
       sprintf( name, "hnhitspereventForpl%d_vs_pl%d", iPlane, iPlane2);
       sprintf( title, "Number of hits per event of plane %d (%s) vs %d (%s)", iPlane, tPlane->GetPlanePurpose(),iPlane2, tPlane2->GetPlanePurpose());
@@ -9462,36 +9515,36 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       counter_planes_pairs++;
     }
   }
-  
+
   //Loop over the requested number of events
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
     if( !(fSession->NextRawEvent()) ) break; // JB 2009/06/26
     tTracker->Update();
-    
+
     counter_planes_pairs = 0;
     for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
       tPlane = tTracker->GetPlane(iPlane);
-      
+
       //cout << "CumulateHits2D:: plane " << tPlane->GetPlaneNumber() << " has " << tPlane->GetHitsN() << endl;
       hNHitsPerEvent[iPlane-1]->Fill( tPlane->GetHitsN() );
-      
+
       for( Int_t iPlane2=1; iPlane2<=nPlanes; iPlane2++) {
         if(iPlane >= iPlane2) continue;
         DPlane* tPlane2 = tTracker->GetPlane(iPlane2);
         hNHitsPerEventCorr[counter_planes_pairs]->Fill(tPlane->GetHitsN(),tPlane2->GetHitsN());
         counter_planes_pairs++;
       }
-      
-      
+
+
       if( tPlane->GetHitsN()>0 ) {
         nHitsReconstructed += tPlane->GetHitsN();
         //hNHitsPerEvent[iPlane-1]->Fill( tPlane->GetHitsN() );
         for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
           aHit = (DHit*)tPlane->GetHit( iHit);
-          
+
           //printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
           hHitMap[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1); // weight could be aHit->GetClusterPulseSum()
-          
+
           // Filling hit properties depends on analysis mode
           // JB 2012/08/17
           //if( aHit->GetFound() )
@@ -9513,16 +9566,16 @@ void MRaw::XrayAnalysis( Int_t nEvents,
             hHitNeighbourSN[iPlane-1]->Fill( aHit->GetSNneighbour() );
             hHitSeedVsNeighbourSN[iPlane-1]->Fill( seedSN, aHit->GetSNneighbour() );
             hHitCharge[iPlane-1]->Fill( aHit->GetClusterPulseSum() );
-            
-            
+
+
             if (readNormFromFile==kFALSE) {
               hHitSeedCharge[iPlane-1]->Fill( aHit->GetPulseHeight(0));
             }
             else {
               hHitSeedCharge[iPlane-1]->Fill( aHit->GetPulseHeight(0)*normFromFile);
             }
-            
-            
+
+
             if ((aHit->GetClusterPulseSum()!=0) && (aHit->GetPulseHeight(0)>0))	{ // =====================ICI=========
               Float_t chargeRatioValue=aHit->GetPulseHeight(0)/aHit->GetClusterPulseSum();
               hHitChargeRatio[iPlane-1]->Fill(chargeRatioValue);
@@ -9531,8 +9584,8 @@ void MRaw::XrayAnalysis( Int_t nEvents,
                 hHitSeedVsNeighbourCharge_cutseed[iPlane-1]->Fill( aHit->GetPulseHeight(0), aHit->GetClusterAreaPulseSum());
               }
             }
-            
-            
+
+
             hHitNeighbourCharge[iPlane-1]->Fill( aHit->GetClusterAreaPulseSum());
             hHitSeedVsNeighbourCharge[iPlane-1]->Fill( aHit->GetPulseHeight(0), aHit->GetClusterAreaPulseSum());
             if ( aHit->GetPulseHeight(0) + aHit->GetClusterAreaPulseSum()>=170)	{
@@ -9543,7 +9596,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
           if(fVerbose) printf("MRaw::DisplayCumulHits2D  pl %d, hit[%d=(%d,%d)=(%f,%f)]%f, mult=%d\n", iPlane, iHit, aHit->GetIndexSeed()%tPlane->GetStripsNu(), aHit->GetIndexSeed()/tPlane->GetStripsNu(), tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), aHit->GetClusterPulseSum(), aHit->GetStripsInCluster());
         } //end loop on hits
       }
-      
+
       if( tTracker->GetTracksN()>0 ) {
         for( Int_t iTrack=1; iTrack<=tTracker->GetTracksN(); iTrack++ ) { // loop on tracks, JB 2011/11/02
           aTrack = tTracker->GetTrack(iTrack);
@@ -9552,26 +9605,26 @@ void MRaw::XrayAnalysis( Int_t nEvents,
           if(fVerbose) printf("MRaw::DisplayCumulHits2D  pl %d, track[%d=(%f,%f)\n", iPlane, iTrack, tPlane->PlaneToTracker(posInPlane)(0), tPlane->PlaneToTracker(posInPlane)(1));
         } // end loop on tracks
       }
-      
+
     } //end loop on planes
-    
+
     if(ProduceTree) fSession->FillTree();
-    
+
   } // END LOOP ON EVENTS
-  
+
   fSession->GetDataAcquisition()->PrintStatistics();
   tTracker->PrintStatistics();
-  
+
   if(ProduceTree) {
     fSession->Finish();
-    
+
     Char_t New_File_Name[1000];
     Char_t Old_File_Name[1000];
     sprintf(Old_File_Name,"%s/%s",(const char*)fSession->GetSummaryFilePath(),fSession->GetSummaryFileName().Data());
     sprintf(Old_File_Name,"%s", fTool.LocalizeDirName( Old_File_Name)); // JB 2011/07/07
     sprintf(New_File_Name,"%srun%d_0%d.root",(const char*)fSession->GetSummaryFilePath(),fSession->GetRunNumber(),GetFileNumber()+1);
     sprintf(New_File_Name,"%s", fTool.LocalizeDirName( New_File_Name)); // JB 2011/07/07
-    
+
     gSystem->Rename(Old_File_Name,New_File_Name);
     cout<< fSession->GetSummaryFileName().Data()  <<" had been renamed : "<< New_File_Name <<endl;
     ofstream logfile;
@@ -9579,7 +9632,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     logfile<< fSession->GetSummaryFileName().Data()  <<" had been renamed : "<< New_File_Name <<endl;
     logfile.close();
   }
-  
+
   // Now display
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     pad->cd(iPlane);
@@ -9597,7 +9650,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     cout << "Plane "<<iPlane<<" has seen "<<hHitMap[iPlane-1]->GetEntries()<<" hits."<< endl;
   }
   ccumulhit->Update();
-  
+
   // this canvas is intended mainly for binary outputs
   TCanvas *ccumulhit2;
   g = gROOT->FindObject("ccumulhit2") ;
@@ -9613,7 +9666,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   TPad *pad2 = new TPad("pad2","",0.,0.,1.,0.965);
   pad2->Draw();
   pad2->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
       pad2->cd(iPlane);
@@ -9622,7 +9675,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     }
   }
   ccumulhit2->Update();
-  
+
   // Time stamp of hits
   // JB 2015/05/25
   TCanvas *ccumulhit21;
@@ -9639,7 +9692,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   TPad *pad21 = new TPad("pad21","",0.,0.,1.,0.965);
   pad21->Draw();
   pad21->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
       pad21->cd(iPlane);
@@ -9647,7 +9700,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     }
   }
   ccumulhit21->Update();
-  
+
   // # Hits VS Event Number
   // QL 2015/10/23
   TCanvas *ccumulhit22;
@@ -9664,7 +9717,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   TPad *pad22 = new TPad("pad22","",0.,0.,1.,0.965);
   pad22->Draw();
   pad22->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
       pad22->cd(iPlane);
@@ -9672,7 +9725,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     }
   }
   ccumulhit22->Update();
-  
+
   // Number of hits per event
   double MaxAxisRanges = -1.0e+20;
   TCanvas *ccumulhit3;
@@ -9689,11 +9742,11 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   TPad *pad3 = new TPad("pad3","",0.,0.,1.,0.965);
   pad3->Draw();
   pad3->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
       pad3->cd(iPlane);
-      
+
       double MyMaxRange = -999.0;
       for(int i=0;i<hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins();i++) {
         int index = hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins() - i;
@@ -9712,7 +9765,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     }
   }
   ccumulhit3->Update();
-  
+
   TLatex* latex = new TLatex();
   latex->SetTextAlign(12);
   latex->SetTextSize(0.06);
@@ -9727,9 +9780,9 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   TCanvas *ccumulhit3_2[RealNcanvas];
   int counter_plots = 0;
   for(int i=0;i<RealNcanvas;i++) {
-    
+
     TString TheName = TString("ccumulhit3_2_") + long(i+1);
-    
+
     g = gROOT->FindObject(TheName.Data()) ;
     if (g) {
       ccumulhit3_2[i] = (TCanvas*)g;
@@ -9742,7 +9795,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       ccumulhit3_2[i]->cd(ipad+1);
       counter_plots++;
       if(counter_plots > (nPlanes*(nPlanes - 1)/2)) continue;
-      
+
       ccumulhit3_2[i]->cd(ipad+1)->SetFillColor(10);
       ccumulhit3_2[i]->cd(ipad+1)->SetTickx(1);
       ccumulhit3_2[i]->cd(ipad+1)->SetTicky(1);
@@ -9755,7 +9808,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       hNHitsPerEventCorr[counter_plots-1]->SetAxisRange(hNHitsPerEventCorr[counter_plots-1]->GetYaxis()->GetXmin(),
                                                         MaxAxisRanges,"Y");
       hNHitsPerEventCorr[counter_plots-1]->Draw("colz");
-      
+
       CorrLines[counter_plots-1] = new TLine(hNHitsPerEventCorr[counter_plots-1]->GetXaxis()->GetXmin(),
                                              hNHitsPerEventCorr[counter_plots-1]->GetYaxis()->GetXmin(),
                                              MaxAxisRanges,
@@ -9765,25 +9818,25 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       CorrLines[counter_plots-1]->SetLineStyle(2);
       CorrLines[counter_plots-1]->Draw();
       //GGG
-      
+
       double Xpos,Ypos;
       Xpos  = hNHitsPerEventCorr[counter_plots-1]->GetXaxis()->GetXmin();
       Xpos += 0.20*(MaxAxisRanges - hNHitsPerEventCorr[counter_plots-1]->GetXaxis()->GetXmin());
       Ypos  = MaxAxisRanges;
       Ypos -= 0.05*(MaxAxisRanges - hNHitsPerEventCorr[counter_plots-1]->GetYaxis()->GetXmin());
-      
+
       char yyy[300];
       sprintf(yyy,"correlation = %.3f",hNHitsPerEventCorr[counter_plots-1]->GetCorrelationFactor());
       latex->DrawLatex(Xpos,Ypos,yyy);
     }
   }
-  
-  
+
+
   // For analog output sensors
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     if( 0 < tPlane->GetAnalysisMode() && tPlane->GetAnalysisMode() <= 2 ) {
-      
+
       sprintf( name, "chitpl%d", iPlane);
       sprintf( title, "Hit properties of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
       g = gROOT->FindObject(name) ;
@@ -9796,7 +9849,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       cHitProperties[iPlane-1]->Clear();
       cHitProperties[iPlane-1]->UseCurrentStyle();
       cHitProperties[iPlane-1]->Divide(3,3);
-      
+
       cHitProperties[iPlane-1]->cd(1);
       if( hHitSeedSN[iPlane-1]->GetEntries()>0 ) hHitSeedSN[iPlane-1]->DrawCopy();
       cHitProperties[iPlane-1]->cd(2);
@@ -9818,14 +9871,14 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       hNHitsPerEvent[iPlane-1]->DrawCopy();
     }
   }
-  
-  
-  
-  
+
+
+
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     if( 0 < tPlane->GetAnalysisMode() && tPlane->GetAnalysisMode() <= 2 ) {
-      
+
       sprintf( name, "chit2pl%d", iPlane);
       sprintf( title, "Hit properties 2 of plane %d - %s - Ratio Seed and total", iPlane, tPlane->GetPlanePurpose());
       g = gROOT->FindObject(name) ;
@@ -9838,15 +9891,15 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       cHitProperties2[iPlane-1]->Clear();
       cHitProperties2[iPlane-1]->UseCurrentStyle();
       cHitProperties2[iPlane-1]->Divide(2,2);
-      
+
       cHitProperties2[iPlane-1]->cd(1);
       if( hHitChargeRatio[iPlane-1]->GetEntries()>0 ) hHitChargeRatio[iPlane-1]->DrawCopy();
       TLine* limitLine = new TLine(cutLimit, 0, cutLimit ,hHitChargeRatio[iPlane-1]->GetMaximum());
       limitLine->SetLineStyle(2);
       limitLine->SetLineColor(2);
       limitLine->Draw("same");
-      
-      
+
+
       cHitProperties2[iPlane-1]->cd(2);
       if( hHitSeedCharge[iPlane-1]->GetEntries()>0 ) hHitSeedCharge[iPlane-1]->DrawCopy();
       cHitProperties2[iPlane-1]->cd(3);
@@ -9857,14 +9910,14 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         hHitSeedCharge_CUT[iPlane-1]->SetFillColor(2);
         hHitSeedCharge_CUT[iPlane-1]->DrawClone("same");
       }
-      
+
     }
   }
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     if( 0 < tPlane->GetAnalysisMode() && tPlane->GetAnalysisMode() <= 2 ) {
-      
+
       sprintf( name, "chitqtotl%d", iPlane);
       sprintf( title, "Charge planes %d - %s", iPlane, tPlane->GetPlanePurpose());
       g = gROOT->FindObject(name) ;
@@ -9883,11 +9936,11 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       }
     }
   }
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     if( 0 < tPlane->GetAnalysisMode() && tPlane->GetAnalysisMode() <= 2 ) {
-      
+
       sprintf( name, "chitqratio%d", iPlane);
       sprintf( title, "Charge Ratio in planes %d - %s", iPlane, tPlane->GetPlanePurpose());
       g = gROOT->FindObject(name) ;
@@ -9906,16 +9959,16 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       limitLine->Draw("same");
     }
   }
-  
-  
-  
-  
+
+
+
+
   Float_t norm;
   Float_t Binning;
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     if (HighestPeakPositionEv!=0)	{
-      
+
       //Il faut ajouter un nouveau canvas temporaire pour celui la
       TH1F* htmp;
       TCanvas *ctmp=new TCanvas("ctmp","ctmp",10,10,500,400);
@@ -9925,16 +9978,16 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       Binning=binmax;
       float cutlimit=0.1*binmax;//Cut at 10% of the max bin
       htmp->GetXaxis()->SetRangeUser(cutlimit, binmax);
-      
+
       TSpectrum *s=new TSpectrum();
-      
+
       Int_t nfound = s->Search(htmp,2,"",0.5);
       Float_t *xpeaks = (Float_t*)s->GetPositionX();//Find any peak position
       Float_t xp = xpeaks[0];
-      
+
       norm=HighestPeakPositionEv/xp;
       ctmp->Close();
-      
+
       TCanvas *ctmp2=new TCanvas("ctmp2","ctmp2",10,10,500,400);
       ctmp2->cd();
       TH1F* htmp2;
@@ -9952,7 +10005,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       hHitSeedCharge[iPlane-1]->GetYaxis()->SetTitleSize(0.05);
       hHitSeedCharge[iPlane-1]->GetXaxis()->SetTitleSize(0.05);
       hHitSeedCharge[iPlane-1]->DrawCopy();
-      
+
     }
     else {
       TH1F* htmp;
@@ -9963,33 +10016,33 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       Binning=binmax;
       float cutlimit=0.1*binmax;//Cut at 10% of the max bin
       htmp->GetXaxis()->SetRangeUser(cutlimit, binmax);
-      
+
       TSpectrum *s=new TSpectrum();
-      
+
       Int_t nfound = s->Search(htmp,2,"",0.5);
       Float_t *xpeaks = (Float_t*)s->GetPositionX();//Find any peak position
       Float_t xp = xpeaks[0];
-      
+
       norm=5900/xp;
       ctmp->Close();
     }
   }
-  
+
   if (readNormFromFile==kFALSE) {
     ofstream normTempFile;
     normTempFile.open("Scripts/normtemp.txt");
     normTempFile<<norm;
     normTempFile.close();
   }
-  
+
   if (normalizeADCspectrum==kFALSE && readNormFromFile==kFALSE) {
     ofstream BinningTempFile;
     BinningTempFile.open("Scripts/binningtemp.txt");
     BinningTempFile<<Binning;
     BinningTempFile.close();
   }
-  
-  
+
+
   // Fitting hhitseedq
   TH1F** hHitSeedChargeFit=new TH1F*[nPlanes];
   TH1F** hHitSeedChargeFitNoBg=new TH1F*[nPlanes];
@@ -9997,59 +10050,59 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   TF1* Fit_func [nPlanes];
   TF1* Fit_func_Kalpha [nPlanes];
   TF1* Fit_func_Kbeta [nPlanes];
-  
+
   TF1* Fit_func_NoBg [nPlanes];
   TF1* Fit_func_Kalpha_NoBg [nPlanes];
   TF1* Fit_func_Kbeta_NoBg [nPlanes];
-  
-  
-  
+
+
+
   TH1F** hHitSeedChargeBifFit=new TH1F*[nPlanes];
   TH1F** hHitSeedChargeBifFitNoBg=new TH1F*[nPlanes];
-  
+
   TF1* BifFit_func [nPlanes];
   TF1* BifFit_func_Kalpha [nPlanes];
   TF1* BifFit_func_Kbeta [nPlanes];
-  
+
   TF1* BifFit_func_NoBg [nPlanes];
   TF1* BifFit_func_Kalpha_NoBg [nPlanes];
   TF1* BifFit_func_Kbeta_NoBg [nPlanes];
-  
-  
-  
-  
+
+
+
+
   TSpectrum* spectrum [nPlanes];
-  
-  
+
+
   double Rfit_keV[2];
   double Rfit_ADC[2];
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++)
   {
     hHitSeedChargeFit[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
     hHitSeedChargeFit[iPlane-1]->SetName("hhitseedq1_fit");
-    
+
     hHitSeedChargeFitNoBg[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
     hHitSeedChargeFitNoBg[iPlane-1]->SetName("hhitseedq1_fit_no_bg");
-    
+
     hHitSeedChargeBifFit[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
     hHitSeedChargeBifFit[iPlane-1]->SetName("hhitseedq1_bifurcated_fit");
-    
+
     hHitSeedChargeBifFitNoBg[iPlane-1]=(TH1F*)hHitSeedCharge[iPlane-1]->Clone();
     hHitSeedChargeBifFitNoBg[iPlane-1]->SetName("hhitseedq1_bifuracted_fit_no_bg");
-    
+
     if (fitXray!=0)
     {
       double Peak_position = -999;
       double Peak_Height   = -1.0e+20;
       double Xmin_peak_search = 500.0;
-      
-      
+
+
       spectrum[iPlane-1] = new TSpectrum();
       hb[iPlane-1] = (TH1F*)spectrum[iPlane-1]->Background(hHitSeedChargeFit[iPlane-1],70);
       hb[iPlane-1]->SetLineColor(kBlack);
       hb[iPlane-1]->SetLineWidth(2);
       hb[iPlane-1]->SetLineStyle(2);
-      
+
       for(int j=0;j<hHitSeedChargeFit[iPlane-1]->GetXaxis()->GetNbins();j++)
       {
         double v,e,vb,eb,vorig;
@@ -10058,30 +10111,30 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         v            = hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1);
         vorig     = hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1);
         e            = sqrt(hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1));
-        
+
         v           -= vb;
         e            = sqrt(pow(e,2) + pow(eb,2));
         if(hHitSeedChargeFitNoBg[iPlane-1]->FindBin(Peak_position) == j+1) Peak_Height -= vb;
-        
-        
-        
-        
+
+
+
+
         hb[iPlane-1]->SetBinContent(j+1,vb);
         hHitSeedChargeFit[iPlane-1]->SetBinContent(j+1,vorig);
-        
+
         hHitSeedChargeFitNoBg[iPlane-1]->SetBinContent(j+1,v);
         hHitSeedChargeFitNoBg[iPlane-1]->SetBinError(j+1,  e);
-        
+
         hHitSeedChargeBifFit[iPlane-1]->SetBinContent(j+1,vorig);
-        
+
         hHitSeedChargeBifFitNoBg[iPlane-1]->SetBinContent(j+1,v);
         hHitSeedChargeBifFitNoBg[iPlane-1]->SetBinError(j+1,  e);
-        
-        
+
+
       }
-      
-      
-      
+
+
+
       // ===============================================
       // Looking for the calibration peak
       // ===============================================
@@ -10090,7 +10143,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         double c = hHitSeedChargeBifFitNoBg[iPlane-1]->GetBinCenter(j+1);
         double v = hHitSeedChargeBifFitNoBg[iPlane-1]->GetBinContent(j+1);
         if(c < Xmin_peak_search) continue;
-        
+
         if(Peak_Height < v)
         {
           Peak_Height   = v;
@@ -10098,16 +10151,16 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         }
       }
       cout <<"Peak height: " <<Peak_Height << ", Peak position: "<< Peak_position <<endl;
-      
-      
-      
-      
+
+
+
+
       Double_t calibrationEnergy=-1.;//keV
       Double_t secondPeak=-1.;//keV
-      
-      
-      
-      
+
+
+
+
       if (fitXray==1)// 55Fe
       {
         calibrationEnergy=5.89502;//keV
@@ -10119,7 +10172,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
         Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
       }
-      
+
       else if (fitXray==2)// Cr
       {
         calibrationEnergy=5.41472;//keV
@@ -10131,7 +10184,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
         Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
       }
-      
+
       else if (fitXray==3)// Cu
       {
         calibrationEnergy=8.04778;//keV
@@ -10143,7 +10196,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
         Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
       }
-      
+
       else if (fitXray==4)// Mo
       {
         calibrationEnergy=17.47934;//keV
@@ -10155,7 +10208,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         Rfit_ADC[0] = Rfit_keV[0]*(Peak_position/calibrationEnergy);
         Rfit_ADC[1] = Rfit_keV[1]*(Peak_position/calibrationEnergy);
       }
-      
+
       double left_sigma  = -999;
       double right_sigma = -999;
       int SomeN = 0.0;
@@ -10167,9 +10220,9 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         double y2 = hHitSeedChargeFit[iPlane-1]->GetBinContent(j+2);
         if(x1 < Rfit_ADC[0]) continue;
         if(x2 > Rfit_ADC[1]) continue;
-        
+
         SomeN += y1;
-        
+
         if(y1 <= Peak_Height*0.5 && y2 > Peak_Height*0.5 && left_sigma  < 0.0) left_sigma  = 0.5*(x1+x2);
         if(y1 >= Peak_Height*0.5 && y2 < Peak_Height*0.5 && right_sigma < 0.0) right_sigma = 0.5*(x1+x2);
       }
@@ -10183,7 +10236,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       double MyN2    = SomeN*0.1;
       double MyN     = SomeN;
       double MyFrac  = 0.1;
-      
+
       double RMyMean[2];
       double RMySigma[2];
       double RMyAlpha[2];
@@ -10208,7 +10261,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       RMyN[1]     = 1.0e+3*MyN;
       RMyFrac[0]  = 0.0;
       RMyFrac[1]  = 1.0;
-      
+
       cout << endl;
       cout  << " Peak Position at " << Peak_position << " ADCu, with height " << Peak_Height << ". Fit range (" << Rfit_keV[0] << "," << Rfit_keV[1] << ") keV => (" << Rfit_ADC[0] << "," << Rfit_ADC[1] << ")" << endl;
       cout<< "Nb of entries in range with background: "<<hHitSeedChargeFit[iPlane-1]->Integral(RMyMean[0],RMyMean[1])<<endl;
@@ -10218,34 +10271,34 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       cout << "alpha = " << MyAlpha << "  (" << RMyAlpha[0] << "," << RMyAlpha[1] << ")"      << endl;
       cout << "n     = " << Myn     << "  (" << RMyn[0]     << "," << RMyn[1]     << ")"      << endl;
       // TF1 * f = new TF1("f",fptr,&MyFunction::Evaluate,0,1,npar,"MyFunction","Evaluate");   // create TF1 class.
-      
-      
-      
+
+
+
       Char_t fitResultsFileName[300];
       sprintf(fitResultsFileName,"%sFitResults_%d.txt",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
       sprintf(fitResultsFileName,"%s", fTool.LocalizeDirName(fitResultsFileName)); // JB 2011/07/07
       ofstream fitResultsFile;
       fitResultsFile.open(fitResultsFileName);
-      
+
       if (fitXray==1){fitResultsFile<<"================ 55Fe FITS ================"<<"\n";}
       else if (fitXray==2){fitResultsFile<<"================= Cr FITS ================="<<"\n";}
       else if (fitXray==3){fitResultsFile<<"================= Cu FITS ================="<<"\n";}
       else if (fitXray==4){fitResultsFile<<"================= Mo FITS ================="<<"\n";}
-      
-      
-      
-      
+
+
+
+
       /*==========================================================================================================================
        ============================================================================================================================
        ================================================== BIFURCATED FIT OF 55Fe ==================================================
        ============================================================================================================================
        ==========================================================================================================================*/
-      
-      
-      
+
+
+
       BifFit_func[iPlane-1] = new TF1("BiffitCB", &fTool, &DGlobalTools::fpeaksBifurcatedCB55Fe, Rfit_ADC[0], Rfit_ADC[1], 12, "DGlobalTools", "fpeaksBifurcatedCB55Fe");
-      
-      
+
+
       //BifFit_func[iPlane-1] = new TF1("fitCB", fTool.fpeaksBifurcatedCB, Rfit_ADC[0], Rfit_ADC[1], 7);
       if (fitXray==1)
       {
@@ -10277,9 +10330,9 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         BifFit_func[iPlane-1]->SetParName(10,"N_{K#alpha}");
         BifFit_func[iPlane-1]->SetParName(11,"N_{2xK#alpha}");
       }
-      
-      
-      
+
+
+
       BifFit_func[iPlane-1]->SetParameter(0,MyMean);
       BifFit_func[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
       BifFit_func[iPlane-1]->SetParameter(2,MySigma);
@@ -10299,7 +10352,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       {
         BifFit_func[iPlane-1]->SetParameter(11,MyN2);
       }
-      
+
       BifFit_func[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
       BifFit_func[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
       BifFit_func[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
@@ -10312,15 +10365,15 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       BifFit_func[iPlane-1]->SetParLimits(9,RMyn[0],RMyn[1]);
       BifFit_func[iPlane-1]->SetParLimits(10,RMyN1[0],RMyN1[1]);
       BifFit_func[iPlane-1]->SetParLimits(11,RMyN2[0],RMyN2[1]);
-      
+
       BifFit_func[iPlane-1]->SetLineColor(kBlue);
       BifFit_func[iPlane-1]->SetLineWidth(2);
       BifFit_func[iPlane-1]->SetNpx(10000);
-      
+
       hHitSeedChargeBifFit[iPlane-1]->Fit(BifFit_func[iPlane-1],"RQ");
-      
-      
-      
+
+
+
       cout<<"\n================ BIFURCATED FIT WITH BACKGROUND ===================="<<endl;
       cout<<BifFit_func[iPlane-1]->GetParName(0)<<": "<<BifFit_func[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(0)<<endl;
       cout<<BifFit_func[iPlane-1]->GetParName(1)<<": "<<BifFit_func[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(1)<<endl;
@@ -10337,8 +10390,8 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       cout<<BifFit_func[iPlane-1]->GetParName(10)<<": "<<BifFit_func[iPlane-1]->GetParameter(10)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(10)<<endl;
       cout<<BifFit_func[iPlane-1]->GetParName(11)<<": "<<BifFit_func[iPlane-1]->GetParameter(11)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(11)<<endl;
       cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeBifFit[iPlane-1]->Integral(BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
-      
-      
+
+
       fitResultsFile<<"================ BIFURCATED FIT WITH BACKGROUND ===================="<<"\n";
       fitResultsFile<<BifFit_func[iPlane-1]->GetParName(0)<<": "<<BifFit_func[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(0)<<"\n";
       fitResultsFile<<BifFit_func[iPlane-1]->GetParName(1)<<": "<<BifFit_func[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(1)<<"\n";
@@ -10355,8 +10408,8 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       fitResultsFile<<BifFit_func[iPlane-1]->GetParName(10)<<": "<<BifFit_func[iPlane-1]->GetParameter(10)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(10)<<"\n";
       fitResultsFile<<BifFit_func[iPlane-1]->GetParName(11)<<": "<<BifFit_func[iPlane-1]->GetParameter(11)<<" +/- "<<BifFit_func[iPlane-1]->GetParError(11)<<"\n";
       fitResultsFile<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeBifFit[iPlane-1]->Integral(BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<"\n";
-      
-      
+
+
       /*===================================================================================
        ================================ FIT WITHOUT BACKGROUND =============================
        =====================================================================================*/
@@ -10392,9 +10445,9 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         BifFit_func_NoBg[iPlane-1]->SetParName(10,"N_{K#alpha}");
         BifFit_func_NoBg[iPlane-1]->SetParName(11,"N_{2xK#alpha}");
       }
-      
-      
-      
+
+
+
       BifFit_func_NoBg[iPlane-1]->SetParameter(0,MyMean);
       BifFit_func_NoBg[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
       BifFit_func_NoBg[iPlane-1]->SetParameter(2,MySigma);
@@ -10414,7 +10467,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       {
         BifFit_func_NoBg[iPlane-1]->SetParameter(11,MyN2);
       }
-      
+
       BifFit_func_NoBg[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
       BifFit_func_NoBg[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
       BifFit_func_NoBg[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
@@ -10427,15 +10480,15 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       BifFit_func_NoBg[iPlane-1]->SetParLimits(9,RMyn[0],RMyn[1]);
       BifFit_func_NoBg[iPlane-1]->SetParLimits(10,RMyN1[0],RMyN1[1]);
       BifFit_func_NoBg[iPlane-1]->SetParLimits(11,RMyN2[0],RMyN2[1]);
-      
+
       BifFit_func_NoBg[iPlane-1]->SetLineColor(kBlue);
       BifFit_func_NoBg[iPlane-1]->SetLineWidth(2);
       BifFit_func_NoBg[iPlane-1]->SetNpx(10000);
-      
+
       hHitSeedChargeBifFitNoBg[iPlane-1]->Fit(BifFit_func_NoBg[iPlane-1],"RQ");
-      
-      
-      
+
+
+
       cout<<"\n================ BIFURCATED FIT WITHOUT BACKGROUND ===================="<<endl;
       cout<<BifFit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(0)<<endl;
       cout<<BifFit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(1)<<endl;
@@ -10452,7 +10505,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       cout<<BifFit_func_NoBg[iPlane-1]->GetParName(10)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(10)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(10)<<endl;
       cout<<BifFit_func_NoBg[iPlane-1]->GetParName(11)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(11)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(11)<<endl;
       cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeBifFitNoBg[iPlane-1]->Integral(BifFit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
-      
+
       fitResultsFile<<"\n================ BIFURCATED FIT WITHOUT BACKGROUND ===================="<<endl;
       fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(0)<<"\n";
       fitResultsFile<<BifFit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<BifFit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<BifFit_func_NoBg[iPlane-1]->GetParError(1)<<"\n";
@@ -10474,11 +10527,11 @@ void MRaw::XrayAnalysis( Int_t nEvents,
        ==================================================== STANDARD FIT OF 55Fe ==================================================
        ============================================================================================================================
        ==========================================================================================================================*/
-      
-      
+
+
       Fit_func[iPlane-1] = new TF1("fitCB", &fTool, &DGlobalTools::fpeaksCB55Fe, Rfit_ADC[0], Rfit_ADC[1], 10, "DGlobalTools", "fpeaksCB55Fe");
       //Fit_func[iPlane-1] = new TF1("fitCB", fTool.fpeaksBifurcatedCB, Rfit_ADC[0], Rfit_ADC[1], 7);
-      
+
       if (fitXray==1)
       {
         Fit_func[iPlane-1]->SetParName(0,"#mu K#alpha (ADCu)");
@@ -10505,10 +10558,10 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         Fit_func[iPlane-1]->SetParName(8,"N_{K#alpha}");
         Fit_func[iPlane-1]->SetParName(9,"N_{2xK#alpha}");
       }
-      
-      
-      
-      
+
+
+
+
       Fit_func[iPlane-1]->SetParameter(0,MyMean);
       Fit_func[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
       Fit_func[iPlane-1]->SetParameter(2,MySigma);
@@ -10526,7 +10579,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       {
         Fit_func[iPlane-1]->SetParameter(9,MyN2);
       }
-      
+
       Fit_func[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
       Fit_func[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
       Fit_func[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
@@ -10537,15 +10590,15 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       Fit_func[iPlane-1]->SetParLimits(7,RMyn[0],RMyn[1]);
       Fit_func[iPlane-1]->SetParLimits(8,RMyN1[0],RMyN1[1]);
       Fit_func[iPlane-1]->SetParLimits(9,RMyN2[0],RMyN2[1]);
-      
+
       Fit_func[iPlane-1]->SetLineColor(kBlue);
       Fit_func[iPlane-1]->SetLineWidth(2);
       Fit_func[iPlane-1]->SetNpx(10000);
-      
+
       hHitSeedChargeFit[iPlane-1]->Fit(Fit_func[iPlane-1],"RQ");
-      
-      
-      
+
+
+
       cout<<"\n================ WITH BACKGROUND ===================="<<endl;
       cout<<Fit_func[iPlane-1]->GetParName(0)<<": "<<Fit_func[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func[iPlane-1]->GetParError(0)<<endl;
       cout<<Fit_func[iPlane-1]->GetParName(1)<<": "<<Fit_func[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func[iPlane-1]->GetParError(1)<<endl;
@@ -10560,7 +10613,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       cout<<Fit_func[iPlane-1]->GetParName(8)<<": "<<Fit_func[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func[iPlane-1]->GetParError(8)<<endl;
       cout<<Fit_func[iPlane-1]->GetParName(9)<<": "<<Fit_func[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func[iPlane-1]->GetParError(9)<<endl;
       cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFit[iPlane-1]->Integral(Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
-      
+
       fitResultsFile<<"\n================ WITH BACKGROUND ===================="<<endl;
       fitResultsFile<<Fit_func[iPlane-1]->GetParName(0)<<": "<<Fit_func[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func[iPlane-1]->GetParError(0)<<"\n";
       fitResultsFile<<Fit_func[iPlane-1]->GetParName(1)<<": "<<Fit_func[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func[iPlane-1]->GetParError(1)<<"\n";
@@ -10575,7 +10628,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       fitResultsFile<<Fit_func[iPlane-1]->GetParName(8)<<": "<<Fit_func[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func[iPlane-1]->GetParError(8)<<"\n";
       fitResultsFile<<Fit_func[iPlane-1]->GetParName(9)<<": "<<Fit_func[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func[iPlane-1]->GetParError(9)<<"\n";
       fitResultsFile<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFit[iPlane-1]->Integral(Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, Fit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<"\n";
-      
+
       /*===================================================================================
        ================================ FIT WITHOUT BACKGROUND =============================
        =====================================================================================*/
@@ -10607,8 +10660,8 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         Fit_func_NoBg[iPlane-1]->SetParName(8,"N_{K#alpha}");
         Fit_func_NoBg[iPlane-1]->SetParName(9,"N_{2xK#alpha}");
       }
-      
-      
+
+
       Fit_func_NoBg[iPlane-1]->SetParameter(0,MyMean);
       Fit_func_NoBg[iPlane-1]->SetParameter(1,MyMean*(secondPeak/calibrationEnergy));
       Fit_func_NoBg[iPlane-1]->SetParameter(2,MySigma);
@@ -10626,7 +10679,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       {
         Fit_func_NoBg[iPlane-1]->SetParameter(9,MyN2);
       }
-      
+
       Fit_func_NoBg[iPlane-1]->SetParLimits(0,RMyMean[0],RMyMean[1]);
       Fit_func_NoBg[iPlane-1]->SetParLimits(1,RMyMean[0],RMyMean[1]);
       Fit_func_NoBg[iPlane-1]->SetParLimits(2,RMySigma[0],RMySigma[1]);
@@ -10637,16 +10690,16 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       Fit_func_NoBg[iPlane-1]->SetParLimits(7,RMyn[0],RMyn[1]);
       Fit_func_NoBg[iPlane-1]->SetParLimits(8,RMyN1[0],RMyN1[1]);
       Fit_func_NoBg[iPlane-1]->SetParLimits(9,RMyN2[0],RMyN2[1]);
-      
+
       Fit_func_NoBg[iPlane-1]->SetLineColor(kBlue);
       Fit_func_NoBg[iPlane-1]->SetLineWidth(2);
       Fit_func_NoBg[iPlane-1]->SetNpx(10000);
-      
+
       hHitSeedChargeFitNoBg[iPlane-1]->Fit(Fit_func_NoBg[iPlane-1],"RQ");
-      
-      
-      
-      
+
+
+
+
       cout<<"\n================ WITHOUT BACKGROUND ===================="<<endl;
       cout<<Fit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(0)<<endl;
       cout<<Fit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(1)<<endl;
@@ -10661,7 +10714,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       cout<<Fit_func_NoBg[iPlane-1]->GetParName(8)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(8)<<endl;
       cout<<Fit_func_NoBg[iPlane-1]->GetParName(9)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(9)<<endl;
       cout<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFitNoBg[iPlane-1]->Integral(BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, BifFit_func[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<endl;
-      
+
       fitResultsFile<<"\n================ WITHOUT BACKGROUND ===================="<<endl;
       fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(0)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(0)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(0)<<"\n";
       fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(1)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(1)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(1)<<"\n";
@@ -10676,42 +10729,42 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(8)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(8)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(8)<<"\n";
       fitResultsFile<<Fit_func_NoBg[iPlane-1]->GetParName(9)<<": "<<Fit_func_NoBg[iPlane-1]->GetParameter(9)<<" +/- "<<Fit_func_NoBg[iPlane-1]->GetParError(9)<<"\n";
       fitResultsFile<<"Integral between "<<Rfit_keV[0]<<" and "<<Rfit_keV[1]<<" keV: "<<hHitSeedChargeFitNoBg[iPlane-1]->Integral(Fit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[0]/calibrationEnergy, Fit_func_NoBg[iPlane-1]->GetParameter(0)*Rfit_keV[1]/calibrationEnergy)<<"\n";
-      
-      
-      
+
+
+
       fitResultsFile.close();
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
-    
+
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
+
   // Save canvas and histos
   //cd to result dir
   // added JB 2011/03/14
-  
-  
+
+
   Char_t rootFile[300];
   sprintf(rootFile,"%sHitMap_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
   sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
@@ -10722,7 +10775,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   ccumulhit22->Write(); // QL 2015/10/23
   ccumulhit3->Write();
   for(int i=0;i<RealNcanvas;i++) ccumulhit3_2[i]->Write();
-  
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     if( 0 < tPlane->GetAnalysisMode()  ) {
@@ -10765,9 +10818,9 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     }
   }
   for(int ipair = 0; ipair<(nPlanes*(nPlanes - 1)/2); ipair++) hNHitsPerEventCorr[ipair]->Write();
-  
-  fRoot.Close();  
-  
+
+  fRoot.Close();
+
 }
 //______________________________________________________________________________
 //
@@ -10776,16 +10829,16 @@ void MRaw::SeedCuts(Int_t nEvents)
   // Analysis specific for X-ray data
   // Call by gTAF->GetRaw()->XrayAnalysis()
   // JH, 2016/07/20 originally copied from DisplayCumulatedHits2D
-  
-  
-  
-  
+
+
+
+
   fSession->SetEvents(nEvents);
-  
+
   Int_t nHitsReconstructed = 0;
-  
-  
-  
+
+
+
   DTracker *tTracker  =  fSession->GetTracker();
   DPlane* tPlane = NULL;
   DTrack *aTrack = NULL;
@@ -10793,12 +10846,12 @@ void MRaw::SeedCuts(Int_t nEvents)
   //DPixel *aPixel;
   Double_t seedSN;
   //Double_t seedN;
-  
+
   Int_t nPlanes = tTracker->GetPlanesN();
   Int_t nCutSteps= 21;
   Int_t nCutseedSteps= 10;
-  
-  
+
+
   // Get the first DUT among the planes and remember it,
   //  it considered as the one providing the coordinate frame for the geomatrix
   // If no DUT (status=3), set to first plane
@@ -10811,36 +10864,36 @@ void MRaw::SeedCuts(Int_t nEvents)
    break;
    }
    }  */
-  
-  
+
+
   TH1F **hHitSeedCharge_cut  = new TH1F*[nPlanes*100*100];
   TH2F **hHitSeedVsNeighbourCharge_cut = new TH2F*[nPlanes*100*100];
   TH2F **hHitMap_cut = new TH2F*[nPlanes*100*100];
-  
-  
-  
-  
-  
+
+
+
+
+
   Char_t name[100], title[200];
-  
+
   //         sprintf( name, "hhitmap");
   //            sprintf( title, "bidon");
   //  hHitMap_cut[0] = new TH2F("bidon", "bidon", NbinsX, xmin, xmax, NbinsY, ymin, ymax);
   // TH2F *hHitMap_cut0 = new TH2F("bidon", "bidon", NbinsX,-50,50,NbinsY,-50,50);
   // TH1F *h = new TH1F("h", "bidon", 100, -50, 50);
-  
-  
+
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     int NbinsX = tPlane->GetStripsNu();
     int NbinsY = tPlane->GetStripsNv();
     Double_t xmin=-NbinsX*tPlane->GetStripPitch()(0) / 2., xmax=NbinsX*tPlane->GetStripPitch()(0) / 2.;
     Double_t ymin=-NbinsY*tPlane->GetStripPitch()(1) / 2., ymax=NbinsY*tPlane->GetStripPitch()(1) / 2.;
-    
-    
-    
-    
-    
+
+
+
+
+
     for (Int_t cut=0; cut<=20; cut++)    {
       for (Int_t cutseed=0; cutseed<=10; cutseed ++) {
         cout<<"Cutseed = "<< float(cutseed)/10 <<", cut = "<<cut*10<<endl;
@@ -10848,60 +10901,60 @@ void MRaw::SeedCuts(Int_t nEvents)
         //cout<<name<<endl;
         sprintf( title, "Spectrum for seed + cluster > %d, seed/neigh > %2f of plane %d - %s; seed charge (ADCu); counts", cut*10, float(cutseed)/10, iPlane, tPlane->GetPlanePurpose());
         hHitSeedCharge_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)] = new TH1F(name, title, 3000, 0, 3000);
-        
+
         sprintf( name, "hhitseedneighbourgq_cut%d_cutseed%d_pl%d", cut*10, cutseed*10, iPlane);
         //cout<<name<<endl;
         sprintf( title, "Neighbour pixels VS seed charge of plane %d - %s seed + cluster > %d, seed/neig > %2f", iPlane, tPlane->GetPlanePurpose(), cut*10, float(cutseed)/10);
         hHitSeedVsNeighbourCharge_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)] = new TH2F(name, title, 100, 0, 0, 50, 0, 0);
         hHitSeedVsNeighbourCharge_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)] ->SetXTitle("seed charge (ADCu)");
         hHitSeedVsNeighbourCharge_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)] ->SetYTitle("neighbourgs charge (ADCu)");
-        
-        
+
+
         sprintf( name, "hhitmap_cut%d_cutseed%d_pl%d", cut*10, cutseed*10, iPlane);
         sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)  seed + cluster > %d, seed/neig > %2f", iPlane, tPlane->GetPlanePurpose(),cut*10, float(cutseed)/10);
-        
+
         if ((iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)< nPlanes*100*100)                 hHitMap_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)] = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
         else cout<<  (iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed) <<" ------ "<<nPlanes*100*100 <<endl;
         hHitMap_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)]->SetMarkerStyle(20);
         hHitMap_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)]->SetMarkerSize(.1);
         hHitMap_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)]->SetMarkerColor(1);
         hHitMap_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)]->SetStats(kFALSE);
-        
+
       }
     }
   }
-  
-  
-  
-  
+
+
+
+
   //Loop over the requested number of events
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
     if( !(fSession->NextRawEvent()) ) break; // JB 2009/06/26
     tTracker->Update();
-    
-    
+
+
     for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
       tPlane = tTracker->GetPlane(iPlane);
-      
+
       if( tPlane->GetHitsN()>0 ) {
         nHitsReconstructed += tPlane->GetHitsN();
-        
+
         for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
           aHit = (DHit*)tPlane->GetHit( iHit);
-          
-          
-          
-          
+
+
+
+
           if( tPlane->GetAnalysisMode()<3 ) { // analog output
-            
-            
-            
+
+
+
             if ((aHit->GetClusterPulseSum()!=0) && (aHit->GetPulseHeight(0)>0))	{ // =====================ICI=========
               Float_t chargeRatioValue=aHit->GetPulseHeight(0)/aHit->GetClusterPulseSum();
-              
+
               for (Int_t cut=0; cut<=20; cut++)    {
                 for (Int_t cutseed=0; cutseed<=10; cutseed ++) {
-                  
+
                   if ((aHit->GetPulseHeight(0) + aHit->GetClusterAreaPulseSum()>=cut*10) && (chargeRatioValue>=Float_t(cutseed)/10))	{
                     hHitSeedCharge_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)] ->Fill( aHit->GetPulseHeight(0));
                     hHitSeedVsNeighbourCharge_cut[(iPlane-1)+(nCutSteps*cut)+(nCutseedSteps*cutseed)] ->Fill( aHit->GetPulseHeight(0), aHit->GetClusterAreaPulseSum());
@@ -10915,14 +10968,14 @@ void MRaw::SeedCuts(Int_t nEvents)
       }  //end loop on hits
     } //end loop on planes
   } // END LOOP ON EVENTS
-  
-  
-  
+
+
+
   fSession->GetDataAcquisition()->PrintStatistics();
   tTracker->PrintStatistics();
-  
-  
-  
+
+
+
   // Save canvas and histos
   //cd to result dir
   // added JB 2011/03/14
@@ -10931,13 +10984,13 @@ void MRaw::SeedCuts(Int_t nEvents)
   sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
   cout << "\n-- Saving histos and canvas into " << rootFile << endl;
   TFile fRoot(rootFile,"RECREATE");
-  
-  
+
+
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     if( 0 < tPlane->GetAnalysisMode()  ) {
       if( tPlane->GetAnalysisMode() <= 2 ) {
-        
+
         for (Int_t cut=0; cut<=20; cut++)    {
           for (Int_t cutseed=0; cutseed<=10; cutseed ++) {
             hHitSeedVsNeighbourCharge_cut[(iPlane-1)+nCutSteps*cut+nCutseedSteps*cutseed] ->Write();//max 200 en 10 par 10
@@ -10945,15 +10998,15 @@ void MRaw::SeedCuts(Int_t nEvents)
             hHitMap_cut[(iPlane-1)+nCutSteps*cut+nCutseedSteps*cutseed]->Write();
           }
         }
-        
-        
+
+
       }
     }
   }
-  
-  
-  fRoot.Close();  
-  
+
+
+  fRoot.Close();
+
 }
 
 
@@ -10962,7 +11015,7 @@ void MRaw::SeedCuts(Int_t nEvents)
 //*****************************************************************************
 double CBfunction(double *x, double *par) {
   // Crystal ball function (https://en.wikipedia.org/wiki/Crystal_Ball_function)
-  
+
   double mean     = par[0];
   double sigma    = par[1];
   double alpha    = par[2];
@@ -10972,18 +11025,18 @@ double CBfunction(double *x, double *par) {
   double frac     = (x[0]-mean)/sigma;
   double A        = pow(n/absalpha,n)*exp(-pow(absalpha,2)/2);
   double B        = (n/absalpha)-absalpha;
-  
+
   double C        = sigma*(n/absalpha)*(1./(n-1))*exp(-0.5*pow(absalpha,2));
   double D        = sigma*sqrt(0.5*TMath::Pi())*(TMath::Erf(absalpha/sqrt(2)) + 1);
   double N        = norm/(C+D);
-  
+
   double result = 0.0;
   if(frac > -alpha) result = exp(-0.5*pow(frac,2));
   else              result = A*pow(B-frac,-n);
   result *= N;
-  
+
   return result;
-  
+
 }
 //*****************************************************************************
 void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, Double_t maxcharge )
@@ -11005,9 +11058,9 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   //  o PixelGain_runXXXX.root with 2d map of correction factors
   //
   // JB 2018/07/04
-  
+
   Int_t planeID = 1;
-  
+
   DTracker *tTracker  =  fSession->GetTracker();
   DPlane   *tPlane = tTracker->GetPlane(planeID);
   DHit     *aHit;
@@ -11028,7 +11081,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   sprintf( name, "hhitseedqallpl%d", planeID);
   sprintf( title, "Seed pixel charge for all pixels - plane %d - %s", planeID, tPlane->GetPlanePurpose());
   TH1F *hHitSeedChargeAll = new TH1F( name, title, maxcharge, 0, maxcharge);
-  
+
   // For fit & statistics
   double *means = new double[npixels];
   double *sigmas = new double[npixels];
@@ -11045,39 +11098,39 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   sprintf( title, "Map of individual pixel correction factors - plane %d;row index;column index", planeID);
   TH2F *hpixelgain = new TH2F( name, title, ncolumns, 1, ncolumns+1, nrows, 1, nrows+1);
 
-  
+
 //  cout << "BuildPixelGainMap:: init done" << endl;
-  
+
   // ================
   // Loop over events
   fSession->SetEvents(nEvents);
-  
+
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) { // loop on events
     fSession->NextRawEvent();
     tTracker->Update();
     //    cout << "BuildPixelGainMap:: event " << iEvt << endl;
-    
+
     if( tPlane->GetHitsN()>0 ) { // If there are some hits
       for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
         aHit = (DHit*)tPlane->GetHit( iHit);
         //printf("GettaHit->GetIndexSeed()ing seed index for hit %d (address %x) at plane %d: ", iHit, aHit, iPlane);
         //printf( "%d\n", aHit->GetIndexSeed());
-        
+
         hHitSeedChargeAll->Fill( aHit->GetPulseHeight(0));
-        
+
         int ipix = (int)(aHit->GetIndexSeed());
         if( 0<=ipix && ipix<npixels ) {
           hHitSeedCharge[ipix]->Fill( aHit->GetPulseHeight(0));
         }
-        
+
       } //end loop on hits
     } // end If there are some hits
-    
+
   } // end loop on events
   fSession->GetDataAcquisition()->PrintStatistics();
   tTracker->PrintStatistics();
 
-  
+
   // ================
   // Fit histos for all pixels and individual pixels
 
@@ -11092,7 +11145,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   double averageMean = ffit->GetParameter(0);
   double averageSigma = ffit->GetParameter(1);
   printf( "   average estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
-  
+
 
   for ( int ipix=0; ipix<npixels; ipix++ ) {
     cout << "getting histo nb " << ipix;
@@ -11109,7 +11162,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
     sigmas[ipix] = ffit->GetParameter(1);
     printf( "   first estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));
     hpixelgain->SetBinContent( ipix%ncolumns+1, ipix/ncolumns+1, means[ipix]);
-    
+
     // Uncomment the following for a second fit
     /*    ffit->SetRange( means[ipix]-6*sigmas[ipix], means[ipix]+3*sigmas[ipix]);
      ffit->SetParLimits( 0, minfit, maxfit);
@@ -11121,13 +11174,13 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
      means[ipix] = ffit->GetParameter(0);
      sigmas[ipix] = ffit->GetParameter(1);
      printf( "   second estimation mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));*/
-    
+
     hmeans->Fill( means[ipix]);
     hsigmas->Fill( sigmas[ipix]);
   }
 
   hpixelgain->Scale(1./averageMean);
-  
+
 
   // ================
   // Display
@@ -11145,7 +11198,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
 
   TCanvas *c2 = new TCanvas("c2", "Distribution of gain per pixels", 100, 100, 600, 600);
   hpixelgain->Draw("colz");
-  
+
   TCanvas *c3= new TCanvas("c3", "Distributions for individual pixels", 200, 200, 600, 600);
   Int_t randpix=0;
   for ( int ipix=0; ipix<TMath::Min(npixels,50); ipix++ ) {
@@ -11156,7 +11209,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
     }
     hHitSeedCharge[randpix]->Draw( (ipix==0?"":"same") );
   }
-  
+
   // ================
   // Save canvas and histos
   //cd to result dir
@@ -11185,7 +11238,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   hmeans->Write();
   hpixelgain->Write();
   fRoot2.Close();
-  
+
 }
 
 
@@ -13220,7 +13273,7 @@ void MRaw::DisplayCumulatedBeast(int MaxEvt)
           h_BeastRecoPartClassType_L1->GetXaxis()->SetBinLabel(i,LabelNameCat[i-1]);
           h_BeastRecoPartClassType_L2->GetXaxis()->SetBinLabel(i,LabelNameCat[i-1]);
         }
-  
+
   for (int i=0; i<25; i++) {
     HitOnSensor[i]=0;
     PixelOnSensor[i]=0;
@@ -14153,9 +14206,9 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
 			     double my_theta_mean,
 			     double my_phi_mean)
 {
-  
+
   //Function to fill up tree for cluster shape TMVA training to discriminate high theta angle hits
-  
+
   //Tree variables
   //Data-taking config variables
   float  Conf_ThetaMean    = my_theta_mean;
@@ -14163,14 +14216,14 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   float  Conf_PhiMeanModPi = my_phi_mean;
   if(Conf_PhiMeanModPi > TMath::Pi())      Conf_PhiMeanModPi -= TMath::Pi();
   else if(Conf_PhiMeanModPi > TMath::Pi()) Conf_PhiMeanModPi += TMath::Pi();
-  
+
   //Hit reconstruction variables
   float  Hit_NormMinStd;
   float  Hit_NormMaxStd;
   float  Hit_TotChargeADC;
   float  Hit_SeedChargeADC;
   float  Hit_MainAxisPhi;
-  
+
   //Output tree
   TTree* TMVAtree = new TTree("TMVAtree","TMVA tree");
   //Data-taking config variables
@@ -14183,14 +14236,14 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   TMVAtree->Branch("Hit_TotChargeADC",  &Hit_TotChargeADC,   "Hit_TotChargeADC/F");
   TMVAtree->Branch("Hit_SeedChargeADC", &Hit_SeedChargeADC,  "Hit_SeedChargeADC/F");
   TMVAtree->Branch("Hit_MainAxisPhi",   &Hit_MainAxisPhi,    "Hit_MainAxisPhi/F");
-  
+
   fSession->SetEvents(nEvents);
 
   DTracker *tTracker = fSession->GetTracker();
   Int_t nPlanes  = tTracker->GetPlanesN();
   DPlane* tPlane = NULL;
   DHit *aHit     = NULL;
-  
+
   Int_t nHitsReconstructed = 0;
 
   TH2F **hHitMap                    = new TH2F*[nPlanes];
@@ -14206,12 +14259,12 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   TH2F **hHitSeedSNVsSeedCharge     = new TH2F*[nPlanes];
   TH2F **hHitColRowLength           = new TH2F*[nPlanes];
   TH1F **hFracChargeOut7x7Window    = new TH1F*[nPlanes];
-  
+
   TH1F **hHitNormMinStd             = new TH1F*[nPlanes];
   TH1F **hHitNormMaxStd             = new TH1F*[nPlanes];
   TH2F **hHitNormMinStdVsNormMaxStd = new TH2F*[nPlanes];
   TH1F **hMainAxisPhi               = new TH1F*[nPlanes];
-  
+
   TCanvas **cHitProperties = new TCanvas*[nPlanes];
   TCanvas **cMCAProperties = new TCanvas*[nPlanes];
   Char_t name[50], title[100];
@@ -14228,12 +14281,12 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     double RV[2];
     RV[0] = -0.5*tPlane->GetStripsNv()*tPlane->GetStripPitch()(1);
     RV[1] = +0.5*tPlane->GetStripsNv()*tPlane->GetStripPitch()(1);
-    
+
     // -- Histo with microns
     sprintf( name, "hhitmappl%d", iPlane);
     sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
     // check if the histo is existing or not
-    hHitMap[iPlane-1] = new TH2F(name, title, 
+    hHitMap[iPlane-1] = new TH2F(name, title,
 				 NbinsU, RU[0], RU[1],
 				 NbinsV, RV[0], RV[1]);
     hHitMap[iPlane-1]->SetMarkerStyle(20);
@@ -14266,13 +14319,13 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitSeedSN[iPlane-1] = new TH1F(name, title, 200, 0, 0);
     hHitSeedSN[iPlane-1]->SetXTitle("S/N");
     hHitSeedSN[iPlane-1]->GetXaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hhitneighboursn%d", iPlane);
     sprintf( title, "Hit S/N for neighbour pixels of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitNeighbourSN[iPlane-1] = new TH1F(name, title, 100, 0, 0);
     hHitNeighbourSN[iPlane-1]->SetXTitle("S/N");
     hHitNeighbourSN[iPlane-1]->GetXaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hhitseedneighbourgsn%d", iPlane);
     sprintf( title, "Hit S/N for neighbour pixels VS seed of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitSeedVsNeighbourSN[iPlane-1] = new TH2F(name, title, 200, 0, 0, 50, 0, 0);
@@ -14280,7 +14333,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitSeedVsNeighbourSN[iPlane-1]->GetXaxis()->CenterTitle(true);
     hHitSeedVsNeighbourSN[iPlane-1]->SetYTitle("neighbourgs S/N");
     hHitSeedVsNeighbourSN[iPlane-1]->GetYaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hhitcharge%d", iPlane);
     sprintf( title, "Hit charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitCharge[iPlane-1] = new TH1F(name, title, 200, 0, 0);
@@ -14292,13 +14345,13 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitSeedCharge[iPlane-1] = new TH1F(name, title, 200, 0, 0);
     hHitSeedCharge[iPlane-1]->SetXTitle("charge (ADCu)");
     hHitSeedCharge[iPlane-1]->GetXaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hhitneighbourq%d", iPlane);
     sprintf( title, "Neighbour pixels charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitNeighbourCharge[iPlane-1] = new TH1F(name, title, 100, 0, 0);
     hHitNeighbourCharge[iPlane-1]->SetXTitle("charge (ADCu)");
     hHitNeighbourCharge[iPlane-1]->GetXaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hhitseedneighbourgq%d", iPlane);
     sprintf( title, "Neighbour pixels VS seed charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitSeedVsNeighbourCharge[iPlane-1] = new TH2F(name, title, 100, 0, 0, 50, 0, 0);
@@ -14306,7 +14359,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitSeedVsNeighbourCharge[iPlane-1]->GetXaxis()->CenterTitle(true);
     hHitSeedVsNeighbourCharge[iPlane-1]->SetYTitle("neighbourgs charge (ADCu)");
     hHitSeedVsNeighbourCharge[iPlane-1]->GetYaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hhitseedsnseedq%d", iPlane);
     sprintf( title, "Seed pixel S/N VS seed charge of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitSeedSNVsSeedCharge[iPlane-1] = new TH2F(name, title, 100, 0, 0, 100, 0, 0);
@@ -14314,25 +14367,25 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitSeedSNVsSeedCharge[iPlane-1]->GetXaxis()->CenterTitle(true);
     hHitSeedSNVsSeedCharge[iPlane-1]->SetYTitle("seed S/N");
     hHitSeedSNVsSeedCharge[iPlane-1]->GetYaxis()->CenterTitle(true);
-    
+
     int NtimesRMS = 20;
     double MaxPitch = TMath::Max(tPlane->GetStripPitch()(0),tPlane->GetStripPitch()(1));
     double RMSmax   = MaxPitch*NtimesRMS;
     double RMS_step = MaxPitch/15;
     int NbinsRMS = int(RMSmax/RMS_step);
-    
+
     sprintf( name, "hHitNormMinStd_%d", iPlane);
     sprintf( title, "Hit MCA RMS_{min} of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitNormMinStd[iPlane-1] = new TH1F(name, title, NbinsRMS, 0, RMSmax);
     hHitNormMinStd[iPlane-1]->SetXTitle("RMS_{min} (#mum)");
     hHitNormMinStd[iPlane-1]->GetXaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hHitNormMaxStd_%d", iPlane);
     sprintf( title, "Hit MCA RMS_{max} of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitNormMaxStd[iPlane-1] = new TH1F(name, title, NbinsRMS, 0, RMSmax);
     hHitNormMaxStd[iPlane-1]->SetXTitle("RMS_{max} (#mum)");
     hHitNormMaxStd[iPlane-1]->GetXaxis()->CenterTitle(true);
-    
+
     sprintf( name, "hHitNormMinStdVsNormMaxStd_%d", iPlane);
     sprintf( title, "Hit MCA RMS_{min} vs RMS_{max} of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hHitNormMinStdVsNormMaxStd[iPlane-1] = new TH2F(name, title, NbinsRMS, 0, RMSmax,NbinsRMS, 0, RMSmax);
@@ -14341,30 +14394,30 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitNormMinStdVsNormMaxStd[iPlane-1]->SetYTitle("RMS_{min} (#mum)");
     hHitNormMinStdVsNormMaxStd[iPlane-1]->GetYaxis()->CenterTitle(true);
     hHitNormMinStdVsNormMaxStd[iPlane-1]->SetStats(false);
-    
+
     double Step_phi = 5.0; //deg
     double R_phi[2];
     R_phi[0] =   0.0;
     R_phi[1] = 180.0;
     int Nbins_Phi = int((R_phi[1] - R_phi[0])/Step_phi);
-    
+
     sprintf( name, "hMainAxisPhi_%d", iPlane);
     sprintf( title, "Hit MCA main axis #phi of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hMainAxisPhi[iPlane-1] = new TH1F(name, title, Nbins_Phi, R_phi[0], R_phi[1]);
     hMainAxisPhi[iPlane-1]->SetXTitle("MCA #phi (deg)");
-    
+
     int NMaxColsPlot = 20;
     double R_ColRowLength[2];
     R_ColRowLength[0] =  -0.5;
     R_ColRowLength[1] =  NMaxColsPlot + 0.5;
     sprintf( name, "hHitColRowLength_%d", iPlane);
     sprintf( title, "Hit Col/Row Length of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    hHitColRowLength[iPlane-1] = new TH2F(name, title, 
+    hHitColRowLength[iPlane-1] = new TH2F(name, title,
 					  NMaxColsPlot+1,R_ColRowLength[0],R_ColRowLength[1],
 					  NMaxColsPlot+1,R_ColRowLength[0],R_ColRowLength[1]);
     hHitColRowLength[iPlane-1]->SetXTitle("Col Lenth");
     hHitColRowLength[iPlane-1]->SetYTitle("Row Lenth");
-    
+
     sprintf( name, "hFracChargeOut7x7Window_%d", iPlane);
     sprintf( title, "Hit Fraction of charge outside 7x7 window of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     hFracChargeOut7x7Window[iPlane-1] = new TH1F(name, title, 40,0.0,100.0);
@@ -14378,12 +14431,12 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
     if( !(fSession->NextRawEvent()) ) break;
     tTracker->Update();
-    
+
     for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
       tPlane = tTracker->GetPlane(iPlane);
-      
+
       int NGoodHits = 0;
-      
+
       for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
 	DHit* aHit = (DHit*)tPlane->GetHit(iHit);
 	aHit->DoMCA();
@@ -14393,7 +14446,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
 	Hit_MainAxisPhi   = aHit->GetMainAxisPhi();
 	Hit_TotChargeADC  = aHit->GetClusterPulseSum();
 	Hit_SeedChargeADC = aHit->GetPulseHeight(0);
-	
+
 	//Some Cuts
 	if(aHit->GetColMin() <= Fiducial_Region-1) continue;
 	if(aHit->GetColMax() >= tPlane->GetStripsNu() - (Fiducial_Region-1)) continue;
@@ -14401,15 +14454,15 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
 	if(aHit->GetRowMax() >= tPlane->GetStripsNv() - (Fiducial_Region-1)) continue;
 	if(aHit->GetStripsInCluster() >= 200) continue;
 	if(Hit_NormMaxStd == -1000) continue;
-	
+
 	//Now fill some histos
 	DR3* Pos = aHit->GetPosition();
 	hHitMap[iPlane-1]->Fill((*Pos)(0),(*Pos)(1));
-	
+
 	hHitPixMult[iPlane-1]->Fill(aHit->GetStripsInCluster());
-	
+
 	hHitColRowLength[iPlane-1]->Fill(aHit->GetColMax() - aHit->GetColMin() + 1,aHit->GetRowMax() - aHit->GetRowMin() + 1);
-	
+
 	double Charge_Outside_7x7_window = 0.0;
 	int col_seed = -1,row_seed = -1;
 	for(int ipix=0;ipix < aHit->GetStripsInCluster();ipix++) {
@@ -14427,46 +14480,46 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
 	    row    = idex_pixel/tPlane->GetStripsNu();
 	    charge = tPlane->GetStrip(idex_pixel)->GetPulseHeight();
 	  }
-	  
+
 	  if(ipix == 0) {
 	    col_seed = col;
 	    row_seed = row;
 	    continue;
 	  }
-	  
+
 	  if(abs(col_seed - col) <= 3 && abs(row_seed - row) <= 3) continue;
 	  Charge_Outside_7x7_window += charge;
 	}
-	
+
 	if(tPlane->GetAnalysisMode() < 3) { // analog output
 	  hHitSeedSN[iPlane-1]->Fill(aHit->GetSNseed());
 	  hHitNeighbourSN[iPlane-1]->Fill(aHit->GetSNneighbour());
 	  hHitSeedVsNeighbourSN[iPlane-1]->Fill(aHit->GetSNseed(),
 						aHit->GetSNneighbour());
-	  
+
 	  hHitCharge[iPlane-1]->Fill(aHit->GetClusterPulseSum());
 	  hHitSeedCharge[iPlane-1]->Fill(aHit->GetPulseHeight(0));
 	  hHitNeighbourCharge[iPlane-1]->Fill(aHit->GetClusterAreaPulseSum());
 	  hHitSeedVsNeighbourCharge[iPlane-1]->Fill(aHit->GetPulseHeight(0),
 						    aHit->GetClusterAreaPulseSum());
-	  
+
 	  hHitSeedSNVsSeedCharge[iPlane-1]->Fill(aHit->GetPulseHeight(0),
-						 aHit->GetSNseed());	
+						 aHit->GetSNseed());
 	}
-	
+
 	hHitNormMinStd[iPlane-1]->Fill(Hit_NormMinStd);
 	hHitNormMaxStd[iPlane-1]->Fill(Hit_NormMaxStd);
 	hHitNormMinStdVsNormMaxStd[iPlane-1]->Fill(Hit_NormMaxStd,Hit_NormMinStd);
 	hMainAxisPhi[iPlane-1]->Fill(Hit_MainAxisPhi*180.0/TMath::Pi());
 	hFracChargeOut7x7Window[iPlane-1]->Fill(100*Charge_Outside_7x7_window/aHit->GetClusterPulseSum());
-	
+
 	TMVAtree->Fill();
 	NGoodHits++;
       } //end loop on hits
-      
+
       hNHitsPerEvent[iPlane-1]->Fill(NGoodHits);
       nHitsReconstructed += NGoodHits;
-      
+
     } //end of loop on planes
   } // END LOOP ON EVENTS
 
@@ -14474,7 +14527,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   tTracker->PrintStatistics();
 
   double MaxAxisRanges = -1.0e+20;
-  
+
   TCanvas *ccumulhit;
   TObject* g = gROOT->FindObject("ccumulhit") ;
   if(g) ccumulhit = (TCanvas*)g;
@@ -14496,7 +14549,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     gPad->SetBottomMargin(0.20);
     gPad->SetLeftMargin(0.15);
     gPad->SetRightMargin(0.15);
-    
+
     hHitMap[iPlane-1]->DrawCopy("colz");
   }
   ccumulhit->Update();
@@ -14518,7 +14571,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     gPad->SetTicky(1);
     gPad->SetBottomMargin(0.20);
     gPad->SetLeftMargin(0.15);
-    
+
     double MyMaxRange = -999.0;
     for(int i=0;i<hHitPixMult[iPlane-1]->GetXaxis()->GetNbins();i++) {
       int index = hHitPixMult[iPlane-1]->GetXaxis()->GetNbins() - i;
@@ -14533,7 +14586,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitPixMult[iPlane-1]->SetAxisRange(hHitPixMult[iPlane-1]->GetXaxis()->GetXmin(),
 					MyMaxRange,
 					"X");
-    
+
     hHitPixMult[iPlane-1]->DrawCopy();
   }
   ccumulhit2->Update();
@@ -14555,7 +14608,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     gPad->SetTicky(1);
     gPad->SetBottomMargin(0.20);
     gPad->SetLeftMargin(0.15);
-    
+
     double MyMaxRange = -999.0;
     for(int i=0;i<hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins();i++) {
       int index = hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins() - i;
@@ -14594,14 +14647,14 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       gPad->SetBottomMargin(0.20);
       gPad->SetLeftMargin(0.15);
       if(hHitSeedSN[iPlane-1]->GetEntries() > 0) hHitSeedSN[iPlane-1]->DrawCopy();
-      
+
       cHitProperties[iPlane-1]->cd(2);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
       gPad->SetBottomMargin(0.20);
       gPad->SetLeftMargin(0.15);
       if(hHitNeighbourSN[iPlane-1]->GetEntries() > 0) hHitNeighbourSN[iPlane-1]->DrawCopy();
-      
+
       cHitProperties[iPlane-1]->cd(3);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
@@ -14609,28 +14662,28 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       gPad->SetLeftMargin(0.15);
       gPad->SetRightMargin(0.20);
       if(hHitSeedVsNeighbourSN[iPlane-1]->GetEntries() > 0) hHitSeedVsNeighbourSN[iPlane-1]->DrawCopy("colz");
-      
+
       cHitProperties[iPlane-1]->cd(4);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
       gPad->SetBottomMargin(0.20);
       gPad->SetLeftMargin(0.15);
       if(hHitCharge[iPlane-1]->GetEntries() > 0) hHitCharge[iPlane-1]->DrawCopy();
-      
+
       cHitProperties[iPlane-1]->cd(5);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
       gPad->SetBottomMargin(0.20);
       gPad->SetLeftMargin(0.15);
       if(hHitSeedCharge[iPlane-1]->GetEntries() > 0)  hHitSeedCharge[iPlane-1]->DrawCopy();
-      
+
       cHitProperties[iPlane-1]->cd(6);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
       gPad->SetBottomMargin(0.20);
       gPad->SetLeftMargin(0.15);
       if(hHitNeighbourCharge[iPlane-1]->GetEntries() > 0)  hHitNeighbourCharge[iPlane-1]->DrawCopy();
-      
+
       cHitProperties[iPlane-1]->cd(7);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
@@ -14638,7 +14691,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       gPad->SetLeftMargin(0.15);
       gPad->SetRightMargin(0.20);
       if(hHitSeedVsNeighbourCharge[iPlane-1]->GetEntries() > 0)  hHitSeedVsNeighbourCharge[iPlane-1]->DrawCopy("colz");
-      
+
       cHitProperties[iPlane-1]->cd(8);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
@@ -14646,7 +14699,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       gPad->SetLeftMargin(0.15);
       gPad->SetRightMargin(0.20);
       if( hHitSeedSNVsSeedCharge[iPlane-1]->GetEntries() > 0) hHitSeedSNVsSeedCharge[iPlane-1]->DrawCopy("colz");
-      
+
       cHitProperties[iPlane-1]->cd(9);
       gPad->SetTickx(1);
       gPad->SetTicky(1);
@@ -14654,15 +14707,15 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       gPad->SetLeftMargin(0.15);
       hNHitsPerEvent[iPlane-1]->DrawCopy();
     }
-    
+
     sprintf( name, "cMCApl%d", iPlane);
     sprintf( title, "Hit MCA properties of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     g = gROOT->FindObject(name);
     if(g) cMCAProperties[iPlane-1] = (TCanvas*)g;
     else  cMCAProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),600,500);
-    
+
     double Frac_limit = 0.99;
-    
+
     double MyMaxRangeRMSmax = -999.0;
     for(int i=0;i<hHitNormMaxStd[iPlane-1]->GetXaxis()->GetNbins();i++) {
       int index = hHitNormMaxStd[iPlane-1]->GetXaxis()->GetNbins() - i;
@@ -14678,7 +14731,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitNormMaxStd[iPlane-1]->SetAxisRange(hHitNormMaxStd[iPlane-1]->GetXaxis()->GetXmin(),
 					   MyMaxRangeRMSmax,
 					   "X");
-    
+
     double MyMaxRangeRMSmin = -999.0;
     for(int i=0;i<hHitNormMinStd[iPlane-1]->GetXaxis()->GetNbins();i++) {
       int index = hHitNormMinStd[iPlane-1]->GetXaxis()->GetNbins() - i;
@@ -14695,7 +14748,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
 					   //MyMaxRangeRMSmin,
 					   MyMaxRangeRMSmax,
 					   "X");
-    
+
     hHitNormMinStdVsNormMaxStd[iPlane-1]->SetAxisRange(hHitNormMinStd[iPlane-1]->GetXaxis()->GetXmin(),
 						       //MyMaxRangeRMSmin,
 						       MyMaxRangeRMSmax,
@@ -14703,7 +14756,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     hHitNormMinStdVsNormMaxStd[iPlane-1]->SetAxisRange(hHitNormMaxStd[iPlane-1]->GetXaxis()->GetXmin(),
 						       MyMaxRangeRMSmax,
 						       "Y");
-    
+
     cMCAProperties[iPlane-1]->Clear();
     cMCAProperties[iPlane-1]->UseCurrentStyle();
     cMCAProperties[iPlane-1]->Divide(2,3);
@@ -14776,7 +14829,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       hHitMap[iPlane-1]->Write();
       hHitPixMult[iPlane-1]->Write();
       hNHitsPerEvent[iPlane-1]->Write();
-      
+
       if(tPlane->GetAnalysisMode() <= 2) {
 	hHitSeedSN[iPlane-1]->Write();
 	hHitNeighbourSN[iPlane-1]->Write();
@@ -14788,7 +14841,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
 	hHitSeedSNVsSeedCharge[iPlane-1]->Write();
 	cHitProperties[iPlane-1]->Write();
       }
-      
+
       hHitNormMinStd[iPlane-1]->Write();
       hHitNormMaxStd[iPlane-1]->Write();
       hHitNormMinStdVsNormMaxStd[iPlane-1]->Write();
@@ -14796,14 +14849,14 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       hHitColRowLength[iPlane-1]->Write();
       hFracChargeOut7x7Window[iPlane-1]->Write();
       cMCAProperties[iPlane-1]->Write();
-      
+
     }
   }
   TMVAtree->Write();
   fRoot.Close();
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
@@ -14814,33 +14867,33 @@ void  MRaw::TrainTMVA(TString myMethodList,
 		      int Nevts_training,
 		      int Nevts_testing)
 {
-  
+
 
   // This loads the library
   TMVA::Tools::Instance();
-  
+
   std::map<std::string,int> Use;
-   
+
   // --- Mutidimensional likelihood and Nearest-Neighbour methods
   Use["PDERS"]           = 0;
-  Use["PDEFoam"]         = 0; 
+  Use["PDEFoam"]         = 0;
   Use["KNN"]             = 0;
-  // 
+  //
   // --- Linear Discriminant Analysis
   Use["LD"]		        = 1;
-  // 
+  //
   // --- Function Discriminant analysis
   Use["FDA_GA"]          = 0;
   Use["FDA_MC"]          = 0;
   Use["FDA_MT"]          = 0;
   Use["FDA_GAMT"]        = 0;
-  // 
+  //
   // --- Neural Network
-  Use["MLP"]             = 1; 
-  // 
-  // --- Support Vector Machine 
+  Use["MLP"]             = 1;
+  //
+  // --- Support Vector Machine
   Use["SVM"]             = 0;
-  // 
+  //
   // --- Boosted Decision Trees
   Use["BDT"]             = 0;
   Use["BDTG"]            = 1;
@@ -14854,18 +14907,18 @@ void  MRaw::TrainTMVA(TString myMethodList,
     vector<TString> mlist = gTools().SplitString( myMethodList, ',' );
     for(UInt_t i=0; i<mlist.size(); i++) {
       std::string regMethod(mlist[i]);
-      
+
       if(Use.find(regMethod) == Use.end()) {
 	cout << "Method \"" << regMethod << "\" not known in TMVA under this name. Choose among the following:" << endl;
 	for(std::map<std::string,int>::iterator it = Use.begin(); it != Use.end(); it++) cout << it->first << " ";
 	cout << endl;
-	
+
 	return;
       }
       Use[regMethod] = 1;
     }
   }
-  
+
   TString  OutFileName = OutputFile + TString(".root");
 
   if(Nevts_training > 0) {
@@ -14882,12 +14935,12 @@ void  MRaw::TrainTMVA(TString myMethodList,
     // then run the performance analysis for you.
     //
     // The first argument is the base of the name of all the
-    // weightfiles in the directory weight/ 
+    // weightfiles in the directory weight/
     //
     // The second argument is the output file for the training results
-    // All TMVA output can be suppressed by removing the "!" (not) in 
+    // All TMVA output can be suppressed by removing the "!" (not) in
     // front of the "Silent" argument in the option string
-    TMVA::Factory *factory = new TMVA::Factory( "TMVARegression", outputFile, 
+    TMVA::Factory *factory = new TMVA::Factory( "TMVARegression", outputFile,
                                                 "!V:!Silent:Color:DrawProgressBar" );
 
     // Define the input variables that shall be used for the MVA training
@@ -14903,8 +14956,8 @@ void  MRaw::TrainTMVA(TString myMethodList,
     //   factory->AddVariable( "", "", "units", 'F' );
     //  factory->AddVariable( "var2", "Variable 2", "units", 'F' );
 
-    // You can add so-called "Spectator variables", which are not used in the MVA training, 
-    // but will appear in the final "TestTree" produced by TMVA. This TestTree will contain the 
+    // You can add so-called "Spectator variables", which are not used in the MVA training,
+    // but will appear in the final "TestTree" produced by TMVA. This TestTree will contain the
     // input variables, the response values of all trained MVAs, and the spectator variables
     // factory->AddSpectator( "STparticles_ThetaIncidentAngle",  "STparticles_ThetaIncidentAngle", "units", 'F' );
     //   factory->AddSpectator( "ST_TMVA_PhiIncidentAngle",  "STparticles_PhiIncidentAngle", "units", 'F' );
@@ -14916,14 +14969,14 @@ void  MRaw::TrainTMVA(TString myMethodList,
     //factory->AddSpectator( "spec2:=var1*3",  "Spectator 2", "units", 'F' );
 
     // Add the variable carrying the regression target
-    factory->AddTarget( "Conf_ThetaMean" ); 
+    factory->AddTarget( "Conf_ThetaMean" );
     //factory->AddTarget( "Conf_PhiMean" );
 
     // --------------------------------------------------------------------------------------------------
 
     // global event weights per tree (see below for setting event-wise weights)
     Double_t regWeight  = 1.0;
-    
+
     std::vector<TString> MyFileList;
     MyFileList.clear();
     if(fname.EndsWith(".root")) MyFileList.push_back(fname);
@@ -14938,7 +14991,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
       cout << "MRaw::TrainTMVA::ERROR  intput data files doesn't end either with .root or .txt. Check your inputs. Exiting now!!!" << endl;
       cout << endl;
     }
-  
+
     const int Nfiles(MyFileList.size());
     TTree *regTree[Nfiles];
     for(int ifile=0;ifile<Nfiles;ifile++) {
@@ -14949,17 +15002,17 @@ void  MRaw::TrainTMVA(TString myMethodList,
         exit(1);
       }
       cout << "--- TMVARegression           : Using input file: " << input->GetName() << endl;
-      
+
       regTree[ifile] = (TTree*)input->Get(TreeName.Data());
-      
+
       factory->AddRegressionTree(regTree[ifile], regWeight);
     }
 
-    // This would set individual event weights (the variables defined in the 
+    // This would set individual event weights (the variables defined in the
     // expression need to exist in the original TTree)
     double Theta_Cut       = 45.0;
     double Frac_High_theta = 0.9;
-    
+
     if(Theta_Cut < 0.0 || Theta_Cut > 180.0) {
       cout << endl;
       cout << "Theta cut value " << Theta_Cut << ", is outside (0,180.0) range. Exiting now!!!" << endl;
@@ -14979,7 +15032,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
     WeightExpression         += TString(ytitle) + TString(") + (Conf_ThetaMean > ") + TString(ytitle) + TString(")*");
     sprintf(ytitle,"%.2f",Frac_High_theta);
     WeightExpression         += TString(ytitle);
-    
+
     cout << endl;
     cout << "Weight Expression for regression: " << WeightExpression.Data() << endl;
     cout << endl;
@@ -14997,7 +15050,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
     cout << endl;
     cout << "Training and Testing config: " << TrainingMethodPre.Data() << endl;
     cout << endl;
-    factory->PrepareTrainingAndTestTree(mycut, 
+    factory->PrepareTrainingAndTestTree(mycut,
 				        TrainingMethodPre.Data());
 
     // ---- Book MVA methods
@@ -15009,34 +15062,34 @@ void  MRaw::TrainTMVA(TString myMethodList,
 
     // PDE - RS method
     if(Use["PDERS"])   factory->BookMethod( TMVA::Types::kPDERS,
-                                            "PDERS", 
+                                            "PDERS",
                                             "!H:!V:NormTree=T:VolumeRangeMode=Adaptive:KernelEstimator=Gauss:GaussSigma=0.3:NEventsMin=40:NEventsMax=60:VarTransform=None" );
-  
+
     if(Use["PDEFoam"]) factory->BookMethod( TMVA::Types::kPDEFoam,
-                                            "PDEFoam", 
+                                            "PDEFoam",
 			                    "!H:!V:MultiTargetRegression=F:TargetSelection=Mpv:TailCut=0.001:VolFrac=0.0666:nActiveCells=500:nSampl=2000:nBin=5:Compress=T:Kernel=None:Nmin=10:VarTransform=None" );
 
     // K-Nearest Neighbour classifier (KNN)
     if(Use["KNN"])     factory->BookMethod( TMVA::Types::kKNN,
-                                            "KNN", 
+                                            "KNN",
 	  				    "nkNN=20:ScaleFrac=0.8:SigmaFact=1.0:Kernel=Gaus:UseKernel=F:UseWeight=T:!Trim" );
 
     // Linear discriminant
     if(Use["LD"])      factory->BookMethod( TMVA::Types::kLD,
-                                            "LD", 
+                                            "LD",
 				  	    "!H:!V:VarTransform=None" );
-  
+
     // Function discrimination analysis (FDA) -- test of various fitters - the recommended one is Minuit (or GA or SA)
     if(Use["FDA_MC"])  factory->BookMethod( TMVA::Types::kFDA,
                                             "FDA_MC",
 					    "!H:!V:Formula=(0)+(1)*x0+(2)*x1:ParRanges=(-100,100);(-100,100);(-100,100):FitMethod=MC:SampleSize=100000:Sigma=0.1:VarTransform=D" );
-   
+
     // can also use Simulated Annealing (SA) algorithm (see Cuts_SA options) .. the formula of this example is good for parabolass
     if(Use["FDA_GA"])  factory->BookMethod( TMVA::Types::kFDA,
                                             "FDA_GA",
 					    "!H:!V:Formula=(0)+(1)*x0+(2)*x1:ParRanges=(-100,100);(-100,100);(-100,100):FitMethod=GA:PopSize=100:Cycles=3:Steps=30:Trim=True:SaveBestGen=1:VarTransform=Norm" );
 
-    if(Use["FDA_MT"])  factory->BookMethod( TMVA::Types::kFDA, 
+    if(Use["FDA_MT"])  factory->BookMethod( TMVA::Types::kFDA,
                                             "FDA_MT",
 					    "!H:!V:Formula=(0)+(1)*x0+(2)*x1:ParRanges=(-100,100);(-100,100);(-100,100);(-10,10):FitMethod=MINUIT:ErrorLevel=1:PrintLevel=-1:FitStrategy=2:UseImprove:UseMinos:SetBatch" );
 
@@ -15060,9 +15113,9 @@ void  MRaw::TrainTMVA(TString myMethodList,
     if(Use["BDTG"])       factory->BookMethod( TMVA::Types::kBDT,
                                                "BDTG",
 					       "!H:!V:NTrees=2000::BoostType=Grad:Shrinkage=0.1:UseBaggedBoost:BaggedSampleFraction=0.5:nCuts=20:MaxDepth=3:MaxDepth=4" );
-  
+
     // --------------------------------------------------------------------------------------------------
-  
+
     // ---- Now you can tell the factory to train, test, and evaluate the MVAs
 
     // Train MVAs using the set of training events
@@ -15072,7 +15125,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
     factory->TestAllMethods();
 
     // ----- Evaluate and compare performance of all configured MVAs
-    factory->EvaluateAllMethods();    
+    factory->EvaluateAllMethods();
 
     // --------------------------------------------------------------
 
@@ -15086,14 +15139,14 @@ void  MRaw::TrainTMVA(TString myMethodList,
       command = TString("mv  weights/TMVARegression_MLP.weights.xml   ") + OutWeightFileName;
       gSystem->Exec(command.Data());
     }
-    
+
     std::cout << "==> Wrote root file: " << outputFile->GetName() << std::endl;
     if(Use["MLP"]) std::cout << "==> Wrote weights file: " << OutWeightFileName.Data() << std::endl;
-    std::cout << "==> TMVARegression is done!" << std::endl;      
+    std::cout << "==> TMVARegression is done!" << std::endl;
 
     delete factory;
-    
-    
+
+
   }
 
   // Launch the GUI for the root macros
@@ -15104,7 +15157,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
       cout << "ERROR: could not open data file " << OutFileName.Data() << endl;
       exit(1);
     }
-    
+
     TMVARegGui(OutFileName.Data());
   }
 
@@ -15114,19 +15167,19 @@ void  MRaw::TrainTMVA(TString myMethodList,
   R_theta_in[0] =  0.0; //deg
   R_theta_in[1] = 90.0; //deg
   const int Nbins_theta_in(int((R_theta_in[1] - R_theta_in[0])/theta_Step_in));
-  
+
   float theta_Step_out = 5.0; //deg
   float R_theta_out[2];
   R_theta_out[0] =  0.0; //deg
   R_theta_out[1] = 90.0; //deg
   int Nbins_theta_out = int((R_theta_out[1] - R_theta_out[0])/theta_Step_out);
-  
+
   float theta_Step_outdel = 5.0; //deg
   float R_theta_outdel[2];
   R_theta_outdel[0] = -90.0; //deg
   R_theta_outdel[1] = +90.0; //deg
   int Nbins_theta_outdel = int((R_theta_outdel[1] - R_theta_outdel[0])/theta_Step_outdel);
-  
+
   TH2F* h_ThetaIncident_vs_MLPregressionOut = new TH2F("h_ThetaIncident_vs_MLPregressionOut",
                                                        "MLP reg. output vs #theta incident",
 						       Nbins_theta_in, R_theta_in[0], R_theta_in[1],
@@ -15134,7 +15187,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
   h_ThetaIncident_vs_MLPregressionOut->SetXTitle("#theta_{inc} (deg)");
   h_ThetaIncident_vs_MLPregressionOut->SetYTitle("MLP-out (deg)");
   h_ThetaIncident_vs_MLPregressionOut->SetStats(false);
-  
+
   TH2F* h_ThetaIncident_vs_DeltaMLPregressionOut = new TH2F("h_ThetaIncident_vs_DeltaMLPregressionOut",
 							    "(MLP reg. output - #theta incident) vs #theta incident",
 							    Nbins_theta_in,R_theta_in[0],R_theta_in[1],
@@ -15142,7 +15195,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
   h_ThetaIncident_vs_DeltaMLPregressionOut->SetXTitle("#theta_{inc} (deg)");
   h_ThetaIncident_vs_DeltaMLPregressionOut->SetYTitle("(MLP-out - #theta_{inc}) (deg)");
   h_ThetaIncident_vs_DeltaMLPregressionOut->SetStats(false);
-  
+
   TH1F* h_ThetaIncident_vs_MeanMLPregressionOut = new TH1F("h_ThetaIncident_vs_MeanMLPregressionOut",
 							   "MLP reg. output profile vs #theta incident",
 							   Nbins_theta_in, R_theta_in[0], R_theta_in[1]);
@@ -15153,7 +15206,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
   h_ThetaIncident_vs_MeanMLPregressionOut->SetMaximum(h_ThetaIncident_vs_MLPregressionOut->GetYaxis()->GetXmax());
   h_ThetaIncident_vs_MeanMLPregressionOut->SetLineColor(kBlue);
   h_ThetaIncident_vs_MeanMLPregressionOut->SetLineWidth(2);
-  
+
   TH1F* h_ThetaIncident_vs_MeanDeltaMLPregressionOut = new TH1F("h_ThetaIncident_vs_MeanDeltaMLPregressionOut",
 								"(MLP reg. output - #theta incident) profile vs #theta incident",
 							        Nbins_theta_in,R_theta_in[0],R_theta_in[1]);
@@ -15164,13 +15217,13 @@ void  MRaw::TrainTMVA(TString myMethodList,
   h_ThetaIncident_vs_MeanDeltaMLPregressionOut->SetMaximum(h_ThetaIncident_vs_DeltaMLPregressionOut->GetYaxis()->GetXmax());
   h_ThetaIncident_vs_MeanDeltaMLPregressionOut->SetLineColor(kBlue);
   h_ThetaIncident_vs_MeanDeltaMLPregressionOut->SetLineWidth(2);
-  
+
   double MLPOutMean[Nbins_theta_in];
   double MLPOutRMS[Nbins_theta_in];
   double DeltaMLPOutMean[Nbins_theta_in];
   int    Nhits[Nbins_theta_in];
   for(int i=0;i<Nbins_theta_in;i++) MLPOutMean[i] = DeltaMLPOutMean[i] = MLPOutRMS[i] = Nhits[i] = 0;
-  
+
   std::vector<TString> FileList;
   FileList.clear();
   if(fname.EndsWith(".root")) FileList.push_back(fname);
@@ -15180,7 +15233,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
     while(fp >> ccc) FileList.push_back(TString(ccc));
     fp.close();
   }
-  
+
   float  Hit_NormMinStd;
   float  Hit_NormMaxStd;
   float  Hit_TotChargeADC;
@@ -15189,9 +15242,9 @@ void  MRaw::TrainTMVA(TString myMethodList,
   float  Conf_PhiMean;
   float  Conf_PhiMeanModPi;
   float  Conf_ThetaMean;
-  
+
   TMVA::Reader *reader = new TMVA::Reader( "!Color:!Silent" );
-  
+
   reader->AddVariable( "Hit_NormMinStd",     &Hit_NormMinStd);
   reader->AddVariable( "Hit_NormMaxStd",     &Hit_NormMaxStd);
   reader->AddVariable( "Hit_TotChargeADC",   &Hit_TotChargeADC);
@@ -15200,7 +15253,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
   reader->AddSpectator( "Conf_PhiMean",      &Conf_PhiMean);
   reader->AddSpectator( "Conf_PhiMeanModPi", &Conf_PhiMeanModPi);
   reader->AddSpectator( "Hit_MainAxisPhi",   &Hit_MainAxisPhi);
-  
+
   // Book method(s)
   TString dir    = "weights/";
   TString prefix = "TMVARegression";
@@ -15215,7 +15268,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
       reader->BookMVA( methodName, weightfile );
     }
   }
- 
+
   for(int ifile=0;ifile<int(FileList.size());ifile++) {
     TFile *input(0);
     if(!gSystem->AccessPathName(FileList[ifile].Data())) input = TFile::Open(FileList[ifile].Data());
@@ -15224,9 +15277,9 @@ void  MRaw::TrainTMVA(TString myMethodList,
       exit(1);
     }
     cout << "--- Looking at file " << input->GetName() << endl;
-    
+
     TTree* regTree = (TTree*)input->Get(TreeName.Data());
-    
+
     regTree->SetBranchAddress("Hit_NormMinStd",    &Hit_NormMinStd);
     regTree->SetBranchAddress("Hit_NormMaxStd",    &Hit_NormMaxStd);
     regTree->SetBranchAddress("Hit_TotChargeADC",  &Hit_TotChargeADC);
@@ -15235,34 +15288,34 @@ void  MRaw::TrainTMVA(TString myMethodList,
     regTree->SetBranchAddress("Conf_PhiMean",      &Conf_PhiMean);
     regTree->SetBranchAddress("Conf_PhiMeanModPi", &Conf_PhiMeanModPi);
     regTree->SetBranchAddress("Conf_ThetaMean",    &Conf_ThetaMean);
-    
+
     Long64_t PrintFreq = 1000;
     for(Long64_t ievt=0; ievt<regTree->GetEntries();ievt++) {
       if(ievt%PrintFreq == 0) std::cout << "--- ... Processing entry: " << ievt << " of file " << input->GetName() << std::endl;
       regTree->GetEntry(ievt);
-      
+
       for(int imethod=0;imethod<int(MethodList.size());imethod++) {
 	if(!MethodList[imethod].BeginsWith("MLP")) continue;
-	
+
 	float regOutput = (reader->EvaluateRegression( MethodList[imethod].Data() ))[0];
-	
+
 	h_ThetaIncident_vs_MLPregressionOut->Fill(Conf_ThetaMean,regOutput);
 	h_ThetaIncident_vs_DeltaMLPregressionOut->Fill(Conf_ThetaMean,regOutput - Conf_ThetaMean);
-	
-	
+
+
 	int index = h_ThetaIncident_vs_MLPregressionOut->GetXaxis()->FindBin(Conf_ThetaMean) - 1;
 	MLPOutMean[index]       += regOutput;
 	DeltaMLPOutMean[index]  += regOutput - Conf_ThetaMean;
 	MLPOutRMS[index]        += pow(regOutput,2);
 	Nhits[index]++;
-	
+
 	if(MethodList[imethod].BeginsWith("MLP")) break;
       }
     }
-    
+
   }
   delete reader;
-  
+
   for(int i=0;i<Nbins_theta_in;i++) {
     if(Nhits[i] > 25) {
       MLPOutMean[i]      /= Nhits[i];
@@ -15276,10 +15329,10 @@ void  MRaw::TrainTMVA(TString myMethodList,
       DeltaMLPOutMean[i] = -1000.0;
       MLPOutRMS[i]       = 1.0e-6;
     }
-    
+
     h_ThetaIncident_vs_MeanMLPregressionOut->SetBinContent(i+1,MLPOutMean[i]);
     h_ThetaIncident_vs_MeanMLPregressionOut->SetBinError(i+1,MLPOutRMS[i]);
-    
+
     h_ThetaIncident_vs_MeanDeltaMLPregressionOut->SetBinContent(i+1,DeltaMLPOutMean[i]);
     h_ThetaIncident_vs_MeanDeltaMLPregressionOut->SetBinError(i+1,MLPOutRMS[i]);
   }
@@ -15338,20 +15391,19 @@ void  MRaw::TrainTMVA(TString myMethodList,
   gPad->SetBottomMargin(0.18);
   h_ThetaIncident_vs_MeanDeltaMLPregressionOut->Draw();
   l2->Draw();
-  
+
   // Save canvas and histos
   TFile fRoot(OutFileName.Data(),"UPDATE");
   h_ThetaIncident_vs_MLPregressionOut->Write();
   h_ThetaIncident_vs_DeltaMLPregressionOut->Write();
   MLPRegressionOutput->Write();
   fRoot.Close();
-  
+
   std::cout <<" END  !!!"<< std::endl;
 
   return;
-  
+
 }
 #endif // USETMVA
 //______________________________________________________________________________
 //
-

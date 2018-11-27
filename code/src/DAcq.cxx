@@ -1930,6 +1930,7 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
           if( readerEvent ) { // If event pointer correct
             fRealEventNumber = readerEvent->GetEventNumber();
             fTriggersN      += readerEvent->GetNumberOfTriggers();
+            fFramesN        += readerEvent->GetNumberOfFrames();
             if (ListOfTriggers==NULL) {
               ListOfTriggers = readerEvent->GetTriggers();
             }
@@ -1960,9 +1961,10 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
 
               readerPixel = (BoardReaderPixel*)readerEvent->GetPixelAt( iPix);
               aPlaneNumber = fMatchingPlane[mdt-1][mdl-1][readerPixel->GetInput()-1][0];
-              if(fDebugAcq>2) cout << "  pixel " << iPix << " line " << readerPixel->GetLineNumber() << " column " << readerPixel->GetColumnNumber() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << endl;
+              if(fDebugAcq>2) cout << "  pixel " << iPix << " line " << readerPixel->GetLineNumber() << " column " << readerPixel->GetColumnNumber() << " at timestamp " << readerPixel->GetTimeStamp() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << endl;
 
-              DPixel* APixel = new DPixel( aPlaneNumber, readerPixel->GetLineNumber(), readerPixel->GetColumnNumber(), (Double_t)readerPixel->GetValue());
+              DPixel* APixel = new DPixel( aPlaneNumber, readerPixel->GetLineNumber(), readerPixel->GetColumnNumber(), (Double_t)readerPixel->GetValue(), readerPixel->GetTimeStamp());
+              // if(readerPixel->GetInput()!=5 && readerPixel->GetInput()!=6 && readerPixel->GetTimeStamp()==1)
               fListOfPixels[aPlaneNumber-1].push_back(APixel);
 
             } // end loop on Pixels
