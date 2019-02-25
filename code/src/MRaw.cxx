@@ -8658,44 +8658,31 @@ void MRaw::StudyMultipleScattering( Int_t nEvents, Int_t set0plane0, Int_t set0p
 {
   // Study multiple scattering by building for each tracks the residual between
   //  the track slopes obtained from 2 fits using 2 set of 2 points.
-  // The two sets are [dutPlaneNb-1, dutPlaneNb] and [dutPlaneNb, dutPlaneNb+1].
+  // The two sets are defined by indexes:
+  //  - first set: set0plane0, set0plane1
+  //  - second set: set1plane0, set1plane1
+  //
+  // PAY ATTENTION: these planes should not be identified as DUT (status: 3) !
   //
   // Uses subtrack which are track refit from a full track (see DSetup),
   //  if no subtrack setup was required, use normal full tracks.
-  // It no DUT specified, pick-up the first known DUT.
   //
   // JB, 2015/08/21
 
   fSession->SetEvents(nEvents);
 
-  // Find DUT plane
   DTracker *tTracker  =  (DTracker*)fSession->GetTracker();
 
   // Find subsets
   Int_t *planeSetIds[2];
-//  for (Int_t iset=0; iset<2; iset++) {
-//    planeSetIds[iset] = new Int_t[2];
-//    planeSetIds[iset][0] = dutPlaneNb + iset - 1;
-//    planeSetIds[iset][1] = dutPlaneNb + iset;
-//  }
   planeSetIds[0] = new Int_t[2];
   planeSetIds[0][0] = set0plane0;
   planeSetIds[0][1] = set0plane1;
   planeSetIds[1] = new Int_t[2];
   planeSetIds[1][0] = set1plane0;
   planeSetIds[1][1] = set1plane1;
-//  Int_t surroundingPlanesFound = 0;
-//  for ( Int_t iPlane=1; iPlane<=tTracker->GetPlanesN(); iPlane++) {
-//    Int_t testedNb = tTracker->GetPlane( iPlane)->GetPlaneNumber();
-//    if( abs(testedNb-dutPlaneNb) == 1 ) {
-//      surroundingPlanesFound++;
-//    }
-//  }
-//  if ( surroundingPlanesFound!=2 ) {
-//    cout << "WARNING, StudyMultipleScattering did not find both surrounding planes! -> LEAVING" << endl;
-//    return;
-//  }
-//  printf( "Will use 2 sets of planes: (%d-%d) and (%d-%d)\n", dutPlaneNb-1, dutPlaneNb, dutPlaneNb, dutPlaneNb+1);
+  printf( "Will use 2 sets of planes: (%d-%d) and (%d-%d)\n", planeSetIds[0][0], planeSetIds[0][1], planeSetIds[1][0], planeSetIds[1][1] );
+  DPlane *aPlane;
 
 //  fSubTrackPlanesN = 2;
 //  fSubTrackPlaneIds[0] = dutPlaneNb-1;
@@ -8711,15 +8698,15 @@ void MRaw::StudyMultipleScattering( Int_t nEvents, Int_t set0plane0, Int_t set0p
   TH1F *hSetTrackSlopeY[2];
   for (Int_t iset=0; iset<2; iset++) {
     sprintf( name, "hsettrackslopex%d", iset);
-    sprintf( title, "Track slopes X=f(Z) for set %d;slope", iset);
+    sprintf( title, "Track slopes X=f(Z) for set %d;slope [rad]", iset);
     hSetTrackSlopeX[iset] = new TH1F( name, title, 100, -0.005, 0.005);
     hSetTrackSlopeX[iset]->SetLineColor(1+iset);
     sprintf( name, "hsettrackslopey%d", iset);
-    sprintf( title, "Track slopes Y=f(Z) for set %d;slope", iset);
+    sprintf( title, "Track slopes Y=f(Z) for set %d;slope [rad]", iset);
     hSetTrackSlopeY[iset] = new TH1F( name, title, 100, -0.005, 0.005);
     hSetTrackSlopeY[iset]->SetLineColor(1+iset);
     sprintf( name, "hdistance%d", iset);
-    sprintf( title, "Distance between planes %d-%d of set %d", planeSetIds[iset][0], planeSetIds[iset][1], iset);
+    sprintf( title, "Distance between planes %d-%d of set %d;distance  [#mum]", planeSetIds[iset][0], planeSetIds[iset][1], iset);
     hdistance[iset] = new TH1F( name, title, 100, 0., 0.);
 
   }
@@ -8823,6 +8810,34 @@ void MRaw::StudyMultipleScattering( Int_t nEvents, Int_t set0plane0, Int_t set0p
   fSession->GetDataAcquisition()->PrintStatistics();
   tTracker->PrintStatistics();
 
+  // Compute some expectation
+  // Get first scattering
+  aPlane = tTracker->GetPlane(planeSetIds[0][1]);
+  DR3 firstPosition = aPlane->GetPosition();
+  printf( "  first plane %d, z-position %.0f\n", planeSetIds[0][1], position(2) );
+  Double_t expectedDeviation = aPlane->GetSigmaThetaMS()*aPlane->GetSigmaThetaMS();
+  // Add last scattering if plane different from first
+  DR3 lastPosition;
+  if( planeSetIds[0][1] !=planeSetIds[1][0] ) {
+    aPlane = tTracker->GetPlane(planeSetIds[1][0]);
+    lastPosition = aPlane->GetPosition();
+    printf( "  last plane %d, z-position %.0f\n", planeSetIds[1][0], position(2) );
+    expectedDeviation += aPlane->GetSigmaThetaMS()*aPlane->GetSigmaThetaMS();
+  } else {
+    lastPosition = firstPosition;
+  }
+  // Search any intermediate scattering
+  for (Int_t iPlane=0; iPlane<tTracker->GetPlanesN(); iPlane++) {
+    aPlane = tTracker->GetPlane( iPlane+1);
+    position = aPlane->GetPosition();
+    printf( "  Plane %d, z-position %.0f within [%.0f, %.0f]? test=%d\n", iPlane+1, position(2), firstPosition(2), lastPosition(2), ( firstPosition(2)<position(2) && position(2)<lastPosition(2) ) );
+    if ( firstPosition(2)<position(2) && position(2)<lastPosition(2) ) {
+      expectedDeviation += aPlane->GetSigmaThetaMS()*aPlane->GetSigmaThetaMS();
+    }
+  }
+  // the factor 1/sqrt(2) is because we measure angle deviations wrt fixed frame coordinates, not "in plane"
+  expectedDeviation = sqrt(expectedDeviation/2.);
+  printf(" expected angular deviation from scattering in X or Y planes: %f\n", expectedDeviation);
 
   // === Display ====
 

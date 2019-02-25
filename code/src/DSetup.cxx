@@ -372,7 +372,7 @@
 // "Name" has to be the first field
 // Name                  = [MANDATORY] (char) generic name of such modules
 //                        known types: "IMG", "TNT", "PXI", "PXIe", "GIG", "VME"
-//                                     "DecoderM18", "ALI22", "DecoderGeant", "IHEP"
+//                                     "DecoderM18", "ALI22", "DecoderGeant", "IHEP", "MC"
 // Type                  = [MANDATORY] (int) unique identifier for the module type
 // Devices               = [MANDATORY] (int) # module instances of this type,
 //                        typically, one instance decode one file
@@ -392,6 +392,7 @@
 //                            where XXXX is the run number and N is the file number
 // IfZeroSuppress  = [optional] (int) {0} if non-zero rawdata are zero-suppress
 //     ThresholdZero = [MANDATORY if IfZeroSuppress>0] threshold value for zero-suppression
+// MCTreeName            = [optional] (char) tree name in the MC generated file
 //
 // --- Name: "IMG"
 //  Type = 10 for pixels / 11 for strips / 12 for pixels with multi-frame
@@ -487,6 +488,16 @@
 //  DataFile        = [MANDATORY] (char) typically "FILEdata_Geant_RUN1_ch"
 //  TriggerMode, BinaryCoding, EventBufferSize, FileHeaderLine -> unused
 //  Inputs, Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
+//  FirstTriggerChannel, LastTriggerChannelNbOfFramesPerChannel -> unused
+//
+
+// --- Name: "MC"
+//  Type = 110
+//  Inputs          = [MANDATORY] (int) at least 1
+//  DataFile        = [MANDATORY] (char) typically "FILEdata_Geant_RUN1_ch"
+//  MCTreeName      = [MANDATORY] (char) tree name in the MC generated file
+//  TriggerMode, BinaryCoding, EventBufferSize, FileHeaderLine -> unused
+//  Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
 //  FirstTriggerChannel, LastTriggerChannelNbOfFramesPerChannel -> unused
 //
 
