@@ -41,6 +41,7 @@
 // Last Modified: JH, 2016/07/20 XrayAnalysis
 // Last Modified: AP, 2016/08/19 BetaSourceMultiFrameAnalysis
 // Last Modified: AP, 2017/05/09 Added FillnTupleForTMVA function fill tree for TMVA analysis
+// Last Modified: JB, 2019/03/10 Sitrineo analysis
 
 /////////////////////////////////////////////////////////////
 //                                                         //
@@ -158,6 +159,11 @@ void  MRaw::PrepareRaw()
       if( strstr(goal, "calib") || strstr(goal, "Calib") ) {
         bar3->AddButton("X-ray", "gTAF->GetRaw()->XrayAnalysis(500)", "Analysis for X-ray source over 500 events");
         bar3->AddButton("Gain Map", "gTAF->GetRaw()->BuildPixelGainMap( 100000)", "Build gain map for each pixel");
+      }
+
+      if( strstr(goal, "sitrineo") || strstr(goal, "Sitrineo") ) {
+        bar3->AddButton("SITRINEO/EVT", "gTAF->GetRaw()->SitrineoByEvent(2)", "Sitrineo analysis event-by-event");
+        bar3->AddButton("SITRINEO/CUMUL", "gTAF->GetRaw()->SitrineoCumul(1000,2)", "Sitrineo analysis cumulated over X events");
       }
 
       bar3->AddButton("DISPLAY IMAGE", "gTAF->GetRaw()->DisplayImage(100)","Build a GIF image with 100 events");
@@ -1422,8 +1428,8 @@ void MRaw::DisplayRawData( Float_t nChanToDisplay)
 
 }
 
-//______________________________________________________________________________
 //
+//______________________________________________________________________________
 void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, Int_t triggerNb, Int_t clusterMultiplicity,
 			     double Rminu,
 			     double Rmaxu,
@@ -2685,7 +2691,8 @@ void MRaw::DisplayTracks()
   hTrackMapXYZ->DrawCopy();
 
   DTrack *aTrack;
-  TLine   aLine, bLine;
+  TLine   aLine; // solid line from first to last plane of the track
+  TLine   bLine; // dotted line over the whole tracker dimension
 
   aLine.SetLineStyle(1);
   aLine.SetLineColor(1);
@@ -15422,3 +15429,704 @@ void  MRaw::TrainTMVA(TString myMethodList,
 #endif // USETMVA
 //______________________________________________________________________________
 //
+//
+//______________________________________________________________________________
+void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker)
+{
+  // Display various info for Sitrineo tracker event by event
+  //
+  // Argument lastPlaneOfFirsttracker means:
+  //  all planes with ID <= lastPlaneOfFirsttracker are included in first tracker
+  //  all planes with ID > lastPlaneOfFirsttracker are included in second tracker
+  //
+  // JB, 2019/03/10
+
+  fSession->SetEvents(3);
+
+// ==================================
+// == Plane, hit and track info
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  DPlane* tPlane;
+  DHit* aHit;
+  DTrack* aTrack;
+
+  int    nPlanes = tTracker->GetPlanesN();
+  int    NGoodPlanesInFirstTracker = 0;
+  int    NGoodPlanesInSecondTracker = 0;
+  bool   PlotPlane[nPlanes];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    tPlane = tTracker->GetPlane(iPlane);
+    if(tPlane->GetReadout() > 0) PlotPlane[iPlane-1] = true;
+    else                         PlotPlane[iPlane-1] = false;
+    if(PlotPlane[iPlane-1] && iPlane<=lastPlaneOfFirstTracker) {
+      NGoodPlanesInFirstTracker++;
+    }
+    else {
+      NGoodPlanesInSecondTracker++;
+    }
+  } // end loop on Planes
+
+
+  // ==================================
+  // == Canvas and histo info
+
+  TObject* gtmp;
+  Char_t name[50], title[1000], canvasTitle[200];
+
+  // Canvas for rawdata
+  TCanvas *cdisplayraw;
+  gtmp = gROOT->FindObject("cdisplayraw") ;
+  if (gtmp) {
+    cdisplayraw = (TCanvas*)gtmp;
+  }
+  else {
+    cdisplayraw = new TCanvas("cdisplayraw", "Inspect Raw Data", 5, 5, 800, 700);
+  }
+  cdisplayraw->Clear();
+  cdisplayraw->UseCurrentStyle();
+  cdisplayraw->cd();
+  TPaveLabel* label = new TPaveLabel();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,"");
+  cdisplayraw->cd();
+  TPad *padraw = new TPad("pad","",0.,0.,1.,0.965);
+  padraw->Draw();
+  padraw->Divide( TMath::Max(NGoodPlanesInFirstTracker, NGoodPlanesInSecondTracker), 2);
+
+  // Canvas for hits
+  TCanvas *cdisplayhit;
+  gtmp = gROOT->FindObject("cdisplayhit") ;
+  if (gtmp) {
+    cdisplayhit = (TCanvas*)gtmp;
+  }
+  else {
+    cdisplayhit = new TCanvas("cdisplayhit", "Inspect Hits", 600, 150, 800, 700);
+  }
+  cdisplayhit->Clear();
+  cdisplayhit->UseCurrentStyle();
+  TPad *padhit = new TPad("pad","",0.,0.,1.,0.965);
+  padhit->Draw();
+  padhit->Divide( TMath::Max(NGoodPlanesInFirstTracker, NGoodPlanesInSecondTracker), 2);
+
+  // Canvas for tracks
+  TCanvas *cdisplaytrack;
+  gtmp = gROOT->FindObject("cdisplaytrack") ;
+  if (gtmp) {
+    cdisplaytrack = (TCanvas*)gtmp;
+  }
+  else {
+    cdisplaytrack = new TCanvas("cdisplaytrack", "Inspect Tracks", 1200, 300 ,800, 700);
+  }
+  cdisplaytrack->Clear();
+  cdisplaytrack->UseCurrentStyle();
+  TPad *padtrack = new TPad("padtrack","",0.,0.,1.,0.965);
+  padtrack->Draw();
+  padtrack->Divide( 2, 2);
+
+
+  const int Ncolors(10);
+  int Colors_tmp[Ncolors];
+  Colors_tmp[0] = kBlack;
+  Colors_tmp[1] = kGreen+2;
+  Colors_tmp[2] = kBlue;
+  Colors_tmp[3] = kGray+2;
+  Colors_tmp[4] = kOrange-3;
+  Colors_tmp[5] = kCyan;
+  Colors_tmp[6] = kMagenta;
+  Colors_tmp[7] = kYellow;
+  Colors_tmp[8] = kOrange;
+  Colors_tmp[9] = kTeal+1;
+
+  TLatex* latex = new TLatex();
+  latex->SetTextAlign(12);
+  latex->SetTextSize(0.04);
+  latex->SetTextColor(kBlue);
+
+  TLatex* latex2 = new TLatex();
+  latex2->SetTextAlign(12);
+  latex2->SetTextSize(0.06);
+  latex2->SetTextColor(kBlue);
+
+  std::vector<std::vector<double> > _HitPositions_U        ;  _HitPositions_U        .resize(nPlanes);
+  std::vector<std::vector<double> > _HitPositions_V        ;  _HitPositions_V        .resize(nPlanes);
+  std::vector<std::vector<int> >    _HitColors             ;  _HitColors             .resize(nPlanes);
+  std::vector<std::vector<int> >    _HitTS                 ;  _HitTS                 .resize(nPlanes);
+
+  std::vector<std::vector<double> > _PixelsInHitPositions_U;  _PixelsInHitPositions_U.resize(nPlanes);
+  std::vector<std::vector<double> > _PixelsInHitPositions_V;  _PixelsInHitPositions_V.resize(nPlanes);
+  std::vector<std::vector<int> >    _PixelsInHitColors     ;  _PixelsInHitColors     .resize(nPlanes);
+  std::vector<std::vector<int> >    _PixelsInHitTS         ;  _PixelsInHitTS         .resize(nPlanes);
+
+  std::vector<std::vector<double> > _TrkPositions_U        ;  _TrkPositions_U        .resize(nPlanes);
+  std::vector<std::vector<double> > _TrkPositions_V        ;  _TrkPositions_V        .resize(nPlanes);
+  std::vector<std::vector<int> >    _TrkIdx                ;  _TrkIdx                .resize(nPlanes);
+  // NOTE (Antonin) :
+  //    set up the size of the 2D arrays  (nPlanes(fixed nb) x nTracks(changing from evt to evt...) )
+  //    One resizes with the number of planes and push_back as needed as far as tracks are concerned
+
+  // Rawdata histograms
+  TH2F **hRawData = new TH2F*[nPlanes];
+  TH2F **hTrackMapIndex = new TH2F*[nPlanes];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    if(!PlotPlane[iPlane-1]) continue;
+    tPlane = tTracker->GetPlane(iPlane);
+
+    _HitPositions_U[iPlane-1].clear();
+    _HitPositions_V[iPlane-1].clear();
+    _HitColors[iPlane-1].clear();
+    _HitTS[iPlane-1].clear();
+
+    _PixelsInHitPositions_U[iPlane-1].clear();
+    _PixelsInHitPositions_V[iPlane-1].clear();
+    _PixelsInHitColors[iPlane-1].clear();
+    _PixelsInHitTS[iPlane-1].clear();
+
+    _TrkPositions_U[iPlane-1].clear();
+    _TrkPositions_V[iPlane-1].clear();
+    _TrkIdx[iPlane-1].clear();
+
+    double R_RawData_U[2];
+    int Nbins_RawData_U;
+    R_RawData_U[0] = - 0.5;
+    R_RawData_U[1] = tPlane->GetStripsNu() + 0.5;
+    Nbins_RawData_U = int(R_RawData_U[1] - R_RawData_U[0])*NbinsReductionFactor;
+    double R_RawData_V[2];
+    int Nbins_RawData_V;
+    R_RawData_V[0] = - 0.5;
+    R_RawData_V[1] = tPlane->GetStripsNv() + 0.5;
+    Nbins_RawData_V = int(R_RawData_V[1] - R_RawData_V[0])*NbinsReductionFactor;
+
+    sprintf( name, "hrawdatapl%d", iPlane);
+    sprintf( title, "Raw data of plane (%d) %s", iPlane, tPlane->GetPlanePurpose());
+    gtmp = NULL;
+    gtmp = gROOT->FindObject(name);
+    if(gtmp) {
+       hRawData[iPlane-1] = (TH2F*)gtmp;
+    }
+    else {
+      hRawData[iPlane-1] = new TH2F(name, title,
+                                    Nbins_RawData_U,R_RawData_U[0],R_RawData_U[1],
+                                    Nbins_RawData_V,R_RawData_V[0],R_RawData_V[1]);
+      hRawData[iPlane-1]->SetMarkerStyle(20);
+      hRawData[iPlane-1]->SetMarkerSize(.4);
+      hRawData[iPlane-1]->SetMarkerColor(1);
+      hRawData[iPlane-1]->SetStats(kFALSE);
+    }
+
+    sprintf( name, "htrackmapipl%d", iPlane);
+    sprintf( title, "Track map of plane (%d) %s", iPlane, tPlane->GetPlanePurpose());
+    gtmp = NULL;
+    gtmp = gROOT->FindObject(name);
+    if(gtmp) {
+      hTrackMapIndex[iPlane-1] = (TH2F*)gtmp;
+    }
+    else {
+      hTrackMapIndex[iPlane-1] = new TH2F(name, title,
+                                          Nbins_RawData_U,R_RawData_U[0],R_RawData_U[1],
+                                          Nbins_RawData_V,R_RawData_V[0],R_RawData_V[1]);
+      hTrackMapIndex[iPlane-1]->SetMarkerStyle(28);
+      hTrackMapIndex[iPlane-1]->SetMarkerSize(2.0);
+      hTrackMapIndex[iPlane-1]->SetMarkerColor(4);
+      hTrackMapIndex[iPlane-1]->SetLineColor(4);
+      hTrackMapIndex[iPlane-1]->SetLineWidth(3);
+      hTrackMapIndex[iPlane-1]->SetStats(kFALSE);
+    }
+
+  } // end loop on planes
+
+
+  // Hit histrograms
+  TH2F **hHitMapTel = new TH2F*[nPlanes];
+  TH2F **hHitFoundMapTel = new TH2F*[nPlanes];
+  TH2F **hTrackMapTel = new TH2F*[nPlanes];
+
+  // Float_t *geomUmin = new Float_t[nPlanes];
+  // Float_t *geomUmax = new Float_t[nPlanes];
+  // Float_t *geomVmin = new Float_t[nPlanes];
+  // Float_t *geomVmax = new Float_t[nPlanes];
+  // Int_t *geomBinUmin = new Int_t[nPlanes];
+  // Int_t *geomBinUmax = new Int_t[nPlanes];
+  // Int_t *geomBinVmin = new Int_t[nPlanes];
+  // Int_t *geomBinVmax = new Int_t[nPlanes];
+  // Int_t *centerUbin = new Int_t[nPlanes];
+  // Int_t *centerVbin = new Int_t[nPlanes];
+
+  // Determine extrema of planes position in telescope frame
+  Double_t xmin=1e6, xmax=-1e6;
+  Double_t ymin=1e6, ymax=-1e6;
+  Double_t zmin=1e6, zmax=-1e6;
+  Double_t planeBox[2][2] = {{0,0},{0,0}};
+  TBox **geomPlaneBox = new TBox*[nPlanes];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    if(!PlotPlane[iPlane-1]) continue;
+    tPlane = tTracker->GetPlane(iPlane);
+    DR3 posInPlane, posBLInTracker, posURInTracker;
+
+   // bottom left corner
+    posInPlane.SetValue( -tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+			,-tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+			,0.);
+    posBLInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posBLInTracker(0)<xmin ) xmin = posBLInTracker(0);
+    if( posBLInTracker(1)<ymin ) ymin = posBLInTracker(1);
+    if( posBLInTracker(0)>xmax ) xmax = posBLInTracker(0);
+    if( posBLInTracker(1)>ymax ) ymax = posBLInTracker(1);
+   // upper right corner
+    posInPlane.SetValue( +tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+			,+tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+			,0.);
+    posURInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posURInTracker(0)<xmin ) xmin = posURInTracker(0);
+    if( posURInTracker(1)<ymin ) ymin = posURInTracker(1);
+    if( posURInTracker(0)>xmax ) xmax = posURInTracker(0);
+    if( posURInTracker(1)>ymax ) ymax = posURInTracker(1);
+    // final box
+    planeBox[0][0] = TMath::Min( posBLInTracker(0), posURInTracker(0));
+    planeBox[0][1] = TMath::Max( posBLInTracker(0), posURInTracker(0));
+    planeBox[1][0] = TMath::Min( posBLInTracker(1), posURInTracker(1));
+    planeBox[1][1] = TMath::Max( posBLInTracker(1), posURInTracker(1));
+    geomPlaneBox[iPlane-1] = new TBox( planeBox[0][0], planeBox[1][0], planeBox[0][1], planeBox[1][1]);
+    geomPlaneBox[iPlane-1]->SetFillStyle(0);
+    // Z extrema
+    if( tPlane->GetPosition()(2)<zmin) zmin = tPlane->GetPosition()(2);
+    if( tPlane->GetPosition()(2)>zmax) zmax = tPlane->GetPosition()(2);
+
+  } // end loop on planes
+
+  // Create the histograms
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    if(!PlotPlane[iPlane-1]) continue;
+    tPlane = tTracker->GetPlane(iPlane);
+
+    // -- Histo for hits with microns in telescope frame
+    sprintf( name, "hhitmaptelpl%d", iPlane);
+    sprintf( title, "Hit map of plane (%d) %s (tel frame)", iPlane, tPlane->GetPlanePurpose());
+    gtmp = NULL;
+    gtmp = gROOT->FindObject(name);
+    if(gtmp) {
+      hHitMapTel[iPlane-1] = (TH2F*)gtmp;
+    }
+    else {
+      hHitMapTel[iPlane-1] = new TH2F(name, title, 100, xmin, xmax, 100, ymin, ymax);
+      hHitMapTel[iPlane-1]->SetMarkerStyle(20);
+      hHitMapTel[iPlane-1]->SetMarkerSize(.6);
+      hHitMapTel[iPlane-1]->SetMarkerColor(1);
+      hHitMapTel[iPlane-1]->SetStats(kFALSE);
+      //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+    }
+
+    // -- Histo for found (associated with tracks) hits with microns in telescope frame
+    sprintf( name, "hhitfoundmaptelpl%d", iPlane);
+    sprintf( title, "Found hit map of plane (%d) %s (tel frame)", iPlane, tPlane->GetPlanePurpose());
+    gtmp = NULL;
+    gtmp = gROOT->FindObject(name);
+    if(gtmp) {
+      hHitFoundMapTel[iPlane-1] = (TH2F*)gtmp;
+    }
+    else {
+      hHitFoundMapTel[iPlane-1] = new TH2F( *(hHitMapTel[iPlane-1]));
+      hHitFoundMapTel[iPlane-1]->SetName( name);
+      hHitFoundMapTel[iPlane-1]->SetTitle( title);
+      hHitFoundMapTel[iPlane-1]->SetMarkerStyle(2);
+      hHitFoundMapTel[iPlane-1]->SetMarkerSize(1.);
+      hHitFoundMapTel[iPlane-1]->SetMarkerColor(2);
+      hHitFoundMapTel[iPlane-1]->SetStats(kFALSE);
+      //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+    }
+
+    // -- Histo for tracks with microns in telescope frame
+    sprintf( name, "htrackmaptelpl%d", iPlane);
+    sprintf( title, "Track map of plane (%d) %s (tel frame)", iPlane, tPlane->GetPlanePurpose());
+    gtmp = NULL;
+    gtmp = gROOT->FindObject(name);
+    if(gtmp) {
+      hTrackMapTel[iPlane-1] = (TH2F*)gtmp;
+    }
+    else {
+      hTrackMapTel[iPlane-1] = new TH2F( *(hHitMapTel[iPlane-1]));
+      hTrackMapTel[iPlane-1]->SetName( name);
+      hTrackMapTel[iPlane-1]->SetTitle( title);
+      hTrackMapTel[iPlane-1]->SetMarkerStyle(24);
+      hTrackMapTel[iPlane-1]->SetMarkerSize(2.);
+      hTrackMapTel[iPlane-1]->SetStats(kFALSE);
+    }
+
+    // change the color of the track pos wrt tracker index
+    if( iPlane < lastPlaneOfFirstTracker ) {
+      hTrackMapTel[iPlane-1]->SetMarkerColor(3);
+    }
+    else {
+      hTrackMapTel[iPlane-1]->SetMarkerColor(4);
+    }
+
+  } // end loop on planes
+
+  // Track histograms
+  TH2F *hTrackMapXY = new TH2F( "htrackmapxy", "Tracks in XY", 100, xmin, xmax, 100, ymin, ymax);
+  hTrackMapXY->SetXTitle("X (#mum)");
+  hTrackMapXY->SetYTitle("Y (#mum)");
+  TH2F *hTrackMapXZ = new TH2F( "htrackmapxz", "Tracks in XZ", 100, xmin, xmax, 100, zmin, zmax);
+  hTrackMapXZ->SetXTitle("X (#mum)");
+  hTrackMapXZ->SetYTitle("Z (#mum)");
+  TH2F *hTrackMapYZ = new TH2F( "htrackmapyz", "Tracks in YZ", 100, ymin, ymax, 100, zmin, zmax);
+  hTrackMapYZ->SetXTitle("Y (#mum)");
+  hTrackMapYZ->SetYTitle("Z (#mum)");
+  TH3F *hTrackMapXYZ = new TH3F( "htrackmapxyz", "Tracks in XYZ", 100, xmin, xmax, 100, ymin, ymax, 100, zmin, zmax);
+  hTrackMapXYZ->SetXTitle("X (#mum)");
+  hTrackMapXYZ->SetYTitle("Y (#mum)");
+  hTrackMapXYZ->SetZTitle("Z (#mum)");
+
+
+
+
+  // ==================================
+  // == Event analysis
+
+  fSession->NextRawEvent();
+  tTracker->Update();
+  Int_t nPairs;
+  trackpair_t pairList[100];
+  SitrineoAnalysis( lastPlaneOfFirstTracker, nPairs, pairList);
+  cout << "Sitrineo: found " << nPairs << " pairs of tracks." << endl;
+
+  sprintf(canvasTitle, "Run %d Event %d", fSession->GetRunNumber(), fSession->GetCurrentEventNumber()-1);
+  cdisplayraw->cd();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  cdisplayhit->cd();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  cdisplaytrack->cd();
+  sprintf(canvasTitle, "Run %d Event %d, %d tracks", fSession->GetRunNumber(), fSession->GetCurrentEventNumber(), tTracker->GetTracksN());
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+
+
+
+  // ==================================
+  // == Fill & display histos
+
+  Int_t iCol, iRow; // start at 0, so for Setting Bin, use iCol/iRow +1
+  int GoodPlaneCounter = 0;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    if(!PlotPlane[iPlane-1]) continue;
+    GoodPlaneCounter++;
+
+    tPlane = tTracker->GetPlane(iPlane);
+
+    std::vector<DPixel*> *aList = tPlane->GetListOfPixels();
+    if(fVerbose) cout << "Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
+    for( Int_t iPix=0; iPix<(Int_t)aList->size(); iPix++) { // loop on fired pixels
+      iCol = aList->at(iPix)->GetPixelColumn();
+      iRow = aList->at(iPix)->GetPixelLine();
+      if( aList->at(iPix)->GetPulseHeight()>0.5 ) {
+        int idx_U = hRawData[iPlane-1]->GetXaxis()->FindBin(iCol);
+        int idx_V = hRawData[iPlane-1]->GetYaxis()->FindBin(iRow);
+        hRawData[iPlane-1]->SetBinContent(idx_U,idx_V, aList->at(iPix)->GetPulseHeight());
+      }
+      //printf("MRaw::DisplayRawData  pl %d, strip[%d(%d,%d)]=%f\n", iPlane, iStrip, iStrip%tPlane->GetStripsNu(), iStrip/tPlane->GetStripsNu(), tPlane->GetRawValue(iStrip));
+    } //end loop on fired pixels
+
+    if(fVerbose) cout << "Plane " << iPlane << " has " << tPlane->GetHitsN() << " hits reconstructed" << endl;
+    int color_counter = 0;
+    for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
+      aHit = (DHit*)tPlane->GetHit( iHit);
+//        printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
+
+      double u = aHit->GetPositionUhit();
+      double v = aHit->GetPositionVhit();
+      double TheCol,TheRow;
+      tPlane->ComputeStripPosition_UVToColRow(u,v,TheCol,TheRow);
+      iCol = TheCol;
+      iRow = TheRow;
+      int Npixels_in_Hit = aHit->GetStripsInCluster();
+//        printf(" hit %d, (col,row)=(%3d, %3d), (u,v)=(%.1f, %.1f), Npixels=%d, testMult=%d\n", iHit, (int)TheCol, (int)TheRow, u, v, Npixels_in_Hit, testMult);
+      int TS = 0;
+      if(tPlane->GetReadout() > 100) aHit->GetPSeed()->GetTimestamp();
+      _HitPositions_U[iPlane-1].push_back(TheCol);
+      _HitPositions_V[iPlane-1].push_back(TheRow);
+      _HitTS[iPlane-1].push_back(aHit->GetTimestamp());
+      _HitColors[iPlane-1].push_back(Colors_tmp[color_counter]);
+
+      vector<DPixel*> *aList = tPlane->GetListOfPixels();
+      int idex_pixel;
+      double Pixel_col;
+      double Pixel_row;
+      //          if(fVerbose) cout << "Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
+
+      for(int ipixInHit=0;ipixInHit < Npixels_in_Hit;ipixInHit++) {
+        if( aHit->GetPSeed()==NULL ) { // Hit built with DStrip object
+          idex_pixel = aHit->GetIndex(ipixInHit) - 1;
+          Pixel_col = idex_pixel%tPlane->GetStripsNu();
+          Pixel_row = idex_pixel/tPlane->GetStripsNu();
+        }
+        else { // Hit built with DPixel object
+          idex_pixel   = aHit->GetIndexInOriginalList(ipixInHit);
+          Pixel_col = aList->at(idex_pixel)->GetPixelColumn();
+          Pixel_row = aList->at(idex_pixel)->GetPixelLine();
+        }
+        //            printf("    pix %d, index = %d, (col,row)=(%3d, %3d)\n", ipixInHit, idex_pixel, Pixel_col, Pixel_row );
+
+        _PixelsInHitPositions_U[iPlane-1].push_back(Pixel_col);
+        _PixelsInHitPositions_V[iPlane-1].push_back(Pixel_row);
+        _PixelsInHitTS[iPlane-1].push_back(aHit->GetTimestamp());
+        _PixelsInHitColors[iPlane-1].push_back(Colors_tmp[color_counter]);
+      }
+
+      color_counter++;
+      if(color_counter == Ncolors) color_counter = 0;
+
+      //printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
+      hHitMapTel[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1);
+      if( aHit->GetFound() ) hHitFoundMapTel[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1);
+
+      if(fVerbose) printf("MRaw::SitrineoByEvent  pl %d, hit[%d=(%d,%d)=(%f,%f)]%f\n", iPlane, iHit, aHit->GetIndexSeed()%tPlane->GetStripsNu(), aHit->GetIndexSeed()/tPlane->GetStripsNu(), aHit->GetPositionUhit(), aHit->GetPositionVhit(), aHit->GetClusterPulseSum());
+
+    } //end loop on hits
+
+
+    if(fVerbose) cout << "Tracker has " << tTracker->GetTracksN() << " tracks reconstructed" << endl;
+    for( Int_t iTrack=1; iTrack<=tTracker->GetTracksN(); iTrack++ ) { // loop on tracks
+      aTrack = tTracker->GetTrack(iTrack);
+      double u = tPlane->Intersection(aTrack)(0);
+      double v = tPlane->Intersection(aTrack)(1);
+      double TheCol,TheRow;
+      tPlane->ComputeStripPosition_UVToColRow(u,v,TheCol,TheRow);
+
+      if((TheCol >= hTrackMapIndex[iPlane-1]->GetXaxis()->GetXmin() && TheCol <= hTrackMapIndex[iPlane-1]->GetXaxis()->GetXmax()) &&
+         (TheRow >= hTrackMapIndex[iPlane-1]->GetYaxis()->GetXmin() && TheRow <= hTrackMapIndex[iPlane-1]->GetYaxis()->GetXmax())) {
+        hTrackMapIndex[iPlane-1]->Fill(TheCol, TheRow, 1);
+
+        _TrkPositions_U[iPlane-1].push_back(TheCol);
+        _TrkPositions_V[iPlane-1].push_back(TheRow);
+        _TrkIdx[iPlane-1].push_back(iTrack);
+      }
+
+      DR3 posInPlane = aTrack->Intersection(tPlane);
+      hTrackMapTel[iPlane-1]->Fill( tPlane->PlaneToTracker(posInPlane)(0), tPlane->PlaneToTracker(posInPlane)(1), aTrack->GetNumber());
+
+      if(fVerbose) printf("MRaw::DisplayHits2D  pl %d, track[%d] = (%.1f,%.1f) in plane, (%.1f, %.1f) in telescope.\n", iPlane, iTrack, tPlane->Intersection(aTrack)(0), tPlane->Intersection(aTrack)(1), tPlane->PlaneToTracker(posInPlane)(0), tPlane->PlaneToTracker(posInPlane)(1));
+
+    } // end loop on tracks
+
+
+    // == Display
+
+    // display for rawdata
+    cdisplayraw->cd();
+
+    double R_tmp_U[2];
+    double R_tmp_V[2];
+    R_tmp_U[0] = hRawData[iPlane-1]->GetXaxis()->GetXmin();
+    R_tmp_U[1] = hRawData[iPlane-1]->GetXaxis()->GetXmax();
+    R_tmp_V[0] = hRawData[iPlane-1]->GetYaxis()->GetXmin();
+    R_tmp_V[1] = hRawData[iPlane-1]->GetYaxis()->GetXmax();
+
+    padraw->cd(GoodPlaneCounter);
+    padraw->cd(GoodPlaneCounter)->SetGridx(1);
+    padraw->cd(GoodPlaneCounter)->SetGridy(1);
+    padraw->cd(GoodPlaneCounter)->SetTickx(1);
+    padraw->cd(GoodPlaneCounter)->SetTicky(1);
+    hRawData[iPlane-1]->DrawCopy("colz");
+    hRawData[iPlane-1]->Delete();
+
+    //Plot positions of pixels beloning to the rec hits:
+    for(int iPixelInHits=0;iPixelInHits<int(_PixelsInHitPositions_U[iPlane-1].size());iPixelInHits++) {
+      if((_PixelsInHitPositions_U[iPlane-1][iPixelInHits] >= R_tmp_U[0] &&
+          _PixelsInHitPositions_U[iPlane-1][iPixelInHits] <= R_tmp_U[1])
+         &&
+         (_PixelsInHitPositions_V[iPlane-1][iPixelInHits] >= R_tmp_V[0] &&
+          _PixelsInHitPositions_V[iPlane-1][iPixelInHits] <= R_tmp_V[1])
+         ) {
+        latex->SetTextColor(_PixelsInHitColors[iPlane-1][iPixelInHits]);
+        latex->DrawLatex(_PixelsInHitPositions_U[iPlane-1][iPixelInHits],
+                         _PixelsInHitPositions_V[iPlane-1][iPixelInHits],
+                         "X");
+      }
+    }
+
+    //Plot positions of rec hits:
+    //latex->SetTextColor(kBlue);
+    for(int iHits=0;iHits<int(_HitPositions_U[iPlane-1].size());iHits++) {
+      if((_HitPositions_U[iPlane-1][iHits] >= R_tmp_U[0] &&
+          _HitPositions_U[iPlane-1][iHits] <= R_tmp_U[1])
+         &&
+         (_HitPositions_V[iPlane-1][iHits] >= R_tmp_V[0] &&
+          _HitPositions_V[iPlane-1][iHits] <= R_tmp_V[1])
+         ) {
+        latex->SetTextColor(_HitColors[iPlane-1][iHits]);
+        latex->DrawLatex(_HitPositions_U[iPlane-1][iHits],
+                         _HitPositions_V[iPlane-1][iHits],
+                         "O");
+      }
+    }
+
+
+    for(int iTrk=0;iTrk<int(_TrkPositions_U[iPlane-1].size());iTrk++) {
+      if((_TrkPositions_U[iPlane-1][iTrk] >= R_tmp_U[0] &&
+        _TrkPositions_U[iPlane-1][iTrk] <= R_tmp_U[1])
+        &&
+        (_TrkPositions_V[iPlane-1][iTrk] >= R_tmp_V[0] &&
+          _TrkPositions_V[iPlane-1][iTrk] <= R_tmp_V[1])
+        ) {
+          double shift = 2.0*(tPlane->GetStripsNv()/(tPlane->GetStripsNv()*NbinsReductionFactor));
+          //double shift = 2.0*hHitMapIndex[iPlane-1]->GetYaxis()->GetBinWidth(1);
+          char ttt[300];
+          sprintf(ttt,"%d",_TrkIdx[iPlane-1][iTrk]);
+          latex2->DrawLatex(_TrkPositions_U[iPlane-1][iTrk],
+            //_TrkPositions_V[iPlane-1][iTrk] + shift,
+            _TrkPositions_V[iPlane-1][iTrk],
+            ttt);
+      }
+    }
+
+    cdisplayraw->Update();
+
+
+    // display for hits
+    cdisplayhit->cd();
+
+    padhit->cd(GoodPlaneCounter);
+    hHitMapTel[iPlane-1]->DrawCopy("P");
+    hHitFoundMapTel[iPlane-1]->DrawCopy("Psame");
+    hTrackMapTel[iPlane-1]->DrawCopy("TextSame");
+    geomPlaneBox[iPlane-1]->Draw("l");
+    hHitMapTel[iPlane-1]->Delete();
+    hHitFoundMapTel[iPlane-1]->Delete();
+    hTrackMapTel[iPlane-1]->Delete();
+
+    cdisplayhit->Update();
+
+
+  } //end loop on planes
+
+  // display for tracks
+  padtrack->cd(1);
+  hTrackMapXY->DrawCopy();
+  padtrack->cd(2);
+  hTrackMapXZ->DrawCopy();
+  padtrack->cd(3);
+  hTrackMapYZ->DrawCopy();
+  padtrack->cd(4);
+  hTrackMapXYZ->DrawCopy();
+
+  TLine   aLine; // solid line from first to last plane of the track
+  TLine   bLine; // dotted line over the whole tracker dimension
+  aLine.SetLineStyle(1);
+  aLine.SetLineColor(1);
+  bLine.SetLineStyle(2);
+  bLine.SetLineColor(1);
+  Double_t x[2], y[2], z[2];
+  cout << "--> " << tTracker->GetTracksN() << " tracks to display" << endl;
+  for( Int_t iTrack=1; iTrack<=tTracker->GetTracksN(); iTrack++) { // loop on tracks
+    aTrack = (DTrack*)tTracker->GetTrack( iTrack);
+
+    bLine.SetLineColor( bLine.GetLineColor()+1);
+    aLine.SetLineColor( aLine.GetLineColor()+1);
+
+    DR3 trackSlope = aTrack->GetLinearFit().GetSlopeZ();
+    DR3 trackOrigin = aTrack->GetLinearFit().GetOrigin();
+
+    z[0] = zmin;
+    z[1] = zmax;
+    x[0] = trackOrigin(0)+trackSlope(0)*z[0];
+    x[1] = trackOrigin(0)+trackSlope(0)*z[1];
+    y[0] = trackOrigin(1)+trackSlope(1)*z[0];
+    y[1] = trackOrigin(1)+trackSlope(1)*z[1];
+
+    if(fVerbose) printf(" track %d: x[%.1f, %.1f], y[%.1f, %.1f], z[%.1f, %.1f]\n", aTrack->GetNumber(), x[0], x[1], y[0], y[1], z[0], z[1]);
+
+    // XY plane
+    padtrack->cd(1);
+    bLine.DrawLine( x[0], y[0], x[1], y[1] );
+    // XZ plane
+    padtrack->cd(2);
+    bLine.DrawLine( x[0], z[0], x[1], z[1]);
+    // YZ plane
+    padtrack->cd(3);
+    bLine.DrawLine( y[0], z[0], y[1], z[1]);
+
+    z[0] = zmin;
+    z[1] = zmax;
+    x[0] = trackOrigin(0)+trackSlope(0)*z[0];
+    x[1] = trackOrigin(0)+trackSlope(0)*z[1];
+    y[0] = trackOrigin(1)+trackSlope(1)*z[0];
+    y[1] = trackOrigin(1)+trackSlope(1)*z[1];
+    if(fVerbose) printf("      : x[%.1f, %.1f], y[%.1f, %.1f], z[%.1f, %.1f]\n", x[0], x[1], y[0], y[1], z[0], z[1]);
+
+    // XY plane
+    padtrack->cd(1);
+    aLine.DrawLine( x[0], y[0], x[1], y[1] );
+    // XZ plane
+    padtrack->cd(2);
+    aLine.DrawLine( x[0], z[0], x[1], z[1]);
+    // YZ plane
+    padtrack->cd(3);
+    aLine.DrawLine( y[0], z[0], y[1], z[1]);
+    // XYZ 3Dplane
+    padtrack->cd(4);
+    TPolyLine3D *line3D = new TPolyLine3D( 2, x, y, z);
+    line3D->SetLineColor(aLine.GetLineColor());
+    line3D->SetLineWidth(2); // removing warning: from '1.5' to '2' (has to be 'short') BH 2013/08/20
+    line3D->Draw();
+
+  } //end loop on tracks
+
+  hTrackMapXY->Delete();
+  hTrackMapXZ->Delete();
+  hTrackMapYZ->Delete();
+  hTrackMapXYZ->Delete();
+
+  cdisplaytrack->Update();
+
+  //===============
+  //== End
+  cout << "\n Event number : " << fSession->GetCurrentEventNumber()-1<<" " << endl;
+
+
+}
+//
+//______________________________________________________________________________
+void MRaw::SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList)
+{
+  //Analyse tracks in Sitrineo tracker to evaluate momentum
+  //
+  // Argument lastPlaneOfFirsttracker means:
+  //  all planes with ID <= lastPlaneOfFirsttracker are included in first tracker
+  //  all planes with ID > lastPlaneOfFirsttracker are included in second tracker
+  //
+  //  2019/03/10, Adele Perus, Romain Schotter
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  DPlane* aPlane;
+  DHit* aHit;
+  DTrack *track1, *track2;
+  DR3 slope1, slope2;
+  trackpair_t aPair;
+
+  // Loop on all tracks and pair them
+  nPairs = 0;
+  for( Int_t iTrack=1; iTrack<=tTracker->GetTracksN(); iTrack++) { // loop on 1st tracks
+    track1 = (DTrack*)tTracker->GetTrack( iTrack);
+    slope1 = track1->GetLinearFit().GetSlopeZ();
+
+    for( Int_t jTrack=iTrack+1; jTrack<=tTracker->GetTracksN(); jTrack++) { // loop on 2nd tracks
+      track2 = (DTrack*)tTracker->GetTrack( jTrack);
+      slope2 = track2->GetLinearFit().GetSlopeZ();
+
+      pairList[nPairs].firstTrackID = iTrack;
+      pairList[nPairs].secondTrackID = jTrack;
+      pairList[nPairs].slope1 = slope1(0);
+      pairList[nPairs].slope2 = slope2(0);
+      pairList[nPairs].momentumXY = pairList[nPairs].slope2-pairList[nPairs].slope1 ;
+      nPairs++;
+
+    } // end loop on 2nd tracks
+
+  } // end loop on 1st tracks
+
+  if(fVerbose) {
+    printf( "MRaw::Sitrineo: found %d pairs:\n", nPairs);
+    for (size_t ip = 0; ip < nPairs; ip++) {
+      printf( "  %d: track1=%d + track2=%d, slope1=%.2e, slope2=%.2e, momentum=%.2e\n", ip, pairList[nPairs].firstTrackID, pairList[nPairs].secondTrackID, pairList[nPairs].slope1, pairList[nPairs].slope2, pairList[nPairs].momentumXY);
+    }
+  }
+
+}

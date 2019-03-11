@@ -100,6 +100,16 @@ class MRaw : public TObject {
  Int_t fUserFileNumber;
  Int_t   GetFileNumber();
 
+ // Sitrineo
+ struct trackpair_t {
+     int firstTrackID;
+     int secondTrackID;
+     double slope1;
+     double slope2;
+     double momentumXY;
+ };
+
+
  public:
  MRaw( DSession *aSession);
  virtual ~MRaw(){;}
@@ -207,7 +217,7 @@ void BeastCheckPosition();
                     Bool_t normalizeADCspectrum=kFALSE,
                     Float_t cutLimit=0.95,
                     Int_t fitXray=0);
-  
+
   void SeedCuts(Int_t nEvents=1000);
 
   void BuildPixelGainMap( Int_t nEvents=100000, Double_t min=850, Double_t max=960, Double_t maxcharge=2500 ); // JB 2018/07/04
@@ -222,15 +232,15 @@ void BeastCheckPosition();
 				    int     Fiducial_col_max = -1,
 				    int     Fiducial_row_min = -1,
 				    int     Fiducial_row_max = -1);
-  
+
   void CumulateTxtFrames( Int_t nEvents=1000, Int_t nCumulFrames=100);
-  
+
 //#define USETMVA
 #ifdef USETMVA
   void FillnTupleForTMVA(int    nEvents       = 100,
 			 double my_theta_mean = 0.0,
 			 double my_phi_mean   = 0.0);
-  
+
   void TrainTMVA(TString myMethodList = "",
 		 TString fname        = "",
 		 TString TreeName     = "T",
@@ -239,7 +249,11 @@ void BeastCheckPosition();
 		 int Nevts_testing    = 10000);
 #endif
 
-  
+  void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2);
+  void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2);
+  void SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList);
+
+
  using TObject::Clear;
 
  static  MRaw*& InstanceRaw( DSession *aSession) {
