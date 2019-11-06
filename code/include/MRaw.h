@@ -252,6 +252,7 @@ void BeastCheckPosition();
   void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2);
   void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2);
   void SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList);
+  void SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList);
 
 
  using TObject::Clear;

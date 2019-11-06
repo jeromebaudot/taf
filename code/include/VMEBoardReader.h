@@ -11,6 +11,8 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include "TString.h"
+#include "TH1F.h"
 #include "TH2F.h"
 using namespace std;
 
@@ -23,157 +25,117 @@ class TH1F;
 
 //##############################################################################
 class VMEBoardReader : public TObject  {
-    
+
 public:
 
   VMEBoardReader(int boardNumber, const char* pathName, const char* prefixName, const char* suffixName, int runNumber, int numberOfSensors, int numberOfRows);
   ~VMEBoardReader();
 
   void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; }
-  void  SetDisplayOn() { fDisplay = true; CreateHistogram(); }
   bool  HasData();
-  bool  ValidHistogram() { return fDisplay; }
+  void  GetDebugLevel() { return fDebugLevel; }
   int   GetBoardNumber() { return fBoardNumber; }
   int   GetEventNumber() { return fEventNumber; }
+  Int_t GetSensorsN() const { return fNumberOfSensors; }
   BoardReaderEvent*   GetEvent() { return fCurrentEvent; }
   void  PrintStatistics(ostream &stream);
 
-  
+  //! Histograms
+  // void  SetDisplayOn() { fDisplay = true; CreateHistogram(); }
+  // bool  ValidHistogram() { return fDisplay; }
+  // void CreateHistogram();
+
+
 private:
 
   int             fDebugLevel;       // debug level
   int             fBoardNumber;
-  int             fRunNumber;
-  int             fNumberOfSensors;
+  Int_t           fRunNumber;           // run number
+  int             fNumberOfSensors; // fNSensors
   int             fNumberOfRows;
   int             fNumberOfColumns;
-  const char*           fPrefixName;       // prefix file name
-  const char*           fSuffixName;       // suffix file name
-  const char*           fPathName;         // base file name
-  FILE*           fRawFileFAdc[10];  // file streamm
-  
-  unsigned int   *fData;             // data array to fill
-  int             fIndex;            // index of data array
-  int             fEventSize;        // size of the event
-  
-  bool            fDisplay;          // decide histo display or not
-  
-  unsigned int    fCurrentTriggerCnt;
-  int             fEventNumber;
-  
-  BoardReaderEvent *fCurrentEvent;
- std::vector<BoardReaderPixel> ListOfPixels;
- std::vector<int>       ListOfTriggers;
- std::vector<int>       ListOfFrames;
- std::vector<int>       ListOfLineOverflow;
+  TString         fPrefixName;          // prefix folder name
+  TString         fSuffixName;       // suffix file name
+  TString         fPathName;         // base file name
+  ifstream        fRawFileAscii[10]; // file streamm
 
-  bool            fVetoOverflow;   // control veto for event with overflow
-  bool            fOverflow;       // flag to indicate overflow
-  int             fEventsOverflow; // count total events with overflow
-  int             fNStatesInLine;  // count total # states
-  int             fFramesReadFromFile; // count total # frames read
-     
-  static const unsigned int  fgKeyHeader[];
-  static const int   fgkHeaderSize;
-  static const unsigned int  fgkTailHeader;
+  Int_t             fIndex;             // Index of what?
+  Int_t             fEventSize;         // ?
+  Int_t             fDataSize;
+  vector<UInt_t>    fData;              // data array to fill
+  UInt_t*           fDataEvent;         // data array to fill the whole eevent
 
-//  typedef struct {
-//	  
-//	  unsigned int Header;
-//	  unsigned int TriggerCnt;
-//	  unsigned int StopIdx;
-//	  unsigned int TimeStamp;
-//	  
-//  } FAdcHeader; 
-//  
-//  FAdcHeader* fFAdcHeader;
-  
-//  typedef struct {
-//    unsigned int Header;
-//    unsigned int TriggerCnt;
-//    unsigned int TriggerLine; // ? not sure
-//    unsigned int FrameCnt;
-//    unsigned int DataLength;
-//    unsigned int ADataW16[140]; //data MI26
-//    unsigned int Trailer;
-//
-//  } MI26_FrameRaw;
-//  
-  unsigned int *fDataBackup; // needed to get previous reading
-  int           fBackupIndex; // index of backup data
-  int          *fBackupSize; // nb of words back-up per sensor
-  
-//  typedef union {
-//    
-//    unsigned int W16;
-//    
-//    struct {
-//      
-//      unsigned int StateNb  :  4;
-//      unsigned int LineAddr : 11;
-//      unsigned int Ovf      :  1;
-//      
-//    } F;
-//    
-//  } MI26__TStatesLine;
-//
-  
-//  typedef union {
-//    
-//    unsigned int W16;
-//    
-//    struct {
-//      
-//      unsigned int HitNb   :  2;
-//      unsigned int ColAddr : 11;
-//      unsigned int NotUsed :  3;
-//      
-//    } F;
-//    
-//  } MI26__TState;
-//    
-  
-  int   Open();
-  void    CreateHistogram();
-  
-#ifdef withROOT  
-   TH2F*             fpHisPixelMap[8];  // pixel map per sensor
-   TH1F*             fpHisRateMap[8];   // pixel map per sensor
-   TH1F*             fpHisRateMapQ[8];  // pixel map per sensor quadrant
-   TH1F*             fpHisEvtLength[8]; // event data length for each
-#endif
+  Int_t             fEventNumber;        // number of the event
+  Int_t             fPrevEventNumber[8];    // previous number of the event
+  Int_t             fTriggerNumber;      // number of the trigger
+  Int_t             fPrevTriggerNumber[8];  // previous number of the trigger
+  Int_t             fTimeStamp;          // time stamp per frame
+  Int_t             fPrevTimeStamp[8];      // time stamp per frame
+  Int_t             fFrameCount;         // number of frame
+  Int_t             fTriggerNumberFrame; // number of the trigger
+  Int_t             fTimeStampFrame;     // time stamp per frame
+  Int_t             fFirstFrame;         // first frame flag
+  Bool_t            fFrameOk;         // first frame flag
 
-  static  unsigned int GetKeyHeader(int idx) { return fgKeyHeader[idx]; }
-   static  unsigned int GetTailHeader()         { return fgkTailHeader;    }
-   static  int GetHeaderSize()          { return fgkHeaderSize;    }
-   
- 
-   //! Build event
-   bool FetchEvent();
-	
-   //! Get the starting point of each frame
-   bool GetStart(int iSensor);
-   
-   //! Get frame and returns frameRaw
-  void   GetFrame(int iSensor, MI26_FrameRaw* data);
-  void   GetBackupData(int iSensor, MI26_FrameRaw* data);
-   
-   //! Get next frames with same trigger
-   void   GetNextFrames(int iSensor, unsigned int trigger, unsigned int *dataBackup, int &backupIndex);
-	  
-   //! Add pixel to list
-   void  AddPixel( int input, int value, int aLine, int aColumn);
-   
-   //! Get Sensor number
-   int GetSensor(unsigned int key);
-   
-   //! Check trigger counts
-   bool CheckTriggerCnt(unsigned int trig);
-   
-   //! decode frame
-   bool DecodeFrame();
-   
-   ClassDef(VMEBoardReader,0)
+  UInt_t            fCurrentTriggerCnt;
+  Bool_t            fReadingEvent;
+  Bool_t            fOverflow;
+
+  Int_t             fEventsOverflow;
+  Int_t             fNStatesInLine;
+
+  // Markers used by the acquisition
+  static const UInt_t  fgkKeyHeader[];
+  static const Int_t   fgkFrameHeaderSize;
+  static const UInt_t  fgkKeyTail[];
+  static const Int_t   fgkLineWidth;
+  static const UInt_t  fgkFrameHeader;
+  static const UInt_t  fgkFrameTail;
+
+
+  //! Get the event
+
+  //! Get frame and returns frameRaw
+  Bool_t GetFrame(Int_t iSensor, MI26_FrameRaw* data);
+
+  //! Is part equal
+  Bool_t IsPartEqual(UInt_t data, UInt_t key);
+
+  // Reset frame counters
+  void  ResetFrames();
+
+  //! Add pixel to list
+  void  AddPixel( Int_t input, Int_t value, Int_t aLine, Int_t aColumn);
+
+  //! Get Sensor number
+  Int_t  GetSensor(UInt_t key);
+
+  //! decode frame
+  Bool_t DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame);
+
+  //! Fill histogram frame
+  // void FillHistoFrame(Int_t iSensor, MI26_FrameRaw* data);
+  // void FillHistoEvt(Int_t iSensor);
+
+  static  UInt_t  GetKeyHeader(Int_t idx)                  { return fgkKeyHeader[idx];   }
+  static  Int_t   GetHeaderSize()                          { return fgkFrameHeaderSize;  }
+  static  UInt_t  GetKeyTail(Int_t idx)                    { return fgkKeyTail[idx];     }
+  static  Int_t   GetLineWidth()                           { return fgkLineWidth;        }
+
+  static  UInt_t  GetFrameHeader()                         { return fgkFrameHeader;      }
+  static  UInt_t  GetFrameTail()                           { return fgkFrameTail;        }
+
+  //! File management
+  virtual Int_t   Open();
+  virtual void    Close();
+
+  //! Processing
+  virtual Bool_t  Process();
+  Bool_t GetSensorEvent(Int_t iSensor);
+
+
+
+   ClassDef(VMEBoardReader,1)
 };
 
 #endif

@@ -16111,10 +16111,10 @@ void MRaw::SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, track
 
     for( Int_t jTrack=iTrack+1; jTrack<=tTracker->GetTracksN(); jTrack++) { // loop on 2nd tracks
       track2 = (DTrack*)tTracker->GetTrack( jTrack);
-      int plane2 = track2->GetHit(0)->GetPlane()->GetPlaneNumber(); 
-      if( plane2 < plane1){     
-	cout << "First Track " << plane1 << endl ;  
-        cout << "Second Track " << plane2 << endl ;    
+      int plane2 = track2->GetHit(0)->GetPlane()->GetPlaneNumber();
+      if( plane2 < plane1){
+	cout << "First Track " << plane1 << endl ;
+        cout << "Second Track " << plane2 << endl ;
       	slope2 = track2->GetLinearFit().GetSlopeZ();
 
       	pairList[nPairs].firstTrackID = iTrack;
@@ -16139,4 +16139,99 @@ void MRaw::SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, track
     }
   }
 
+}
+//
+//______________________________________________________________________________
+void MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList)
+{
+  //Analyse tracks in Sitrineo tracker to evaluate momentum
+  //
+  // Argument lastPlaneOfFirsttracker means:
+  //  all planes with ID <= lastPlaneOfFirsttracker are included in first tracker
+  //  all planes with ID > lastPlaneOfFirsttracker are included in second tracker
+  //
+  //  2019/03/10, Adele Perus, Romain Schotter
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  DPlane *Plane4, *Plane3,*Plane2, *Plane1 ;
+  DHit *Hit1, *Hit2 ;
+  DTrack *track1, *track2;
+  DR3 slope1, slope2;
+  trackpair_t aPair;
+
+  // Loop on all tracks and pair them
+  nPairs = 0;
+  Plane4 = (DPlane*)tTracker->GetPlane(4);
+  Plane3 = (DPlane*)tTracker->GetPlane(3);
+  Plane2 = (DPlane*)tTracker->GetPlane(2);
+  Plane1 = (DPlane*)tTracker->GetPlane(1);
+  int nvector34 = 0 ;
+  int nvector12 = 0 ;
+  vector< double > vector34_X ;
+  vector< double > vector34_Y ;
+  vector< double > vector34_Z ;
+  vector< double > vector12_X ;
+  vector< double > vector12_Y ;
+  vector< double > vector12_Z ;
+
+//loop on sensors 3-4
+  for( int i4 = 0 ; i4 < Plane4->GetHitsN() ; i4++){
+	  Hit1=(DHit*)Plane4->GetHit(i4);
+	  for( int i3 = 0 ; i3 < Plane3->GetHitsN() ; i3++){
+	  	Hit2=(DHit*)Plane3->GetHit(i3);
+      DR3 pos2 = *(Hit2->GetPosition());
+      DR3 *pos1 = Hit2->GetPosition();
+      double deltaX = pos2(0) - (*pos1)(0) ;
+      double deltaY = (*(Hit2->GetPosition()))(1) - (*(Hit1->GetPosition()))(1) ;
+      double deltaZ = (*(Hit2->GetPosition()))(2) - (*(Hit1->GetPosition()))(2) ;
+		//cut on deltaX && cut on deltaY using histos from sitrineo.C
+		if( -0.6 < deltaX < 0.6 && -0.2 < deltaY < 0.70 ){
+	        	vector34_X.push_back(deltaX) ;
+	        	vector34_Y.push_back(deltaY) ;
+	        	vector34_Z.push_back(deltaZ) ;
+                	nvector34++;
+		}
+	  }
+  }
+//loop on sensors 1-2
+  for( int i2 = 0 ; i2 < Plane2->GetHitsN() ; i2++){
+	  Hit1=(DHit*)Plane2->GetHit(i2);
+	  for( int i1 = 0 ; i1 < Plane1->GetHitsN() ; i1++){
+	  	Hit2=(DHit*)Plane1->GetHit(i1);
+      double deltaX = (*(Hit2->GetPosition()))(0) - (*(Hit1->GetPosition()))(0) ;
+      double deltaY = (*(Hit2->GetPosition()))(1) - (*(Hit1->GetPosition()))(1) ;
+      double deltaZ = (*(Hit2->GetPosition()))(2) - (*(Hit1->GetPosition()))(2) ;
+		double alpha12 = atan(deltaY/deltaZ) ;
+		//inclinaison && cut on deltaX using histos from sitrineo.C
+		if( 0.3 < alpha12 < 0.9 && -1.3 < deltaX < 1.3 ){
+	        	vector12_X.push_back(deltaX) ;
+	        	vector12_Y.push_back(deltaY) ;
+	        	vector12_Z.push_back(deltaZ) ;
+                	nvector12++;
+		}
+	  }
+  }
+
+//pairing of tracks
+   if( nvector34 != 0 && nvector12 != 0 ){
+	//loop on vectors 3-4
+  	for( int i34 = 0 ; i34 < nvector34 ; i34++){
+		//loop on vectors
+		for( int i12 = 0 ; i12 < nvector12 ; i12++){
+			double ps = vector34_Y[i34]*vector12_Y[i12] + vector34_Z[i34]*vector12_Z[i12] ;
+	  		//Calculating the norm of the positions vectors, at the entrance AND the exit, in the Y-Z plan.
+	  		double norm_vec34 = sqrt( pow(vector34_Y[i34],2) + pow(vector34_Z[i34],2) ) ;
+	  		double norm_vec12 = sqrt( pow(vector12_Y[i12],2) + pow(vector12_Z[i12],2) ) ;
+
+          		double angle = acos( ps/(norm_vec34*norm_vec12) ) ;
+
+	 		double momentum = 0.3*0.2*20/(angle) ;
+			cout << "== pairing of tracks possible ==" << endl ;
+			cout << "== momentum [MeV/c] : " << momentum << " ==" << endl ;
+		}
+   	}
+   }
+   else{
+	cout << "== No pairing of tracks possible ==" << endl ;
+   }
 }
