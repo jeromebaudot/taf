@@ -44,7 +44,7 @@ VMEBoardReader::VMEBoardReader(int boardNumber, TString pathName, TString prefix
   fDisplay = false;
   fDebugLevel = 0;
 
-  fVetoOverflow = true; // if true, reject events with overflow
+  fVetoOverflow = false; // if true, reject events with overflow
 
   fBoardNumber = boardNumber;
   fPathName = pathName;
@@ -74,9 +74,6 @@ VMEBoardReader::VMEBoardReader(int boardNumber, TString pathName, TString prefix
   cout << " * input file like : " << fPrefixName << "xxx" << fSuffixName << endl;
   cout << " * with vetoOverflow : " << fVetoOverflow << endl;
 
-  SetTitle("TAVTactVmeReader - reader for VME reader");
-  fBaseName ="data_FPGA_Mouser993P0160_V1_ch";
-
   Int_t size = (sizeof(MI26_FrameRaw)/4)*3 + 3; // 3 frame per event and 3 header word for each sensor
   printf(" * Event size : %d\n", size);
   fDataEvent = new UInt_t[size];
@@ -100,7 +97,7 @@ VMEBoardReader::VMEBoardReader(int boardNumber, TString pathName, TString prefix
 VMEBoardReader::~VMEBoardReader()
 {
   delete [] fDataEvent;
-  delete fData;
+  // delete fData;
 }
 
 //------------------------------------------+-----------------------------------
@@ -151,15 +148,53 @@ void VMEBoardReader::Close()
   //
   // Upgraded, JB 2019/11/06
 
-   for (Int_t i = 0; i < pGeoMap->GetNSensors(); ++i)
+   for (Int_t i = 0; i < GetSensorsN(); ++i)
 	  fRawFileAscii[i].close();
 }
 
 //------------------------------------------+-----------------------------------
-//! Process
+bool VMEBoardReader::HasData()
+{
+
+  // Try to built the next event:
+  //  1) read the raw data
+  //  2) decode them
+  //
+  // This method is the one to call from the outside
+
+  if (fDebugLevel) printf("VMEBoardReader::HasData reading event %d\n", fEventNumber);
+
+  fCurrentTriggerCnt = 0;
+  if( fCurrentEvent!=NULL) {
+    delete fCurrentEvent;
+    fCurrentEvent = NULL;
+  }
+  ListOfPixels.clear();
+  ListOfTriggers.clear();
+  ListOfFrames.clear();
+  ListOfLineOverflow.clear();
+
+  if ( Process() ) {
+    if (fDebugLevel) printf("VMEBoardReader::HasData new event %d will be generated with %lu pixels, %lu frames and %lu triggers\n", fEventNumber, ListOfPixels.size(), ListOfFrames.size(), ListOfTriggers.size());
+    fCurrentEvent = new BoardReaderEvent( fEventNumber, fBoardNumber, fRunNumber, &ListOfPixels);
+    fCurrentEvent->SetListOfTriggers( &ListOfTriggers);
+    fCurrentEvent->SetListOfFrames( &ListOfFrames);
+    return true;
+  }
+
+  else {
+    if (fDebugLevel) printf("VMEBoardReader::HasData wrong event building...stopping!\n");
+    return false;
+  }
+
+}
+
+//------------------------------------------+-----------------------------------
 Bool_t VMEBoardReader::Process()
 {
-  // Upgraded, JB 2019/11/06
+  // Actually process the analysis of one event
+  //
+  // Upgraded, JB 2019/11/07
 
    Int_t size = (sizeof(MI26_FrameRaw)/4)*3 + 3;
 
@@ -186,8 +221,8 @@ Bool_t VMEBoardReader::Process()
 
          memset(fDataEvent, 0, size);
       } else {
-         SetBit(kEof);
-         SetBitAllDataOut(kEof);
+         // SetBit(kEof);
+         // SetBitAllDataOut(kEof);
       }
    }
 
@@ -201,89 +236,13 @@ Bool_t VMEBoardReader::Process()
 
 }
 
-// private method
-// --------------------------------------------------------------------------------------
-bool VMEBoardReader::GetStart(int iSensor)
-{
-  // Test if first word of the frame matches sensor id,
-  // return false if not.
-
-  unsigned int key  = GetKeyHeader(iSensor);
-
-  do {
-//	  fread(tmp, sizeof(unsigned int), 1, fRawFileFAdc[iSensor]);
-    fscanf( fRawFileFAdc[iSensor], "%x", &(fData[fIndex]));
-    if (fDebugLevel>3) printf("VMEBoardReader::GetStart first header word %x at index %d (expedted key=%x) for sensor %d\n", fData[fIndex], fIndex, key, iSensor);
-	  if (fData[fIndex] == key) {
-      if (fDebugLevel>1) printf("VMEBoardReader::GetStart found starting key %x for sensor %d\n", key, iSensor);
-      fIndex++;
-      return true;
-	  }
-  } while (!feof(fRawFileFAdc[iSensor]));
-
-  return false;
-}
-
-// --------------------------------------------------------------------------------------
-void VMEBoardReader::GetNextFrames(int iSensor, unsigned int trigger, unsigned int *dataBackup, int &backupIndex)
-{
-
-  // Read additional frames with respect to a first one define by the given trigger.
-  // When the newly read frame does not match the given trigger,
-  //  backup the data of this frame for the next event.
-
-  if (fDebugLevel>2) printf("VMEBoardReader::GetNextFrames Getting a potential next frame for sensor %d, current index %d\n", iSensor, fIndex);
-
-  MI26_FrameRaw* data = new MI26_FrameRaw;
-  bool sameTrigger = true;
-  int index = 0;
-  do {
-	  index = fIndex;
-	  if( GetStart(iSensor) ) {
-      GetFrame(iSensor, data);
-      if (fDebugLevel>3) printf(" testing trigger %d from new frame / current trigger %d for sensor %d\n", data->TriggerCnt, trigger, iSensor);
-      if (data->TriggerCnt != trigger) {
-        sameTrigger = false;
-        if (fDebugLevel>2) printf("VMEBoardReader::GetNextFrames the new frame does not match current trigger %d and is not used for sensor %d\n File pointer reader is rewinded by 1 frame.\n", trigger, iSensor);
-        break;
-      }
-      ListOfFrames.push_back( data->FrameCnt);
-      if (fDebugLevel>2) printf("VMEBoardReader::GetNextFrames new frame added to current trigger %d for sensor %d\n", trigger, iSensor);
-    }
-    else break;
-  } while(sameTrigger);
-
-  // At this step, two options:
-  // 1) the last frame does not match the current event (sameTrigger == false)
-  //    -> The already read data shall be backup to avoid reading it again !
-  // 2) there is no more frame to read
-  //    -> Indicate there are no backup data
-
-  if ( !sameTrigger) {
-    //fseek(fRawFileFAdc[iSensor], -2*sizeof(MI26_FrameRaw), SEEK_CUR);
-    fBackupSize[iSensor] = fIndex - index;
-    for (int iword=0; iword<fBackupSize[iSensor]; iword++) {
-      dataBackup[backupIndex++] = fData[index+iword];
-    }
-    if (fDebugLevel>2) printf( "VMEBoardReader::GetNextFrames ===> Data were back-up over %d words with header %x, trigger %x, frame %x, for sensor %d\n", fBackupSize[iSensor], fData[index], fData[index+1], fData[index+3], iSensor);
-  }
-
-  else {
-    fBackupSize[iSensor] = 0;
-    if (fDebugLevel) printf( "VMEBoardReader::GetNextFrames There is no more frame to read for sensor %d!\n", iSensor);
-  }
-
-  fIndex = index;
-  fEventSize = fIndex;
-  if (fDebugLevel>2) printf("VMEBoardReader::GetNextFrames event size is now %d for sensor %d\n", fEventSize, iSensor);
-
-  delete data;
-
-}
-
 // --------------------------------------------------------------------------------------
 Bool_t VMEBoardReader::GetSensorEvent(Int_t iSensor)
 {
+  // Upgraded, JB 2019/11/06
+
+  if (fDebugLevel>2) printf("Getting sensor %d event\n", iSensor);
+
    Char_t tmp[255];
 
    fIndex = 0;
@@ -304,14 +263,14 @@ Bool_t VMEBoardReader::GetSensorEvent(Int_t iSensor)
 //        printf("toto\n");
 
       if (line.Contains(tail)) {
-         printf("tito %d %08x\n", iSensor, dataPrev);
+         printf("  tito %d %08x\n", iSensor, dataPrev);
       }
 
       dataPrev = data;
 
       if (line.Contains(key)) {
-         if(GetDebugLevel(1))
-            printf("sensor header %s %d\n", tmp, (int) fRawFileAscii[iSensor].tellg()/9+1);
+         if(GetDebugLevel() > 1)
+            printf("  sensor header %s %d\n", tmp, (int) fRawFileAscii[iSensor].tellg()/9+1);
 
          // fpHisSensorKey[iSensor]->Fill(1);
 
@@ -326,9 +285,8 @@ Bool_t VMEBoardReader::GetSensorEvent(Int_t iSensor)
          sscanf(tmp, "%x", &fTriggerNumber);
          fDataEvent[fIndex++] = fTriggerNumber;
 
-
-         if(GetDebugLevel(3))
-            printf("sensor %d: %d %d\n", iSensor, fTriggerNumber, fEventNumber);
+         if(GetDebugLevel() > 2)
+            printf("  sensor %d: trig %d evt %d\n", iSensor, fTriggerNumber, fEventNumber);
 
          // fake time stamp
          fRawFileAscii[iSensor] >> tmp;
@@ -376,9 +334,10 @@ Bool_t VMEBoardReader::GetSensorEvent(Int_t iSensor)
 
    fEventSize = fIndex;
 
-   if(GetDebugLevel(3)) {
+   if(GetDebugLevel() > 2) {
+     printf(" Sensor %d, event size %d:\n", iSensor, fEventSize);
       for (Int_t i = 0; i < fEventSize; ++i)
-         printf("Data %08x\n", fDataEvent[i]);
+         printf("    Data %08x\n", fDataEvent[i]);
       printf("\n");
    }
 
@@ -387,63 +346,62 @@ Bool_t VMEBoardReader::GetSensorEvent(Int_t iSensor)
 
 
 // --------------------------------------------------------------------------------------
-void VMEBoardReader::GetFrame(int iSensor, MI26_FrameRaw* data)
+Bool_t VMEBoardReader::GetFrame(int iSensor, MI26_FrameRaw* data)
 {
+  // Updated, JB 2019/11/07
 
-  if (fDebugLevel>2) printf("Getting a new frame for sensor %d, current index %d\n", iSensor, fIndex);
+  if (fDebugLevel>2) printf("Getting a new frame for sensor %d, current index %d / event size %d, nb of frames read so far: %d\n", iSensor, fIndex, fEventSize, fFramesReadFromFile);
 
-    // 4 more words of frame header
-    fscanf( fRawFileFAdc[iSensor], "%x", &(fData[fIndex++]));
-    if (fDebugLevel>3) printf("new header word %x at index %d for sensor %d\n", fData[fIndex-1], fIndex-1, iSensor);
-    fscanf( fRawFileFAdc[iSensor], "%x", &(fData[fIndex++]));
-    if (fDebugLevel>3) printf("new header word %x at index %d for sensor %d\n", fData[fIndex-1], fIndex-1, iSensor);
-    fscanf( fRawFileFAdc[iSensor], "%x", &(fData[fIndex++]));
-    if (fDebugLevel>3) printf("new header word %x at index %d for sensor %d\n", fData[fIndex-1], fIndex-1, iSensor);
-    fscanf( fRawFileFAdc[iSensor], "%x", &(fData[fIndex++]));
-    if (fDebugLevel>3) printf("new header word %x at index %d for sensor %d\n", fData[fIndex-1], fIndex-1, iSensor);
+  Char_t tmp[255];
+  fDataSize = 0;
 
-  memcpy(data, &fData[fIndex-GetHeaderSize()], GetHeaderSize()*sizeof(unsigned int));
+  if (fIndex >= fEventSize -2) return false;
 
-  unsigned int dataLength  =  ((data->DataLength & 0xFFFF0000)>>16);
-  if (fDebugLevel>2) printf("datalength is %d words from %x for sensor %d\n", dataLength, data->DataLength, iSensor);
+  // find header
+  do {
+     if (fDataEvent[fIndex] == GetKeyHeader(iSensor)) {
+        fData[fDataSize++] = fDataEvent[fIndex];
+        break;
+     }
+  } while (fIndex++ < fEventSize);
+  if (fDebugLevel>2) printf("  frame header %x found at index %d over event size %d\n", GetKeyHeader(iSensor), fIndex, fEventSize);
 
+  if (fIndex >= fEventSize -2) return false;
 
-  //fread(&fData[fIndex], sizeof(int), dataLength, fRawFileFAdc[iSensor]);
-  for (unsigned int idata=0; idata<dataLength; idata++) {
-    fscanf( fRawFileFAdc[iSensor], "%x", &(fData[fIndex++]));
-    if (fDebugLevel>3) printf("new data word %x at index %d for sensor %d\n", fData[fIndex-1], fIndex-1, iSensor);
+  fIndex++;
+
+  // find trailer
+  // UInt_t key1  =  GetFrameTail() & 0xFFFF;
+  // UInt_t key2  = (GetFrameTail() & 0xFFFF0000) >> 16;
+
+  do {
+    fData[fDataSize++] = fDataEvent[fIndex];
+    // if (( (fDataEvent[fIndex] & 0xFFFF) == key1) || ( (fDataEvent[fIndex] & 0xFFFF0000) >> 16) == key2) {
+    if( fDataEvent[fIndex] == GetKeyTail(iSensor) ) {
+      break;
+    }
+  } while (fIndex++ < fEventSize);
+  if (fDebugLevel>2) printf("  frame trailer %x found at index %d over event size %d\n", GetKeyTail(iSensor), fIndex, fEventSize);
+
+  memcpy(data, &fData[0], sizeof(MI26_FrameRaw));
+  // FillHistoFrame(iSensor, data);
+
+  fDataSize -= fgkFrameHeaderSize; // removing header
+
+  if(GetDebugLevel()>1) {
+    printf( " For sensor %d:\n", iSensor);
+     for (Int_t i = 0; i < fDataSize+fgkFrameHeaderSize; ++i)
+        printf("   Data %08x\n", fData[i]);
+     printf("\n");
   }
 
-  fscanf( fRawFileFAdc[iSensor], "%x", &(fData[fIndex++]));
-  if (fDebugLevel>3) printf("new trailer word %x at index %d for sensor %d\n", fData[fIndex-1], fIndex-1, iSensor);
-
-  if( fData[fIndex-1] != GetTailHeader() ) {
-    printf("VMEBoardReader::GetFrame frame probably incomplete, wrong trailer %x instead of %x!!!\n", fData[fIndex-1], GetTailHeader());
-  }
-  else if (fDebugLevel>2) printf("VMEBoardReader::GetFrame got a new frame for sensor %d: new index = %d, trailer =%x\n", iSensor, fIndex, fData[fIndex-1]);
+  if (fIndex >= fEventSize -2) return false;
 
   fFramesReadFromFile++;
+  if (fDebugLevel>2) printf("  => New frame %d OK for sensor %d with data size %d\n", fFramesReadFromFile, iSensor, fDataSize);
+  return true;
 
 }
-
-// --------------------------------------------------------------------------------------
-void VMEBoardReader::GetBackupData(int iSensor, MI26_FrameRaw* data)
-{
-
-  if (fDebugLevel>2) printf("Getting backup data (%d words) from frame already read for sensor %d, current index %d\n", fBackupSize[iSensor], iSensor, fIndex);
-
-  // copy the backup words into the data buffer
-  for (int iword=0; iword<fBackupSize[iSensor]; iword++) {
-    fData[fIndex++] = fDataBackup[fBackupIndex];
-    if( iword==GetHeaderSize()-1) memcpy(data, &fData[fIndex-GetHeaderSize()], GetHeaderSize()*sizeof(unsigned int));
-    fDataBackup[fBackupIndex++] = 0;
-    if (fDebugLevel>3) printf("backup word[%d]=%x copied to index %d for sensor %d\n", fBackupIndex-1, fData[fIndex-1], fIndex-1, iSensor);
-  }
-
-  if (fDebugLevel>2) printf("VMEBoardReader::GetBackupData first frame for sensor %d: header %x, trigger %x frame %x dataLength %x\n", iSensor, data->Header, data->TriggerCnt, data->FrameCnt, data->DataLength);
-
-}
-
 
 // --------------------------------------------------------------------------------------
 void VMEBoardReader::ResetFrames()
@@ -469,17 +427,17 @@ void VMEBoardReader::AddPixel( Int_t iSensor, Int_t value, Int_t aLine, Int_t aC
    ListOfPixels.push_back( BoardReaderPixel( iSensor+1, value, aLine, aColumn, 0) );
 
  #ifdef withROOT
-   if (ValidHistogram()) {
-	  if (TAVTparConf::IsMapHistOn())
-		 fpHisPixelMap[iSensor]->Fill(aLine, aColumn);
-
-	  fpHisRateMap[iSensor]->Fill(aColumn);
-
-	  for (Int_t i = 0; i < 4; ++i) {
-		 if (aColumn >= 258*i && aColumn < (i+1)*258)
-			fpHisRateMapQ[iSensor]->Fill(i+1);
-	  }
-   }
+   // if (ValidHistogram()) {
+	 //  if (TAVTparConf::IsMapHistOn())
+		//  fpHisPixelMap[iSensor]->Fill(aLine, aColumn);
+   //
+	 //  fpHisRateMap[iSensor]->Fill(aColumn);
+   //
+	 //  for (Int_t i = 0; i < 4; ++i) {
+		//  if (aColumn >= 258*i && aColumn < (i+1)*258)
+		// 	fpHisRateMapQ[iSensor]->Fill(i+1);
+	 //  }
+   // }
  #endif
 
 }
@@ -505,25 +463,11 @@ int VMEBoardReader::GetSensor(unsigned int key)
 }
 
 // --------------------------------------------------------------------------------------
-bool VMEBoardReader::CheckTriggerCnt(unsigned int trig)
-{
-  if (fCurrentTriggerCnt == 0) {
-	  fCurrentTriggerCnt = trig;
-    ListOfTriggers.push_back( trig);
-	  return true;
-  }
-
-  if (fCurrentTriggerCnt != trig)
-	  return false;
-
-  return true;
-}
-
-// --------------------------------------------------------------------------------------
 Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
 {
   // Read the information of a frame for a given sensor
   // We use extensively the structure definined by Gille Clauss
+  //
   /*
    Events Words:
    1) Header;
@@ -535,7 +479,7 @@ Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
    7) Trailer;
    */
    //
-   // Upgrade, JB 2019/07/13
+   // Upgraded, JB 2019/07/13
 
   if (fDebugLevel) printf("VMEBoardReader::DecodeFrame decoding event %d with size %d, sensor %d\n", fEventNumber, fEventSize);
 
@@ -546,7 +490,7 @@ Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
 
    Int_t dataLength    = ((frame->DataLength & 0xFFFF0000)>>16);
    // if (dataLength != fDataSize) fpHisFrameErrors[iSensor]->Fill(3);
-   if (dataLength > MI26__FFRAME_RAW_MAX_W16) return false;
+   //if (dataLength > MI26__FFRAME_RAW_MAX_W16) return false;
 
    Int_t dataSize = fDataSize*2;
 
@@ -554,15 +498,22 @@ Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
    UShort_t *frameData = (UShort_t*)frame->ADataW16;
    dataLength         *= 2; // go to short
 
-   if (ValidHistogram()) {
-      fpHisEvtLength[iSensor]->Fill(frame->TriggerCnt % 10000, fDataSize);
-      if (frame->TriggerCnt % 10000 == 0) fpHisEvtLength[iSensor]->Reset();
-   }
+   // if (ValidHistogram()) {
+   //    fpHisEvtLength[iSensor]->Fill(frame->TriggerCnt % 10000, fDataSize);
+   //    if (frame->TriggerCnt % 10000 == 0) fpHisEvtLength[iSensor]->Reset();
+   // }
 
    if (iSensor == -1) {
       Warning("DecodeFrame()", "Wrong header key %x\n", frame->Header);
       return false;
    }
+
+   // Some Statistics, only for first sensor
+   if (iSensor == 0) {
+     ListOfFrames.push_back( frame->FrameCnt);
+     ListOfTriggers.push_back( frame->TriggerCnt);
+   }
+
 
    // -+-+- Pointers AND LOOP to usefull data, i.e. line and states
    MI26__TStatesLine* lineStatus;
@@ -617,8 +568,7 @@ Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
             // create a new pixel only if we are reading an event
             // and if the line is in the proper limit
             if (!lineStatus->F.Ovf) {
-               Int_t planeId = pParMap->GetPlaneId(iSensor);
-               AddPixel(planeId, 1, lineStatus->F.LineAddr, state->F.ColAddr+iPixel);
+               AddPixel(iSensor, 1, lineStatus->F.LineAddr, state->F.ColAddr+iPixel);
                localNbOfPixels++;
                if(fDebugLevel>3)
                   printf("sensor %d, line %d, col %d\n", iSensor, lineStatus->F.LineAddr, state->F.ColAddr+iPixel);
@@ -658,109 +608,4 @@ void VMEBoardReader::PrintStatistics(ostream &stream) {
   stream << fFramesReadFromFile<< " frames read overall." << endl;
   stream << "***********************************************" << endl;
 
-}
-
-///////// OLD METHODS
-//------------------------------------------+-----------------------------------
-bool VMEBoardReader::HasData()
-{
-
-  // Try to built the next event:
-  //  1) read the raw data
-  //  2) decode them
-  //
-  // This method is the one to call from the outside
-
-  if (fDebugLevel) printf("VMEBoardReader::HasData reading event %d\n", fEventNumber);
-
-  fCurrentTriggerCnt = 0;
-  if( fCurrentEvent!=NULL) {
-    delete fCurrentEvent;
-    fCurrentEvent = NULL;
-  }
-  ListOfPixels.clear();
-  ListOfTriggers.clear();
-  ListOfFrames.clear();
-  ListOfLineOverflow.clear();
-
-  if (FetchEvent()) {
-    if (fDebugLevel) printf("VMEBoardReader::HasData start decoding event\n");
-    if( DecodeFrame() ) {
-      if (fDebugLevel) printf("VMEBoardReader::HasData new event %d will be generated with %lu triggers\n", fEventNumber, ListOfTriggers.size());
-      fCurrentEvent = new BoardReaderEvent( fEventNumber, fBoardNumber, fRunNumber, &ListOfPixels);
-      fCurrentEvent->SetListOfTriggers( &ListOfTriggers);
-      fCurrentEvent->SetListOfFrames( &ListOfFrames);
-    };
-    return true;
-  }
-
-  else {
-    if (fDebugLevel) printf("VMEBoardReader::HasData wrong event building...stopping!\n");
-    return false;
-  }
-
-}
-
-//------------------------------------------+-----------------------------------
-bool VMEBoardReader::FetchEvent()
-{
-  // Read the necessary frames for all sensors from the raw data files.
-  // The data are stored in fData array for further decoding.
-  // It means, a first frame is read (or restored if already read)
-  //  and then subsequent frames are read and associated if related
-  //  to the same trigger.
-
-
-  // ----- First loop on sensor to build the current frame
-
-  fIndex = 0; // index of current built event
-  fBackupIndex = 0; //index of backup data for current event
-  fEventSize = 0;
-  //cout << "VMEBoardReader::FetchEvent declaring temporary backup of size " << fNumberOfSensors*sizeof(MI26_FrameRaw) << endl;
-  unsigned int *tempDataBackup = new unsigned int[fNumberOfSensors*sizeof(MI26_FrameRaw)];
-  int tempBackupIndex = 0; // index of data to backup for next event
-
-  for (int iSensor = 0; iSensor < fNumberOfSensors; ++iSensor) { // Loop on all sensors
-
-    if (fDebugLevel) printf("VMEBoardReader::FetchEvent fetching frames for event %d sensor %d\n", fEventNumber, iSensor);
-
-    // Get the first frame
-	  MI26_FrameRaw* data = new MI26_FrameRaw;
-    if ( fBackupSize[iSensor]!=0 ) { // if already read, restore
-      GetBackupData( iSensor, data);
-    }
-    else { // read a new one
-      if (!GetStart(iSensor)) return false;
-      GetFrame(iSensor, data);
-    }
-	  unsigned int trigger = data->TriggerCnt;
-    if (fDebugLevel>2) printf("VMEBoardReader::FetchEvent found trigger %d in first frame for sensor %d\n", trigger, iSensor);
-    ListOfFrames.push_back( data->FrameCnt);
-
-    // Get subsequent frames
-	  GetNextFrames(iSensor, trigger, tempDataBackup, tempBackupIndex);
-
-	  delete data;
-    if (fDebugLevel>2) printf("VMEBoardReader::FetchEvent end data for trigger %d and  sensor %d\n", trigger, iSensor);
-
-  }  // end loop on all sensors
-
-  if(fDebugLevel>4)
-	  for (int i = 0; i < fEventSize; ++i)
-      printf("Data %x\n", fData[i]);
-
-  if (fDebugLevel>2) printf("VMEBoardReader::FetchEvent end event %d with size %d words\n", fEventNumber, fEventSize);
-  fEventNumber++;
-
-
-  // ----- Second loop on sensors to build the current frame
-
-  if (fDebugLevel) printf("VMEBoardReader::FetchEvent transfering %d backup words for next event\n", tempBackupIndex);
-
-  for (int iword = 0; iword < tempBackupIndex; iword++) {
-    fDataBackup[iword] = tempDataBackup[iword];
-  }
-
-
-  return true;
 }
