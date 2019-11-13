@@ -350,7 +350,7 @@ Bool_t VMEBoardReader::GetFrame(int iSensor, MI26_FrameRaw* data)
 {
   // Updated, JB 2019/11/07
 
-  if (fDebugLevel>2) printf("Getting a new frame for sensor %d, current index %d / event size %d, nb of frames read so far: %d\n", iSensor, fIndex, fEventSize, fFramesReadFromFile);
+  if (fDebugLevel>1) printf("Getting a new frame for sensor %d, current index %d / event size %d, nb of frames read so far: %d\n", iSensor, fIndex, fEventSize, fFramesReadFromFile);
 
   Char_t tmp[255];
   fDataSize = 0;
@@ -359,25 +359,25 @@ Bool_t VMEBoardReader::GetFrame(int iSensor, MI26_FrameRaw* data)
 
   // find header
   do {
-     if (fDataEvent[fIndex] == GetKeyHeader(iSensor)) {
+     if (fDataEvent[fIndex] == GetFrameHeader()) {
         fData[fDataSize++] = fDataEvent[fIndex];
         break;
      }
   } while (fIndex++ < fEventSize);
-  if (fDebugLevel>2) printf("  frame header %x found at index %d over event size %d\n", GetKeyHeader(iSensor), fIndex, fEventSize);
+  if (fDebugLevel>2) printf("  frame header %x found at index %d over event size %d\n", GetFrameHeader(), fIndex, fEventSize);
 
   if (fIndex >= fEventSize -2) return false;
 
   fIndex++;
 
   // find trailer
-  // UInt_t key1  =  GetFrameTail() & 0xFFFF;
-  // UInt_t key2  = (GetFrameTail() & 0xFFFF0000) >> 16;
+  UInt_t key1  =  GetFrameTail() & 0xFFFF;
+  UInt_t key2  = (GetFrameTail() & 0xFFFF0000) >> 16;
 
   do {
     fData[fDataSize++] = fDataEvent[fIndex];
-    // if (( (fDataEvent[fIndex] & 0xFFFF) == key1) || ( (fDataEvent[fIndex] & 0xFFFF0000) >> 16) == key2) {
-    if( fDataEvent[fIndex] == GetKeyTail(iSensor) ) {
+    if (( (fDataEvent[fIndex] & 0xFFFF) == key1) || ( (fDataEvent[fIndex] & 0xFFFF0000) >> 16) == key2) {
+    // if( fDataEvent[fIndex] == GetKeyTail(iSensor) ) {
       break;
     }
   } while (fIndex++ < fEventSize);
@@ -388,7 +388,7 @@ Bool_t VMEBoardReader::GetFrame(int iSensor, MI26_FrameRaw* data)
 
   fDataSize -= fgkFrameHeaderSize; // removing header
 
-  if(GetDebugLevel()>1) {
+  if(GetDebugLevel()>2) {
     printf( " For sensor %d:\n", iSensor);
      for (Int_t i = 0; i < fDataSize+fgkFrameHeaderSize; ++i)
         printf("   Data %08x\n", fData[i]);
@@ -398,7 +398,7 @@ Bool_t VMEBoardReader::GetFrame(int iSensor, MI26_FrameRaw* data)
   if (fIndex >= fEventSize -2) return false;
 
   fFramesReadFromFile++;
-  if (fDebugLevel>2) printf("  => New frame %d OK for sensor %d with data size %d\n", fFramesReadFromFile, iSensor, fDataSize);
+  if (fDebugLevel>1) printf("  => New frame %d OK for sensor %d with data size %d\n", fFramesReadFromFile, iSensor, fDataSize);
   return true;
 
 }
@@ -481,7 +481,7 @@ Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
    //
    // Upgraded, JB 2019/07/13
 
-  if (fDebugLevel) printf("VMEBoardReader::DecodeFrame decoding event %d with size %d, sensor %d\n", fEventNumber, fEventSize);
+  if (fDebugLevel>1) printf("VMEBoardReader::DecodeFrame decoding event %d with size %d, sensor %d\n", fEventNumber, fEventSize, iSensor);
 
    // TAVTntuRaw*  pNtuRaw = (TAVTntuRaw*)  fpNtuRaw->Object();
    // TAVTparConf* pConfig = (TAVTparConf*) fpConfig->Object();
@@ -588,6 +588,8 @@ Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
   if (fOverflow) {
     fEventsOverflow++;
   }
+
+  if( fDebugLevel>1 ) printf("VMEBoardReader::DecodeFrame  --> Current frame %d for sensor %d has %d pixels.\n", frame->FrameCnt, iSensor, localNbOfPixels);
 
   return true;
 }
