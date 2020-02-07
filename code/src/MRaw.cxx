@@ -15428,8 +15428,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
 
 }
 #endif // USETMVA
-//______________________________________________________________________________
-//
+
 //
 //______________________________________________________________________________
 void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker)
@@ -16083,6 +16082,329 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker)
 
 
 }
+
+//
+//______________________________________________________________________________
+void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker)
+{
+  // Display the hit position for each plane cumulated over the requested number of events
+  //  and display hit properties
+  //
+  // Call by gTAF->GetRaw()->DisplayCumulatedHits2D()
+  //
+  // Inputs:
+  //   o nEvents is the nb of events to analyse
+  //   o lastPlaneOfFirsttracker means:
+  //       all planes with ID <= lastPlaneOfFirsttracker are included in first tracker
+  //       all planes with ID > lastPlaneOfFirsttracker are included in second tracker
+  //
+  // Outputs:
+  //   o
+  //
+  // JB, 2020/02/05
+  //
+
+  fSession->SetEvents(nEvents);
+
+  Int_t nHitsReconstructed = 0;
+
+  TCanvas *ccumulhit;
+  TObject* g = gROOT->FindObject("ccumulhit") ;
+  if (g) {
+    ccumulhit = (TCanvas*)g;
+  }
+  else {
+    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5,800,700);
+  }
+  ccumulhit->Clear();
+  ccumulhit->UseCurrentStyle();
+  TPaveLabel* label = new TPaveLabel();
+  Char_t canvasTitle[200];
+  sprintf(canvasTitle, "Run %d, cumul over %d events", fSession->GetRunNumber(), nEvents);
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad = new TPad("pad","",0.,0.,1.,0.965);
+  pad->Draw();
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  DPlane* tPlane = NULL;
+  DTrack *aTrack = NULL;
+  DHit *aHit = NULL;
+  //DPixel *aPixel;
+  Double_t seedSN;
+  //Double_t seedN;
+
+  Int_t nPlanes = tTracker->GetPlanesN();
+  if( nPlanes>6 ) {
+    pad->Divide( (Int_t)ceil(nPlanes/4.), (nPlanes>4)?4:nPlanes);  // LC 4 lines instead of 2.
+  }
+  else {
+    pad->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+  }
+
+  // Determine extrema of planes position in telescope frame
+  Double_t xmin=1e6, xmax=-1e6;
+  Double_t ymin=1e6, ymax=-1e6;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    tPlane = tTracker->GetPlane(iPlane);
+    // bottom left corner
+    DR3 posInPlane, posBLInTracker, posURInTracker;
+    posInPlane.SetValue( -tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+                        ,-tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+                        ,0.);
+    posBLInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posBLInTracker(0)<xmin ) xmin = posBLInTracker(0);
+    if( posBLInTracker(1)<ymin ) ymin = posBLInTracker(1);
+    if( posBLInTracker(0)>xmax ) xmax = posBLInTracker(0);
+    if( posBLInTracker(1)>ymax ) ymax = posBLInTracker(1);
+    // upper right corner
+    posInPlane.SetValue( +tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+                        ,+tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+                        ,0.);
+    posURInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posURInTracker(0)<xmin ) xmin = posURInTracker(0);
+    if( posURInTracker(1)<ymin ) ymin = posURInTracker(1);
+    if( posURInTracker(0)>xmax ) xmax = posURInTracker(0);
+    if( posURInTracker(1)>ymax ) ymax = posURInTracker(1);
+  } // end loop on planes
+
+  TH2F **hHitMap = new TH2F*[nPlanes];
+  TH1F **hHitPixMult = new TH1F*[nPlanes];
+  TH1F **hNHitsPerEvent = new TH1F*[nPlanes];
+  TH1F **hHitTimeStamp = new TH1F*[nPlanes]; // JB 2015/05/25
+  TH1F **hNHitsVSEventN = new TH1F*[nPlanes]; // QL 2015/10/23
+  TCanvas **cHitProperties = new TCanvas*[nPlanes]; // JB 2013/10/30
+  Char_t name[50], title[100];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    tPlane = tTracker->GetPlane(iPlane);
+
+    // -- Histo with microns
+    sprintf( name, "hhitmappl%d", iPlane);
+    sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
+    int NbinsX = tPlane->GetStripsNu()*NbinsReductionFactor;
+    int NbinsY = tPlane->GetStripsNv()*NbinsReductionFactor;
+    hHitMap[iPlane-1] = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
+    hHitMap[iPlane-1]->SetMarkerStyle(20);
+    hHitMap[iPlane-1]->SetMarkerSize(.1);
+    hHitMap[iPlane-1]->SetMarkerColor(1);
+    hHitMap[iPlane-1]->SetStats(kFALSE);
+    //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+
+    // -- Pixel multiplicity in hits
+    Int_t nPixMax = fSession->GetSetup()->GetPlanePar(iPlane).MaxNStrips;
+    sprintf( name, "hhitpixpl%d", iPlane);
+    sprintf( title, "Pixel multiplicity in hits of plane %d - %s - %s", iPlane, tPlane->GetPlaneName(), tPlane->GetPlanePurpose());
+    if( nPixMax==0 ) {
+      hHitPixMult[iPlane-1] = new TH1F(name, title, 25, 0, 0);
+    }
+    else {
+      hHitPixMult[iPlane-1] = new TH1F(name, title, nPixMax+1, -.5, nPixMax+0.5);
+    }
+    hHitPixMult[iPlane-1]->SetXTitle("# pixels in hit");
+
+    // -- Pixel time stamp
+    sprintf( name, "hhittimepl%d", iPlane);
+    sprintf( title, "Hit time stamp of plane %d - %s - %s; Time stamp", iPlane, tPlane->GetPlaneName(), tPlane->GetPlanePurpose());
+    hHitTimeStamp[iPlane-1] = new TH1F(name, title, 100, 0, 0);
+
+    // -- #Hits VS #Event
+    sprintf( name, "hNHitsVSEventNPl%d", iPlane);
+    sprintf( title, "Number of Clusters VS Event Number for plane %d - %s - %s", iPlane, tPlane->GetPlaneName(), tPlane->GetPlanePurpose());
+    hNHitsVSEventN[iPlane-1] = new TH1F(name, title, nEvents, 0, nEvents );
+    hNHitsVSEventN[iPlane-1]->SetXTitle("Event Number");
+
+    // -- Number of hits per event
+    sprintf( name, "hnhitspereventpl%d", iPlane);
+    sprintf( title, "Number of hits per event of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
+    //hNHitsPerEvent[iPlane-1] = new TH1F(name, title, 100, 0, 0);
+    hNHitsPerEvent[iPlane-1] = new TH1F(name, title, 751, -0.5, 750.5); // QL 2015/10/23, High trigger rate
+    hNHitsPerEvent[iPlane-1]->SetXTitle("# hits per event");
+  } //end loop on planes
+
+
+  //Loop over the requested number of events
+  for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
+    if( !(fSession->NextRawEvent()) ) break; // JB 2009/06/26
+    tTracker->Update();
+
+    for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+      tPlane = tTracker->GetPlane(iPlane);
+      hNHitsPerEvent[iPlane-1]->Fill( tPlane->GetHitsN() );
+
+      if( tPlane->GetHitsN()>0 ) {
+        nHitsReconstructed += tPlane->GetHitsN();
+        for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
+          aHit = (DHit*)tPlane->GetHit( iHit);
+          //printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
+          hHitMap[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1); // weight could be aHit->GetClusterPulseSum()
+
+          hHitPixMult[iPlane-1]->Fill( aHit->GetStripsInCluster()); // JB 2011/07/26
+          hHitTimeStamp[iPlane-1]->Fill( aHit->GetTimestamp()); // JB 2015/05/25
+          hNHitsVSEventN[iPlane-1]->Fill(iEvt);
+          if(fVerbose) printf("MRaw::DisplayCumulHits2D  pl %d, hit[%d=(%d,%d)=(%f,%f)]%f, mult=%d\n", iPlane, iHit, aHit->GetIndexSeed()%tPlane->GetStripsNu(), aHit->GetIndexSeed()/tPlane->GetStripsNu(), tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), aHit->GetClusterPulseSum(), aHit->GetStripsInCluster());
+        } //end loop on hits
+      }
+
+    } //end loop on planes
+
+  } // END LOOP ON EVENTS
+
+  fSession->GetDataAcquisition()->PrintStatistics();
+  tTracker->PrintStatistics();
+
+  // Now display
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    pad->cd(iPlane);
+    pad->cd(iPlane)->SetTickx(1);
+    pad->cd(iPlane)->SetTicky(1);
+    hHitMap[iPlane-1]->DrawCopy("colz");
+    cout << "Plane "<<iPlane<<" has seen "<<hHitMap[iPlane-1]->GetEntries()<<" hits."<< endl;
+  }
+  ccumulhit->Update();
+
+  // this canvas is intended mainly for binary outputs
+  TCanvas *ccumulhit2;
+  g = gROOT->FindObject("ccumulhit2") ;
+  if (g) {
+    ccumulhit2 = (TCanvas*)g;
+  }
+  else {
+    ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 5, 5,800,700);
+  }
+  ccumulhit2->Clear();
+  ccumulhit2->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad2 = new TPad("pad2","",0.,0.,1.,0.965);
+  pad2->Draw();
+  pad2->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      pad2->cd(iPlane);
+      hHitPixMult[iPlane-1]->DrawCopy();
+      //hHitPixMult[iPlane-1]->Delete();
+    }
+  }
+  ccumulhit2->Update();
+
+  // Time stamp of hits
+  // JB 2015/05/25
+  TCanvas *ccumulhit21;
+  g = gROOT->FindObject("ccumulhit21") ;
+  if (g) {
+    ccumulhit21 = (TCanvas*)g;
+  }
+  else {
+    ccumulhit21 = new TCanvas("ccumulhit21", "Hit time stamp", 5, 5,800,700);
+  }
+  ccumulhit21->Clear();
+  ccumulhit21->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad21 = new TPad("pad21","",0.,0.,1.,0.965);
+  pad21->Draw();
+  pad21->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      pad21->cd(iPlane);
+      if( hHitTimeStamp[iPlane-1]->GetEntries()>0 ) hHitTimeStamp[iPlane-1]->DrawCopy();
+    }
+  }
+  ccumulhit21->Update();
+
+  // # Hits VS Event Number
+  // QL 2015/10/23
+  TCanvas *ccumulhit22;
+  g = gROOT->FindObject("ccumulhit22") ;
+  if (g) {
+    ccumulhit22 = (TCanvas*)g;
+  }
+  else {
+    ccumulhit22 = new TCanvas("ccumulhit22", "# hits VS event number", 5, 5,800,700);
+  }
+  ccumulhit22->Clear();
+  ccumulhit22->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad22 = new TPad("pad22","",0.,0.,1.,0.965);
+  pad22->Draw();
+  pad22->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      pad22->cd(iPlane);
+      if( hNHitsVSEventN[iPlane-1]->GetEntries()>0 ) hNHitsVSEventN[iPlane-1]->DrawCopy();
+    }
+  }
+  ccumulhit22->Update();
+
+  // Number of hits per event
+  double MaxAxisRanges = -1.0e+20;
+  TCanvas *ccumulhit3;
+  g = gROOT->FindObject("ccumulhit3") ;
+  if (g) {
+    ccumulhit3 = (TCanvas*)g;
+  }
+  else {
+    ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 5, 5,800,700);
+  }
+  ccumulhit3->Clear();
+  ccumulhit3->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad3 = new TPad("pad3","",0.,0.,1.,0.965);
+  pad3->Draw();
+  pad3->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      pad3->cd(iPlane);
+
+      double MyMaxRange = -999.0;
+      for(int i=0;i<hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins();i++) {
+        int index = hNHitsPerEvent[iPlane-1]->GetXaxis()->GetNbins() - i;
+        if(hNHitsPerEvent[iPlane-1]->GetBinContent(index) > 0.0) {
+          MyMaxRange  = hNHitsPerEvent[iPlane-1]->GetBinCenter(index);
+          MyMaxRange += 0.5*hNHitsPerEvent[iPlane-1]->GetBinWidth(index);
+          break;
+        }
+      }
+      MyMaxRange += 0.10*(MyMaxRange - hNHitsPerEvent[iPlane-1]->GetXaxis()->GetXmin());
+      if(MaxAxisRanges < MyMaxRange) MaxAxisRanges = MyMaxRange;
+      hNHitsPerEvent[iPlane-1]->SetAxisRange(hNHitsPerEvent[iPlane-1]->GetXaxis()->GetXmin(),
+					     MyMaxRange,
+					     "X");
+      hNHitsPerEvent[iPlane-1]->DrawCopy();
+    }
+  }
+  ccumulhit3->Update();
+
+
+  // Save canvas and histos
+  // cd to result dir
+  Char_t rootFile[300];
+  sprintf(rootFile,"%ssitrineo_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
+  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
+  cout << "\n-- Saving histos and canvas into " << rootFile << endl;
+  TFile fRoot(rootFile,"RECREATE");
+  ccumulhit->Write();
+  ccumulhit2->Write();
+  ccumulhit22->Write();
+  ccumulhit3->Write();
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    tPlane = tTracker->GetPlane(iPlane);
+    if( 0 < tPlane->GetAnalysisMode()  ) {
+      hHitMap[iPlane-1]->Write();
+      hHitPixMult[iPlane-1]->Write();
+      hHitTimeStamp[iPlane-1]->Write();
+      hNHitsVSEventN[iPlane-1]->Write();
+      hNHitsPerEvent[iPlane-1]->Write();
+    }
+  }
+
+  fRoot.Close();
+
+  return;
+
+}
+
 //
 //______________________________________________________________________________
 void MRaw::SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList)
