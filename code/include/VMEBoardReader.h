@@ -14,6 +14,7 @@
 #include "TString.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "DGlobalTools.h" // to have fTool has a data member
 using namespace std;
 
 class TH2F;
@@ -32,6 +33,7 @@ public:
   ~VMEBoardReader();
 
   void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; }
+  void  SetVetoPixel( int noiseRun);
   bool  HasData();
   int   GetDebugLevel() { return fDebugLevel; }
   int   GetBoardNumber() { return fBoardNumber; }
@@ -49,6 +51,7 @@ public:
 private:
 
   int             fDebugLevel;       // debug level
+  DGlobalTools    fTool;
   Bool_t          fDisplay;
   int             fBoardNumber;
   Int_t           fRunNumber;           // run number
