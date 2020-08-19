@@ -57,7 +57,7 @@ bookmarksopen=true, %si les signets Acrobat sont crï¿½ï¿½s, les afficher complï¿
 
 \begin{minipage}{.3\linewidth}
 \begin{flushleft}
-\includegraphics*[width=45mm]{/Users/jeromeb/Pictures/logo/logoTAF.eps}\\
+\includegraphics*[width=45mm]{logoTAF.eps}\\
 \end{flushleft}
 \end{minipage}
 \begin{minipage}{.65\linewidth}
@@ -71,7 +71,7 @@ bookmarksopen=true, %si les signets Acrobat sont crï¿½ï¿½s, les afficher complï¿
 %\begin{minipage}{.45\linewidth}
 \begin{flushright}
 note edited by J.~Baudot (\href{mailto:baudot@in2p3.fr}{baudot@in2p3.fr})\\
-Université de Strasbourg, IPHC, \\
+Universitï¿½ de Strasbourg, IPHC, \\
 CNRS, UMR7178,\\
 Strasbourg, France\\
 %IPHC, Universit\'e de Strasbourg - CNRS\\
@@ -109,7 +109,7 @@ This software is meant as a lightweight package, only {\tt ROOT} pre-installatio
 \vspace{0.8cm}
 
 \noindent
-This document intends to present the basis to install and start using \TAF, sections \ref{secInstall, secConfig, secReader, secRunning}. Specific tasks are describe in the following sections \ref{secNoise, secAlign, secEbyE, secRawdata, secAnalysis, secSimulation}. Some knowledge of the main algorithm is provided in sections \ref{secGeometry, secAlgorithms}, but no detailed descriptions are provided. Much can be learned on the concepts of beam test analysis with the already mentioned \MAF note, \cite{noteMAF}, and comparison with \MAF appears throughout the document. The section \ref{secDeveloper} gives some hint for potential developers (which can start simply with adding a histogram).\\
+This document intends to present the basis to install and start using \TAF, sections \ref{secInstall}, \ref{secConfig}, \ref{secReader}, \ref{secRunning}. Specific tasks are describe in the following sections \ref{secNoise}, \ref{secAlign}, \ref{secEbyE}, \ref{secRawdata}, \ref{secAnalysis}, \ref{secSimulation}. Some knowledge of the main algorithm is provided in sections \ref{secGeometry}, \ref{secAlgorithms}, but no detailed descriptions are provided. Much can be learned on the concepts of beam test analysis with the already mentioned \MAF note, \cite{noteMAF}, and comparison with \MAF appears throughout the document. The section \ref{secDeveloper} gives some hint for potential developers (which can start simply with adding a histogram).\\
 Those who will have a look at the source code itself might be stricken (frightened?) by its sometimes unnecessary complexity. The last section \ref{secCredits} might provide some explanations, but more importantly lists hopefully all contributors to \TAF.
 
 
@@ -136,22 +136,26 @@ For the first two steps, the output files are stored in a directory named {\tt R
 \noindent
 {\bf Versions}\\
 \noindent
-The code can be obtained from a tar file at the location \url{http://www.iphc.cnrs.fr/Public-documentation.html}, or from the internal IPHC SVN server (public solution under study).\\ 
-You have the choice between the {\tt DEV} version with the latest changes, but still under development, or a {\tt tag} version which is frozen.\\
-The installation is extremely similar to the one of \MAF. \\
+The code can be obtained from GIT repositories, which are synchronized:
+\begin{itemize}
+\item \url{https://gitlab.cern.ch/bjerome/taf},
+\item \url{https://github.com/jeromebaudot/taf}.
+\end{itemize}
+Two A tar file is also available at the location \url{http://www.iphc.cnrs.fr/Public-documentation.html}, or from the internal IPHC SVN server (public solution under study).\\ 
+%The installation is extremely similar to the one of \MAF. \\
 
 
 \noindent
 {\bf Directories}\\
 \noindent
-Decompressing this archive will create the mandatory basic structure of directories:
+Clone the repository or decompressing the archive will create the mandatory basic structure of directories:
 \begin{itemize}
 \item {\tt code}: all the sources and the Makefiles for compilation,
 \item {\tt Scripts}: useful scripts, see below,
 \item {\tt config}: contains all the configuration files required for each run, see the section \ref{secConfig},
 \item {\tt doc}: contains this documentation, the \MAF  write-up as well as the HTML files to browse the code (start with {\tt ClassIndex.html}).
 \end{itemize}
-The following directories are created at the compilation or running step:
+The following directories are created at the configuration, compilation or running steps:
 \begin{itemize}
 \item {\tt bin}: contains libraries and the executable,
 \item {\tt datDSF}: contains the output TTree,
@@ -165,6 +169,15 @@ Please read the {\tt README} file which contains useful information on the versi
 A {\tt rootlogon.C} file is also provided with the distribution. There is nothing about histograms appearance, but rather some tricks (libraries loading) to start \TAF on certain systems.\\
 
 \noindent
+{\bf Configuration}
+
+\noindent
+The compilation and running requires the configuration of a number of environment variables, which is performed by the instruction {\tt source Scripts/thistaf.sh}. You shoul edit this file beforehand and possibly change some options.\\
+
+\noindent
+\comment{Preprocessor instructions have to be listed, {\tt Windows/LINUX, ROOT, ROOFIT, Minuit2...}.}
+
+\noindent
 {\bf Compilation}
 
 \noindent
@@ -172,12 +185,9 @@ The compilation and running requires the configuration of a number of environmen
 On most cases, you will not need to edit the script. But it can happen that editing is necessary, for instance to hard code the ROOT path. In this case, follow the instructions provided in the comments of the script. On Mac-OS, it might still be required to use the old configuration script through the instruction {\tt source Scripts/TAF-config}, but you will need to edit it before.\\
 
 \noindent
-\comment{Preprocessor instructions have to be listed, {\tt Windows/LINUX, ROOT, ROOFIT, Minuit2...}.}
-
-\noindent
 Compiling can be operated in two ways:
 \begin{itemize}
-\item[{\bf a)}] go to the {\tt code} directory and issue a {\tt make} command, use {\tt make clean} to remove previous compilation results;
+\item[{\bf a)}] issue the {\tt maketaf} command, or equivalently: go to the {\tt code} directory and issue a {\tt make} command, use {\tt make clean} to remove previous compilation results;
 \item[{\bf b)}] launch {\tt ROOT} and execute the {\tt Scripts/compilTAF.C} macro, see arguments inside the macro for options.
 \end{itemize}
 Be aware that the code does not compile under Windows yet, but runs on various Linux flavors (Debian, Ubuntu, Redhat) or Mac-OS. If the compilation is OK, but \TAF complains about missing symbols or libraries, usually adding a line in the {\tt rootlogon.C} to force loading the corresponding libraries helps.
@@ -186,7 +196,7 @@ Be aware that the code does not compile under Windows yet, but runs on various L
 \vspace{2cm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Configuration}
+\section{Configuration or letting TAF knows about your experiment}
 \label{secConfig}
 
 The \TAF  configuration for a given run, describes in details the geometry of the experiment, the characteristics of the sensors used, the acquisition setup and the final analysis parameters. It is the real ``command board'' of the software, even if some parameters are hardcoded (see the {\tt README} file for a list). So at first order, you do not need to edit the code at all but rather edit configuration files.\\
@@ -200,10 +210,15 @@ For your help, the TAF distribution comes with some examples of configuration fi
 
 \noindent
 As a baseline, there should be one configuration file per run. However, it is possible to define a generic configuration file which matches several runs. To exploit this generic file feature, the only way is to start \TAF from the command line with the following options:
-{\tt TAF  -run myRunNumber -cfg myConfigFile}\\
+{\tt SHELL> TAF  -run myRunNumber -cfg myConfigFile}\\
 
 \noindent
-Some guidances on the five parts of the configuration are provided below, and specific important parameters are explained in the following relevant sections.
+To know about the various possible running option:\\
+{\tt SHELL> TAF --help}\\
+
+\noindent
+Some guidances on the five parts of the configuration are provided below, and specific important parameters are explained in the following relevant sections.\\
+As usual, it is difficult to maintain the list of all possible parameters up-to-date. However the description of class {\tt code/src/DSetup.cxx} contains such a list.
 
 \subsection{Run Parameters}
 Run number, date, path to the raw data files or to secondary noise-defining file.\\
@@ -213,7 +228,7 @@ The path to the raw data files is written directly at the beginning of the confi
 Number of detector planes, tracking and alignment methods and parameters.
 
 \subsection{Parameters of the Detector Planes}
-Defines how one plane is connected to its raw data, parameters of the readout (see subsection \ref{subsecElelment}), the analysis (noise, clustering into hits and hit position) and geometry (both position in the laboratory and description of segmentation). One of the fundamental parameter ({\tt AnalysisMode}) indicates wether the sensing elements are strips with analogue output ({\tt AnalysisMode=1}), pixels with analogue outputs ({\tt AnalysisMode=2}) or pixel with binary outputs ({\tt AnalysisMode=3}). ``Analogue output'' has to be understood as a value coded on more than 1 bit.\\ 
+Defines how one plane is connected to its raw data, parameters of the readout (see subsection \ref{subsecElements}), the analysis (noise, clustering into hits and hit position) and geometry (both position in the laboratory and description of segmentation). One of the fundamental parameter ({\tt AnalysisMode}) indicates wether the sensing elements are strips with analogue output ({\tt AnalysisMode=1}), pixels with analogue outputs ({\tt AnalysisMode=2}) or pixel with binary outputs ({\tt AnalysisMode=3}). ``Analogue output'' has to be understood as a value coded on more than 1 bit.\\ 
 
 \noindent
 Note that planes are declared one after the other. The plane number, used throughout the code to identify planes, is not explicitly defined. Rather the plane number is incremented each time a new plane is declared.\\
@@ -223,8 +238,9 @@ Ladder can also be declared, they are made of several planes. This is a convenie
 Number of different file types, parameters for each decoder of these files.
 
 \subsection{Parameters for Final Analysis}
-Indicate the goal of the final analysis and contains additional cut definitions, range of histograms and redefinition of sensor segmentation. Regions of interest can also be specified here.\\
-This section is new compared to \MAF, where these information were hardcoded.
+\label{subsec:paramFinalAnalysis}
+Indicate the goal of the final analysis and contains additional cut definitions, range of histograms and redefinition of sensor segmentation. Regions of interest can also be specified here. This section is new compared to \MAF, where these information were hardcoded.\\
+Here is a list of available value for the {\tt AnalysisGoal} parameters: {\tt cluster, track, calib, laser, vertex, fake, vector, sitrineo}.
 
 % The way the raw data files are associated to the planes declared allows almost any kind of mapping (one file serving several planes or one planes linked to several files). A detail description of this mechanism is outside the scope of this brief documentation. Please, refer to configuration file examples. The basic concept is the one of ``input''. An acquisition board may have several ``inputs'' representing the same number of channels. Then a plane is connected to as many inputs as necessary from, potentially, any boards. One could easily understand that to build a series of channels in the proper order, a ``shift'' for each input is needed. The fields corresponding to these concepts are documented inside the configuration file itself. Be sure to look at the code output after the initialization step ({\tt gTAF->InitSession} command) which traces which matching was understood from the configuration.
 
@@ -237,7 +253,8 @@ This section is new compared to \MAF, where these information were hardcoded.
 
 \TAF  includes several methods to decode raw data files from various data acquisition system. The idea is that each method corresponds to a specific class. Whatever the decoding class, the input is made of a raw data file or a list of files, and the output is a list of pixels to be used for subsequent analysis. In this way, the decoding is decoupled from the further analysis steps.\\
 
-This is the current list of decoding possibilities (number in parenthesis is the type flag recognized by \TAF).
+This is the current list of decoding possibilities (number in parenthesis is the type flag recognized by \TAF). This might not be up-to-date, you will have to go through {\tt code/src/DAcq.cxx} (for instance, look at the constructor) to understand what are the existing choices.
+
 \begin{itemize}
 \item {\tt IMGBoardReader} (1): IPHC USB-Imager board.
 \item {\tt TNTBoardReader} (3): IPHC TNT board.
@@ -248,6 +265,8 @@ This is the current list of decoding possibilities (number in parenthesis is the
 \item {\tt AliMIMOSA22RawStreamVASingle} (8): INFNF CAEN VME board for binary output sensors (MIMOSA-22).
 \item {\tt DecoderM18\_fb} (9): INFN CAEN VME board for analog output sensors (MIMOSA-18)
 \item {\tt DecoderGeant} (10): INFN GEANT-based simulation, without pixel signal, package by P. ~La~Rocca.
+\item {\tt MCBoardReader} (11): Monte-Carlo output from the GEANT4 based full simulation developped by A.~Perez~Perez.
+\item {\tt BoardReaderIHEP} (12): IHEP acquisition for binary output sensors MIMOSA-28.
 \end{itemize}
 
 \comment{Better description of each type would be useful. Especially management of triggers and frames to generate event for PXIeBoardReader is really needed.}
@@ -336,10 +355,14 @@ It is advised to quit and restart \TAF between each step.
 
 \comment{This section needs complete reshuffling since additional ways to take into account hot pixels was included by Alejandro.}
 
+%%%%%%
+\subsection{Noise with analogue output pixels}
+\label{subsec:analogueNoise}
+
+Pixel with {\it analogue} output means that the pixel value has more than 1 digit. This corresponds to the case when you specify a readout mode ({\tt Readout} data card) below 100.\\
 To compute the pedestal and noise, \MAF  was relying on the fact that a value for each channel was available for each event. The pedestal and noise were computed on the first events and then updated regularly.\\
-With digital or sparsified data, this is no longer the case. However, if you specify a readout mode ({\tt Readout} data card) below 100, the analysis will still be performed as in \MAF .\\
 For other mode, either you do not need the pedestal and noise values or a dedicated run is used to initialize them.\\
-In the later case, this run shall have a configuration file with a {\tt Readout} below 100. Then after the initialization issue the command:\\
+In the later case, this run shall have a configuration file with a {\tt Readout} below 100. Then after the initialization issue the command (equivalent to click on the {\tt NOISE MAP} menu described in section \ref{secEbyE}) :\\
 \noindent
 {\tt TAF>gTAF->GetRaw()->Noise()}\\
 
@@ -351,6 +374,43 @@ A file {\tt Noise\_run<NoiseRunNb>.root} is generated in the {\tt Results/<Noise
 {\tt NoiseRun:        NoiseRunNb}
 \end{itemize}
 Then, when the hit reconstruction will be performed on the {\tt myRunRunNumber} data, the pedestal and noise values will be taken into account.
+
+
+%%%%%%
+\subsection{Hot/noisy pixels with binary output}
+\label{subsec:binaryNoise}
+
+With binary data, readout mode ({\tt Readout} data card) above 100, there is no concept of noise associated to one pixel. However, you can still search for hot or noisy pixels, based on the firing occurrence without any source (dark count or fake rate). \TAF allows you to compute first the fake hit rate per pixel and then proposes to ways to masking pixels from the analysis.\\
+
+\noindent
+{\bf Fake rate analysis}\\
+
+\noindent
+Use the following method from the Event-by-Event analysis mode (see section \ref{secEbyE}).
+{\tt gTAF->GetRaw()->DisplayCumulatedRawData2D(N,minSN,occ\_min,occ\_max,nOcc,minOcc,storageOcc)}\\
+ Where {\tt N} is the number of events (frames) to process, and {\tt storageOcc} is a bool that needs to be set to true. The other parameters can be set to the default values, {\tt Occ\_min = 0.001, Occ\_max = 1.0, nOcc = 20, minOcc = 0}.\\
+ The system will produce the fake rate map in the column vs row plane and respond with messages like this:\\
+{\tt -------- The HOT PIXEL MAP FOR PLANE 1 HAS BEEN FILLED !}\\
+The results are stored in {\tt Results/NoiseRunNumber/} directory. The 2D histograms containing the fake rate per pixel have the name {\tt hotPixelMap\_runNoiseRunNumber\_pl1.root}. There is also a text file with the list of pixels above, named {\tt Results/NoiseRunNumber/rawData\_runNoiseRunNumber.txt} .
+
+\noindent
+{\bf Masking hot pixels, option 1}\\
+
+\noindent
+This first method does not require to re-compile the code. In the text configuration file, precisely in the block of the plane parameters for which you want to mask some pixels, you need to specify two parameters:\\
+\begin{itemize}
+\item {\tt HotPixelMapFile}: The name of the root file containing the fake rate map
+\item {\tt FakeRateCut}: A cut on the fake rate (R ) per single pixel fake rate, all pixels with rate $>$ {\tt FakeRateCut} will be excluded from further analysis.
+\end{itemize}
+
+\noindent
+{\bf Masking hot pixels, option 2}\\
+
+\noindent
+This second method requires to recompile \TAF. You need to create a specific function in the file {\tt  code/include/vetoPixels.c} based on the functions already there and the list of pixels you want to mask, chosen from the list in {\tt rawData\_runNoiseRunNumber.txt}. Then, you should edit the class {\tt code/src/DGlobalTools.cxx} and modify the method {\tt DGlobalTools::SetVetoPixel( int noiseRun)} to link your previously defined vetoFunction with a given run number (typically {\tt NoiseRunNumber}). You have to recompile \TAF then.\\
+Finally, in your configuration file, you should specify in the {\tt Run Parameter} section the following paramter:\\
+{\tt NoiseRun: NoiseRunNumber}.\\
+When TAF will read the raw data, all pixels listed in your vetoFunction will be ignored.
 
 
 \vspace{2cm}
@@ -500,9 +560,11 @@ A comprehensive menu pops up. The {\tt NOISE MAP} method was already described p
 Some of these methods, named {\tt CumulateXXXX}, add the results over a given number of events. They are useful to plot characteristics of fired pixels, hits or tracks in order to check there are real hits on the detector planes as well as to optimize the selection cuts and parameters of the clustering and tracking.\\
 
 \noindent
+Note that the list of methods available in the menu depends on the analysis goal, you have set in the parameters for Final Analysis, see sub-section \label{subsec:paramFinalAnalysis}. For instance, if there is only a single plane, no alignment method will be proposed.
+
+\noindent
 Note that most of those methods write some output files, including histograms and/or text, that you will find in the directory {\tt Results/xxxxx} where {\tt xxxxx} stands for the run number.\\
 Also, the method displaying hits does plot the extrapolated track impact as well. Because tracking is involved, its behavior depends on the Tracker alignment status (see sections \ref{secAlign} and \ref{secRawdata}).\\
-
 
 \noindent
 You may notice that there is a {\tt USER PLOT} method. This one is intended for the user to modify as she/he wants following the provided template.
@@ -673,9 +735,15 @@ Work by Loic Cousin and Auguste Besson , consul class {\tt GIGBoardReader}.
 Work by Paola  La Rocca, consult class {\tt DecoderGeant}.
 \\
 
-\noindent
-A release in January 2015 intends to provide an internal digitization procedure.
 
+\vspace{0.8 cm}
+
+\noindent
+{\bf Full GEANT4 simulation}
+
+\noindent
+A full GEANT4 based simulation package, using the same text configuration file as \TAF and a CMOS digitizer algorithm, was developped by Alejandro~Perez~Perez. It is mainly dedicated to reproduce test beam configurations.\\
+{\it More explanations are needed here.}
 
 \vspace{2cm}
 
@@ -1197,9 +1265,9 @@ This is not yet permitted because there is no mechanism yet to insure backward c
 It is a pleasure to write a few lines about all the people who have participated and are participating to the development of this package.\\
 The early version in C++ was written in the 90's by Dirk Meyer at CERN within the RD42 collaboration to study diamond detectors with a silicon strip telescope. The code itself inherited from earlier FORTRAN versions developed in Strasbourg by {\bf Renato Turcheta} and then {\bf Farez Djama} for silicon strip sensors.\\
 
-The C++ package was brought back in Strasbourg by {\bf Christophe Suire} and {\bf Jérôme Baudot} in the late 90's for the characterization of silicon strip sensors within the STAR and ALICE collaborations. At the turn of the new century, the CMOS sensor group took over the code to study pixel detectors, still with the same silicon strip telescope. That was the creation of \MAF  by {\bf Youri Gornushkin, Gilles Orazi, Auguste Besson, Damien Grandjean} and {\bf Marc Winter}. Later on additional functionalities were brought by {\bf Alexandre Shabetai, Rita De Masi} and Jérôme Baudot.\\
+The C++ package was brought back in Strasbourg by {\bf Christophe Suire} and {\bf Jï¿½rï¿½me Baudot} in the late 90's for the characterization of silicon strip sensors within the STAR and ALICE collaborations. At the turn of the new century, the CMOS sensor group took over the code to study pixel detectors, still with the same silicon strip telescope. That was the creation of \MAF  by {\bf Youri Gornushkin, Gilles Orazi, Auguste Besson, Damien Grandjean} and {\bf Marc Winter}. Later on additional functionalities were brought by {\bf Alexandre Shabetai, Rita De Masi} and Jï¿½rï¿½me Baudot.\\
 
-The advent of telescope using pixel sensors as reference planes generated the need for \TAF  in 2005. Among the \TAF  contributors we find: Rita De Masi, {\bf Loic Cousin, Serhyi Senuykov, Yorgos Voutsinas, Mario Bachaalany, Marie Gelin, Rhorry Gauld} (Oxford) and Jérôme Baudot. Some of the raw data decoding methods have been provided in 2014 by Italian colleagues from INFN working in the ALICE collaboration, {\bf Ilaria Aimo, Cristina Bedda, Paola La Rocca, Serena Mattiazio, Eleuterio Spiriti},  and by {\bf Christian Finck} from IPHC.\\
+The advent of telescope using pixel sensors as reference planes generated the need for \TAF  in 2005. Among the \TAF  contributors we find: Rita De Masi, {\bf Loic Cousin, Serhyi Senuykov, Yorgos Voutsinas, Mario Bachaalany, Marie Gelin, Rhorry Gauld} (Oxford) and Jï¿½rï¿½me Baudot. Some of the raw data decoding methods have been provided in 2014 by Italian colleagues from INFN working in the ALICE collaboration, {\bf Ilaria Aimo, Cristina Bedda, Paola La Rocca, Serena Mattiazio, Eleuterio Spiriti},  and by {\bf Christian Finck} from IPHC.\\
 In order to analyze data from Carbon ion beams, many additions were done by {\bf Valerian Reithinger} (IPN Lyon) between 2012 and 2014.\\
 Since 2014, {\bf Alejandro Perez Perez} became a strong developer correcting and adding a lot of methods and plots. Specific additions to handle objects (called ladder in the code) made of several sensors were made by Loic Cousin. Methods to correct deformation of plane sensors were brought by {\bf Benjamin Boitrelle}.\\
 
@@ -1218,7 +1286,7 @@ The various versions of this package would not have been successful in producing
 
 \bibitem{FIRST}  R.~Rescigno, {\it et al}, \emph{Performance of the reconstruction algorithms of the FIRST experiment pixel sensors vertex detector}, Nucl.Instr.Meth.~{\bf A 767} (2014) 34?40, \href{http://dx.doi.org/10.1016/j.nima.2014.08.024}{doi:10.1016/j.nima.2014.08.024}.
 
-\bibitem{GLOBAL}, R. Frühwirth, {\it et al.}, \emph{Analysis of beam test data by global optimization methods}, Nucl.Instr.Meth.~{\bf A 732} (2013) 79?82, \href{http://dx.doi.org/10.1016/j.nima.2013.05.038}{http://dx.doi.org/10.1016/j.nima.2013.05.038}.
+\bibitem{GLOBAL}, R. Frï¿½hwirth, {\it et al.}, \emph{Analysis of beam test data by global optimization methods}, Nucl.Instr.Meth.~{\bf A 732} (2013) 79?82, \href{http://dx.doi.org/10.1016/j.nima.2013.05.038}{http://dx.doi.org/10.1016/j.nima.2013.05.038}.
 
 \bibitem{JUDITH} G.~McGoldrick, {\it et al.}, \emph{Synchronized analysis of testbeam data with the Judith software}, Nucl.Instr.Meth.~{\bf A 765} (2014) 140?145, \href{http://dx.doi.org/10.1016/j.nima.2014.05.033}{doi:10.1016/j.nima.2014.05.033}.
 
