@@ -23,21 +23,21 @@ using namespace std;
 // --------------------------------------------------------------------------------------
 
 class IMGPixel : public TObject {
-  
+
   // Container for a simple pixel
   // only 3 values
   // JB, 2008/09/27
   // Modified: JB, 2013/06/19 include timestamp
-  
+
 private:
-  
+
   int Input;
   int Value;
   int Index;
   int TimeStamp;
-  
+
 public:
-  
+
   IMGPixel() {  Input = 0; Value = 0; Index = 0; TimeStamp = 0; }
   IMGPixel( int input, int value, int index) {  Input = input; Value = value; Index = index; TimeStamp = 0; }
   IMGPixel( int input, int value, int index, int time) {  Input = input; Value = value; Index = index; TimeStamp = time; }
@@ -46,7 +46,7 @@ public:
   int      GetValue()                 { return Value; }
   int      GetIndex()                 { return Index; }
   int      GetTimeStamp()             { return TimeStamp; }
-  
+
   ClassDef(IMGPixel,1)
 };
 
@@ -57,7 +57,7 @@ class IMGEvent : public TObject {
  private:
 
   int  EventNumber;
-  int  BoardNumber;  
+  int  BoardNumber;
  std::vector<IMGPixel> *ListOfPixels;
  std::vector<int>      *ListOfTriggers;
  std::vector<int>      *ListOfTimestamps;
@@ -100,7 +100,7 @@ class IMGBoardReader : public TObject {
 #ifndef STANDALONE
   DGlobalTools      fTool;
 #endif
-  
+
   int               BoardNumber;
   int               NbOfInputs; // nb of inputs in this acquisition board
   int               SizeOfHeader;
@@ -131,7 +131,7 @@ class IMGBoardReader : public TObject {
   int               BuffersRead;
   bool              NoMoreFile;
   int               EventsInFile; // JB 2012/08/18
-  
+
   // management of data buffer
   size_t            SizeOfEvent; // nb of bytes in an event
   char             *Data;
@@ -145,6 +145,7 @@ class IMGBoardReader : public TObject {
   int               ifMultiFrame; // indicate more than 2 frames per value
   int               ifSplitFrames; // when all pixel frame1 values come before all frame2 values
   int               if16outputs; // when 16 parallel outputs are used (PXI NI6562 board)
+  int               ifBlocReading; // indicate that data are organized 
   int              *NbOfChannels; // nb of channels in one input
   int              *NumberOfBitsValue; // nb of bits encoding one value, may be several channels
   int              *SignificantBits; // nb of bits encoding one channel
@@ -160,8 +161,8 @@ class IMGBoardReader : public TObject {
   int              *NValuesToJumpPerChannel; // if ifMultiFrame
   int              *FirstExcludedChannel; // exclude some channels from analysis
   int              *LastExcludedChannel; // JB 2013/06/22
-  
-  // Parameters to decode trigger info embedded in pixel data 
+
+  // Parameters to decode trigger info embedded in pixel data
   double            triggerLowThreshold; // JB 2013/06/19
   double            triggerHighThreshold;
   int              *FirstTriggerChannel;
@@ -184,11 +185,11 @@ class IMGBoardReader : public TObject {
   unsigned int BuildValue( int anAddress, int wordSize );
   void         AddPixel( int input, unsigned int rawdata, int index);
   void         AddPixel( int input, unsigned int *rawdatas, int nFrames, int index); // JB 2013/06/19
-  
+
   int          NumberOfColumns;             //AP, 2016/08/22
   int          IfZeroSupress; // JB 2017/11/20
   int          ZeroThreshold; // JB 2017/11/20
-  
+
   public:
 
   IMGBoardReader() {;}
@@ -214,8 +215,8 @@ class IMGBoardReader : public TObject {
   void         SetNumberOfColumns(int ColumnNum)      { NumberOfColumns = ColumnNum; return;}    //AP, 2016/08/22
   void         SetZeroSuppression(int aThreshold); // JB 2017/11/20
   int          GetZeroSuppression()                   { return ZeroThreshold; } // JB 2017/11/20
-  
-  ClassDef(IMGBoardReader,1);  
+
+  ClassDef(IMGBoardReader,1);
 };
 
 # endif

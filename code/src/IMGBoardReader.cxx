@@ -5,33 +5,33 @@
 // which corresponds to:
 //  - non sparsified data,
 //  - "analogue" data, that is encoded on a number of bits,
-//  - "data" of a pixel includes usually 2 frames for CDS 
+//  - "data" of a pixel includes usually 2 frames for CDS
 //    but a specific mode allows for more than 2 frames/data.
 //
 // See constructor IMGBoardReader for the list of options.
 //  !!! some parameters are hardcoded in this constructor !!!
 //
 // The file format is described in the documents by Gilles Clauss:
-//  mi32A_pxia_pxid_beam_test_file_format__template_files_v1.0.txt 
+//  mi32A_pxia_pxid_beam_test_file_format__template_files_v1.0.txt
 //  das_data_format_d7.txt
 //
 // Each event has a fixed size with a header and a data part.
-// The data part is subdivided in inputs (=sensors, a priori), 
-//  all with an equivalent lenght. Each input contains a number 
+// The data part is subdivided in inputs (=sensors, a priori bu not necessarily),
+//  all with an equivalent lenght. Each input contains a number
 //  of rawdata values of a given bit size (NumberOfBitsValue).
 // Then, there are two possibilities to extract a channel (=pixels) signal,
 //  which is a SignificantBits bits word:
 //  1) more than one rawdata value is needed,
 //  2) a single rawdata value contains several channel signal
 //  corresponds to a N-bits value.
-// 
+//
 // Variables defining the class behavior (set by the constructor)
 //  - NbOfInputs
 //  - SizeOfEvent
-//  - ifStripTelescope = 
+//  - ifStripTelescope =
 //    If true very specific format for 8 planes of silicon strips.
 //    This  format is HARD-CODED.
-//  - ifMultiFrame = 
+//  - ifMultiFrame =
 //  - First / LastTriggerChannel = limits where to look for trigger info in data
 //  - First / LastExcludedChannel = limits of channel indexes not taken into account
 //  - triggerLowThreshold/triggerHighThreshold = define interaval to identify a trigger
@@ -55,7 +55,7 @@
 //      at anAddress and with length wordSize.
 //  - GetInputData = extract the rawdata value(s) for each channel (=pixel or strip)
 //    of each inputs and call the AddPixel method for it.
-//  - AddPixel = build the channel signal associated with the given rawdata value. 
+//  - AddPixel = build the channel signal associated with the given rawdata value.
 //
 //                                                         //
 /////////////////////////////////////////////////////////////
@@ -74,6 +74,7 @@
 // Last modified: JB 2017/03/03 IMGBoardReader, GetInputData
 // Last modified: JB 2017/11/20 IMGBoardReader, SetZeroSuppression, AddPixel
 // Last modified: JB 2018/03/18 SetBufferPointers
+// Last modified: JB 2020/11/25 IMGBoardReader, GetInputData for daqmode=5 (blocReading)
 
 #include "IMGBoardReader.h"
 
@@ -88,21 +89,25 @@ IMGBoardReader::IMGBoardReader( int boardNumber, int nInputs, int *nChannels, in
   //                 it may corresponds to one or more channels
   //    If numberOfBits<0, build signed signals for channels, unsigned otherwise.
   //
-  //  sigBits = size of the word containing one channel signal 
+  //  sigBits = size of the word containing one channel signal
   //            usually it encompasses the signals on two succesive frames
   //    If sigBits<0, do CDS (frame2-frame1) to build the final channel signal.
-  // 
-  //  daqmode = 0 standard mode (1 rawdata value = 2 frames), 
+  //
+  //  daqmode = 0 standard mode (1 rawdata value = 2 frames),
   //          = 1 strip-telescope mode (8 1st planes=strips)
-  //          = 2 each rawdata value corresponds to more than 2 frames
+  //          = 2 multiframe mode, each rawdata value corresponds to more than 2 frames
   //            -> ifMultiFrame contains the number of rawdata values
   //               associated with one channel
-  //		   Note that if CDS is required, 5 frames means 5 times frame0+frame1 
-  //			and nb of columns in sensor needs to be known
-  //          = 3 all frame1 pixel values comes first, then all frame 2 values 
+  //		        -> Note that if CDS is required, 5 frames means 5 times frame0+frame1
+  //			         and nb of columns in sensor needs to be known
+  //          = 3 all frame1 pixel values comes first, then all frame 2 values
+  //          = 4 for 16 parallel outputs
+  //          = 5 blocReading mode, data are organized by blocs and rows
+  //             -> 1 input = Nrows successive rows of Nblocs pixels
+  //             -> need to combine Ninputs to build the full row
   //
   //  strip-telescope mode :
-  //   map a single input to 4 interleaved inputs 
+  //   map a single input to 4 interleaved inputs
   //    according to description in
   //    das_data_format_d7.txt by G.Clauss
   //
@@ -118,28 +123,36 @@ IMGBoardReader::IMGBoardReader( int boardNumber, int nInputs, int *nChannels, in
   // Modified: JB 2016/09/19 NValuesToJumpPerChannel updated to handle both CDS/non-CDS cases
   // Modified: JB 2017/03/03 new daqmode=4 to handle 16 parallel inputs DAQ
   // Modified: JB 2018/03/19 trailerSize introduced
-  
-  cout << "Creating IMGBoardReader for board " << boardNumber << " with " << nInputs << " inputs of " << nChannels[0] << " channels (for " << Ncolumns << " columns), event is " << sizeOfEvent << " bytes, " << eventsInFile << " events per file, header is " << headerSize << " bytes, each value has " << numberOfBits[0] << " bits among which " << sigBits[0] << " are significant and endianess is " << endian << ", trigger mode is " << triggermode << ", daq mode is " << daqmode << "." <<  endl;
-  
+  // Modified: JB 2020/11/25 daqmode=5 for blocReading introduced
+
+  cout << "Creating IMGBoardReader for board " << boardNumber << " with " << nInputs << " inputs of " << nChannels[0] << " channels (for " << Ncolumns << " columns), event is " << sizeOfEvent << " bytes, " << eventsInFile << " events per file, header is " << headerSize << " bytes, trailer is " << trailerSize << " bytes, each value has " << numberOfBits[0] << " bits among which " << sigBits[0] << " are significant and endianess is " << endian << ", trigger mode is " << triggermode << ", daq mode is " << daqmode << "." <<  endl;
+
   BoardNumber        = boardNumber;
   ifStripTelescope = false;
   SizeOfTrailer = trailerSize;
   ifMultiFrame = 0;
   ifSplitFrames = 0;
   if16outputs = 0;
+  ifBlocReading = 0;
   if( daqmode==1 ) {  // daq mode for strip telescope
-    ifStripTelescope = true; 
+    ifStripTelescope = true;
     SizeOfTrailer = 4;
   }
   else if( daqmode==2 ) {  // daq mode with multiFrame, JB 2013/06/16
+    cout << "IMGBoardReader board: multiFrame mode detected!" << endl;
     ifMultiFrame = Nframes;
   }
   else if( daqmode==3 ) {  // daq mode for all frame1 values before all frame2 values
+    cout << "IMGBoardReader board: split-frame mode (all reference values after all signal values) detected!" << endl;
     ifSplitFrames = 1;
   }
   else if( daqmode==4 ) {
     if16outputs = 1;
     cout << "IMGBoardReader board: 16 parallel outputs DAQ mode detected!" << endl;
+  }
+  else if( daqmode==5 ) {
+    ifBlocReading = 128;
+    cout << "IMGBoardReader board: bloc-reading mode (rows are split in blocs of " << ifBlocReading << " pixels) detected!" << endl;
   }
 
   if( ifStripTelescope ) {
@@ -167,9 +180,9 @@ IMGBoardReader::IMGBoardReader( int boardNumber, int nInputs, int *nChannels, in
   Data               = new char[SizeOfEvent];
   Endianness         = endian;
   IfZeroSupress      = 0;
-  
+
   SetNumberOfColumns(Ncolumns);
-  
+
   // Setup input parameters
   // JB 2012/08/19
   NbOfChannels       = new int[NbOfInputs];
@@ -189,7 +202,7 @@ IMGBoardReader::IMGBoardReader( int boardNumber, int nInputs, int *nChannels, in
   LastTriggerChannel = new int[NbOfInputs];
   FirstExcludedChannel = new int[NbOfInputs];
   LastExcludedChannel = new int[NbOfInputs];
-                       
+
   for( int iInput=0; iInput<NbOfInputs; iInput++ ) { // loop on inputs
 
     if( ifStripTelescope && iInput<2 ) { // if strip telescope, use specific settings for the first input
@@ -202,7 +215,7 @@ IMGBoardReader::IMGBoardReader( int boardNumber, int nInputs, int *nChannels, in
       WithCDS[iInput]            = false;
       NumberOfBitsValue[iInput]  = 32;
       SignificantBits[iInput]    = 8;
-      MaxSignedValue[iInput]     = (unsigned int)pow(2.,SignificantBits[iInput]);    
+      MaxSignedValue[iInput]     = (unsigned int)pow(2.,SignificantBits[iInput]);
     } // end if strip telescope
 
     else { // other inputs use general settings
@@ -211,20 +224,20 @@ IMGBoardReader::IMGBoardReader( int boardNumber, int nInputs, int *nChannels, in
       WithCDS[iInput]            = sigBits[iInput]<0; // if negative, CDS is required
       NumberOfBitsValue[iInput]  = (int)TMath::Abs(numberOfBits[iInput]);
       SignificantBits[iInput]    = (int)TMath::Abs(sigBits[iInput]);
-      if (SignedValues[iInput]) { // max values depends on signed or unsigned, JB 2014/11/20
-        MaxSignedValue[iInput]     = (unsigned int)pow(2.,SignificantBits[iInput]/2);
+      if (SignedValues[iInput]) { // max values depends on signed or unsigned, JB 2014/11/20, corrected JB 2020/11/24
+        MaxSignedValue[iInput]     = (unsigned int)pow(2.,SignificantBits[iInput])/2;
       }
       else {
         MaxSignedValue[iInput]     = (unsigned int)pow(2.,SignificantBits[iInput]);
       }
-      
+
     }
 
-    SizeOfValue[iInput]       = NumberOfBitsValue[iInput]/8/sizeof(char); 
+    SizeOfValue[iInput]       = NumberOfBitsValue[iInput]/8/sizeof(char);
     NChannelsPerValue[iInput] = NumberOfBitsValue[iInput]/SignificantBits[iInput];
 
     FirstTriggerChannel[iInput] = 9999999;
-    LastTriggerChannel[iInput] = -9999999;    
+    LastTriggerChannel[iInput] = -9999999;
     FirstExcludedChannel[iInput] = 9999999;
     LastExcludedChannel[iInput] = -9999999;
     if( ifMultiFrame ) {
@@ -243,34 +256,43 @@ IMGBoardReader::IMGBoardReader( int boardNumber, int nInputs, int *nChannels, in
         LastExcludedChannel[iInput] = 4*NumberOfColumns-1; // 4*64-1
       }
     }
+    else if( ifBlocReading ) {
+      NValuesPerChannel[iInput]       = 1;
+      NValuesToJumpPerChannel[iInput] = ifBlocReading;
+    }
     else {
       NValuesPerChannel[iInput] = 1;
       NValuesToJumpPerChannel[iInput] = 1;
     }
-    
-//    SizeOfValue[iInput]       = NumberOfBitsValue[iInput]/8/sizeof(char); 
-//    NChannelsPerValue[iInput] = NumberOfBitsValue[iInput]/SignificantBits[iInput];
-    NValuesToRead[iInput]     = NbOfChannels[iInput]*NValuesPerChannel[iInput]/NChannelsPerValue[iInput];
-    SizeOfInputData[iInput]   = NValuesToRead[iInput]*SizeOfValue[iInput];
-    //SizeOfInputData[iInput]    = NbOfChannels[iInput]*NValuesPerChannel[iInput]*SignificantBits[iInput]/8/sizeof(char);
 
-    
+    if( ifBlocReading ) {
+      NValuesToRead[iInput]     = NbOfChannels[iInput]*NValuesPerChannel[iInput]/NChannelsPerValue[iInput];
+      SizeOfInputData[iInput]   = NValuesToRead[iInput]*SizeOfValue[iInput]*2; // x2 if CDS
+    }
+    else {
+//    SizeOfValue[iInput]       = NumberOfBitsValue[iInput]/8/sizeof(char);
+//    NChannelsPerValue[iInput] = NumberOfBitsValue[iInput]/SignificantBits[iInput];
+      NValuesToRead[iInput]     = NbOfChannels[iInput]*NValuesPerChannel[iInput]/NChannelsPerValue[iInput];
+      SizeOfInputData[iInput]   = NValuesToRead[iInput]*SizeOfValue[iInput];
+      // SizeOfInputData[iInput]    = NbOfChannels[iInput]*NValuesPerChannel[iInput]*SignificantBits[iInput]/8/sizeof(char);
+    }
+
     cout << "  - Input " << iInput << ": " << NbOfChannels[iInput] << " channels with " << SignificantBits[iInput] << " bits, in " << NValuesToRead[iInput] << " values with " << NumberOfBitsValue[iInput] << " bits ( " << SizeOfValue[iInput] << " Bytes) so " << NChannelsPerValue[iInput] << " channel per value AND " << NValuesPerChannel[iInput] << " values per channel (distant by " << NValuesToJumpPerChannel[iInput] << " values), signed? = " << SignedValues[iInput] << ", max value is " << MaxSignedValue[iInput] << ", total input size is " << SizeOfInputData[iInput] << " Bytes, CDS needed? = " << WithCDS[iInput] << "." << endl;
     if( ifMultiFrame ) {
       cout << "     ! multi-frame configuration ( " << ifMultiFrame << " frames/RawEvent ) " << endl;
-      cout << "         -> CDS is " << (WithCDS[iInput]?"":"NOT") << " required, # values to jump per channel = " << NValuesToJumpPerChannel[iInput] << endl;    
-      cout << "         -> search for trigger info between channels " << FirstTriggerChannel[iInput] << " and " << LastTriggerChannel[iInput] << " in a value range from " << triggerLowThreshold << " to " << triggerHighThreshold << "!" << endl;    
+      cout << "         -> CDS is " << (WithCDS[iInput]?"":"NOT") << " required, # values to jump per channel = " << NValuesToJumpPerChannel[iInput] << endl;
+      cout << "         -> search for trigger info between channels " << FirstTriggerChannel[iInput] << " and " << LastTriggerChannel[iInput] << " in a value range from " << triggerLowThreshold << " to " << triggerHighThreshold << "!" << endl;
     }
-    
+
   } // end loop on inputs
-  
+
 
   BuffersRead        = 0; // JB 2012/08/18
   NumberOfFiles      = 0;
   CurrentFileNumber  = 0;
   NoMoreFile         = false;
-  
-  ReadingEvent       = false; 
+
+  ReadingEvent       = false;
   CurrentEvent       = 0; // Allow to know wether data are correct, JB 2009/05/26
   CurrentEventNumber = 0;
   CurrentTriggerNumber = 0;
@@ -328,9 +350,9 @@ void IMGBoardReader::SetZeroSuppression(int aThreshold) {
 
   IfZeroSupress = 1;
   ZeroThreshold = aThreshold;
-  
+
   cout << endl << " ==> ZERO SUPPRESSION used with threshold " << ZeroThreshold << endl;
-  
+
 }
 
 // --------------------------------------------------------------------------------------
@@ -350,7 +372,7 @@ bool IMGBoardReader::AddFile(char *fileName) {
     cout << endl << "ERROR IMGBoardReader " << BoardNumber << " file " << InputFileName << " does not exist!" << endl;
     return false;
   }
-  cout << endl << "  --> IMGBoardReader " << BoardNumber << " New file " << InputFileName << endl;  
+  cout << endl << "  --> IMGBoardReader " << BoardNumber << " New file " << InputFileName << endl;
 
   return true;
 }
@@ -368,7 +390,7 @@ bool IMGBoardReader::AddFileList(const char *prefixFileName, int startIndex, int
 
   bool rc = true;
   int nbFilesOK = 0;
-  
+
   if(DebugLevel>0) cout <<  "Indices: start = " << startIndex << ", end = " << endIndex << endl;
   NumberOfFiles = endIndex-startIndex+1; // Better way to handle non-0 start index, JB 2013/10/04
   CurrentFileNumber = 0;
@@ -422,12 +444,12 @@ bool IMGBoardReader::AddFileList(const char *prefixFileName, int startIndex, int
       rc = true;
     }
   }
-  
+
   // if at least some files are OK, JB 2017/11/20
   else if ( !rc && nbFilesOK > 0 ) {
     rc = true;
   }
-  
+
   if( rc)  OpenRawFile(ListOfInputFileNames[0]); //reopens the very first file
 //   RawFileStream.clear();
   return rc;
@@ -435,13 +457,13 @@ bool IMGBoardReader::AddFileList(const char *prefixFileName, int startIndex, int
 
 // --------------------------------------------------------------------------------------
 bool IMGBoardReader::LookUpRawFile() {
-  
+
   // Try to open the next rawdata file.
   // The file name is decided upon
-  
+
   if( CurrentFileNumber < NumberOfFiles-1) {
-    
-    
+
+
 
 //      if( CurrentFileNumber ) { // only close if not first file
       CloseRawFile();
@@ -470,12 +492,12 @@ bool IMGBoardReader::LookUpRawFile() {
 //     return true;
 
   } // end if( CurrentFileNumber < NumberOfFiles)
-  
+
   else if ( NumberOfFiles==0 ) {
     cout << "ERROR: IMGBoardReader NO RAW DATA FILE WAS ASSOCIATED WITH BOARD " << BoardNumber << ", STOPPING!" << endl << endl;
     return false;
   }
-  else { // Otherwise no more file, end the reading    
+  else { // Otherwise no more file, end the reading
     cout << "  --> IMGBoardReader " << BoardNumber << ": No more files to read " << CurrentFileNumber+1 << " >= " << NumberOfFiles << " closing!" << endl;
     CloseRawFile();
     NoMoreFile = true;
@@ -486,9 +508,9 @@ bool IMGBoardReader::LookUpRawFile() {
 
 // --------------------------------------------------------------------------------------
 bool IMGBoardReader::OpenRawFile( const char *fileName) {
-  
-  // Open a File of a Run 
-  
+
+  // Open a File of a Run
+
   RawFileStream.open( fileName);
   bool b = RawFileStream.fail();
   if (b == 0)  {
@@ -499,21 +521,21 @@ bool IMGBoardReader::OpenRawFile( const char *fileName) {
     cout << " -/-/- INFO IMGBoardReader " << BoardNumber << ": File " << fileName << " not opened, rc = " << b << "." << endl;
   }
   return !b;
-  
+
 }
 
 // --------------------------------------------------------------------------------------
 bool IMGBoardReader::CloseRawFile() {
-  // Closes a File of a Run 
-  
+  // Closes a File of a Run
+
   RawFileStream.close();
   bool b = RawFileStream.fail();
-  if (b == 0) 
+  if (b == 0)
     cout << " -+-+- INFO IMGBoardReader " << BoardNumber << ": File " << CurrentFileNumber << " closed " << endl;
   else
     cout << " -/-/- INFO IMGBoardReader " << BoardNumber << ":  File " << CurrentFileNumber << " not closed, rc = " << b << "(eof="<< RawFileStream.eof() << ", bad="<< RawFileStream.bad() <<"." << endl;
   return b;
-  
+
 }
 
 // --------------------------------------------------------------------------------------
@@ -527,7 +549,7 @@ bool IMGBoardReader::GetNextBuffer( ) {
   // Change the bit order according to the endianess.
   //
   // SizeOfEvent corresponds typically to one event
-  // 
+  //
   //
   // return "false" if nothing to read, "true" otherwise
   //
@@ -535,12 +557,12 @@ bool IMGBoardReader::GetNextBuffer( ) {
   // Modified: JB, 2012/08/18 test the nb of events read
 
   bool readSuccess = false;
-  
+
   // If we have read the full current Data buffer alreay,
   // try to get a new Data buffer
   //  either from the current file or a new one
   if ( !( BuffersRead>=EventsInFile || RawFileStream.eof() ) || LookUpRawFile() ) {
-    
+
     // Now we can get the next data buffer
     RawFileStream.read(reinterpret_cast<char *> ( &Data[0] ), sizeof(char) * SizeOfEvent);
     if(DebugLevel>2) cout << "  IMGBoardReader " << BoardNumber << ": Got new data buffer " << BuffersRead << " with gcount=" << RawFileStream.gcount() << " bytes, SizeOfEvent=" << SizeOfEvent << endl;
@@ -554,7 +576,7 @@ bool IMGBoardReader::GetNextBuffer( ) {
 // --------------------------------------------------------------------------------------
 
 bool IMGBoardReader::SetBufferPointers( ) {
-  
+
   // Set the pointers to the differrent buffers,
   //  event header and each input.
   //
@@ -563,12 +585,12 @@ bool IMGBoardReader::SetBufferPointers( ) {
   // Modified: JB 2012/08/21 corrected address compuation
   // Modified: JB 2014/11/20 SizeOfTrailer introduced
   // Modified: JB 2018/03/18 Consider no even trailer case
-  
+
   if( Data==NULL) {
-    cout << "WARNING in IMGBoardReader board " << BoardNumber << ", event pointer is null!" << endl; 
+    cout << "WARNING in IMGBoardReader board " << BoardNumber << ", event pointer is null!" << endl;
     return false;
   }
-  
+
   EventHeader = (TEventHeader*)Data;
   TriggerLine = EventHeader->VFasCnt[0];
   for( int iInput=0; iInput<NbOfInputs; iInput++ ) {
@@ -583,28 +605,29 @@ bool IMGBoardReader::SetBufferPointers( ) {
 
   if( SizeOfTrailer==0 ) {
     EventTrailer = (int)0x89abcdef;
+    if( DebugLevel>1 ) cout << "   trailer forced to " << hex << EventTrailer << endl;
   }
   else if( SizeOfTrailer>4 ) {
-    EventTrailer = BuildValue( SizeOfEvent - SizeOfTrailer + 4, 4);    
+    EventTrailer = BuildValue( SizeOfEvent - SizeOfTrailer + 4, 4);
   }
   else {
     EventTrailer = BuildValue( SizeOfEvent - SizeOfTrailer, 4);
   }
-    
+
   FramesRead++;
 
   if( DebugLevel>1 ) cout << " SetBufferPointers for IMGBoard " << BoardNumber << " done, trailer is " << hex << EventTrailer << dec << endl;
-  
+
 //  EventTrailer = (int)0x89abcdef; // use this to trick the final test....only if you know what you are doing!
-  
+
   return (EventTrailer == (int)0x89abcdef);
-  
+
 }
 
 // --------------------------------------------------------------------------------------
 
 void IMGBoardReader::PrintEventHeader( ) {
-  
+
   // Print the buffer information.
   //
   // From Gilles Claus documentation 17/07/2012
@@ -620,12 +643,12 @@ void IMGBoardReader::PrintEventHeader( ) {
   //
   //
   // JB, 2012/07/20 (copy of what was in MAF)
-  
+
   if( EventHeader==NULL) {
-    cout << "WARNING in IMGBoardReader board " << BoardNumber << ", header pointer is null!" << endl; 
+    cout << "WARNING in IMGBoardReader board " << BoardNumber << ", header pointer is null!" << endl;
     return;
   }
-  
+
   printf("EvTrig     %10d \n",EventHeader->EvTrig);
   printf("EvNo       %10d \n", EventHeader->EvNo);
   printf("EvPos      %10d \n", EventHeader->EvPos);
@@ -636,13 +659,13 @@ void IMGBoardReader::PrintEventHeader( ) {
   printf("EvVmeTime  %10d ms \n",EventHeader->EvVmeTime);
   for( int ifas=0; ifas<NB_MAX_VFAS; ifas++) {
     printf("FAS %2d: Trigger position  %4d, Nb of frames skipped  %4d \n", ifas, EventHeader->VFasCnt[ifas], EventHeader->VFasReg[ifas]);
-  }    
+  }
   printf("EvNetTime  %10d ms \n",EventHeader->EvNetTime);
   printf("MeasNo     %5d \n",EventHeader->MeasNo);
   printf("EvInMeasNo %5d \n",EventHeader->EvInMeasNo);
-  
+
   printf("\nEvent trailer 0x%x \n", EventTrailer);
-  
+
 }
 
 // --------------------------------------------------------------------------------------
@@ -654,13 +677,13 @@ void IMGBoardReader::GetInputData( int mode) {
   //  Build the rawdata(s) for each channel (=pixel or strip) of each inputs.
   //  Create the pixel from these rawdata(s).
   //
-  // If mode = 1 
+  // If mode = 1
   //  Search for triggers in a specific channel range.
-  // 
+  //
   // Associating rawdatas to channels takes into account that:
   //  - several rawdatas (=values) may be needed to built a channel signal,
   //  - one rawdata may contain more than one channel signal.
-  // 
+  //
   //
   //
   // Add to the event list of frames each frame tested.
@@ -673,21 +696,22 @@ void IMGBoardReader::GetInputData( int mode) {
   // Modified: JB 2013/06/20 also update frame counter
   // Modified: JB 2016/08/17 correction for multiframe mode (compatible with run 34939)
   // Modified: JB 2016/09/20 upgrade of multiframe mode to handle both CDS and non-CDS case
+  // Modified: JB 2020/11/25 blocReading handling
 
   if( Data==NULL) {
     cout << "WARNING in IMGBoardReader board " << BoardNumber << ", event pointer is null!" << endl;
     return;
   }
-  
+
   if( mode == 0 ) {
     for ( int iFrame=0; iFrame<NValuesPerChannel[0]; iFrame++) { // loop on frames
       ListOfFrames.push_back( iFrame);
-      if( WithCDS) ListOfFrames.push_back( iFrame+NValuesPerChannel[0]);
+      if( WithCDS[0] ) ListOfFrames.push_back( iFrame+NValuesPerChannel[0]);
     }
   }
-  
+
   for( int iInput=0; iInput<NbOfInputs; iInput++ ) { // loop on inputs
-    
+
     unsigned int value = 0;
     unsigned int second_value = 0;
     unsigned int rawdata = 0;
@@ -698,30 +722,30 @@ void IMGBoardReader::GetInputData( int mode) {
     char goal[10] = "PIXELS";
     int channel = 0;
     int totalValuesToRead = NValuesToRead[iInput];
-    
+
     // Initialise depending on mode
     if( mode == 1 ) { // trigger search
       sprintf( goal, "%s", "TRIGGERS");
       channel = FirstTriggerChannel[iInput];
       totalValuesToRead = (LastTriggerChannel[iInput]-FirstTriggerChannel[iInput])*NValuesPerChannel[iInput]/NChannelsPerValue[iInput];
     }
-    
+
     // build a mask depending on how many significant bits are required
     unsigned int mask = (unsigned int)pow(2.,SignificantBits[iInput])-1;
-    
+
     if( DebugLevel>2 ) {
-      printf( "    GetInputData for %s input %d, with %d values and %d channels per value and %d values per channel; mask is 0x%x\n", goal, iInput, totalValuesToRead, NChannelsPerValue[iInput], NValuesPerChannel[iInput], mask);
+      printf( "  GetInputData for %s input %d, with %d values and %d channels per value and %d values per channel; mask is 0x%x\n", goal, iInput, totalValuesToRead, NChannelsPerValue[iInput], NValuesPerChannel[iInput], mask);
     }
-    
+
     for( int iValue=0; iValue<totalValuesToRead; iValue++ ) { // loop on values
-      
+
       // if all the values of the previous channel have been read
       //  increment the channel
       if ( valuesReadForCurrentChannel>=NValuesPerChannel[iInput] ) {
         channel += NChannelsPerValue[iInput]; //was ++, JB 2013/08/14
         valuesReadForCurrentChannel=0;
       }
-      
+
       // Compute the address of the next value to read depending on
       //  the number of values already read for this channel (a)
       //  and the number of channels already read (b)
@@ -742,7 +766,13 @@ void IMGBoardReader::GetInputData( int mode) {
         }
         // 	if( shiftc != 0 ) cout << "shiftc not zero!" << endl;
       } // end if multiframe
-      
+
+      else if( ifBlocReading ) {
+        shifta = (channel/ifBlocReading)*NValuesToJumpPerChannel[iInput]*SizeOfValue[iInput];
+        shiftb = channel/NChannelsPerValue[iInput]*1*SizeOfValue[iInput];
+        shiftc = 0;
+      }
+
       else {
         // Note that in this case NValuesPerChannel=1 AND NValuesToJumpPerChannel=1
         shifta = valuesReadForCurrentChannel*NValuesToJumpPerChannel[iInput]*SizeOfValue[iInput];
@@ -750,24 +780,31 @@ void IMGBoardReader::GetInputData( int mode) {
         shiftc = 0;
       }
       address = InputDataAdress[iInput] + shifta + shiftb + shiftc;
-      
+
       if( DebugLevel>2 ) printf( "    Getting next value with a shift of %d (=%d+%d+%d) bytes computed for channel %d, currentValue %d, ChannelsPerValue %d, ValuesPerChannel %d, ValuesToJumpPerChannel %d, sizeOfValue %d bytes\n", address-InputDataAdress[iInput], shifta, shiftb, shiftc, channel, valuesReadForCurrentChannel, NChannelsPerValue[iInput], NValuesPerChannel[iInput], NValuesToJumpPerChannel[iInput], (Int_t)SizeOfValue[iInput]);
-      
-      
+
+
       // value is a word of SizeOfValue Bytes
       //  it contains nChannelsPerValue channels
       value = BuildValue( address, (int)SizeOfValue[iInput] );
-      
-      // If splitFrames option is ON, it means a second value (Frame2)
-      //  is to be read at the address = adressOfFrame1 + all frame size
+
+      // If splitFrames || blocReading option is ON, it means a second value (Frame2) is to be read
       if ( ifSplitFrames ) {
+        //  second address = adressOfFrame1 + all frame size
+        if( DebugLevel>2 ) printf( "      getting second value with a shift of %d bytes computed for channel %d, sizeOfValue %d bytes\n", totalValuesToRead*SizeOfValue[iInput], channel, (Int_t)SizeOfValue[iInput]);
         second_value = BuildValue( address+totalValuesToRead*SizeOfValue[iInput], (int)SizeOfValue[iInput] );
       }
-      
+      else if( ifBlocReading ) {
+        //  second address = adressOfFrame1 + all frame size
+        if( DebugLevel>2 ) printf( "    getting second value with a shift of %d bytes computed for channel %d, sizeOfValue %d bytes\n", NValuesToJumpPerChannel[iInput]*SizeOfValue[iInput], channel, (Int_t)SizeOfValue[iInput]);
+        second_value = BuildValue( address+NValuesToJumpPerChannel[iInput]*SizeOfValue[iInput], (int)SizeOfValue[iInput] );
+      }
+
+
       if( DebugLevel>3 ) {
         printf( "      got value[%d] = 0x%x, nb %d for channels %d to %d\n", iValue, value, valuesReadForCurrentChannel, channel, channel+NChannelsPerValue[iInput]-1);
       }
-      
+
       for( int iChannel=channel; iChannel<channel+NChannelsPerValue[iInput]; iChannel++ ) { // loop on channels contained in a value
         rawdata = value & mask;
         rawdatas[valuesReadForCurrentChannel] = rawdata;
@@ -776,19 +813,19 @@ void IMGBoardReader::GetInputData( int mode) {
           printf( "         channel[%d] = 0x%x (value is now 0x%x) (0-supp on = %d, threshold = %d)\n", iChannel, rawdata, value, IfZeroSupress, ZeroThreshold);
         }
         if( valuesReadForCurrentChannel == NValuesPerChannel[iInput]-1 ) {
-          
+
           if ( mode==1 && FirstTriggerChannel[iInput]<=iChannel && iChannel<=LastTriggerChannel[iInput] ) {
             DecodeTriggerFromData( iInput, iChannel-FirstTriggerChannel[iInput], rawdatas, NValuesPerChannel[iInput]);
           }
-          
+
           else if ( mode==0
                    && !(FirstTriggerChannel[iInput]<=iChannel
                         && iChannel<=LastTriggerChannel[iInput])
                    && !(FirstExcludedChannel[iInput]<=iChannel
                         && iChannel<=LastExcludedChannel[iInput])
                    ) { // standard pixel
-            
-            if ( ifSplitFrames ) { // JB 2014/11/20
+
+            if ( ifSplitFrames || ifBlocReading ) { // perform CDS here, JB 2014/11/20
               second_rawdata = second_value & mask;
               rawdatas[valuesReadForCurrentChannel] = rawdata - second_rawdata;
               if( DebugLevel>3 ) {
@@ -797,38 +834,38 @@ void IMGBoardReader::GetInputData( int mode) {
                 printf( "         CDS for channel[%d] = 0x%x\n", iChannel, rawdatas[valuesReadForCurrentChannel]);
               }
             }
-            
+
             AddPixel( iInput, rawdatas, NValuesPerChannel[iInput], iChannel);
-            
+
           }
-          
+
         }
       } // end loop on channels contained in a value
-      
+
       valuesReadForCurrentChannel++;
-      
+
     } // end loop on values
-    
+
     delete[] rawdatas; // reduce memory leak, BH 2013/08/21
   } // end loop on inputs
-  
+
 }
 
 // --------------------------------------------------------------------------------------
 
 void IMGBoardReader::GetTriggerData( ) {
-  
+
   // Get the information on the trigger position
   //
   //
   // JB, 2012/08/18
   // Modified: JB 2013/06/20 allow to search for trigger in data
-  
+
   ListOfTriggers.push_back( EventHeader->VFasCnt[0] ); // get trigger in header
-  
+
   if( ifMultiFrame ) { // search for trigger in data, JB 2013/06/20
     ListOfTriggersFromData.clear();
-    GetInputData( 1); 
+    GetInputData( 1);
     ListOfTriggers.insert( ListOfTriggers.end(), ListOfTriggersFromData.begin(), ListOfTriggersFromData.end());
   }
 
@@ -839,33 +876,33 @@ void IMGBoardReader::GetTriggerData( ) {
     }
     printf("\n");
   }
-  
+
 }
 
 // --------------------------------------------------------------------------------------
 
 int IMGBoardReader::DecodeTriggerFromData( int input, int rowNumber, unsigned int *rawdatas, int nFrames) {
-    
+
   // From the rawdata of each frame (more than one if ifMultiframe)
   //  test if the value is in the expected range for a trigger.
   //  If so, add the corresponding line number in the trigger list.
   //
   // JB 2013/06/17
   // Modified: JB 2013/06/23 detect trigger up front, not just value
-  
+
   int nFoundTriggers = 0;
   bool triggerUp = false;
   int triggerRow;
   signed int value;
   //signed int previousValue;
   signed short int *frames = new signed short int[nFrames*2];
-  
+
   // Re-order the frames in a "physical" order,
-  //  knowing that 
+  //  knowing that
   for ( int iFrame=0; iFrame<nFrames; iFrame++) { // loop on daq frames
     frames[iFrame]   = rawdatas[iFrame] / MaxSignedValue[input];
-    frames[iFrame+nFrames] = rawdatas[iFrame] % MaxSignedValue[input];      
-    if( DebugLevel>3 ) printf( "    raw[%d] = 0x%8x -> frame[%d] = 0x%4x, frame[%d] = 0x%4x\n", iFrame, rawdatas[iFrame], iFrame, frames[iFrame], iFrame+nFrames, frames[iFrame+nFrames]);      
+    frames[iFrame+nFrames] = rawdatas[iFrame] % MaxSignedValue[input];
+    if( DebugLevel>3 ) printf( "    raw[%d] = 0x%8x -> frame[%d] = 0x%4x, frame[%d] = 0x%4x\n", iFrame, rawdatas[iFrame], iFrame, frames[iFrame], iFrame+nFrames, frames[iFrame+nFrames]);
   } // end loop on daq frames
 
   // Search for a trigger in the physical frames.
@@ -874,7 +911,7 @@ int IMGBoardReader::DecodeTriggerFromData( int input, int rowNumber, unsigned in
   for ( int iFrame=0; iFrame<2*nFrames; iFrame++) { // loop on physical frames
     value = (int)frames[iFrame];
     triggerRow = rowNumber + iFrame*NValuesToJumpPerChannel[input];
-    
+
     if( triggerLowThreshold <= value && value <= triggerHighThreshold ) {
       // Create a new trigger only if
       //  there was none seen in the previous rows (triggerUp would be true),
@@ -893,18 +930,18 @@ int IMGBoardReader::DecodeTriggerFromData( int input, int rowNumber, unsigned in
     else {
       triggerUp = false;
     }
-    
+
   } // end loop on physical frames
-  
+
   delete[] frames; // remove memory leaks, BH 2013/08/21
   return nFoundTriggers;
-  
+
 }
 
 // --------------------------------------------------------------------------------------
 
 void IMGBoardReader::AddPixel( int input, unsigned int rawdata, int index) {
-  
+
   // Compute the signal value of the channel (or pixel) from the rawdata value
   // and add the pixel to the vector of pixels
   //
@@ -922,7 +959,7 @@ void IMGBoardReader::AddPixel( int input, unsigned int rawdata, int index) {
   // Modified: JB, 2012/08/22 specific input-index setup when strip-telescope
   // Modified: JB, 2013/08/18 trim 0 when significantBit==1 (binary output)
   // Modified: JB, 2017/11/20 new mode for zero suppression
-  
+
   int trueInput = input;
   int trueIndex = index;
 
@@ -938,17 +975,17 @@ void IMGBoardReader::AddPixel( int input, unsigned int rawdata, int index) {
       trueInput = input; // was input+3
     }
   }
-  
+
   //unsigned int value;
   signed int value;
-  
-  if( !WithCDS[input] ) { // if no CDS needed
+
+  if( !WithCDS[input] || ifSplitFrames || ifBlocReading ) { // if no CDS needed or already performed
     value = rawdata;
-    if( DebugLevel>3 ) {
-      printf( "    input %d, channel %d: raw = 0x%8x, value = 0x%8x or %d\n", input, index, rawdata, value, value);      
-    }  
+    if( DebugLevel>2 ) {
+      printf( "      input %d, channel %d: raw = 0x%8x, value = 0x%8x or %d\n", input, index, rawdata, value, value);
+    }
   }
-  
+
   else { // With CDS
     //SS 2012.08.10 frame1 and frame2 should be signed short int to keep values between -32768 and +32678
 //    signed short int *frames = new signed short int[NValuesPerChannel[input]];
@@ -956,11 +993,11 @@ void IMGBoardReader::AddPixel( int input, unsigned int rawdata, int index) {
 //    for( int iFrame=0; iFrame<NValuesPerChannel[input]; iFrame++ ) {
 //      frames[iFrame] = rawdata >> SignificantBits[input];
 //      values[iFrame] = frames[iFrame]-frames[(iFrame>0?iFrame-1:0)];
-//      if( DebugLevel>3 ) printf( "      frame[%d] = 0x%x or %d, value = 0x%x or %d, raw = 0x%x\n\n", iFrame, frames[iFrame], frames[iFrame], values[iFrame], values[iFrame], rawdata);      
+//      if( DebugLevel>3 ) printf( "      frame[%d] = 0x%x or %d, value = 0x%x or %d, raw = 0x%x\n\n", iFrame, frames[iFrame], frames[iFrame], values[iFrame], values[iFrame], rawdata);
 //    }
-    
+
     signed short int frame1 = rawdata / MaxSignedValue[input];
-    signed short int frame2 = rawdata % MaxSignedValue[input];    
+    signed short int frame2 = rawdata % MaxSignedValue[input];
 
     // Decision of polarity
     // from TriggerLine
@@ -987,7 +1024,7 @@ void IMGBoardReader::AddPixel( int input, unsigned int rawdata, int index) {
     // CDS using absolute value.
     //  the absolute value is set in DPlane depending on the #events / init
     value = (int)(frame1 - frame2);
-    if( DebugLevel>3 ) printf( "    input %d, channel %d: raw = 0x%8x, frame1 = 0x%4x, frame2 = 0x%4x, value = 0x%4x or %d (0-supp on = %d, threshold = %d)\n", input, index, rawdata, frame1, frame2, value, value, IfZeroSupress, ZeroThreshold);
+    if( DebugLevel>2 ) printf( "      input %d, channel %d: raw = 0x%8x, frame1 = 0x%4x, frame2 = 0x%4x, value = 0x%4x or %d (0-supp on = %d, threshold = %d)\n", input, index, rawdata, frame1, frame2, value, value, IfZeroSupress, ZeroThreshold);
 
 //    if (ifMultiFrame) {
 //      value = values[5]-values[4];
@@ -995,11 +1032,11 @@ void IMGBoardReader::AddPixel( int input, unsigned int rawdata, int index) {
 //    else {
 //      value = values[1]-values[0];
 //    }
-//    
-//    if( DebugLevel>3 ) printf( "    input %d, channel %d: raw = 0x%x, value = 0x%4x or %d\n", input, index, rawdata, value, value);      
-    
+//
+//    if( DebugLevel>3 ) printf( "    input %d, channel %d: raw = 0x%x, value = 0x%4x or %d\n", input, index, rawdata, value, value);
+
   } // end with CDS
-  
+
   // If binary output, create a pixel only if non-zero value, JB 2013/08/18
   //   test if zero suppression is required
   if ( abs(SignificantBits[input])!=1 || value!=0 ) {
@@ -1007,13 +1044,13 @@ void IMGBoardReader::AddPixel( int input, unsigned int rawdata, int index) {
       ListOfPixels.push_back( IMGPixel( trueInput, value, trueIndex));
     }
   }
-  
+
 }
 
 // --------------------------------------------------------------------------------------
 
 void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, int index) {
-  
+
   // Compute the signal value of the channel (or pixel) from the rawdata value
   // and add the pixel to the vector of pixels
   //
@@ -1047,6 +1084,7 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
   //    event 7 = frame[7]-frame[8]
   //    event 8 = frame[8]-frame[9]
   //
+  // Behaviour is also adapted for flags ifStripTelescope & if16outputs
   //
   // JB, 2008/09/27
   // Modified: SS, 2012/08/01 signed frame value
@@ -1060,7 +1098,7 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
 
   int trueInput = input;
   int trueIndex = index;
-  
+
   if( ifStripTelescope ) { // specific settings when strip-telescope read
     // re-shuffle the channels of the first input to input 0-3
     // other inputs correspond to input+3
@@ -1073,7 +1111,7 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
       trueInput = input; // was input
     }
   }
-  
+
   if( if16outputs ) { // Maciej's DAQ for MIMOSA-22-SX, 2017/03/03
     // 1U16 => [127,119,111,103,95,...,23,15,7] u=0
     // 2U16 => [126,118,110,102,94,...,22,14,6] u=1
@@ -1084,11 +1122,11 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
     trueIndex = 7 - (u-1)%8 + 128*((u-1)/8) + b*8;
     //printf( "   trueIndex = %5d (or %5d) from index=%5d with u=%4d and b=%2d\n", trueIndex, 8 - u%8 + b*8 + 128*(u/8), index, u, b);
   }
-  
+
   //unsigned int value;
   signed int value;
-  
-  if( !WithCDS[input] ) { // if no CDS needed
+
+  if( !WithCDS[input] || ifSplitFrames || ifBlocReading ) { // if no CDS needed or already performed
     for ( int iFrame=0; iFrame<nFrames; iFrame++) { // loop on frames
       value = rawdatas[iFrame];
       // If binary output, create a pixel only if non-zero value, JB 2013/08/18
@@ -1097,13 +1135,13 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
         if( IfZeroSupress == 0 || value > ZeroThreshold ) {
           ListOfPixels.push_back( IMGPixel( trueInput, value, trueIndex));
         }
-        if( DebugLevel>3 ) {
-          printf( "    input %d(true %d), channel %d(true %d): raw = 0x%8x, value = 0x%8x or %d for frame %d\n", input, trueInput, index, trueIndex, rawdatas[iFrame], value, value, iFrame);      
-        }  
+        if( DebugLevel>2 ) {
+          printf( "      input %d(true %d), channel %d(true %d): raw = 0x%8x, value = 0x%8x or %d for frame %d\n", input, trueInput, index, trueIndex, rawdatas[iFrame], value, value, iFrame);
+        }
       }
     } // end loop on frames
-  } 
-  
+  }
+
   else { // With CDS
     //SS 2012.08.10 frame1 and frame2 should be signed short int to keep values between -32768 and +32678
     //    signed short int *frames = new signed short int[NValuesPerChannel[input]];
@@ -1111,22 +1149,22 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
     //    for( int iFrame=0; iFrame<NValuesPerChannel[input]; iFrame++ ) {
     //      frames[iFrame] = rawdata >> SignificantBits[input];
     //      values[iFrame] = frames[iFrame]-frames[(iFrame>0?iFrame-1:0)];
-    //      if( DebugLevel>3 ) printf( "      frame[%d] = 0x%x or %d, value = 0x%x or %d, raw = 0x%x\n\n", iFrame, frames[iFrame], frames[iFrame], values[iFrame], values[iFrame], rawdata);      
+    //      if( DebugLevel>3 ) printf( "      frame[%d] = 0x%x or %d, value = 0x%x or %d, raw = 0x%x\n\n", iFrame, frames[iFrame], frames[iFrame], values[iFrame], values[iFrame], rawdata);
     //    }
-    
+
     signed short int *frames = new signed short int[nFrames*2];
-    
+
     // Re-order the frames in a "physical" order,
-    //  knowing that 
+    //  knowing that
     for ( int iFrame=0; iFrame<nFrames; iFrame++) { // loop on daq frames
 //      frames[iFrame*2]         = rawdatas[iFrame] / MaxSignedValue[input];
 //      frames[iFrame*2+1]       = rawdatas[iFrame] % MaxSignedValue[input];
 //      if( DebugLevel>3 ) printf( "    raw[%d] = 0x%8x -> frame[%d] = 0x%4x, frame[%d] = 0x%4x\n", iFrame, rawdatas[iFrame], iFrame*2, frames[iFrame*2], iFrame*2+1, frames[iFrame*2+1]);
       frames[iFrame]         = rawdatas[iFrame] / MaxSignedValue[input];
       frames[iFrame+nFrames] = rawdatas[iFrame] % MaxSignedValue[input];
-      if( DebugLevel>3 ) printf( "    raw[%d] = 0x%8x -> frame[%d] = 0x%4x, frame[%d] = 0x%4x\n", iFrame, rawdatas[iFrame], iFrame, frames[iFrame], iFrame+nFrames, frames[iFrame+nFrames]);
+      if( DebugLevel>2 ) printf( "    raw[%d] = 0x%8x -> frame[%d] = 0x%4x, frame[%d] = 0x%4x\n", iFrame, rawdatas[iFrame], iFrame, frames[iFrame], iFrame+nFrames, frames[iFrame+nFrames]);
     } // end loop on daq frames
-    
+
     // Build pixel signal for each physical events following
     //  signal(frame i+1) = frame[i]-frame[i+1] with i<2*nFrames-1
     // CURRENTLY: CDS using absolute value.
@@ -1134,7 +1172,7 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
     //
 
 //    for ( int iFrame=0; iFrame<nFrames; iFrame++) { // loop on physical frames
-    
+
 //      value = (int)(frames[2*iFrame] - frames[2*iFrame+1]);
 
 //      if( DebugLevel>3 ) printf( "    input %d(true %d), channel %d(true %d), timestamp %d: frame1 = 0x%4x, frame2 = 0x%4x, value = 0x%4x or %d\n", input, trueInput, index, trueIndex, iFrame, frames[2*iFrame], frames[2*iFrame+1], value, value);
@@ -1142,41 +1180,41 @@ void IMGBoardReader::AddPixel( int input, unsigned int *rawdatas, int nFrames, i
     for ( int iFrame=0; iFrame<2*nFrames-1; iFrame++) { // loop on physical frames
       value = (int)(frames[iFrame] - frames[iFrame+1]);
 
-      if( DebugLevel>3 ) printf( "    input %d(true %d), channel %d(true %d), timestamp %d: frame1 = 0x%4x, frame2 = 0x%4x, value = 0x%4x or %d (0-supp on = %d, threshold = %d)\n", input, trueInput, index, trueIndex, iFrame, frames[iFrame], frames[iFrame+1], value, value, IfZeroSupress, ZeroThreshold );
-      
-      /*if( iFrame==4)*/ 
+      if( DebugLevel>2 ) printf( "      input %d(true %d), channel %d(true %d), timestamp %d: frame1 = 0x%4x, frame2 = 0x%4x, value = 0x%4x or %d (0-supp on = %d, threshold = %d)\n", input, trueInput, index, trueIndex, iFrame, frames[iFrame], frames[iFrame+1], value, value, IfZeroSupress, ZeroThreshold );
+
+      /*if( iFrame==4)*/
       /*if( 2<iFrame && iFrame<7)*/
       if( IfZeroSupress == 0 || value > ZeroThreshold ) {
         ListOfPixels.push_back( IMGPixel( trueInput, value, trueIndex, iFrame));
       }
-      
+
     } // end loop on physical frames
 
     delete[] frames; // fix memory leak, JB 2013/07/19
-      
+
   } // end with CDS
-  
-  
+
+
 }
 
 // --------------------------------------------------------------------------------------
 
 unsigned int IMGBoardReader::BuildValue( int anAddress, int wordSize) {
-  
+
   // Return a rawdata value build from the data pointer "Data"
   //  at adress anAdress and with size in bytes given by wordSize.
   // Note that words of 1 Byte are read two at a time from the data pointer.
   //
-  // Pay attention in case Endianness involved that we swapp halves 
+  // Pay attention in case Endianness involved that we swapp halves
   //  within the full word.
-  // So for 32 bits we swap 16 bits packets, for 16 bits, we swapp the 8 bits packets 
+  // So for 32 bits we swap 16 bits packets, for 16 bits, we swapp the 8 bits packets
   //
   // JB 2012/07/20
-  
+
   unsigned int rawdata = 0;
   unsigned int shifter = 0x01;
   unsigned int multiplyer = 0x100;
-  
+
   if( DebugLevel>3 ) {
     cout << "  building value from address " << anAddress << " over " << wordSize << " bytes";
     printf( " raw = ");
@@ -1188,7 +1226,7 @@ unsigned int IMGBoardReader::BuildValue( int anAddress, int wordSize) {
 
     //--- to decode one endian
     if( Endianness==1 ) {
-      shifter = 0x100;      
+      shifter = 0x100;
       for (int k = wordSize-1; k >= 0; k-=2){
         rawdata += shifter * (0x00FF & Data[anAddress + k-1]);
 //        if( DebugLevel>3 ) printf( " endian 1: k-1=%d, data = 0x%2x, shifter = 0x%8x, raw = 0x%8x\n", k-1, Data[anAddress + k-1], shifter, rawdata);
@@ -1198,7 +1236,7 @@ unsigned int IMGBoardReader::BuildValue( int anAddress, int wordSize) {
       }
     }
     //--- to decode the other endian
-    else{    
+    else{
       for (int k = 0; k < wordSize; k+=2){
         rawdata += shifter * (0x00FF & Data[anAddress + k]);
         shifter *= multiplyer;
@@ -1208,7 +1246,7 @@ unsigned int IMGBoardReader::BuildValue( int anAddress, int wordSize) {
 //        if( DebugLevel>3 ) printf( " endian 0: k=%d, raw = 0x%8x, shifter = 0x%8x\n", k, rawdata, shifter);
       }
     }
-  
+
   if( DebugLevel>3 ) {
     printf( "   -> built value = ");
     for(int k = wordSize-1; k >= 0; k-=1){
@@ -1229,7 +1267,7 @@ void IMGBoardReader::SkipNextEvent() {
   // JB, 2009/05/26
 
   if(DebugLevel) printf("  IMGBoardReader: %d Resetting readout because of bad event\n", BoardNumber);
-  ReadingEvent       = false; 
+  ReadingEvent       = false;
   //CurrentEventNumber = 0;
   //CurrentFrameNumber = 0;
   //CurrentTimestamp   = 0;
@@ -1244,13 +1282,13 @@ bool IMGBoardReader::HasData( ) {
   // Try to find the data for the next event in the file
   // loop over the raw data file and decode each word in it
   //
-  // If something goes wrong with an unexpected word, 
+  // If something goes wrong with an unexpected word,
   //  a flag (eventOK) is used to return "false"
   // Otherwise returns "true"
   //
   // JB, 2012/07/16
   // Modified: JB 2012/08/18 to store trigger info
-  
+
   // -+-+- Initialization
 
   //bool eventDone = false;   // we start with event incomplete
@@ -1267,14 +1305,14 @@ bool IMGBoardReader::HasData( ) {
   }
 
   if( GetNextBuffer() ) {
-    
+
     eventOK = SetBufferPointers();
-    if( DebugLevel>1 ) PrintEventHeader();
+    if( DebugLevel>1 && SizeOfHeader>0 ) PrintEventHeader();
 
     if( eventOK) {
       GetTriggerData(); // JB 2012/08/18, called prior GetInputData since 2013/06/20
       GetInputData();
-      
+
       CurrentEvent = new IMGEvent( EventHeader->EvNo, BoardNumber, &ListOfTriggers, &ListOfTimestamps, &ListOfFrames, &ListOfPixels);
       if( DebugLevel>1 ) cout << " BoardNumber " << BoardNumber << " create new event " << EventHeader->EvNo << " with " << ListOfPixels.size() << " pixels." << endl;
       EventsCount++;
@@ -1283,13 +1321,13 @@ bool IMGBoardReader::HasData( ) {
     else{
     	cout<<"IMGBoardReader::HasData() - Event is not ok!"<<endl;
     }
-    
+
   } // getting next buffer was OK
   else{
   	cout<<"IMGBoardReader::HasData() - Can't get next buffer (# " << BuffersRead <<")!"<<endl;
   }
-  
-  
+
+
 
   // End
   // check there are still data to read
@@ -1316,7 +1354,7 @@ void IMGBoardReader::PrintStatistics(ostream &stream) {
 // --------------------------------------------------------------------------------------
 
 void IMGBoardReader::DumpEventHeaders( int nFrames) {
-  
+
   // Dump the information of acquisition, frame and triggers,
   //  for nFrames frames.
   // The info is printed into a file.
@@ -1329,7 +1367,7 @@ void IMGBoardReader::DumpEventHeaders( int nFrames) {
   //  call the method: board.DumpEventHeaders( 1000);
   //
   // JB, 2013/06/23
-  
+
   Char_t fileName[300];
   sprintf( fileName, "Results/IMG_headers_dump.root");
 #ifndef STANDALONE
@@ -1339,14 +1377,14 @@ void IMGBoardReader::DumpEventHeaders( int nFrames) {
   outFile = fopen( fileName, "w");
 
   for( int framesRead = 0; framesRead<nFrames; framesRead++ ) {
-    
+
     fprintf( outFile, "**********************************" );
-    
+
     if( GetNextBuffer() ) {
-      
+
       if( SetBufferPointers() ) {
         GetTriggerData();
-        
+
         fprintf( outFile, "EvTrig     %10d \n",EventHeader->EvTrig);
         fprintf( outFile, "EvNo       %10d \n", EventHeader->EvNo);
         fprintf( outFile, "EvPos      %10d \n", EventHeader->EvPos);
@@ -1357,11 +1395,11 @@ void IMGBoardReader::DumpEventHeaders( int nFrames) {
         fprintf( outFile, "EvVmeTime  %10d ms \n",EventHeader->EvVmeTime);
         for( int ifas=0; ifas<NB_MAX_VFAS; ifas++) {
           fprintf( outFile, "FAS %2d: Trigger position  %4d, Nb of frames skipped  %4d \n", ifas, EventHeader->VFasCnt[ifas], EventHeader->VFasReg[ifas]);
-        }    
+        }
         fprintf( outFile, "EvNetTime  %10d ms \n",EventHeader->EvNetTime);
         fprintf( outFile, "MeasNo     %5d \n",EventHeader->MeasNo);
         fprintf( outFile, "EvInMeasNo %5d \n",EventHeader->EvInMeasNo);
-        
+
         fprintf( outFile, " Total triggers found in event = %d: at lines =", (int)ListOfTriggers.size());
         for ( int iTrig=0; iTrig<(int)ListOfTriggers.size(); iTrig++ ) {
           fprintf( outFile, " %d", ListOfTriggers.at(iTrig) );
@@ -1372,18 +1410,18 @@ void IMGBoardReader::DumpEventHeaders( int nFrames) {
       else{
         cout<<"IMGBoardReader::DumpEventHeader() - Event is not ok!"<<endl;
       }
-      
+
     } // getting next buffer was OK
     else{
       cout<<"IMGBoardReader::DumpEventHeader() - Can't get next buffer!"<<endl;
     }
-    
+
   }
-  
+
   fclose( outFile);
-  
+
   cout << endl << "OUTPUT IN " << fileName << endl;
-  
+
 }
 
 // --------------------------------------------------------------------------------------
@@ -1414,4 +1452,3 @@ IMGEvent::~IMGEvent() {
 //   delete ListOfFrames;
 
 }
-

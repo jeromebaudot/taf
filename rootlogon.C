@@ -24,7 +24,7 @@
   gSystem->Load("libPostscript.so");
   gSystem->Load("libPhysics.so");
   gSystem->Load("libRint.so");
-  gSystem->Load("libSpectrum.so");
+  //gSystem->Load("libSpectrum.so");
   gSystem->Load("libTMVA.so");
   gSystem->Load("bin/lib/libDTools.so");
   gSystem->Load("bin/lib/libTAF.so");

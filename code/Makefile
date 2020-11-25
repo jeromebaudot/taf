@@ -47,11 +47,11 @@ vpath 	%.$(ObjSuf) 		$(OBJ_DIR)
 vpath 	%.$(DllSuf) 		$(LIB_DIR)
 
 # Uncomment -g if you need debugger
-CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 -Wno-unused-variable -Wno-unused-parameter #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
+CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
 LIBS        = $(ROOTLIBS)
 GLIBS       = $(ROOTGLIBS)
-LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore -lSpectrum \
--lTMVA -L/sw/lib #-ltiff
+LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore \
+-lTMVA -L/sw/lib # -lSpectrum #-ltiff
 
 #------------------------------------------------------------------------------
 

@@ -71,7 +71,6 @@
 #include "DLadder.h"
 #include "TImage.h"
 #include "TProfile.h"
-#include "TSpectrum.h"
 //DANIEL
 #include "TH1D.h"
 #include "DPlane.h"
@@ -94,6 +93,11 @@
 #include <assert.h>
 #include <vector>
 #include <cmath>
+
+//define USETSPECTRUM
+#ifdef USETSPECTRUM
+#include "TSpectrum.h"
+#endif // USETSPECTRUM
 
 #ifdef USETMVA
 #include "TMVA/Factory.h"
@@ -9209,7 +9213,12 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   // JH, 2016/07/20 originally copied from DisplayCumulatedHits2D
   //JH, 4/4/2018 => Added fitting of hhitseedq with multiple parameters
 
+#ifndef USETSPECTRUM
+  printf("\nWARNING !! MRaw::XrayAnalysis cannot work properly because you did not load ROO:TSpectrum class!!\n\n");
+#endif
 
+
+#ifdef USETSPECTRUM
   if(ProduceTree) {
     fSession->MakeTree();
     //fSession->SetFillLevel( fillLevel); // JB 2011/07/21
@@ -9986,7 +9995,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
 
 
 
-  Float_t norm;
+  Float_t norm=1.;
   Float_t Binning;
 
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
@@ -10096,7 +10105,6 @@ void MRaw::XrayAnalysis( Int_t nEvents,
 
   TSpectrum* spectrum [nPlanes];
 
-
   double Rfit_keV[2];
   double Rfit_ADC[2];
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++)
@@ -10125,14 +10133,13 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       hb[iPlane-1]->SetLineColor(kBlack);
       hb[iPlane-1]->SetLineWidth(2);
       hb[iPlane-1]->SetLineStyle(2);
-
       for(int j=0;j<hHitSeedChargeFit[iPlane-1]->GetXaxis()->GetNbins();j++)
       {
         double v,e,vb,eb,vorig;
         vb           = hb[iPlane-1]->GetBinContent(j+1);
         eb           = sqrt(hb[iPlane-1]->GetBinContent(j+1));
         v            = hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1);
-        vorig     = hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1);
+        vorig        = hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1);
         e            = sqrt(hHitSeedChargeFitNoBg[iPlane-1]->GetBinContent(j+1));
 
         v           -= vb;
@@ -10843,6 +10850,8 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   for(int ipair = 0; ipair<(nPlanes*(nPlanes - 1)/2); ipair++) hNHitsPerEventCorr[ipair]->Write();
 
   fRoot.Close();
+
+#endif // USETSPECTRUM
 
 }
 //______________________________________________________________________________

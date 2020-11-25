@@ -357,7 +357,7 @@
 //                      0 -> ignore trigger info
 //                      1 -> each new trigger generates an event
 //                      2 -> trigger info is used to start or stop event reading
-//			3 -> ignore trigger info but all events are 2 frames long
+//			                3 -> ignore trigger info but all events are 2 frames long
 // EventBuildingMode  = [obsolote] (int) {0} replaced by EventBuildingBoardMode
 // BinaryCoding       = [optional] (int) {0} 0 for one Endian, 1 for the other
 // FileHeaderSize     = [obsolete] (int) {0} size of additional header file
@@ -371,7 +371,7 @@
 // #############################################################################
 // "Name" has to be the first field
 // Name                  = [MANDATORY] (char) generic name of such modules
-//                        known types: "IMG", "TNT", "PXI", "PXIe", "GIG", "VME"
+//                        known names: "IMG", "TNT", "PXI", "PXIe", "GIG", "VME"
 //                                     "DecoderM18", "ALI22", "DecoderGeant", "IHEP", "MC"
 // Type                  = [MANDATORY] (int) unique identifier for the module type
 // Devices               = [MANDATORY] (int) # module instances of this type,
@@ -396,7 +396,8 @@
 //
 // --- Name: "IMG"
 //  Type = 10 for pixels / 11 for strips / 12 for pixels with multi-frame
-//         13 for pixels with
+//         13 for pixels with specifi arrangement of frame-ref & frame-signal
+//         14 for 16 parallel outputs
 //  Inputs             = [MANDATORY] (int) # identical data block (one per sensor typically)
 //  EventsInFile       = [MANDATORY] (int) expected # events in a file
 //  StartIndex         = [MANDATORY] (int) index of first data file
@@ -2465,7 +2466,7 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
   // This mechanism allows to declare N inputs while providing info just for one.
   // JB 2013/08/16
   for (Int_t aInp=inputCounter+1; aInp<pAcqModuleParameter[aBoardNumber].Inputs; aInp++) {
-    printf(" updating input %d with input %d\n", aInp, inputCounter);
+    printf(" updating input %d with information from input %d\n", aInp, inputCounter);
     pAcqModuleParameter[aBoardNumber].Channels[aInp]             = pAcqModuleParameter[aBoardNumber].Channels[inputCounter];
     pAcqModuleParameter[aBoardNumber].Bits[aInp]                 = pAcqModuleParameter[aBoardNumber].Bits[inputCounter];
     pAcqModuleParameter[aBoardNumber].SigBits[aInp]              = pAcqModuleParameter[aBoardNumber].SigBits[inputCounter];
