@@ -96,18 +96,18 @@
 
 //define USETSPECTRUM
 #ifdef USETSPECTRUM
-#include "TSpectrum.h"
+  #include "TSpectrum.h"
 #endif // USETSPECTRUM
 
 #ifdef USETMVA
-#include "TMVA/Factory.h"
-#include "TMVA/Tools.h"
-#include "TMVA/Reader.h"
-#include "TMVA/MethodCuts.h"
-#include "TMVA/TMVARegGui.h"
-//#include "../tmva/test/TMVARegGui.C"
+  #include "TMVA/Factory.h"
+  #include "TMVA/Tools.h"
+  #include "TMVA/Reader.h"
+  #include "TMVA/MethodCuts.h"
+  #include "TMVA/TMVARegGui.h"
+  //#include "../tmva/test/TMVARegGui.C"
 
-using namespace TMVA;
+  using namespace TMVA;
 #endif // USETMVA
 
 ClassImp(MRaw)

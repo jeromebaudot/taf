@@ -15,6 +15,7 @@
 # Last update LC 2014/15/19: Add DMiniVector.h DMiniVector.cxx
 # Last update JB 2018/09/06: remove dependencies to tcsh, switch to sh
 # Last update JB 2018/11/08: cp .pcm files to the lib directory
+# Last update JB 2020/11/25: make use of USExxxx env variables for conditianal library link
 
 # ----------------------------------------
 #            Makefile.arch
@@ -27,11 +28,11 @@ include $(ROOTSYS)/etc/Makefile.arch # choice 1a
 #include $(ROOTSYS)/test/Makefile.arch # choice 1b (old ROOT versions)
 #include ./Makefile.arch # choice 2
 # ----------------------------------------
-#        SVN revision
+#        SVN revision <-- DEPRECATED
 # TAF welcome message displays the SVN revision of the code used during the compilation
 # The 'svnversion' software must be installed for this functionality, if not, comment both two lines
-SVNREV     := -D'SVN_REVISION="$(shell svnversion -n .)"'
-CXXFLAGS   += $(SVNREV)
+#SVNREV     := -D'SVN_REVISION="$(shell svnversion -n .)"'
+#CXXFLAGS   += $(SVNREV)
 # ----------------------------------------
 
 
@@ -47,11 +48,23 @@ vpath 	%.$(ObjSuf) 		$(OBJ_DIR)
 vpath 	%.$(DllSuf) 		$(LIB_DIR)
 
 # Uncomment -g if you need debugger
-CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
-LIBS        = $(ROOTLIBS)
-GLIBS       = $(ROOTGLIBS)
+CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 \
+ -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length \
+ #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
+# LIBS        = $(ROOTLIBS)
+# GLIBS       = $(ROOTGLIBS)
 LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore \
--lTMVA -L/sw/lib # -lSpectrum #-ltiff
+ -L/sw/lib
+ifeq ($(USETSPECTRUM), TRUE)
+  LIBSALL += -lSpectrum
+endif
+ifeq ($(USETMVA), TRUE)
+  LIBSALL += -lTMVA
+endif
+ifeq ($(USETIFF), TRUE)
+  LIBSALL += -ltiff
+endif
+
 
 #------------------------------------------------------------------------------
 
@@ -123,12 +136,12 @@ libDTools.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS)
 $(PROGRAM):	$(OBJ_DIR)  MMain.$(ObjSuf) libDTools.$(DllSuf) libTAF.$(DllSuf)
 		@echo ""
 		@echo " *********************************************"
-	      	@echo " Creating executable file                     "
+	  @echo " Creating executable file                     "
 		@echo " *********************************************"
 		$(LD) $(LDFLAGS)  $(OBJ_DIR)/MMain.$(ObjSuf)  $(LIB_DIR)/lib*  $(LIBSALL)  $(OutPutOpt) $(PROGRAM)
 		@echo ""
 		@echo " ******************** :-) ********************"
-	      	@echo "                $(PROGNAME) built successfully !"
+	  @echo "                $(PROGNAME) built successfully !"
 
 clean:
 		@rm -rf **/*~ **/\#* $(DTDIR)/test.dat  $(LIB_DIR) $(OBJ_DIR) $(BUILD_DIR)

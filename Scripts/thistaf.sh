@@ -3,7 +3,7 @@
 #   - others environment variables (PATH, LD_LIBRARY_PATH)
 #
 # Conveniently alias like this can be defined in .bashrc:
-#   alias sourceTAF=". /opt/taf/trunk/scripts/thistaf.sh"
+#   alias sourcetaf="source ./scripts/thistaf.sh"
 #
 # This script is for the bash like shells
 #
@@ -42,6 +42,19 @@ PrintInfos=TRUE #Comment this line to disable
 #ROOTLOCATION=/cern/2011/root.5.28.00.gcc.4.1.2 # exemple for IPHC sbgat576 computer
 #ROOTLOCATION=/Users/jeromeb/Library/Root/root # exemple for a lambda computer
 #ROOTLOCATION=""
+
+unset USETSPECTRUM
+unset USETROOFIT
+unset USETMVA
+# Uncomment if you want to use these ROOT packages
+#  they mostly affect MRaw.cxx class
+#USETSPECTRUM=TRUE
+#USEROOFIT=TRUE
+#USETMVA=TRUE
+
+unset USETIFF
+#Uncomment, if you want to use the TIFF image creation library
+#USETIFF=TRUE
 
 ##################################################
 #                  WORK
@@ -154,6 +167,9 @@ else
 fi
 
 export TMVASYS=$ROOTSYS/tmva/
+export USESPECTRUM
+export USETMVA
+export USEROOFIT
 
 # Print infos on terminal : environment variables, ...
 if [ -n "${PrintInfos}" ] ; then
@@ -164,8 +180,21 @@ if [ -n "${PrintInfos}" ] ; then
 	echo " ROOTSYS         = $ROOTSYS"
   echo " ROOT_INCLUDE_PATH = $ROOT_INCLUDE_PATH"
 	echo " LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
-        echo " TMVASYS         = $TMVASYS"
-	echo ""
+  echo ""
+  echo "<INFO> ROOT special packages use:"
+  if [ -n "${USETSPECTRUM}" ] ; then
+    echo "   SPECTRUM"
+  fi
+  if [ -n "${USEROOFIT}" ] ; then
+    echo "   ROOFIT"
+  fi
+  if [ -n "${USETMVA}" ] ; then
+    echo "   TMVASYS = $TMVASYS"
+  fi
+  if [ -n "${USETIFF}" ] ; then
+    echo "<INFO> Usging TIFF library"
+  fi
+  echo ""
 	echo "<INFO> Documentation files (index.hmtl, taf_shortDoc.pdf and maf_doc.pdf) sit in DTDIR/doc"
 	echo "<INFO> To compile : run 'maketaf'"
 	echo "<INFO> To lauch TAF, run 'TAF' or 'taf'"
