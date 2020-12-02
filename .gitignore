@@ -28,3 +28,9 @@ results_ana_M28/
 *.png
 
 *.gz
+
+*.aux
+
+doc/taf_shortDoc\.out
+
+*.toc

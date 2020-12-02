@@ -7,6 +7,14 @@ Contact: baudot@in2p3.fr, auguste.besson@iphc.cnrs.fr
 Web page: http://www.iphc.cnrs.fr/TAF.html
 
 *********************************************************************************************************
+Master - 2020/12/03
+*********************************************************************************************************
+
+- additional features in Script/thistaf to allow conditional compilation <== does not work fully yet
+- documentation updates (Create your own BoardReader, )
+- Reader IMGBoardReader updated to read data format for Monolithic Imager sensor (MimosaType 61)
+
+*********************************************************************************************************
 VERSION 3.00.0 - 2020/08/20
 *********************************************************************************************************
 

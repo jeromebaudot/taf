@@ -11,6 +11,8 @@
 # Adapted from "thisroot.sh" from CERN ROOT software, by Fons Rademakers, 18/8/2006
 # Modifications:
 #  17/10/2018, JB, new variable ROOT_INCLUDE_PATH
+#  25/11/2020, JB, environment variables to control compilation w or wo some libraries
+#  02/12/2020, JB, automatic creation of 'config' directory if not there
 
 ##################################################
 #                CONFIGURATION
@@ -197,7 +199,15 @@ if [ -n "${PrintInfos}" ] ; then
     echo "   TIFF library"
   fi
   echo ""
-  
+
+# If a config directory does not exist, create it
+  if [ ! -d "${DTDIR}/config" ] ; then
+    mkdir ${DTDIR}/config
+    echo "<INFO> 'config' directory created, copy configuration files from 'config_TEST' examples"
+    echo ""
+  fi
+
+
 	echo "<INFO> Documentation files (index.hmtl, taf_shortDoc.pdf and maf_doc.pdf) sit in DTDIR/doc"
 	echo "<INFO> To compile : run 'maketaf'"
 	echo "<INFO> To lauch TAF, run 'TAF' or 'taf'"
