@@ -94,11 +94,12 @@
 #include <vector>
 #include <cmath>
 
-//define USETSPECTRUM
+//#define USETSPECTRUM // now defined in Script/thistaf.sh
 #ifdef USETSPECTRUM
   #include "TSpectrum.h"
 #endif // USETSPECTRUM
 
+//#define USETMVA // now defined in Script/thistaf.sh
 #ifdef USETMVA
   #include "TMVA/Factory.h"
   #include "TMVA/Tools.h"
@@ -109,6 +110,8 @@
 
   using namespace TMVA;
 #endif // USETMVA
+
+//#define USETIFF // now defined in Script/thistaf.sh
 
 ClassImp(MRaw)
 
@@ -197,7 +200,13 @@ int save_tiff_file(unsigned char * buffer,unsigned int width, unsigned int heigh
   //
   //
   //
-  /*
+
+#ifndef USETIFF
+  printf("\nWARNING !! MRaw::save_tiff_file cannot work properly because you did not load tiff library!!\n\n");
+#endif
+
+#ifdef USETIFF
+
   cout << "saving tiff file : "<<filename << " with " << width << "x" << height << " pixels of " << pixelSize << endl;
 
   // Define an image
@@ -247,7 +256,8 @@ int save_tiff_file(unsigned char * buffer,unsigned int width, unsigned int heigh
   TIFFClose(image);
 
   cout << "  file created: " << filename << endl;
-*/
+#endif
+
   return 0;
 }
 
@@ -4165,7 +4175,7 @@ void MRaw::CumulateTxtFrames( Int_t nEvents, Int_t nCumulFrames)
   txtFile = fopen("mimosa.txt","w");
 
   DTracker *tTracker  =  fSession->GetTracker();
-  DPlane* tPlane = tPlane = tTracker->GetPlane(1);
+  DPlane* tPlane = tTracker->GetPlane(1);
   DHit *aHit = NULL;
   Int_t aIndex;
   //DPixel *aPixel;
@@ -4591,7 +4601,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
     hRDMap[iPlane-1]->SetStats(kFALSE);
 
     sprintf( name, "hpixelspereventpl%d", iPlane);
-    sprintf( title, "Nb of pixels per event of plane %d; # pixels; # events", iPlane, tPlane->GetPlanePurpose(), minSN);
+    sprintf( title, "Nb of pixels per event of plane %d %s; # pixels; # events", iPlane, tPlane->GetPlanePurpose());
     h1FiredPixelsPerEvent[iPlane-1] = new TH1F( name, title, 1000, 0, 10000);
   }
 
@@ -6992,7 +7002,7 @@ void MRaw::UserPlot( Int_t nEvents)
     hptdiffevt->Fill( currentEvtNb/1000, diff);
   } // end loop on events
   for (size_t i = 1; i <= 500; i++) {
-    printf( "bin %d: %f - %d = %f\n", i, hptdiffevt->GetBinContent(i), (int)(hptdiffevt->GetBinContent(i)), hptdiffevt->GetBinContent(i)-(int)(hptdiffevt->GetBinContent(i)));
+    printf( "bin %ld: %f - %d = %f\n", i, hptdiffevt->GetBinContent(i), (int)(hptdiffevt->GetBinContent(i)), hptdiffevt->GetBinContent(i)-(int)(hptdiffevt->GetBinContent(i)));
     h1tdiffracevt->SetBinContent( i, hptdiffevt->GetBinContent(i)-(int)(hptdiffevt->GetBinContent(i)) );
   }
   // Display
@@ -8225,7 +8235,7 @@ void MRaw::StudyTrackMultiplicity( TH1F *hNTracksPerPlanes, TH1F *hNHitsPerTrack
     if( 1<=planeID && planeID<=nPlanes && tTracker->GetPlane(planeID)->GetStatus()!=3 ) {
       efficiencyPlane[planeNb] = hNTracksPerPlanes->GetBinContent(iBin)/nEvents;
       planeIDList[planeNb] = planeID;
-      printf("StudyTrackMultiplicity: plane[%d] ID=%d, has %.0f tracks over %d total tracks => det. eff = %.1f\%\n", planeNb, planeID, hNTracksPerPlanes->GetBinContent(iBin), nEvents, efficiencyPlane[planeNb]*100.);
+      printf("StudyTrackMultiplicity: plane[%d] ID=%d, has %.0f tracks over %d total tracks => det. eff = %.1f\n", planeNb, planeID, hNTracksPerPlanes->GetBinContent(iBin), nEvents, efficiencyPlane[planeNb]*100.);
       planeNb++;
     }
   }
@@ -9214,7 +9224,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   //JH, 4/4/2018 => Added fitting of hhitseedq with multiple parameters
 
 #ifndef USETSPECTRUM
-  printf("\nWARNING !! MRaw::XrayAnalysis cannot work properly because you did not load ROO:TSpectrum class!!\n\n");
+  printf("\nWARNING !! MRaw::XrayAnalysis cannot work properly because you did not load ROOT:TSpectrum class!!\n\n");
 #endif
 
 
@@ -16466,7 +16476,7 @@ void MRaw::SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, track
   if(fVerbose) {
     printf( "MRaw::Sitrineo: found %d pairs:\n", nPairs);
     for (size_t ip = 0; ip < nPairs; ip++) {
-      printf( "  %d: track1=%d + track2=%d, slope1=%.2e, slope2=%.2e, momentum=%.2e\n", ip, pairList[nPairs].firstTrackID, pairList[nPairs].secondTrackID, pairList[nPairs].slope1, pairList[nPairs].slope2, pairList[nPairs].momentumXY);
+      printf( "  %ld: track1=%d + track2=%d, slope1=%.2e, slope2=%.2e, momentum=%.2e\n", ip, pairList[nPairs].firstTrackID, pairList[nPairs].secondTrackID, pairList[nPairs].slope1, pairList[nPairs].slope2, pairList[nPairs].momentumXY);
     }
   }
 
@@ -16516,7 +16526,7 @@ void MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Int_t &nPair
       double deltaY = (*(Hit2->GetPosition()))(1) - (*(Hit1->GetPosition()))(1) ;
       double deltaZ = (*(Hit2->GetPosition()))(2) - (*(Hit1->GetPosition()))(2) ;
 		//cut on deltaX && cut on deltaY using histos from sitrineo.C
-		if( -0.6 < deltaX < 0.6 && -0.2 < deltaY < 0.70 ){
+		if( -0.6 < deltaX && deltaX < 0.6 && -0.2 < deltaY && deltaY < 0.70 ){
 	        	vector34_X.push_back(deltaX) ;
 	        	vector34_Y.push_back(deltaY) ;
 	        	vector34_Z.push_back(deltaZ) ;
@@ -16534,7 +16544,7 @@ void MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Int_t &nPair
       double deltaZ = (*(Hit2->GetPosition()))(2) - (*(Hit1->GetPosition()))(2) ;
 		double alpha12 = atan(deltaY/deltaZ) ;
 		//inclinaison && cut on deltaX using histos from sitrineo.C
-		if( 0.3 < alpha12 < 0.9 && -1.3 < deltaX < 1.3 ){
+		if( 0.3 < alpha12 && alpha12 < 0.9 && -1.3 < deltaX && deltaX < 1.3 ){
 	        	vector12_X.push_back(deltaX) ;
 	        	vector12_Y.push_back(deltaY) ;
 	        	vector12_Z.push_back(deltaZ) ;

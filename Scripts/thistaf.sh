@@ -181,20 +181,23 @@ if [ -n "${PrintInfos}" ] ; then
   echo " ROOT_INCLUDE_PATH = $ROOT_INCLUDE_PATH"
 	echo " LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
   echo ""
-  echo "<INFO> ROOT special packages use:"
+
+# Print about special libraries that are not always present
+  echo "<INFO> Special packages required (user should know or edit to cancel usage):"
   if [ -n "${USETSPECTRUM}" ] ; then
-    echo "   SPECTRUM"
+    echo "   ROOT TSPECTRUM"
   fi
   if [ -n "${USEROOFIT}" ] ; then
-    echo "   ROOFIT"
+    echo "   ROOT RooFIT"
   fi
   if [ -n "${USETMVA}" ] ; then
-    echo "   TMVASYS = $TMVASYS"
+    echo "   ROOT TMVASYS = $TMVASYS"
   fi
   if [ -n "${USETIFF}" ] ; then
-    echo "<INFO> Usging TIFF library"
+    echo "   TIFF library"
   fi
   echo ""
+  
 	echo "<INFO> Documentation files (index.hmtl, taf_shortDoc.pdf and maf_doc.pdf) sit in DTDIR/doc"
 	echo "<INFO> To compile : run 'maketaf'"
 	echo "<INFO> To lauch TAF, run 'TAF' or 'taf'"

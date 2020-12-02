@@ -49,19 +49,22 @@ vpath 	%.$(DllSuf) 		$(LIB_DIR)
 
 # Uncomment -g if you need debugger
 CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 \
- -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length \
+ -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length -Wunused-but-set-variable -Wsign-compare \
  #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
 # LIBS        = $(ROOTLIBS)
 # GLIBS       = $(ROOTGLIBS)
 LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore \
  -L/sw/lib
-ifeq ($(USETSPECTRUM), TRUE)
-  LIBSALL += -lSpectrum
+ifeq ( $USETSPECTRUM, "TRUE" )
+  CXXFLAGS += -DUSETSPECTRUM
+	LIBSALL  += -lSpectrum
 endif
-ifeq ($(USETMVA), TRUE)
+ifeq ( $(USETMVA), "TRUE" )
+  CXXFLAGS += -DUSETMA
   LIBSALL += -lTMVA
 endif
-ifeq ($(USETIFF), TRUE)
+ifeq ( $(USETIFF), "TRUE" )
+  CXXFLAGS += -DUSETIFF
   LIBSALL += -ltiff
 endif
 

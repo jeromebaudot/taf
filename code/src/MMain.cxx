@@ -694,8 +694,8 @@ void TRint::PrintLogo(Bool_t lite)
   //    svn revision infos :
   // If SVN_REVISION definition is made in the Makefile, choose Option 1;
   // If this definition is disabled in Makefile, choose Option 2;
-  svnrev += SVN_REVISION; // Option 1
-  //svnrev += "??";       // Option 2
+  //svnrev += SVN_REVISION; // Option 1
+  svnrev += "using GIT now ;)";       // Option 2
   //---------------------------------
 
   //  Authors by alphabetic order
