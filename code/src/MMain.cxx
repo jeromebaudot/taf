@@ -673,12 +673,13 @@ void PrintAlineWithStars(const TString &str, const Int_t & maxLength, const Bool
 
 //______________________________________________________________________________
 //
+
 void TRint::PrintLogo(Bool_t lite)
 {
 
   if(lite) return;
 
-// Print the TAF logo on standard output.
+ // Print the TAF logo on standard output.
   ///////////////////////////////////////////////////////////
   // Configuration
   ///////////////////////////////////////////////////////////
@@ -775,12 +776,15 @@ void TRint::PrintLogo(Bool_t lite)
   TString rootver = " ROOT ver: ";rootver += gROOT->GetVersion();
   PrintAlineWithStars(rootver,maxLength,kFALSE);
 
+  /*
+  ?? Doesn't seem to work with Ubuntu 20
   #ifdef R__UNIX
-  if (!strcmp(gVirtualX->GetName(), "X11TTF"))
+  if (!strcmp(gVirtualPS->GetName(), "X11TTF"))
   {
     PrintAlineWithStars(" FreeType Engine v1.x used to render TrueType fonts",maxLength,kFALSE);
   }
   #endif
+  */
   #ifdef _REENTRANT
   PrintAlineWithStars(" Compiled with thread support",maxLength,kFALSE);
   #endif
