@@ -39,6 +39,7 @@
 // Last Modified: AP,JB 2016/09/20 DAcq for new param in IMGBoardReader
 // Last Modified: JB 2017/11/20 DAcq
 // Last Modified: JB 2018/02/11 InitTimeRefInfo -> updated 2018/03/21
+// Last Modified: JB 2020/02/17 Introduction of vetoPixdl for VMEBoardreader
 
 //*-- Modified :  IG
 //*-- Copyright:  RD42
@@ -364,6 +365,7 @@ DAcq::DAcq(DSetup& c)
         sprintf( aFileName, "%s/", fc->GetRunPar().DataPath);
         fVME[iModule] = new VMEBoardReader( iModule, fc->GetRunPar().DataPath, fc->GetModulePar(mdt).DeviceDataFile[mdl-1], fc->GetRunPar().Extension, fRunNumber, fc->GetModulePar(mdt).Inputs, fc->GetPlanePar(1).Strips(1));
         fVME[iModule]->SetDebugLevel( fDebugAcq);
+        fVME[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);
         break;
 
 

@@ -24,9 +24,9 @@
 # You should use the Makefile.arch provided with your installation (choice 1a or 1b depending on ROOT VERSION)
 # If not available, you can use the given Makefile.arch (choice 2)
 
-include $(ROOTSYS)/etc/Makefile.arch # choice 1a
+#include $(ROOTSYS)/etc/Makefile.arch # choice 1a
 #include $(ROOTSYS)/test/Makefile.arch # choice 1b (old ROOT versions)
-#include ./Makefile.arch # choice 2
+include ./Makefile.arch # choice 2
 # ----------------------------------------
 #        SVN revision <-- DEPRECATED
 # TAF welcome message displays the SVN revision of the code used during the compilation
@@ -53,8 +53,7 @@ CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 \
  #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
 # LIBS        = $(ROOTLIBS)
 # GLIBS       = $(ROOTGLIBS)
-LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore \
- -L/sw/lib
+LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore
 ifeq ( $USETSPECTRUM, "TRUE" )
   CXXFLAGS += -DUSETSPECTRUM
 	LIBSALL  += -lSpectrum

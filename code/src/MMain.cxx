@@ -777,7 +777,7 @@ void TRint::PrintLogo(Bool_t lite)
   PrintAlineWithStars(rootver,maxLength,kFALSE);
 
   /*
-  ?? Doesn't seem to work with Ubuntu 20
+  // Doesn't seem to work with Ubuntu 20
   #ifdef R__UNIX
   if (!strcmp(gVirtualPS->GetName(), "X11TTF"))
   {
