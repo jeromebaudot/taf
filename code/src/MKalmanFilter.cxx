@@ -131,7 +131,7 @@ void MKalmanFilter::update(const Double_t z, const Double_t* meas, const Double_
 	  fCov.Print();
      }
      if(fDebugLevel > 1){
-	  Printf("DEBUG: ");
+	  printf("DEBUG: ");
      }
 }
 
