@@ -121,6 +121,9 @@ Int_t main(Int_t argc, Char_t **argv)
   //**********************************
   // TAF analysis GUIs
   //**********************************
+  // Launch default GUI
+  TString tafgui_cmd  = "-gui";
+  Bool_t  tafgui_bool = kFALSE; // not made by default
   // Launch the MRaw GUI
   TString tafgui_mraw_cmd  = "-guiw";
   Bool_t  tafgui_mraw_bool = kFALSE; // not made by default
@@ -170,6 +173,7 @@ Int_t main(Int_t argc, Char_t **argv)
 //      cout << "     ["<< sessinit_dataDirPath_cmd <<"] path of run binary data in folders named 'RUNxxxxx'"<< endl;
 
       cout << "  * TAF GUIs :" << endl;
+      cout << "     ["<<tafgui_cmd<<"] : launch the default (MRaw) GUI" << endl;
       cout << "     ["<<tafgui_mraw_cmd<<"] : launch the MRaw GUI" << endl;
       cout << "     ["<<tafgui_mrax_cmd<<"] : launch the MRax GUI" << endl;
 
@@ -303,6 +307,11 @@ Int_t main(Int_t argc, Char_t **argv)
 	  //**********************************
 	  // taf analysis GUIs
 	  //**********************************
+    else if (!arg.CompareTo(tafgui_cmd))
+	  {
+	    tafgui_bool = kTRUE;
+	    if(verbose) cout << "  * TAF GUIs : launching default gui (MRaw) is asked" << endl;
+	  }
 	  else if (!arg.CompareTo(tafgui_mraw_cmd))
 	  {
 	    tafgui_mraw_bool = kTRUE;
@@ -591,7 +600,7 @@ Int_t main(Int_t argc, Char_t **argv)
     //------------------------------
     // launch GUIs
     //------------------------------
-    if (tafgui_mraw_bool)
+    if (tafgui_bool || tafgui_mraw_bool)
     {
       if(verbose) cout << endl << " ***<Launching MRaw GUI>*** "<<endl;
       sprintf(tafcommand, "gTAF->GetRaw()");

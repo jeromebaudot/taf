@@ -72,8 +72,6 @@
 #include "DLadder.h"
 #include "TImage.h"
 #include "TProfile.h"
-#include "TSpectrum.h"
-//DANIEL
 #include "TH1D.h"
 #include "DPlane.h"
 #include "DTracker.h"
@@ -95,6 +93,10 @@
 #include <assert.h>
 #include <vector>
 #include <cmath>
+
+#ifdef TSPECTRUM
+#include "TSpectrum.h"
+#endif // USETSPECTRUM
 
 #ifdef USETMVA
 #include "TMVA/Factory.h"
@@ -6158,24 +6160,24 @@ void MRaw::LaserStudy( Int_t Xpixel, Int_t Ypixel, Int_t nPixels, Int_t nEvents,
       // stop the counters on frame with a laser spot
       // 50 is larger thant the spots frequency expressed in frames
       else if( iEvt>nEvents-2*cycleLength ) {
-	printf("STOPING counters at frame %d\n", iEvt);
-	stop = kTRUE;
+	       printf("STOPING counters at frame %d\n", iEvt);
+	       stop = kTRUE;
       }
 
       nbFiredFrames++;
       if( nbFramesSinceSpot1>cycleLength-2 ) { // condition for new burst
-	spotNb = 0;
-	nbFramesSinceSpot1 = -1;
+	       spotNb = 0;
+	        nbFramesSinceSpot1 = -1;
       }
       spotNb++;
       if( debug>1) printf( "  spot %d found, %d frames since 1st spot: filling histos\n", spotNb, nbFramesSinceSpot1);
-      hSpectrum->Fill( pulseheight);
+        hSpectrum->Fill( pulseheight);
       if( spotNb<=nSpots) {
-	hSpotSpectrum[spotNb-1]->Fill( pulseheight);
+	       hSpotSpectrum[spotNb-1]->Fill( pulseheight);
       }
       else {
-	printf( "WARNING: you reached a spot number %d higher than the maximum allowed (%d).\n", spotNb, nSpots);
-	printf( "    #spots has been reset, please tune the values cycleLength=%d and nSpots=%d to avoid this.\n", cycleLength, nSpots);
+	       printf( "WARNING: you reached a spot number %d higher than the maximum allowed (%d).\n", spotNb, nSpots);
+	        printf( "    #spots has been reset, please tune the values cycleLength=%d and nSpots=%d to avoid this.\n", cycleLength, nSpots);
       }
       hEmptyIntervals->Fill( nbEmptyIntervals);
       hSpectrum_EmptyIntervals->Fill(pulseheight,nbEmptyIntervals);
@@ -9301,7 +9303,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
                         Int_t fitXray)//fitXray: 0==no fitting, 1==55Fe, 2==Cr, 3==Cu, 4==Mo
 {
 
-
+#ifdef USETSPECTRUM
 
   // Analysis specific for X-ray data
   // Call by gTAF->GetRaw()->XrayAnalysis()
@@ -10192,7 +10194,6 @@ void MRaw::XrayAnalysis( Int_t nEvents,
 
 
 
-
   TSpectrum* spectrum [nPlanes];
 
 
@@ -10254,7 +10255,6 @@ void MRaw::XrayAnalysis( Int_t nEvents,
 
 
       }
-
 
 
       // ===============================================
@@ -10406,7 +10406,6 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       else if (fitXray==2){fitResultsFile<<"================= Cr FITS ================="<<"\n";}
       else if (fitXray==3){fitResultsFile<<"================= Cu FITS ================="<<"\n";}
       else if (fitXray==4){fitResultsFile<<"================= Mo FITS ================="<<"\n";}
-
 
 
 
@@ -10942,6 +10941,12 @@ void MRaw::XrayAnalysis( Int_t nEvents,
   for(int ipair = 0; ipair<(nPlanes*(nPlanes - 1)/2); ipair++) hNHitsPerEventCorr[ipair]->Write();
 
   fRoot.Close();
+
+#else
+    cout << endl << "WARNING: function MRaw::XrayAnalysis requires compilation with ROOT:TSpectrum!" << endl;
+    cout << "  => check your ROOT install and Script/thistaf.sh" << endl << endl;
+#endif // USETSPECTRUM
+
 
 }
 //______________________________________________________________________________
@@ -13432,7 +13437,7 @@ void MRaw::DisplayCumulatedBeast(int MaxEvt)
 
   int iHitSensorId;
   int iHitNpixels;
-  int HitIdx;
+  int HitIdx = 0;
 
     fSession->SetEvents(MaxEvt);
     DTracker *tTracker     = fSession->GetTracker();
@@ -14323,11 +14328,11 @@ void MRaw::BeastCheckPosition(){
 }
 //______________________________________________________________________________
 //
-#ifdef USETMVA
 void MRaw::FillnTupleForTMVA(int    nEvents,
 			     double my_theta_mean,
 			     double my_phi_mean)
 {
+#ifdef USETMVA
 
   //Function to fill up tree for cluster shape TMVA training to discriminate high theta angle hits
 
@@ -14978,8 +14983,13 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   fRoot.Close();
 
   return;
+#else
+    cout << endl << "WARNING: function MRaw::TrainTMVA requires compilation with ROOT:TMVA!" << endl;
+    cout << "  => check your ROOT install and Script/thistaf.sh" << endl << endl;
+#endif // USETMVA
 
 }
+
 //______________________________________________________________________________
 //
 void  MRaw::TrainTMVA(TString myMethodList,
@@ -14989,7 +14999,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
 		      int Nevts_training,
 		      int Nevts_testing)
 {
-
+#ifdef USETMVA
 
   // This loads the library
   TMVA::Tools::Instance();
@@ -15525,8 +15535,11 @@ void  MRaw::TrainTMVA(TString myMethodList,
 
   return;
 
-}
+#else
+    cout << endl << "WARNING: function MRaw::TrainTMVA requires compilation with ROOT:TMVA!" << endl;
+    cout << "  => check your ROOT install and Script/thistaf.sh" << endl << endl;
 #endif // USETMVA
+}
 
 //
 //______________________________________________________________________________
@@ -15826,7 +15839,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
     if( tPlane->GetPosition()(2)>zmax) zmax = tPlane->GetPosition()(2);
 
   } // end loop on planes
-  // Enlarge a bit the z-range 
+  // Enlarge a bit the z-range
   zmin -= 5000;
   zmax += 5000;
 
@@ -16853,7 +16866,7 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
       //cut on deltaX && cut on deltaY using histos from sitrineo.C
       //if( -0.6 < deltaX && deltaX < 0.6 && -0.2 < deltaY && deltaY < 0.70 ){ // cut from 2019
       //if( abs(apair.deltaX)<maxDX2 && abs(apair.deltaY)<maxDY2 && abs(apair.slopeX)<maxSlopeX2 && abs(apair.slopeY)<maxSlopeY2 ){
-      // All cuts removed -> replaced by cut on final Chi2 
+      // All cuts removed -> replaced by cut on final Chi2
         secondTrackerPairs.push_back(apair);
       //}
     }

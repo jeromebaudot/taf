@@ -273,8 +273,6 @@ void BeastCheckPosition();
 
   void CumulateTxtFrames( Int_t nEvents=1000, Int_t nCumulFrames=100);
 
-//#define USETMVA
-#ifdef USETMVA
   void FillnTupleForTMVA(int    nEvents       = 100,
 			 double my_theta_mean = 0.0,
 			 double my_phi_mean   = 0.0);
@@ -285,7 +283,6 @@ void BeastCheckPosition();
 		 TString OutputFile   = "TMVAReg.root",
 		 int Nevts_training   = 10000,
 		 int Nevts_testing    = 10000);
-#endif
 
   void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
   void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
