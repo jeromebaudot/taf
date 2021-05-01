@@ -49,7 +49,7 @@ vpath 	%.$(DllSuf) 		$(LIB_DIR)
 
 # Uncomment -g if you need debugger
 CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 \
- -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length -Wunused-set-variable -Wsign-compare \
+ -Wno-unused-variable -Wno-unused-parameter -Wno-format-zero-length -Wno-unused-but-set-variable -Wno-sign-compare \
  #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
 # LIBS        = $(ROOTLIBS)
 # GLIBS       = $(ROOTGLIBS)
