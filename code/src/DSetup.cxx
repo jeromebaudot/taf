@@ -50,6 +50,7 @@
 // Last Modified: LC, 2015/10/14 GlobalAlignment Parameter Reading : Now optional
 // Last Modified: JB 2017/11/20 ReadDAQBoardParameters for zero suppression option
 // Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
+// Last Modified: JB 2021/05/01 Handle source path as datapath
 
 ///////////////////////////////////////////////////////////////
 // Class Description of DSetup                               //
@@ -609,6 +610,15 @@ void DSetup::SetConfigFileName(TString aCFN)
 }
 //______________________________________________________________________________
 //
+void  DSetup::SetSourcePath(TString aSP)
+{
+
+  fSourcePath = aSP;
+  if(DSetupDebug) cout << "DSetup::SetSourcePath "<< aSP << endl;
+
+}
+//______________________________________________________________________________
+//
 void DSetup::ReadRunParameters()
 {
 
@@ -660,7 +670,11 @@ void DSetup::ReadRunParameters()
       read_strings( RunParameter.Confidence, RunParameter.tpsz);
     }
     else if( ! strcmp( fFieldName, "DataPath" ) ) {
-      read_strings( RunParameter.DataPath, RunParameter.tpsz);
+      if( fSourcePath.IsNull() ) { // Read the path only if not set already
+        read_strings( RunParameter.DataPath, RunParameter.tpsz);
+      } else {
+        sprintf( RunParameter.DataPath, "%s", fSourcePath.Data());
+      }
       DGlobalTools aTool; // JB 2011/07/18
       sprintf( RunParameter.DataPath, "%s", aTool.LocalizeDirName( RunParameter.DataPath)); // JB 2011/07/07
     }

@@ -806,7 +806,7 @@ bool BoardReaderIHEP::DecodeNextEvent()
                   }
                   AddPixel( input, 1, vi_Chip_Address_Line, vi_Column_Temp, timestamp);
                   if (vi_Verbose < 7) {
-                    printf( "  Adding pixel from ladder %d, Chip %lu -> input %d, line %lu column %lu, timestamp %lu\n", vi_ID_Ladder, vi_ID_Ladder_Chip, input, vi_Chip_Address_Line, vi_Column_Temp, timestamp);
+                    printf( "  Adding pixel from ladder %lu, Chip %lu -> input %d, line %lu column %lu, timestamp %d\n", vi_ID_Ladder, vi_ID_Ladder_Chip, input, vi_Chip_Address_Line, vi_Column_Temp, timestamp);
                   }
 
                   if ((vi_Column_Temp >= N_BANKCOLUMN*0) && (vi_Column_Temp < N_BANKCOLUMN*1))

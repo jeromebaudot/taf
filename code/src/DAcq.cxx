@@ -40,6 +40,7 @@
 // Last Modified: JB 2017/11/20 DAcq
 // Last Modified: JB 2018/02/11 InitTimeRefInfo -> updated 2018/03/21
 // Last Modified: JB 2020/02/17 Introduction of vetoPixdl for VMEBoardreader
+// Last Modofies: JB 2021/05/01 Adding BoardReaderMIMOSIS
 
 //*-- Modified :  IG
 //*-- Copyright:  RD42
@@ -198,6 +199,7 @@ DAcq::DAcq(DSetup& c)
   fM18   = new DecoderM18*[totalNmodules];
   fGeant = new DecoderGeant*[totalNmodules];
   fIHEP  = new BoardReaderIHEP*[totalNmodules];
+  fMSIS  = new BoardReaderMIMOSIS*[totalNmodules];
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   // Loop on each acquisition module type to set its properties
@@ -458,6 +460,43 @@ DAcq::DAcq(DSetup& c)
         break;
 
 
+        // -+-+- MIMOSIS modules
+        case 13:
+
+        fUseTimestamp[mdt-1][mdl-1] = kFALSE;
+        fMSIS[iModule] = new BoardReaderMIMOSIS( iModule, fc->GetAcqPar().TriggerMode, fc->GetModulePar(mdt).EventBuildingBoardMode);
+        fMSIS[iModule]->SetDebugLevel( fDebugAcq);
+        fMSIS[iModule]->SetVetoPixel( 0); // To be decided
+        if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
+          if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
+            sprintf( aBaseName, "%s", fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
+          } else {
+            sprintf( aBaseName, "RUN_%d_", fRunNumber);
+          }
+        } else {
+          sprintf( aBaseName, "RUN_%d_", fRunNumber);
+        }
+        sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
+        if( !( fMSIS[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
+          sprintf( aFileName, "%s/%d/%s", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
+          if( !( fMSIS[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
+            sprintf( aBaseName, "%d", fRunNumber);
+            sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
+            if( !( fMSIS[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
+              sprintf( aFileName, "%s/%d/%s", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
+              initOK &= fMSIS[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension );
+            } else {
+              initOK &= kTRUE;
+            }
+          } else {
+            initOK &= kTRUE;
+          }
+        } else {
+          initOK &= kTRUE;
+        }
+        break;
+
+
         // -+-+- Other modules
           default:
           cout << "WARNING: DAcq, unknown module type " << fc->GetModulePar(mdt).Type << "!" << endl;
@@ -689,6 +728,14 @@ void DAcq::SetDebug(Int_t aDebug)
         case 12:
           for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
             fIHEP[iModule]->SetDebugLevel( abs(aDebug) );
+            iModule++;
+          } // end loop on each module of this type
+          break;
+
+          // -+-+- MIMOSIS modules
+        case 13:
+          for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
+            fMSIS[iModule]->SetDebugLevel( abs(aDebug) );
             iModule++;
           } // end loop on each module of this type
           break;
@@ -1977,7 +2024,66 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
           }
 
           iModule++;
-        } // end loop on each module of this type
+        } // end loop on each module of IHEP type
+        break;
+
+
+        // -+-+- MIMOSIS modules
+        // JB 2021/05/01
+      case 13:
+        for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
+
+          moduleOK = fMSIS[iModule]->HasData(); // ask for an event
+          eventOK &= moduleOK;
+          if (fDebugAcq)  cout << " DAcq: getting raw data for module " << iModule << " or " << mdl << " of type " << fc->GetModulePar(mdt).Type << ", OK? " << moduleOK << endl;
+
+          readerEvent = (BoardReaderEvent*)fMSIS[iModule]->GetEvent(); // get the event
+          if( readerEvent ) { // If event pointer correct
+            fRealEventNumber = readerEvent->GetEventNumber();
+            fTriggersN      += readerEvent->GetNumberOfTriggers();
+            fFramesN        += readerEvent->GetNumberOfFrames();
+            if (ListOfTriggers==NULL) {
+              ListOfTriggers = readerEvent->GetTriggers();
+            }
+            else {
+              ListOfTriggers->insert( ListOfTriggers->end(), (readerEvent->GetTriggers())->begin(), (readerEvent->GetTriggers())->end());
+              ;
+            }
+            if (ListOfFrames==NULL) {
+              ListOfFrames     = readerEvent->GetFrames();
+            }
+            else {
+              ListOfFrames->insert( ListOfFrames->begin(), (readerEvent->GetFrames())->begin(), (readerEvent->GetFrames())->end());
+              ;
+            }
+            if (fDebugAcq) {
+              cout << "   module " << mdl << " found " << readerEvent->GetNumberOfPixels() << " hit pixels  with " << fTriggersN << " triggers: ";
+              for( Int_t iTrig=0; iTrig<fTriggersN; iTrig++) {
+                cout <<  ", " << ListOfTriggers->at( iTrig);
+              }
+              cout << " and " << fFramesN << " frames: ";
+              for( Int_t iFr=0; iFr<fFramesN; iFr++) {
+                cout <<  ", " << ListOfFrames->at( iFr);
+              }
+              cout << " from daq event " << fRealEventNumber << endl << endl;
+            }
+            // Set values for hit pixels
+            for( Int_t iPix=0; iPix<readerEvent->GetNumberOfPixels(); iPix++) { // loop on Pixels
+              readerPixel = (BoardReaderPixel*)readerEvent->GetPixelAt( iPix);
+              aPlaneNumber = fMatchingPlane[mdt-1][mdl-1][readerPixel->GetInput()-1][0];
+              if(fDebugAcq>2) cout << "  pixel " << iPix << " line " << readerPixel->GetLineNumber() << " column " << readerPixel->GetColumnNumber() << " at timestamp " << readerPixel->GetTimeStamp() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << endl;
+              DPixel* APixel = new DPixel( aPlaneNumber, readerPixel->GetLineNumber(), readerPixel->GetColumnNumber(), (Double_t)readerPixel->GetValue(), readerPixel->GetTimeStamp());
+              // if(readerPixel->GetInput()!=5 && readerPixel->GetInput()!=6 && readerPixel->GetTimeStamp()==1)
+              fListOfPixels[aPlaneNumber-1].push_back(APixel);
+            } // end loop on Pixels
+
+          }  // End if event pointer correct
+          else {
+            dataOK &= kFALSE;
+          }
+
+          iModule++;
+        } // end loop on each module of MIMSOSIS type
         break;
 
 
@@ -2235,6 +2341,16 @@ void DAcq::PrintStatistics(ostream &stream)
 
       for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
         fIHEP[iModule]->PrintStatistics(stream);
+        iModule++;
+      } // end loop on each modules of this type
+      break;
+
+
+      // -+-+- MIMOSIS modules
+      case 13:
+
+      for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
+        fMSIS[iModule]->PrintStatistics(stream);
         iModule++;
       } // end loop on each modules of this type
       break;

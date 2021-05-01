@@ -791,12 +791,12 @@ void IMGBoardReader::GetInputData( int mode) {
       // If splitFrames || blocReading option is ON, it means a second value (Frame2) is to be read
       if ( ifSplitFrames ) {
         //  second address = adressOfFrame1 + all frame size
-        if( DebugLevel>2 ) printf( "      getting second value with a shift of %d bytes computed for channel %d, sizeOfValue %d bytes\n", totalValuesToRead*SizeOfValue[iInput], channel, (Int_t)SizeOfValue[iInput]);
+        if( DebugLevel>2 ) printf( "      getting second value with a shift of %lu bytes computed for channel %d, sizeOfValue %d bytes\n", totalValuesToRead*SizeOfValue[iInput], channel, (Int_t)SizeOfValue[iInput]);
         second_value = BuildValue( address+totalValuesToRead*SizeOfValue[iInput], (int)SizeOfValue[iInput] );
       }
       else if( ifBlocReading ) {
         //  second address = adressOfFrame1 + all frame size
-        if( DebugLevel>2 ) printf( "    getting second value with a shift of %d bytes computed for channel %d, sizeOfValue %d bytes\n", NValuesToJumpPerChannel[iInput]*SizeOfValue[iInput], channel, (Int_t)SizeOfValue[iInput]);
+        if( DebugLevel>2 ) printf( "    getting second value with a shift of %lu bytes computed for channel %d, sizeOfValue %d bytes\n", NValuesToJumpPerChannel[iInput]*SizeOfValue[iInput], channel, (Int_t)SizeOfValue[iInput]);
         second_value = BuildValue( address+NValuesToJumpPerChannel[iInput]*SizeOfValue[iInput], (int)SizeOfValue[iInput] );
       }
 

@@ -1,5 +1,5 @@
 // @(#)maf/maf:$Name:  $:$Id: MAnalysis.h v.1 2005/10/02 18:03:46 sha Exp $
-// Author: A. Shabetai 
+// Author: A. Shabetai
 
 #ifndef _MimosaAnalysis_included_
 #define _MimosaAnalysis_included_
@@ -13,7 +13,7 @@
   //                                                         //
   //  TAF - Main header file                                 //
   //  Defines all user accessible analysis methods            //
-  //                                                         //   
+  //                                                         //
   ////////////////////////////////////////////////////////////
 
 
@@ -39,12 +39,12 @@
 #include "TGraph2D.h"
 
 #include "TError.h"
-#include "TEnv.h"  
-#include "TInterpreter.h"  
+#include "TEnv.h"
+#include "TInterpreter.h"
 
 #include "DGlobalTools.h" // to have fTool has a data member
 
-// pre 
+// pre
 #include "DLadder.h" // JB 2014/02/10
 #ifdef UseROOFIT
 #include "DXRay2DPdf.h" // AP 2014/12/08
@@ -69,7 +69,7 @@
 //Results store
 #include "TNtuple.h"
 
-// align Mimosa 
+// align Mimosa
 #include "MAlign.h"
 #include "MHist.h"
 
@@ -99,7 +99,7 @@ class MimosaAnalysis : public MHist {
 #ifdef MAC
   MimosaAnalysis *gTAF;// for MAC
 #endif
-  
+
   // ------------------------
   // Files and directories
   // ------------------------
@@ -127,7 +127,7 @@ class MimosaAnalysis : public MHist {
   // ------------------------
   // Parameters for sensor, alignment, geometry, analysis
   // ------------------------
-  
+
   DSession   *fSession; // JB 2011/07/21 to get rid of global var tSession
   Double_t trU, trV, trW; // alignment
   Double_t theta[3];
@@ -135,16 +135,16 @@ class MimosaAnalysis : public MHist {
 
   Float_t calibration;
   Float_t NoiseScope;
-	
+
   Int_t MimosaType;
   Int_t RunNumber ;
-  Int_t ThePlaneNumber; 
+  Int_t ThePlaneNumber;
   Int_t ThePlaneNumber2; // JB 2011/10/30
   Int_t TheLadderNumber; // JB 2014/01/10
   Int_t Nevt ,User_MaxEvt;
 
-  Int_t ThesubmatrixNumber; 
-  Int_t ThesubmatrixNumber2; // JB 2015/12/15 
+  Int_t ThesubmatrixNumber;
+  Int_t ThesubmatrixNumber2; // JB 2015/12/15
 
   Float_t MimosaSizeU, MimosaSizeV;
   Float_t PixelSize;
@@ -163,13 +163,13 @@ class MimosaAnalysis : public MHist {
   Float_t geomVmin2, geomVmax2;
   Float_t exgeomUmin, exgeomUmax; // JB 2013/06/22
   Float_t exgeomVmin, exgeomVmax;
-  
+
   Int_t UserFlag; // parameter transmitted through config file, free for user, JB 2013/07/17
 
   // ------------------------
   // flags
   // ------------------------
-  Int_t UsedMacro[50]; // to be modified 
+  Int_t UsedMacro[50]; // to be modified
   Int_t MimoDebug;
   Int_t fWriteHistos;
   Int_t fUserFileNumber;
@@ -195,18 +195,18 @@ class MimosaAnalysis : public MHist {
   Bool_t fIfMCGeneration; //for MC generation, AP 2015/04/02
 
   // ------------------------
-  // Hot pixel map 
+  // Hot pixel map
   // ------------------------
   Int_t TheUsePixelMap; // use pixel map or not
   Int_t Option_read_Pixel_map; // Hot hit map read=1/write=0 option
   TH2F *h2HotPixelMap; // pointer to the histogram containing pixel hit rate
   Char_t HotPixelFileName[40];
   TFile *HotPixelFile; // pointer to file containing the previous histogram
-  
+
   // ------------------------
   // cuts
   // ------------------------
-  Float_t  TrackChi2Limit; 
+  Float_t  TrackChi2Limit;
   Int_t    MinHitsPerTrack; // JB 2013/06/22
   Int_t    MaxNbOfTracksInGeom; // JB 2012/08/30
   Int_t    GeoMatrixForTrackCut; // JB 2012/08/30
@@ -214,7 +214,7 @@ class MimosaAnalysis : public MHist {
   Int_t    CUT_MinNbOfHits;
   Float_t  TrackToHitDistanceLimit;
   Float_t  TrackToHitDistanceLimit2; // JB 2015/12/15
-  Float_t  CUT_S2N_seed; 
+  Float_t  CUT_S2N_seed;
   Float_t  CUT_S2N_neighbour ;
   Float_t  CUT_Q_seed; // JB 2013/11/08
   Float_t  CUT_Q_cluster; // JB 2014/01/21
@@ -238,7 +238,7 @@ class MimosaAnalysis : public MHist {
 
   Int_t    NofClMatchTrack; // # good tracks in the DUT WITH a matched hit
   Int_t    NtrkInMimo; // Number of tracks in the MIMOSA aperture
-  
+
   Int_t    NeventRangeForEfficiency; //binning for the efficiency during the run
   Int_t    temp_maxarray;
   Int_t    ievt_array; // counter of bunches
@@ -247,9 +247,9 @@ class MimosaAnalysis : public MHist {
   Float_t  *temp_NtrkInMimo;
 
   // ------------------------
-  // 
+  //
   // ------------------------
-    
+
   Float_t* ResolutionPoint; // better in MHIst ??
 
 
@@ -268,17 +268,17 @@ class MimosaAnalysis : public MHist {
   Int_t* IndexInCluster;
   Int_t LineSizeOfCluster; // JB 2014/03/31
   Int_t ColumnSizeOfCluster;
-  
+
   typedef enum {
-    one_pix = 1, 
-    two_pix_row, 
-    two_pix_col, 
-    three_pix_L, 
-    three_pix_row, 
-    three_pix_col, 
-    four_pix_square, 
-    four_pix_L_row, 
-    four_pix_L_col, 
+    one_pix = 1,
+    two_pix_row,
+    two_pix_col,
+    three_pix_L,
+    three_pix_row,
+    three_pix_col,
+    four_pix_square,
+    four_pix_L_row,
+    four_pix_L_col,
     four_others,
     more_than_four,
     five_pix_squarerow,
@@ -307,7 +307,7 @@ class MimosaAnalysis : public MHist {
   Float_t ChargeInCrown1; // the 16 pixels after the first neighbours of the seed
   Float_t ChargeInCrown2; // the 24 pixels next to next neighbours of the seed
 
-  Float_t TotalCharge2x2; // Cluster charge limited to 2x2 sub-cluster 
+  Float_t TotalCharge2x2; // Cluster charge limited to 2x2 sub-cluster
   Float_t ExternalCharge2x2; // 2x2 cluster charge without the seed (Qof3x3[0])
   Float_t Qof2x2[4];
   Float_t UofPix2x2[4];
@@ -316,7 +316,7 @@ class MimosaAnalysis : public MHist {
   Int_t IndexV2x2[4];
   Short_t IndexOfCluster2x2;
 
-  Float_t TotalCharge3x3; // Cluster charge limited to 3x3 sub-cluster 
+  Float_t TotalCharge3x3; // Cluster charge limited to 3x3 sub-cluster
   Float_t Qof3x3[9];
   Float_t UofPix3x3[9];
   Float_t VofPix3x3[9];
@@ -336,7 +336,7 @@ class MimosaAnalysis : public MHist {
   Float_t* VofPixqordered;
   Int_t *LineInClusterqordered;
   Int_t *ColumnInClusterqordered;
-	
+
   Float_t* q; // cumulated q,n,sn with charge ordered pixels
   Float_t* n;
   Float_t* sn;
@@ -393,7 +393,7 @@ class MimosaAnalysis : public MHist {
   DR3      trackMeanPosXYZ;
   Double_t trackAngleXZ;
   Double_t trackAngleYZ;
-	
+
   DR3      hitPosUVW[2];
   DR3      hitPosXYZ[2];
 
@@ -407,7 +407,7 @@ class MimosaAnalysis : public MHist {
   // cluster positions
   // ------------------------
   Int_t    hitCounterPos; // JB 2014/01/10
-  
+
   Float_t hX, hY, hZ; // position in tracker frame, JB 2010/08/30
   Float_t hU; // position in plane frame
   Float_t hV;
@@ -424,7 +424,7 @@ class MimosaAnalysis : public MHist {
   Float_t VofHitCG;
   Float_t UCGcorr; // CoG corrected by correlation plot
   Float_t VCGcorr;
-  Float_t UofHitEta3; // Eta algo. 
+  Float_t UofHitEta3; // Eta algo.
   Float_t VofHitEta3;
   Float_t Eta2x2U;
   Float_t Eta2x2V;
@@ -449,17 +449,17 @@ class MimosaAnalysis : public MHist {
   Float_t* Edges2x2;     //!
   Float_t* Contents2x2U; //!
   Float_t* Contents2x2V; //!
-  Float_t* Edges3x3;     //!             
+  Float_t* Edges3x3;     //!
   Int_t NBins3x3;
-  Float_t* Contents3x3U; //!  
+  Float_t* Contents3x3U; //!
   Float_t* Contents3x3V; //!
   static const Int_t PolDeg = 7;
   Float_t FitParEta3U[PolDeg];
   Float_t FitParEta3V[PolDeg];
   Float_t FitParamU[PolDeg];
   Float_t FitParamV[PolDeg];
-    
-	
+
+
   // ------------------------
   // For cluster shape studies, cdritsa & JB 2010/04/13
   // ------------------------
@@ -485,19 +485,19 @@ class MimosaAnalysis : public MHist {
   Double_t sumChargeTimesPositionV[50];
   Double_t sumChargeTimesPositionUmean[50];
   Double_t sumChargeTimesPositionVmean[50];
-  
+
   Double_t RMSV;
   Double_t RMSU;
-  Double_t RMSVmean;      
-  Double_t RMSUmean;      
+  Double_t RMSVmean;
+  Double_t RMSUmean;
   // end for cluster shape
-  
+
   int NPages;
-  
+
   int NTracksPerEventInSensor;
   double AverageEffic[2];
 
-  Int_t   GetFileNumber(); 
+  Int_t   GetFileNumber();
   void    GetParameters();
   void    GetAnalysisGoal(); // JB 2014/01/17
   void    ComputePixelPosition(Int_t col, Int_t lin, Float_t &u, Float_t &v); // JB 2012/11/21
@@ -507,7 +507,7 @@ class MimosaAnalysis : public MHist {
   void    CreateNewEta();
   Bool_t  TrackInMimo( Int_t aGeoMatrix, Float_t tuVal, Float_t tvVal, Int_t aSubMatrix=0);
   //void Zero(TObject** ptr,int  size=0) {/*for(int ind=0;ind<size;ind++){ if(!ptr) ptr=0;}*/};
-  void    Zero(TObject* ptr) { if(ptr) delete ptr; if(!ptr) ptr=0;};      
+  void    Zero(TObject* ptr) { if(ptr) delete ptr; if(!ptr) ptr=0;};
   const char*   CreateGlobalResultDir();
   void    PreparePost();
   Int_t   CorStatus; //corpar file status.
@@ -518,14 +518,14 @@ class MimosaAnalysis : public MHist {
 
   // ************************************
   // Analysis functions
-  
+
   void GoodHit_Fill(DAuthenticHit *ahit); // JB 2010/10/06
 
   void ClusterCharges_init(); // JB 2010/06/03
   void ClusterCharges_compute(DAuthenticHit *thehit);
   void ClusterCharges_fill(DAuthenticHit *thehit, Int_t ievt);
   void ClusterCharges_end();
-	
+
   void ClusterPosition_init(); // JB 2014/01/10
   void ClusterPosition_compute(DAuthenticHit *thehit, DPrecAlign *align); // align added, JB 2013/05/01
   void ClusterPosition_cog(DAuthenticHit *thehit);
@@ -548,21 +548,21 @@ class MimosaAnalysis : public MHist {
   void RefPlane_init(){;}
   void RefPlane_fill(); // JB 2010/05/27
   void RefPlane_end(){;}
-  
+
   void BinarySpecific_init(){;}  // JB 2010/06/03
   void BinarySpecific_HitsOnly_fill(DAuthenticHit *thehit);
   void BinarySpecific_fill(DAuthenticHit *thehit);
   void BinarySpecific_end();
-		
+
   // FakeRate_compute and _fill are kept for consistency
-  // but there are so far useless because _end uses histos 
-  // filled by 
+  // but there are so far useless because _end uses histos
+  // filled by
   // JB 2010/07/22
   void FakeRate_init(){;}
   void FakeRate_compute() {;}
   void FakeRate_fill() {;}
   void FakeRate_end( Int_t rateNormalisation);
-	
+
   // MiniVector analysis
   // JB 2010/08/30 (from NCS 2009/10)
   void MiniVector_init(){;}
@@ -576,43 +576,43 @@ class MimosaAnalysis : public MHist {
   // JB 2011/11/04 (from AB)
   void Efficiency_init();
   void Efficiency_end( Int_t eventsRead);
-  
+
   // Hot pixel removing
   void HotPixel_init( Int_t useMap);
   Int_t HotPixel_test( Int_t aPixelIndex);
   void HotPixel_end( Int_t eventsRead);
-  
+
   // Check what crown the pixel belongs to //clm 2013/01/23
   Bool_t IsPixelIn1stCrown(Int_t lin, Int_t col);
   Bool_t IsPixelIn2ndCrown(Int_t lin, Int_t col);
-  
+
   // Imaging analysis
   Double_t NOfHitsMult[5];
   void ProjectionImaging_init();
-  void ProjectionImaging_Fill( DAuthenticHit *thehit, Double_t angle );  
+  void ProjectionImaging_Fill( DAuthenticHit *thehit, Double_t angle );
   void ProjectionImaging_end( Int_t numberOfHits );
-  
+
   //====================
  public:
   //====================
   MimosaAnalysis();
   virtual  ~MimosaAnalysis() {;}
-  Bool_t CheckIfDone(const Option_t* Option); 
- 
-  static  MimosaAnalysis*& Instance() { 
-    if (!fgInstance) 
+  Bool_t CheckIfDone(const Option_t* Option);
+
+  static  MimosaAnalysis*& Instance() {
+    if (!fgInstance)
       {
-        //cout<<"No current TAF session detected! Creatung a new one..."<<endl;  
-	fgInstance = new  MimosaAnalysis();  
-      } 
-    return fgInstance; 
+        //cout<<"No current TAF session detected! Creatung a new one..."<<endl;
+	fgInstance = new  MimosaAnalysis();
+      }
+    return fgInstance;
   }
 
   void MergingPDFFiles(void);
 
   // ************************************
   // Internal tool methods
-  
+
   void       GetMiEta();
   // void       StoreEta() ;  // replaced by CreateNewEta, JB 2011/06/19
   void       GetAlignment(); // JB 2011/06/19
@@ -637,7 +637,7 @@ class MimosaAnalysis : public MHist {
   Double_t   GetCUT_MinHitRatePerPixel()               { return CUT_MinHitRatePerPixel;}
   void       SetCUT_MaxHitRatePerPixel(Double_t aRate) { CUT_MaxHitRatePerPixel = aRate;}
   void       SetCUT_MinHitRatePerPixel(Double_t aRate) { CUT_MinHitRatePerPixel = aRate;}
-  
+
   void       InitMimosaType()                    {  MimosaType = (Int_t)(RunNumber/1000.); if(RunNumber==2110)  MimosaType=4; else if(RunNumber<1000) MimosaType = 99;} // JB 2012/05/04 deal with RunNumber<1000 case
 
   void       SetFileNumber(Int_t aUserFileNumber=0) {fUserFileNumber = aUserFileNumber;};
@@ -652,8 +652,8 @@ class MimosaAnalysis : public MHist {
   int        ResultsStrore();
 
   Float_t    GetCalibration()                    {return calibration;};
-  
-  //prepare 
+
+  //prepare
  void       PrepareRun(int RunNumberBigin, Option_t* aType,int NumberOfFilesPerRun=0, int RunNumberEnd=0, int RunNumberStep=1 );
 
 
@@ -662,16 +662,16 @@ class MimosaAnalysis : public MHist {
 
   Int_t     GetNtrkInMimo()                      {return NtrkInMimo;} // Number of tracks in the MIMOSA aperture
 
-    
+
   TFile*    GetCorParFile() {
     if (!theCorFile) { InitCorPar(GetRunNumber(),GetPlaneNumber()); }
     return theCorFile;
-  }    
+  }
 
 
-  //----ADC   
+  //----ADC
   Float_t tVect[100]; //n res
-  // Int_t       *fChannel;                  //! pointer to Channels 
+  // Int_t       *fChannel;                  //! pointer to Channels
   //Int_t&       GetChannel(Int_t aSk)              { return  fChannel[aSk-1];     }
   Float_t* GettVect()  {return tVect;} ; //n res
   //----ADC
@@ -708,7 +708,7 @@ class MimosaAnalysis : public MHist {
 
   // ************************************
   // Arrays for eta correction
-  
+
   TArrayF Liste_CoGU;
   TArrayF Liste_CoGV;
   Int_t nListe_CoG;
@@ -739,16 +739,16 @@ class MimosaAnalysis : public MHist {
 
   void       CDHist() { if(!CheckIfDone("mimosapro")) {return;} else { MHist::Dir();}}
   void       Help();
-  
-  void       InitSession(const Int_t TheRun,const unsigned int ThePlane=0, Int_t EventBuildingMode=-1,TString ConfigFile="", TString ConfigDir=""); 
+
+  void       InitSession(const Int_t TheRun,const unsigned int ThePlane=0, Int_t EventBuildingMode=-1,TString ConfigFile="", TString ConfigDir="", TString DataDir=""); 
   //EventBuildingMode key by default is at -1 meaning that it will not override the value taken in DSetup::ReadConfiguration(), SS 2011/11/14
   // VR 2014/06/30 Add optional args
-  
+
   // ************************************
   // Raw data reconstruction commands
 
   void       MakeEta(int NEvt = 10000);
-  
+
   void       SetTrackGeoLimitsForAlign(Double_t xmin, Double_t xmax, Double_t ymin, Double_t ymax) { fSession->SetTrackGeoLimitsForAlign(xmin, xmax, ymin, ymax); } // JB 2013/06/11
   void       SetTrackChi2LimitForAlign( Double_t aLimit) { fSession->SetTrackChi2LimitForAlign( aLimit); } // JB 2013/07/14
   void       AlignTracker(const Double_t tiniBoundU,
@@ -759,7 +759,7 @@ class MimosaAnalysis : public MHist {
                                                     // AP 2015/06/10: added bool parameter (UseAllHits) to decide if doing alignement with all hits or the closest one to the track.
   void       AlignTracker(const Double_t tiniBound = 480.,
 			  Int_t nAlignEvents=4000,
-			  Int_t nAdditionalEvents=2000, 
+			  Int_t nAdditionalEvents=2000,
 			  bool UseAllHits = false) { AlignTracker( tiniBound, tiniBound, nAlignEvents, nAdditionalEvents, UseAllHits); }
   void       AlignTrackerMinuit(Bool_t modeAuto=1,
 				const Double_t tiniBound=480.,
@@ -772,7 +772,7 @@ class MimosaAnalysis : public MHist {
   void       AlignTrackerMinuitLadder(Bool_t modeAuto =1, const Double_t tiniBound=480., Int_t nAlignEvents=5000, Int_t nAlignHitsInPlane=4000, Int_t nAdditionalEvents=2000, Double_t chi2Limit=0.);
   //void       AlignLadder(Bool_t modeAuto=1, const Double_t tiniBound=480., Int_t nAlignEvents=5000, Int_t nAlignHitsInPlane=4000, Int_t nAdditionalEvents=2000, Int_t ladderFace=1, Double_t chi2Limit=0.);  // Commented 2014/12/18
   void        AlignLadderMV(Bool_t modeAuto=1, const Double_t tiniBound=480., const Double_t boundSlopes=100., Int_t nAlignEvents=5000, Int_t nGoodTracks=1000, Int_t nAdditionalEvents=2000, Int_t chi2Limit=40, Int_t mode=0); // LC 2013/09/10
-  void       AlignTrackerGlobal(const Int_t refPlane=1, const Int_t nEvents=4000, const Int_t nIterations=10, const Bool_t alignConstrainsts=true, const Bool_t trackConstrainsts=true, const Bool_t multipleScatteringFit=true); // LC && LiuQ 2015/02/06. 
+  void       AlignTrackerGlobal(const Int_t refPlane=1, const Int_t nEvents=4000, const Int_t nIterations=10, const Bool_t alignConstrainsts=true, const Bool_t trackConstrainsts=true, const Bool_t multipleScatteringFit=true); // LC && LiuQ 2015/02/06.
   void       AlignTrackerMillepede(Int_t nAlignEvents=4000);  // LC 2012/12/24.
 //  void        Gener(Double_t* xp, Double_t* yp, Double_t& aX, Double_t& bX, Double_t& aY, Double_t& bY, Double_t* sigX, Double_t* disX, Double_t* sigY, Double_t* disY, Double_t* z, Double_t* phi); // LC 2012/01/07
 
@@ -792,12 +792,12 @@ class MimosaAnalysis : public MHist {
   void       MimosaMiniVectors(Int_t MaxEvt, Int_t TrackHitDist, Short_t plane0, Float_t S2N_seed0, Float_t S2N_neighbour0, Int_t submatrix0, Int_t GeoMatrix0, Short_t plane1, Float_t S2N_seed1, Float_t S2N_neighbour1, Int_t submatrix1, Int_t GeoMatrix1);
   void       MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t plane0, Float_t S2N_seed0, Float_t S2N_neighbour0, Int_t submatrix0, Short_t plane1, Float_t S2N_seed1, Float_t S2N_neighbour1, Int_t submatrix1, Int_t GeoMatrix);
   void       MimosaVertex(Int_t MaxEvt, Short_t plane1, Short_t plane2);
-  void       MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t GeoMatrix, Float_t chi2Cut);                                                                        
+  void       MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t GeoMatrix, Float_t chi2Cut);
   void       MimosaCluster(Int_t MaxEvt, Float_t S2N_seed = 0., Float_t S2N_neighbour = 0., Int_t submatrix=0, Int_t GeoMatrix=0); // JB 2014/01/17
   void       MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S2N_seed, Float_t S2N_neighbour  , Int_t submatrix , Int_t GeoMatrix ,Option_t*  SaveAlign,  Int_t UseHitMap, Int_t WriteMissedHits, Int_t WriteGoodHits); // JB 2014/02/1
-  
+
   void       MimosaImaging(Int_t MaxEvt, Int_t submatrix=0, Int_t GeoMatrix=0, Double_t theta_init=0.0, Int_t Npeak=1, Double_t S=100, Double_t W=100, Bool_t FirstLoop=kTRUE, Bool_t chooseFit=kTRUE); // JH 2014/06/13
-  
+
   void       MimosaGeneration_ToyMC(Int_t MaxEvt   = 10000,
 			            Int_t PlaneNumber = 1,
 			            Int_t Submatrix = 0,
@@ -811,7 +811,7 @@ class MimosaAnalysis : public MHist {
 			            double YRMSDiv  = 1.0e-20,
 			            bool CalledFromMimosaPro = false,
 			            bool verbose   = false);    //AP 2015/03/11
-  
+
   void       MimosaGeneration_LoicG4Simu(Int_t MaxEvt   = 10000,
 			                 Int_t PlaneNumber = 1,
 					 Int_t Submatrix = 0,
@@ -819,7 +819,7 @@ class MimosaAnalysis : public MHist {
 					 Int_t seed     = 8292894,
 			                 bool DoDisplay = false,
 			                 bool verbose   = false);    //AP 2015/07/08
-  
+
   void       MimosaGeneration_APG4Simu(Int_t MaxEvt   = 10000,
 			               Int_t PlaneNumber = 1,
 				       Int_t Submatrix = 0,
@@ -827,7 +827,7 @@ class MimosaAnalysis : public MHist {
 				       Int_t seed     = 8292894,
 			               bool DoDisplay = false,
 			               bool verbose   = false);    //AP 2015/07/29
-  
+
   void       BookingMC(Int_t PlaneNumber = 1,
 		       Int_t Submatrix = 0,
 		       Int_t Geomatrix = 0,
@@ -845,7 +845,7 @@ class MimosaAnalysis : public MHist {
 
   // ************************************
   // Plotting functions
-  
+
   void       MimosaResolution();
   void       CheckMCSimulation(bool StandAlone = false);
   void       MimosaClusterCharge( TString fitOption="landau" );
@@ -858,7 +858,7 @@ class MimosaAnalysis : public MHist {
   void       CheckClusters();
   void       Checkreferencetracks();
   void       pixelcharge();
-  void       MimosaSN(); 
+  void       MimosaSN();
   void       ClusterShape(); //cdritsa feb 2008, JB 2010
   void       HitMap(); // JB 2010/10/06
   void       MimosaPixelHomogeneity();
@@ -876,17 +876,15 @@ class MimosaAnalysis : public MHist {
 
 
 
-  ClassDef(MimosaAnalysis,2) 
+  ClassDef(MimosaAnalysis,2)
     };
 
 //R__EXTERN MimosaAnalysis *gTAF; // JB, for inline compilation
 
 
-#ifndef MAC 
-//#define gTAF MimosaAnalysis::Instance() // to comment for MAC 
+#ifndef MAC
+//#define gTAF MimosaAnalysis::Instance() // to comment for MAC
 #endif
 
 
-#endif 
-
-
+#endif
