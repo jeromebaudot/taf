@@ -24,9 +24,9 @@
 # You should use the Makefile.arch provided with your installation (choice 1a or 1b depending on ROOT VERSION)
 # If not available, you can use the given Makefile.arch (choice 2)
 
-#include $(ROOTSYS)/etc/Makefile.arch # choice 1a
+include $(ROOTSYS)/etc/Makefile.arch # choice 1a
 #include $(ROOTSYS)/test/Makefile.arch # choice 1b (old ROOT versions)
-include ./Makefile.arch # choice 2
+#include ./Makefile.arch # choice 2
 # ----------------------------------------
 #        SVN revision <-- DEPRECATED
 # TAF welcome message displays the SVN revision of the code used during the compilation
@@ -49,7 +49,7 @@ vpath 	%.$(DllSuf) 		$(LIB_DIR)
 
 # Uncomment -g if you need debugger
 CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 \
- -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length -Wunused-but-set-variable -Wsign-compare \
+ -Wno-unused-variable -Wno-unused-parameter -Wformat-zero-length -Wunused-set-variable -Wsign-compare \
  #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
 # LIBS        = $(ROOTLIBS)
 # GLIBS       = $(ROOTGLIBS)
@@ -78,7 +78,7 @@ DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
     DHit.h DTrack.h DLine.h DR3.h DCut.h DAlign.h \
 		DEvent.h  DEventMC.h  DParticle.h DGlobalTools.h \
     DPrecAlign.h DPixel.h DLadder.h DMiniVector.h DHelix.h DHelixFitter.h\
-    DTrackFitter.h DBeaster.h\
+    DTrackFitter.h DBeaster.h MKalmanFilter.h MLeastChiSquare.h\
 # DXRay2DPdf.h
 
 
@@ -93,7 +93,7 @@ DTSRCS		= MMain.cxx \
 		DHit.cxx DTrack.cxx DLine.cxx DR3.cxx DCut.cxx DAlign.cxx \
 		DEvent.cxx  DEventMC.cxx  DParticle.cxx DGlobalTools.cxx \
 		DPrecAlign.cxx DPixel.cxx DLadder.cxx DMiniVector.cxx DHelix.cxx DHelixFitter.cxx \
-    DTrackFitter.cxx DBeaster.cxx\
+    DTrackFitter.cxx DBeaster.cxx MKalmanFilter.cxx MLeastChiSquare.cxx\
 # DXRay2DPdf.cxx
 
 MSRCS		= MPrep.cxx MAnalysis.cxx MPost.cxx MCommands.cxx  MMCGeneration.cxx  MAlign.cxx MHist.cxx MRaw.cxx MRax.cxx \
@@ -116,26 +116,29 @@ $(OBJ_DIR):
 		@/bin/sh -cf 'if [ ! -d $(OBJ_DIR) ]; then mkdir -p  $(OBJ_DIR); fi'
 		@/bin/sh -cf 'if [ ! -d $(LIB_DIR) ]; then mkdir -p $(LIB_DIR); fi'
 
-libTAF.$(DllSuf): Mdict.$(ObjSuf) $(MOBJS) $(MSRCS) $(MHDRS)
+#libTAF.$(DllSuf): Mdict.$(ObjSuf) $(MOBJS) $(MSRCS) $(MHDRS) $(DTOBJS) $(DTSRCS) $(DTHDRS)
+libTAF.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS) Mdict.$(ObjSuf) $(MOBJS) $(MSRCS) $(MHDRS)
 		@echo ""
 		@echo " *********************************************"
 		@echo " Creating shared lib" libTAF.$(DllSuf)
 		@echo " *********************************************"
-		$(LD) $(SOFLAGS)   $(LDFLAGS) $(OBJ_DIR)/M*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
-#		$(LD) $(SOFLAGS) -Wl  $(LDFLAGS) $(OBJ_DIR)/M*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
+		@echo $(SOFLAGS)
+		$(LD) $(SOFLAGS)  $(LIBSALL) $(LDFLAGS) $(OBJ_DIR)/*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
+#		$(LD) $(SOFLAGS)  $(LIBSALL) $(LDFLAGS) $(OBJ_DIR)/M*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
 
-libDTools.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS)
-		@echo ""
-		@echo " *********************************************"
-		@echo " Creating shared lib" libDTools.$(DllSuf)
-		@echo " *********************************************"
-		$(LD) $(SOFLAGS)   $(LDFLAGS) $(OBJ_DIR)/D*.$(ObjSuf) \
-    $(OBJ_DIR)/*BoardReader.$(ObjSuf) $(OBJ_DIR)/BoardReaderIHEP.$(ObjSuf) \
-    $(OBJ_DIR)/AliMIMOSA22RawStreamVASingle.$(ObjSuf) \
-		$(OutPutOpt) $(LIB_DIR)/libDTools.$(DllSuf)
+#libDTools.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS)
+#		@echo ""
+#		@echo " *********************************************"
+#		@echo " Creating shared lib" libDTools.$(DllSuf)
+#		@echo " *********************************************"
+#		$(LD) $(SOFLAGS)  $(LIBSALL) $(LDFLAGS) $(OBJ_DIR)/D*.$(ObjSuf) \
+#    $(OBJ_DIR)/*BoardReader.$(ObjSuf) $(OBJ_DIR)/BoardReaderIHEP.$(ObjSuf) \
+#    $(OBJ_DIR)/AliMIMOSA22RawStreamVASingle.$(ObjSuf) $(OBJ_DIR)/MKalmanFilter.$(ObjSuf) $(OBJ_DIR)/MLeastChiSquare.$(ObjSuf) \
+#		$(OutPutOpt) $(LIB_DIR)/libDTools.$(DllSuf)
 
 
-$(PROGRAM):	$(OBJ_DIR)  MMain.$(ObjSuf) libDTools.$(DllSuf) libTAF.$(DllSuf)
+#$(PROGRAM):	$(OBJ_DIR)  MMain.$(ObjSuf) libDTools.$(DllSuf) libTAF.$(DllSuf)
+$(PROGRAM):	$(OBJ_DIR)  MMain.$(ObjSuf) libTAF.$(DllSuf)
 		@echo ""
 		@echo " *********************************************"
 	  @echo " Creating executable file                     "
