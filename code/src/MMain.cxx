@@ -4,6 +4,7 @@
 // Last Modified: VR 2014/06/29 add the args corresponding to MRaw and MRax GUIs to launch them
 // Last Modified: VR 2014/06/30 support of config file parameter
 // Last Modified: JB 2016/08/17 support of config directory parameter
+// Last Modified: JB 2020/05/01 support of data directory parameter
 
   /////////////////////////////////////////////////////////////
   //                                                         //
@@ -169,8 +170,8 @@ Int_t main(Int_t argc, Char_t **argv)
         cout << "     ["<< sessinit_cfgDir_cmd <<"] specific config directory (ex.: mydir /another/mydir ../anotherdir/mydir/ ...)"<< endl;
         cout << "     ["<< sessinit_outFilesPref_cmd <<"] output files prefix for MRax (ex.: config_yy), default is "<<  sessinit_outFilesPref_def << endl;
         cout << "     ["<< sessinit_outFilesSuff_cmd <<"] output files suffix for MRax (ex.: RUNxx), default is "<<  sessinit_outFilesSuff_def << "#" << endl;
-      //      cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
-//      cout << "     ["<< sessinit_dataDirPath_cmd <<"] path of run binary data in folders named 'RUNxxxxx'"<< endl;
+        // cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
+        cout << "     ["<< sessinit_dataDirPath_cmd <<"] path to data, superseeds gonfig file input"<< endl;
 
       cout << "  * TAF GUIs :" << endl;
       cout << "     ["<<tafgui_cmd<<"] : launch the default (MRaw) GUI" << endl;
@@ -283,27 +284,27 @@ Int_t main(Int_t argc, Char_t **argv)
 	    if(verbose) cout << "  * InitSession: a data path is given: "<< sessinit_dataDirPath_arg << endl;
 	    i++;
 	  }
-          // output files suffix
-          else if (!arg.CompareTo(sessinit_outFilesSuff_cmd) && ((i+1)<argc)) // if this arg is followed by another
-          {
-            sessinit_outFilesSuff_arg = argv[i+1];
-            if(verbose) cout << "  * InitSession: an output file suffix is given: "<< sessinit_outFilesSuff_arg << endl;
-            i++;
-          }
-          // output files prefix
-          else if (!arg.CompareTo(sessinit_outFilesPref_cmd) && ((i+1)<argc)) // if this arg is followed by another
-          {
-            sessinit_outFilesPref_arg = argv[i+1];
-            if(verbose) cout << "  * InitSession: an output file prefix is given: "<< sessinit_outFilesPref_arg << endl;
-            i++;
-          }
+    // output files suffix
+    else if (!arg.CompareTo(sessinit_outFilesSuff_cmd) && ((i+1)<argc)) // if this arg is followed by another
+    {
+      sessinit_outFilesSuff_arg = argv[i+1];
+      if(verbose) cout << "  * InitSession: an output file suffix is given: "<< sessinit_outFilesSuff_arg << endl;
+      i++;
+    }
+    // output files prefix
+    else if (!arg.CompareTo(sessinit_outFilesPref_cmd) && ((i+1)<argc)) // if this arg is followed by another
+    {
+      sessinit_outFilesPref_arg = argv[i+1];
+      if(verbose) cout << "  * InitSession: an output file prefix is given: "<< sessinit_outFilesPref_arg << endl;
+      i++;
+    }
     // debug level
-          else if (!arg.CompareTo(sessinit_debugLevel_cmd) && ((i+1)<argc)) // if this arg is followed by another
-          {
-            sessinit_debugLevel_arg = atoi(argv[i+1]);
-            if(verbose) cout << "  * InitSession: a debug level is given: "<< sessinit_debugLevel_arg << endl;
-            i++;
-          }
+    else if (!arg.CompareTo(sessinit_debugLevel_cmd) && ((i+1)<argc)) // if this arg is followed by another
+    {
+      sessinit_debugLevel_arg = atoi(argv[i+1]);
+      if(verbose) cout << "  * InitSession: a debug level is given: "<< sessinit_debugLevel_arg << endl;
+      i++;
+    }
 	  //**********************************
 	  // taf analysis GUIs
 	  //**********************************
@@ -544,24 +545,17 @@ Int_t main(Int_t argc, Char_t **argv)
     }
     */
     //------------------------------
-    // Data Path //TODO
+    // Data Path
     //------------------------------
-    /*
     if (! sessinit_dataDirPath_arg.IsNull()) // if "data path" arg is given
     {
       if(verbose) cout << "  * data path     <given>:   " << sessinit_dataDirPath_arg << endl;
     }
     else // if "data path" arg is NOT given
     {
-      sessinit_dataDirPath_arg = sessinit_dataDirPath_def; // then use default one (defined before)
-      if(verbose)
-      {
-	cout << "  * data path     <default>: ";
-	if (sessinit_dataDirPath_arg.IsNull()) cout << "InitSession() default value" << endl; // if this default value is "", use InitSession() default value
-	else                               cout << sessinit_dataDirPath_arg << endl; // if this default value is NOT "", use it
-      }
+      // sessinit_dataDirPath_arg = sessinit_dataDirPath_def; // then use default one (defined before)
+      if(verbose) cout << "  * data path taken from config file." << endl;
     }
-   */
     //------------------------------
     // InitSession
     //------------------------------
@@ -577,12 +571,14 @@ Int_t main(Int_t argc, Char_t **argv)
     cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
 
-    sprintf(tafcommand, "gTAF->InitSession(%s,%s,%s,\"%s\",\"%s\")",\
+    sprintf(tafcommand, "gTAF->InitSession(%s,%s,%s,\"%s\",\"%s\",\"%s\")",\
 	  sessinit_runnb_arg          .Data(),\
 	  sessinit_plane_arg          .Data(),\
 	  sessinit_ebm_arg            .Data(),\
 	  sessinit_cfgFilePath_arg    .Data(),\
-	  sessinit_cfgDir_arg         .Data());
+	  sessinit_cfgDir_arg         .Data(),\
+    sessinit_dataDirPath_arg    .Data()\
+    );
     cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
     //cout << "  return " << rvalue << endl;

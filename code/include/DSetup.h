@@ -75,6 +75,7 @@ class DSetup : public TObject {
   TString      fConfigPath;                 // name of the configuration path
   TString      fConfigFileName;             // name of the configuration file
   TString      fConfigPathAndFileName;      // both path and file name appended
+  TString      fSourcePath;                 // name of the data path (if not provided in config file)
 
   Int_t        DSetupDebug;
 
@@ -122,6 +123,7 @@ class DSetup : public TObject {
 
   void         SetConfigPath(TString aCP) ;
   void         SetConfigFileName(TString aCFN) ;
+  void         SetSourcePath(TString aSP) ;
   void         SetDebug(Int_t aDebug)             { DSetupDebug = aDebug; cout << "DSetup debug updated to " << DSetupDebug << endl;}
   DSession    *GetSession()                       { return fSession;}
   Int_t        GetDebug()                         { return DSetupDebug;}
@@ -385,7 +387,8 @@ class DSetup : public TObject {
   struct AcqParameter_t {
     Int_t      FileHeaderSize;       // size of the FileHeader
     Int_t      EventBufferSize;      // size given by ExaByte format
-    Int_t      FileHeaderLine;       // size of event header in Bytes
+    Int_t      FileHeaderLine;       // size of event header in Bytes (same as below, kept for bkw comp)
+    Int_t      EventHeaderSize;      // size of event header in Bytes
     Int_t      EventTrailerSize;     // size of event trailer in Bytes
     Int_t      ModuleTypes;          // number of acquisition modul types
                                      // e.g. a Sirocco of Type A, B, or LBL-Pixel device

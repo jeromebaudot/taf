@@ -49,7 +49,8 @@ vpath 	%.$(DllSuf) 		$(LIB_DIR)
 
 # Uncomment -g if you need debugger
 CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 \
- -Wno-unused-variable -Wno-unused-parameter -Wno-format-zero-length -Wno-unused-but-set-variable -Wno-sign-compare \
+ -Wno-unused-variable -Wno-unused-parameter -Wno-format-zero-length  -Wno-sign-compare \
+ #-Wno-unused-but-set-variable
  #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
 # LIBS        = $(ROOTLIBS)
 # GLIBS       = $(ROOTGLIBS)
@@ -72,7 +73,7 @@ endif
 
 DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
 		GIGBoardReader.h IMGBoardReader.h BoardReader.h VMEBoardReader.h  MCBoardReader.h BoardReaderIHEP.h \
-    AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h \
+    AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h BoardReaderMIMOSIS.h \
     DSession.h DSetup.h \
 		DAcq.h DTracker.h DPlane.h DStrip.h \
     DHit.h DTrack.h DLine.h DR3.h DCut.h DAlign.h \
@@ -87,7 +88,7 @@ MHDRS		= MAnalysis.h  MAlign.h MHist.h MRaw.h MRax.h MAlignment.h MMillepede.h M
 DTSRCS		= MMain.cxx \
 		TNTBoardReader.cxx PXIBoardReader.cxx PXIeBoardReader.cxx \
 		GIGBoardReader.cxx IMGBoardReader.cxx BoardReader.cxx VMEBoardReader.cxx MCBoardReader.cxx BoardReaderIHEP.cxx \
-    AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx \
+    AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx BoardReaderMIMOSIS.cxx \
     DSession.cxx DSetup.cxx \
 		DAcq.cxx DTracker.cxx  DPlane.cxx DStrip.cxx  \
 		DHit.cxx DTrack.cxx DLine.cxx DR3.cxx DCut.cxx DAlign.cxx \

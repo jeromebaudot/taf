@@ -6,7 +6,7 @@
 
 
   ////////////////////////////////////////////////////////////
-  // Class Description of DSession                          // 
+  // Class Description of DSession                          //
   //                                                        //
   // + frame for analysis of raw event data                 //
   // + dumps data on standard output                        //
@@ -43,7 +43,7 @@ class DSession : public TObject {
   Int_t          fEventsToDo;                  // number of events to read from tape/file
   Int_t          fCurrentEventNumber;	       // actual event number // VR 2014/07/13 renamed
   Int_t          fRunNumber;                   // the run number
-  TString        fConfigPath;                  // the path to the directory that contains telescope configuration files 
+  TString        fConfigPath;                  // the path to the directory that contains telescope configuration files
   TString        fConfigFileName;              // name of the configuration file
   TString        fRawSourcePath;               // path to the raw data source  (input)
   TString        fSummaryFilePath;             // path to the summary file (output)
@@ -63,20 +63,20 @@ class DSession : public TObject {
   DAcq          *fAcq;                         // pointer to Acquisition
 /*   DReader       *fReader;                      // pointer to Run Reader */
   DEvent        *fEvent;                       // pointer to an Event
-  TTree         *fEventTree;                   // pointer to the Tree 
+  TTree         *fEventTree;                   // pointer to the Tree
   Int_t          fFillLevel;                   // controls amount of info stored in Tree, JB 2011/07/21
   Int_t          fEventBuildingMode;           // To switch externally EventBuildingMode. SS 2011.11.14
-  
+
   Double_t    fTrackLimitsForAlignX[2];        // min-max in X for tracks used in alignment procedure, JB 2013/06/10
   Double_t    fTrackLimitsForAlignY[2];        // min-max in Y for tracks used in alignment procedure, JB 2013/06/10
   Double_t    fTrackChi2LimitForAlign;         // upper chi2 limit in alignment procedure, JB 2013/07/14
-  
+
   TStopwatch     fWatch;                       // to monitor event processing time JB, 2008/08/08
   TString        fBeamTime;
-  
+
   TFile         *fSummaryFile;                // pointer to data summary file
   DGlobalTools   fTool;                       // JB 2011/07/18
-  
+
   Bool_t        fDaqAbleToGoToAspecificEvent; // Is the DAQ able to go to a specific event ? // VR 2014/07/13
 
  public:
@@ -90,14 +90,14 @@ class DSession : public TObject {
   Int_t          GoToNextEvent(void);           // Specific method to ask the DAQ for a given event // VR 2014/07/13
   void           ResetDaq();                    // Restart event reading from the beginning, JB 2015/03/02
   void           Loop();                 // loop over events and fill .root
-  void           SetPlaneToScan(Int_t aPlnb) {fPlaneToScan = aPlnb ;}         
-  void           Scan() ;                // loop and plot plane data  
+  void           SetPlaneToScan(Int_t aPlnb) {fPlaneToScan = aPlnb ;}
+  void           Scan() ;                // loop and plot plane data
   void           Finish();
-  void           InitSession();						    
+  void           InitSession();
   void           FillTree();
 
   Int_t          GetDebug()                        { return fDebugSession;}
-  DEvent        *GetEvent()                        { return  fEvent;      }   
+  DEvent        *GetEvent()                        { return  fEvent;      }
   TTree         *GetEventTree()                    { return  fEventTree;  }
   TFile         *GetSummaryFile()                  { return  fSummaryFile;                 }
   DTracker      *GetTracker()                      { return  fTracker;                     }
@@ -108,8 +108,8 @@ class DSession : public TObject {
   TString        GetSummaryFileName()              { return  fSummaryFileName;             }
   TString        GetSummaryFileTitle()             { return  fSummaryFileTitle;            }
   TString        GetSummaryFilePath()              { return  fSummaryFilePath;             }
-  TString        GetRawSourcePath()                { return  fRawSourcePath;               } 
-  TString        GetConfigPath()                   { return  fConfigPath;} 
+  TString        GetRawSourcePath()                { return  fRawSourcePath;               }
+  TString        GetConfigPath()                   { return  fConfigPath;}
   TString        GetConfigFileName()               { return  fConfigFileName;}//VR 2014/06/29
   TString        GetResultDirName()                { return  fResultDir;                   } // JB 2009/09/14
   TString        GetResultsDirParent()             { return  fResultsDirParent;            }
@@ -122,8 +122,8 @@ class DSession : public TObject {
   Int_t          GetCurrentEventNumber()           { return  fCurrentEventNumber;          } // VR 2014/07/13
 
   void           SetRunNumber(Int_t aRunNumber)    { fRunNumber  = aRunNumber;             }
-  void           SetEvents(Int_t aNumberOfEvents)  { fEventsToDo += aNumberOfEvents;       } 
-  void 		 SetEventsToDo(Int_t aNumberOfEventsToDo) { fEventsToDo = aNumberOfEventsToDo;};//VR 2014/06/29
+  void           SetEvents(Int_t aNumberOfEvents)  { fEventsToDo += aNumberOfEvents;       }
+  void 		       SetEventsToDo(Int_t aNumberOfEventsToDo) { fEventsToDo = aNumberOfEventsToDo;};//VR 2014/06/29
   void           SetStatus(Int_t aStatus)          { fStatus = aStatus;     cout << endl << "The Session status just changed to " << aStatus << endl;
 } // JB 2009/07/17
   void           SetFillLevel( Int_t aLevel)       { fFillLevel = aLevel; } // JB 2011/07/21
@@ -140,26 +140,25 @@ class DSession : public TObject {
   void           SetSummaryFileName(TString aSummaryFileName){ fSummaryFileName = aSummaryFileName; }
   void           SetSummaryFilePathAndName() { fSummaryFilePathAndName = fSummaryFilePath + "/" + fSummaryFileName; }
   //void		 SetWeightFile( TString aFileName); // JB 2011/04/12
-  
-  void           SetPlaneNumber(Int_t aPlaneNumber){ fPlaneNumber = aPlaneNumber;};  
+
+  void           SetPlaneNumber(Int_t aPlaneNumber){ fPlaneNumber = aPlaneNumber;};
   void           SetDebug(Int_t aDebug);
   void           SetTrackGeoLimitsForAlign(Double_t xmin, Double_t xmax, Double_t ymin, Double_t ymax); // JB 2013/06/11
   void           GetTrackGeoLimitsForAlign(Double_t &xmin, Double_t &xmax, Double_t &ymin, Double_t &ymax); // JB 2013/06/11
   void           SetTrackChi2LimitForAlign( Double_t aLimit); // JB 2013/07/14
   Double_t       GetTrackChi2LimitForAlign() { return fTrackChi2LimitForAlign; } // JB 2013/07/14
 
-    static  DSession*& Instance() { 
-      if (!fgInstance)  fgInstance = new  DSession("options"/*'s'*/); 
-      return fgInstance; 
+    static  DSession*& Instance() {
+      if (!fgInstance)  fgInstance = new  DSession("options"/*'s'*/);
+      return fgInstance;
     }
-   
+
   ClassDef(DSession,1)                         // Frame for event loops
 };
 
 //R__EXTERN DSession  *tSession;
 
-//#define tSession DSession::Instance() 
-    
+//#define tSession DSession::Instance()
+
 
 #endif
-

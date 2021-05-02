@@ -374,6 +374,11 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
   fVarRefDevs = vr; // number of variable reference planes
   fTestDevs   = dut;// number of DUT planes
 
+  fSearchHitDistance          = (Double_t)fc->GetTrackerPar().SearchHitDistance; // JB, 2009/05/25
+  fSearchMoreHitDistance      = (Double_t)fc->GetTrackerPar().SearchMoreHitDistance; // VR, 2014/06/29
+  fKeepUnTrackedHitsBetw2evts = fc->GetTrackerPar().KeepUnTrackedHitsBetw2evts; // VR, 2014/08/26
+  fTrackingPlaneOrderType     = (Int_t)   fc->GetTrackerPar().TrackingPlaneOrderType;// VR, 2014/07/14
+
   if( fTracksMaximum>0 ) { // if tracking required
     
     printf("DTracker, Track Seed         : %d:",ts);
@@ -520,11 +525,6 @@ DTracker::DTracker(DSetup& c, DAcq& aAcq)
     }
 
   } // end if tracking required
-
-  fSearchHitDistance          = (Double_t)fc->GetTrackerPar().SearchHitDistance; // JB, 2009/05/25
-  fSearchMoreHitDistance      = (Double_t)fc->GetTrackerPar().SearchMoreHitDistance; // VR, 2014/06/29
-  fKeepUnTrackedHitsBetw2evts = fc->GetTrackerPar().KeepUnTrackedHitsBetw2evts; // VR, 2014/08/26
-  fTrackingPlaneOrderType     = (Int_t)   fc->GetTrackerPar().TrackingPlaneOrderType;// VR, 2014/07/14
 
 
 	// Init of fRequiredHits removed since it is call by SetAlignStatus, JB 2013/08/27
