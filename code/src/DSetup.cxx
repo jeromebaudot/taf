@@ -691,6 +691,11 @@ void DSetup::ReadRunParameters()
   RunParameter.NoiseRun = 0;
   RunParameter.PixelGainRun = 0;
 
+  if( !fSourcePath.IsNull() ) { // Read the path only if not set already
+    sprintf( RunParameter.DataPath, "%s", fSourcePath.Data());
+    DGlobalTools aTool;
+    sprintf( RunParameter.DataPath, "%s", aTool.LocalizeDirName( RunParameter.DataPath)); // JB 2011/07/07
+  }
 
   do {
 
