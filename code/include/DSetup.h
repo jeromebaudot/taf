@@ -387,7 +387,8 @@ class DSetup : public TObject {
   struct AcqParameter_t {
     Int_t      FileHeaderSize;       // size of the FileHeader
     Int_t      EventBufferSize;      // size given by ExaByte format
-    Int_t      FileHeaderLine;       // size of event header in Bytes
+    Int_t      FileHeaderLine;       // size of event header in Bytes (same as below, kept for bkw comp)
+    Int_t      EventHeaderSize;      // size of event header in Bytes
     Int_t      EventTrailerSize;     // size of event trailer in Bytes
     Int_t      ModuleTypes;          // number of acquisition modul types
                                      // e.g. a Sirocco of Type A, B, or LBL-Pixel device

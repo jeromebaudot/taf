@@ -35,6 +35,7 @@ private:
   int             fTriggerMode;
   int             fEventBuildingMode;
   bool            fVetoOverflow;
+  int             fEndianness;       // 0= do not swap bytes, 1= swap bytes
 
   int             fSizeOfHeader;
   int             fSizeOfTrailer;
@@ -65,7 +66,7 @@ private:
 
 public:
 
-  BoardReaderMIMOSIS(int boardNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0);
+  BoardReaderMIMOSIS(int boardNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int headerSize=0, int trailerSize=0, int endianness=0);
   ~BoardReaderMIMOSIS();
 
   void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderMIMOSIS " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }

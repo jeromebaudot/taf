@@ -464,9 +464,14 @@ DAcq::DAcq(DSetup& c)
         case 13:
 
         fUseTimestamp[mdt-1][mdl-1] = kFALSE;
-        fMSIS[iModule] = new BoardReaderMIMOSIS( iModule, fc->GetAcqPar().TriggerMode, fc->GetModulePar(mdt).EventBuildingBoardMode);
+        fMSIS[iModule] = new BoardReaderMIMOSIS( iModule,
+            fc->GetAcqPar().TriggerMode,
+            fc->GetModulePar(mdt).EventBuildingBoardMode,
+            fc->GetAcqPar().EventHeaderSize,
+            fc->GetAcqPar().EventTrailerSize,
+            fc->GetAcqPar().BinaryCoding);
         fMSIS[iModule]->SetDebugLevel( fDebugAcq);
-        fMSIS[iModule]->SetVetoPixel( 0); // To be decided
+        fMSIS[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
           if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
             sprintf( aBaseName, "%s", fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);

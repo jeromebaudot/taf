@@ -15,7 +15,7 @@
 ClassImp(BoardReaderMIMOSIS);
 
 //------------------------------------------+-----------------------------------
-BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, int nSensors, int triggerMode, int eventBuildingMode) {
+BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, int nSensors, int triggerMode, int eventBuildingMode, int headerSize, int trailerSize, int endianness) {
   // Board creator
   // ==> OF COURSE the list of arguments might be changed if needed! <==
 
@@ -24,11 +24,10 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, int nSensors, int trigge
   fNSensors = nSensors;
   fTriggerMode = triggerMode;
   fEventBuildingMode = eventBuildingMode;
+  fSizeOfHeader = headerSize;
+  fSizeOfTrailer = trailerSize;
+  fEndianness = endianness;
   fVetoOverflow = false; // set later by SetVetoPixel
-
-  // Needed ?
-  // fSizeOfHeader;
-  // fSizeOfTrailer;
 
 
   cout << "*****************************************" << endl;
@@ -39,7 +38,9 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, int nSensors, int trigge
   cout << " * nb of sensors: " << fNSensors << endl;
   cout << " * trigger mode: " << fTriggerMode << endl;
   cout << " * event building mode: " << fEventBuildingMode << endl;
-  cout << " * usage of veto for event with overflow: " << (fVetoOverflow?"YES":"NO") << endl;
+  cout << " * event header & trailer sizes: " << fSizeOfHeader << " & " << fSizeOfTrailer << endl;
+  cout << " * Endiannes: " << fEndianness << " => " << (fEndianness==0?"NO SWAP":"SWAP") << endl;
+  cout << " * usage of veto for event with overflow: " << fVetoOverflow << " => " << (fVetoOverflow?"YES":"NO") << endl;
 
   // Initialization
   fCurrentFileNumber = 0; // See also AddFileList
