@@ -465,6 +465,7 @@ DAcq::DAcq(DSetup& c)
 
         fUseTimestamp[mdt-1][mdl-1] = kFALSE;
         fMSIS[iModule] = new BoardReaderMIMOSIS( iModule,
+	    fc->GetModulePar(mdt).Inputs,
             fc->GetAcqPar().TriggerMode,
             fc->GetModulePar(mdt).EventBuildingBoardMode,
             fc->GetAcqPar().EventHeaderSize,
@@ -474,12 +475,12 @@ DAcq::DAcq(DSetup& c)
         fMSIS[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
           if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
-            sprintf( aBaseName, "%s", fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
+            sprintf( aBaseName, "%s%d", fc->GetModulePar(mdt).DeviceDataFile[mdl-1], fRunNumber);
           } else {
-            sprintf( aBaseName, "RUN_%d_", fRunNumber);
+            sprintf( aBaseName, "RUN_%d", fRunNumber);
           }
         } else {
-          sprintf( aBaseName, "RUN_%d_", fRunNumber);
+          sprintf( aBaseName, "RUN_%d", fRunNumber);
         }
         sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
         if( !( fMSIS[iModule]->AddFileList( aFileName, fc->GetRunPar().StartIndex, fc->GetRunPar().EndIndex, fc->GetRunPar().Extension ) ) ) {
@@ -2075,6 +2076,7 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
             // Set values for hit pixels
             for( Int_t iPix=0; iPix<readerEvent->GetNumberOfPixels(); iPix++) { // loop on Pixels
               readerPixel = (BoardReaderPixel*)readerEvent->GetPixelAt( iPix);
+	              cout << " Got pixel " << iPix << " for input " << readerPixel->GetInput() << endl;
               aPlaneNumber = fMatchingPlane[mdt-1][mdl-1][readerPixel->GetInput()-1][0];
               if(fDebugAcq>2) cout << "  pixel " << iPix << " line " << readerPixel->GetLineNumber() << " column " << readerPixel->GetColumnNumber() << " at timestamp " << readerPixel->GetTimeStamp() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << endl;
               DPixel* APixel = new DPixel( aPlaneNumber, readerPixel->GetLineNumber(), readerPixel->GetColumnNumber(), (Double_t)readerPixel->GetValue(), readerPixel->GetTimeStamp());

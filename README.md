@@ -1,17 +1,18 @@
 *********************************************************************************************************
-NOTES ON TAF code :
-	- basic recipes & doc
+# NOTES ON TAF code  
+
+- basic recipes & doc
   ( releases -> moved to independant file releases.txt )
-	- examples
-	- comments on features
-	- to do list for developers
+- examples
+- comments on features
+- to do list for developers
 *********************************************************************************************************
 Contact: baudot@in2p3.fr, auguste.besson@iphc.cnrs.fr
 
 Web page: http://www.iphc.cnrs.fr/TAF.html
 
 *********************************************************************************************************
-BASIC RECIPES & DOC
+## BASIC RECIPES & DOC
 *********************************************************************************************************
 
 Before doing anything, set the configuration:
@@ -33,20 +34,26 @@ gTAF->InitSession([runNumber])
 gTAF->SetDebug([level])
 gTAF->Help();
 
-Note that TAF accepts arguments:
+Note that TAF accepts arguments that can speed up the initialisation step:
 - run TAF --help to know more
 - run TAF on a specific run, use
   TAF -run runNumber
 - run TAF on a specific run but a generic config file, use
   TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg
+- run TAF on a specific run but a generic config file and specify the data-path, use
+  TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg -data /mydatapath
 - run TAF on a specific run and with config file in a specific directory, used
   TAF -run runNumber -cfgdir myConfigDir
+- run TAF with any of the above options and open directly the GUI, use (for instance)
+  TAF -run runNumber -gui
+- run TAF with any of the above options and set a debug level
+  TAF -run runNumber -debug 2 
 
 To compile the software:
-The prefered way is to use the command (from anywhere): maketaf
-- Method 1) (equivalent to maketaf script)
+- Prefered method, use the command (from anywhere): maketaf
+- Alternative method 1) (equivalent to maketaf script)
 > cd code; make
-- Method 2) only since v2.6.1 <== deprecated, not checked since ages!!!
+- Alternative method 2) only since v2.6.1 <== deprecated, not checked since ages!!!
 > root Scripts/compiltaf.C
 
 To copy the software
@@ -55,7 +62,7 @@ To copy the software
 
 
 *********************************************************************************************************
-EXAMPLES
+## EXAMPLES
 *********************************************************************************************************
 
 A number of configuration files are provided as examples inside the config_TEST directory. They shall work anywhere,
@@ -129,7 +136,7 @@ located
 
 
 *********************************************************************************************************
-COMMENTS ON FEATURES
+## COMMENTS ON FEATURES
 *********************************************************************************************************
 
 - compilation
@@ -168,7 +175,7 @@ COMMENTS ON FEATURES
     min value is 0.5 in DHit::Analyse and in DPixel::GetPulseHeightToNoise
 
 *********************************************************************************************************
-TO DO LIST FOR DEVELOPERS
+## TO DO LIST FOR DEVELOPERS
 *********************************************************************************************************
 
 * HIGH PRIORITY

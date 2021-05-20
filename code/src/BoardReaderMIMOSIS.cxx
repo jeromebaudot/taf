@@ -74,11 +74,14 @@ bool BoardReaderMIMOSIS::AddFileList(string prefixFileName, int startIndex, int 
   bool rc = true;
   std::string fileName;
 
-  if(fDebugLevel) cout <<  "BoardReaderMIMOSIS::AddFileList => Adding files with indexes from " << startIndex << " to " << endIndex << endl;
+  if(fDebugLevel) {
+    cout << "BoardReaderMIMOSIS::AddFileList => Adding files with indexes from " << startIndex << " to " << endIndex;
+    cout << " prefix=" << prefixFileName << ", suffix=" << suffixFileName << endl;
+  }
 
   // Try each filename looping on indexes, and keep in the list only the good ones
   for (size_t iFile = startIndex; iFile <= endIndex; iFile++) {
-    fileName = prefixFileName + std::to_string(iFile) + suffixFileName;
+    fileName = prefixFileName + "_" + std::to_string(iFile) + suffixFileName;
     if(fDebugLevel>1) cout << "  trying file " << fileName << endl;
   	fRawFileStream.open( fileName);
   	if( fRawFileStream.fail() ) {
@@ -92,7 +95,6 @@ bool BoardReaderMIMOSIS::AddFileList(string prefixFileName, int startIndex, int 
       fRawFileStream.close();
     }
   }
-  cout << "#files OK = " << fListInputFileNames.size() << " out of " << endIndex-startIndex+1 << endl;
 
   // If there is only one file, try a filename without an index
   if ( !rc &&  endIndex==startIndex ) {
@@ -110,6 +112,8 @@ bool BoardReaderMIMOSIS::AddFileList(string prefixFileName, int startIndex, int 
       fRawFileStream.close();
     }
   }
+
+  cout << "#files OK = " << fListInputFileNames.size() << " out of " << endIndex-startIndex+1 << endl;
 
   // if at least one file is OK, reopens the very first file
   if ( fListInputFileNames.size() == 0 ) {
@@ -241,7 +245,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
   fListOfTriggers.push_back( fCurrentEventNumber);
   fListOfTimestamps.push_back( 0);
   fListOfFrames.push_back( fCurrentEventNumber);
-  for (size_t iSensor = 0; iSensor < fNSensors; iSensor++) {
+  for (size_t iSensor = 1; iSensor <= fNSensors; iSensor++) {
     // shoot 100 pixels in 1 row, which position depends on sensor
     for (size_t iCol = 0; iCol < 100; iCol++) {
       AddPixel( iSensor, 1, iSensor*10+50, iSensor*10+iCol);
@@ -263,7 +267,7 @@ void BoardReaderMIMOSIS::AddPixel( int iSensor, int value, int aLine, int aColum
    // - line & column = position of the pixel in the matrix
    // - time = something related to the frame or the trigger
 
-//  if (vi_Verbose<2) printf("BoardReaderMIMOSIS::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
+  if (fDebugLevel>3) printf("BoardReaderMIMOSIS::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
 
   fListOfPixels.push_back( BoardReaderPixel( iSensor, value, aLine, aColumn, aTime) );
 
