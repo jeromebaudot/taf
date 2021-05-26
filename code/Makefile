@@ -24,9 +24,9 @@
 # You should use the Makefile.arch provided with your installation (choice 1a or 1b depending on ROOT VERSION)
 # If not available, you can use the given Makefile.arch (choice 2)
 
-include $(ROOTSYS)/etc/Makefile.arch # choice 1a
+#include $(ROOTSYS)/etc/Makefile.arch # choice 1a
 #include $(ROOTSYS)/test/Makefile.arch # choice 1b (old ROOT versions)
-#include ./Makefile.arch # choice 2
+include ./Makefile.arch # choice 2
 # ----------------------------------------
 #        SVN revision <-- DEPRECATED
 # TAF welcome message displays the SVN revision of the code used during the compilation
@@ -71,7 +71,7 @@ endif
 
 #------------------------------------------------------------------------------
 
-DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
+DTHDRS          = TNTBoardReader.h PXIBoardReader.h \
 		GIGBoardReader.h IMGBoardReader.h BoardReader.h VMEBoardReader.h  MCBoardReader.h BoardReaderIHEP.h \
     AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h BoardReaderMIMOSIS.h \
     DSession.h DSetup.h \
@@ -86,7 +86,7 @@ DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
 MHDRS		= MAnalysis.h  MAlign.h MHist.h MRaw.h MRax.h MAlignment.h MMillepede.h MGlobalAlign.h MKalmanFilter.h MLeastChiSquare.h
 
 DTSRCS		= MMain.cxx \
-		TNTBoardReader.cxx PXIBoardReader.cxx PXIeBoardReader.cxx \
+		TNTBoardReader.cxx PXIBoardReader.cxx  \
 		GIGBoardReader.cxx IMGBoardReader.cxx BoardReader.cxx VMEBoardReader.cxx MCBoardReader.cxx BoardReaderIHEP.cxx \
     AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx BoardReaderMIMOSIS.cxx \
     DSession.cxx DSetup.cxx \

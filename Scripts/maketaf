@@ -18,7 +18,7 @@
 #       CONFIG
 ########################
 MAKEDIR="$DTDIR/code";
-MAKECOMMAND="make";
+MAKECOMMAND="make -j8";
 #MAKECOMMAND="make -j 4";
 
 # default values, affected by args : 

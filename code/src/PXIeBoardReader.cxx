@@ -15,7 +15,7 @@
 //    FramesToSkipAtEndOfAcqForTrig
 //    TriggerLineOffset
 //    FramesPostTrigger
-//  
+//
 // 
 //							   
 // Terminology:
@@ -86,7 +86,7 @@
 #endif 
 #ifdef PXI_DAQ_LIB_VERSION_1_2 
 #include "pxi_daq_lib_v.1.2/daq_lib.h" 
-#include "pxi_daq_lib_v.1.2/daq_lib.c" 
+#include "pxi_daq_lib_v.1.2/daq_lib.c"
 #endif 
 #ifdef PXI_DAQ_LIB_VERSION_2_1 
 #include "pxi_daq_lib_v.2.1/daq_lib.c" 
@@ -96,7 +96,12 @@
 #include "pxi_daq_lib_v.3.1/daq_lib.c" 
 #define  PXI_DAQ_LIB_WITH_FSBB
 #endif
-
+/*
+#ifdef PXI_DAQ_LIB_VERSION_4_1
+#include "mimo_daq_lib/mimo_daq_lib.h"
+#include "mimo_daq_lib/mimo_daq_lib.c"
+#endif
+*/
 ClassImp(PXIeBoardReader)
 ClassImp(PXIeEvent)
 
@@ -104,7 +109,7 @@ ClassImp(PXIeEvent)
 // --------------------------------------------------------------------------------------
 
 int PXIeBoardReader::test (char *path, int runNumber, int MimosaType) {
-  
+    
   // This method is kept as a test,
   // it is an exact copy of the original demo method by Gilles
   // to use the DAQ library
@@ -171,8 +176,7 @@ int PXIeBoardReader::test (char *path, int runNumber, int MimosaType) {
   /* ------------------------------------------ */
   /* Messages logging macros demo               */
   /* ------------------------------------------ */
-  
-  msg  (( MSG_OUT, "This is a general message - with default LogLvl = 1 - VMyVar=%d", VMyVar ));
+  msg  (( MSG_OUT, "This is a general message - with default LogLvl = 1 VMyVar=%d", VMyVar ));
   msg  (( MSG_OUT, "sizeof (EFRIO__TRunCont) = %lu", sizeof (EFRIO__TRunCont) ));
   
   
@@ -332,7 +336,8 @@ PXIeBoardReader::PXIeBoardReader( int boardNumber, char *configFileName, int run
   cout << "*****************************************" << endl;
   cout << "    < PXIeBoardReader constructor >      " << endl; 
   cout << "*****************************************" << endl;  
-  
+  cout << "***********Checking by Ziad**************" << endl;
+    
   cout << "Creating a PXIeBoardReader" << endl;
   cout << " * for board : " << boardNumber << endl;
   cout << " * for runNumber : " << runNumber << endl;
@@ -443,6 +448,8 @@ PXIeBoardReader::PXIeBoardReader( int boardNumber, char *configFileName, int run
   err_trace   (( ERR_OUT, "This is a trace message   - VMyVar=%d", VMyVar ));
   err_warning (( ERR_OUT, "This is a warning message - VMyVar=%d", VMyVar ));
   err_error   (( ERR_OUT, "This is an error message  - VMyVar=%d", VMyVar ));
+  
+  msg  (( MSG_OUT, "Writing check is done in PXIeBoardReader.cxx by ZIAD")); //Added by Ziad on May 11, 2021
   msg  (( MSG_OUT, "This is a general message - with default LogLvl = 1 - VMyVar=%d", VMyVar ));
   msg  (( MSG_OUT, "sizeof (EFRIO__TRunCont) = %lu", sizeof (EFRIO__TRunCont) ));
   APP__FPrintRecSzChkAlign ( (char*)"Linux" );
@@ -701,7 +708,7 @@ bool PXIeBoardReader::ReadConfiguration() {
     hLineOverFlowDist[Sensor_Idx]->GetYaxis()->CenterTitle(true);
     hLineOverFlowDist[Sensor_Idx]->SetLineColor(4);
     hLineOverFlowDist[Sensor_Idx]->SetLineWidth(2);
-    cout << HistName.Data() << "   " << HistTitle.Data() << endl;
+    cout << HistName.Data() << "  toto  " << HistTitle.Data() << endl;
 #if 0
     for(int iframe=0;iframe<FramesToReadInEvent;iframe++) {
       HistName  = TString("hHitMapInFrame_Sensor") + long(Sensor_Idx+1) + TString("_EvtFrame") + long(iframe);

@@ -1,0 +1,785 @@
+ 
+/**
+* ----------------------------------------------------------------------------------
+* \file              X:\lib\com\maps\msis1\data\msis1_data.def
+* \brief Goal      : Macros definition of Mimosis 1 lib 
+* \brief
+* \brief
+* \version         : 1.0
+* \date Prj date   : 03/05/2019
+* \date File date  : 03/05/2019
+* \date Doc date   : 03/05/2019
+* \author          : Gilles CLAUS
+* \author          : gilles.claus@iphc.cnrs.fr
+* \author          : CNRS - IN2P3 - IPHC 23 Rue du Loess 67037 STYRASBOURG
+*
+* Remark : None
+*
+* ----------------------------------------------------------------------------------
+* License   : GNU General Public License
+*
+* ----------------------------------------------------------------------------------
+*/
+
+
+#ifndef MIMOSIS1_DEF
+#define MIMOSIS1_DEF
+
+
+ 
+  
+// ===================================================================================
+// * Simple / short macros (comment not processed by DOXYGEN)
+// *
+// ===================================================================================
+
+// ===================================================================================
+// * \brief general data stream macros
+// *
+// ===================================================================================
+
+
+/**
+===================================================================================
+* \def MIS1__CC_DATA_FORMAT_SINCE_V211
+*
+* \brief Must be define for DAQ SW version >= 211, undefined otherwise \n
+* \brief It must be specified in DAQ and run file reader applications  \n
+* \brief \n
+* \brief It is a bit complicated to explain ... \n
+* \brief \n
+* \brief DAQ versions <= 210 use DAQ MSis 1 (X:\lib\win\daq_mimosis1) for buffers     \n
+* \brief handling and data saving on disk. But this lib is designed for buffers size  \n
+* \brief specified in W64, if it is not an integer W64 number, data saving to disk    \n
+* \brief will be corrupted. It is not a problem for RAW data which are N x W128, but  \n
+* \brief for processed data, like DEC format. This problem has beend etected during   \n
+* \brief DAQ app dev, in order to test DAQ, the record MIS1__TPixXY, MIS1__TDecFrPixHeader \n
+* \brief sizes have been adjusted to be an integer W64 number (fields size, padding)  \n * \brief
+* \brief this configuration is used if MIS1__CC_DATA_FORMAT_SINCE_V211 is DISABLED
+* \brief
+* \brief DAQ versions >= 211 solve this problem by using a new library buffers files  \n * \brief 
+* \brief (X:\lib\com\buffers_files) whihc handles buffers, files as W8, this configuration \n
+* \brief is used if MIS1__CC_DATA_FORMAT_SINCE_V211 is ENABLED
+* \brief
+* \brief
+*
+* G.CLAUS 15/06/2020
+*
+===================================================================================
+*/
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// WARNING : This CC directive must be defined in applications app.def file, NOT HERE
+// It is here - in commnet - to remeber you that it MUST be defined or NOT in applications
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+// #define MIS1__CC_DATA_FORMAT_SINCE_V211  /*! Must be set or not in function of DAQ app version */
+//
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+/**
+===================================================================================
+* \def MIS1_DEF_ERR_LOG_FILE
+*
+* \brief Default errors log file name
+*
+* G.CLAUS 01/07/2020
+*
+===================================================================================
+*/
+
+#define MIS1_DEF_ERR_LOG_FILE "c:/tmp/msis1_data_err.txt"
+
+
+/**
+===================================================================================
+* \def MIS1_DEF_LOG_LVL_ERRORS
+*
+* \brief Default errors log level
+*
+* G.CLAUS 01/07/2020
+*
+===================================================================================
+*/
+
+#define MIS1_DEF_LOG_LVL_ERRORS ERR_LOG_LVL_WARNINGS_ERRORS
+
+
+/**
+===================================================================================
+* \def MIS1__MAX_WARN_ERR_REC
+*
+* \brief Mimosis 1 maximum error / warnign record nb
+*
+* G.CLAUS 24/02/2021
+*
+===================================================================================
+*/
+
+
+#define MIS1__MAX_WARN_ERR_REC 1000
+
+
+/**
+===================================================================================
+* \def MIS1__MAX_OUT_NB
+*
+* \brief Mimosis 1 maximum outputs number = 8
+*
+* G.CLAUS 14/11/2019
+*
+===================================================================================
+*/
+
+#define MIS1__MAX_OUT_NB 8  /*! Mimosis 1 maximum outputs number */
+
+
+/**
+===================================================================================
+* \def MIS1__MAT_NB
+*
+* \brief Mimosis 1 matices nb = 8
+*
+* G.CLAUS 14/05/021
+*
+===================================================================================
+*/
+
+#define MIS1__MAT_NB 4  /*! Mimosis 1 matices nb = 8 */
+
+
+
+/**
+===================================================================================
+* \def MIS1__COL_NB
+*
+* \brief Mimosis 1 columns number = 1024
+*
+* G.CLAUS 14/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__COL_NB 1024  /*! Mimosis 1 columns number */
+
+
+////
+
+/**
+===================================================================================
+* \def MIS1__COL_PER_PE
+*
+* \brief Mimosis 1 columns number per priority encoder  = 2
+*
+* G.CLAUS 29/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__COL_PER_PE 2 /*! Mimosis 1 columns number per priority encoder */
+
+
+/**
+===================================================================================
+* \def MIS1__STR_COL_LIST_MAX_SZ
+*
+* \brief Maximum length of string used to print columns list or pixels stateof one line
+*
+* G.CLAUS 23/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__STR_COL_LIST_MAX_SZ (MIS1__COL_NB * 15)  /*! Maw lenght of columns list string */
+
+
+/**
+===================================================================================
+* \def MIS1__ROW_NB
+*
+* \brief Mimosis 1 rows number = 504
+*
+* G.CLAUS 14/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__ROW_NB 504  /*! Mimosis 1 rows number */
+
+
+/**
+===================================================================================
+* \def MIS1__ROW_NB
+*
+* \brief Mimosis 1 pixels number = 1024 * 504 = 516 096
+*
+* G.CLAUS 22/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__PIX_NB (MIS1__COL_NB * MIS1__ROW_NB)  /*! Mimosis 1 pixels number */
+
+
+/**
+===================================================================================
+* \def MIS1__PE_NB
+*
+* \brief Mimosis 1 PE total number for the whole matrix
+*
+* G.CLAUS 22/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__PE_NB (MIS1__COL_NB / 2)   /*! Mimosis 1 PE total number  */
+
+
+/**
+===================================================================================
+* \def MIS1__PE_PER_REG
+*
+* \brief Mimosis 1 PE number per region  = 8
+*
+* G.CLAUS 14/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__PE_PER_REG 8  /*! Mimosis 1 PE number per region */
+
+
+/**
+===================================================================================
+* \def MIS1__PE_PER_SREG
+*
+* \brief Mimosis 1 PE number per super region  = 32
+*
+* G.CLAUS 22/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__PE_PER_SREG (MIS1__PE_PER_REG * 4)  /*! Mimosis 1 PE number per super region */
+
+/**
+===================================================================================
+* \def MIS1__COL_PER_REG
+*
+* \brief Mimosis 1 columns number per region  = 16
+*
+* G.CLAUS 29/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__COL_PER_REG 16  /*! Mimosis 1 columns number per region */
+
+
+/**
+===================================================================================
+* \def MIS1__COL_PER_SREG
+*
+* \brief Mimosis 1 columns number per super region  = 64
+*
+* G.CLAUS 29/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__COL_PER_SREG 64  /*! Mimosis 1 columns number per region */
+
+
+/**
+===================================================================================
+* \def MIS1__DS_MAX_REGION_NB
+*
+* \brief Maximum region nb in data stream, known value on 07/05/2019 is 64
+*
+* It is used to define the size of the pointer array on the regions + data blocs
+* contained in one frame. One frame mean data stream between header and trailer
+* it can be longer than Mimosis frame readout time = 5 us.
+*
+* G.CLAUS 07/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__DS_MAX_REGION_NB 64  /*! Maximum region nb in data stream /  */
+
+/**
+===================================================================================
+* \def MIS1__DS_FR_HEADER_SZ_W16
+*
+* \brief Frame header size in W16 fields units, known value on 07/05/2019 is 8
+*
+* It idefines the array field size of the frame header union
+*
+* G.CLAUS 07/05/2019
+*
+===================================================================================
+*/
+
+#define MIS1__DS_FR_HEADER_SZ_W16 8
+
+/**
+===================================================================================
+* \def MIS1__DS_REG_HEADER_SZ_W16
+*
+* \brief Region header size in W16 fields units, known value on 07/05/2019 is 2
+*
+* It idefines the array field size of the region header union
+*
+* G.CLAUS 07/05/2019
+*
+===================================================================================
+*/
+
+// #define MIS1__DS_REG_HEADER_SZ_W16 2 // Seems to be not needed, regsion header sz = 1 W16
+
+
+
+/**
+===================================================================================
+* \def MIS1__DS_TOT_FRAME_SZ_W128
+*
+* \brief Maximum size in W128 of one frame (header, data, iddle, checksum, trailer)
+*
+* G.CLAUS 02/07/2019
+*
+===================================================================================
+*/
+
+// #define MIS1__DS_TOT_FRAME_SZ_W128  (100 * 8)
+
+// 02/06/2020 - Increase max frame length, following discussion with FM
+//
+// Max 5 us frame size = 100 W128
+// Data frame can run over 8 x 5 us frames => x 8
+// x 8 has to be checked with FM later 
+
+// 17/07/2020
+// Set again max frame length to 100 W128 and not 800 W128 because
+// - DAQ FW doesn't work if block size read by sw < 256 W64, therefore in case of small
+// frame length (few data), fr nb / acq must be increased, and this is not possible max fr size
+// = 800 W128 because buffers allocation will fail.
+// - Max frame size = 100 W128 allows for ~ 800 pixels / frame, which in enough for tests
+
+#define MIS1__DS_TOT_FRAME_SZ_W128  100
+
+
+/**
+===================================================================================
+* \def MIS1__DS_TOT_FRAME_SZ_W64
+*
+* \brief Maximum size in W64 of one frame (header, data, iddle, checksum, trailer)
+*
+* G.CLAUS 06/12/2019
+*
+===================================================================================
+*/
+
+#define MIS1__DS_TOT_FRAME_SZ_W64 MIS1__DS_TOT_FRAME_SZ_W128 * 2
+
+
+/**
+===================================================================================
+* \def MIS1__DS_TOT_FRAME_SZ_W32
+*
+* \brief Maximum size in W32 of one frame (header, data, iddle, checksum, trailer)
+*
+* G.CLAUS 06/12/2019
+*
+===================================================================================
+*/
+
+#define MIS1__DS_TOT_FRAME_SZ_W32 MIS1__DS_TOT_FRAME_SZ_W128 * 4
+
+
+/**
+===================================================================================
+* \def MIS1__DS_TOT_FRAME_SZ_W16
+*
+* \brief Maximum size in W16 of one frame (header, data, iddle, checksum, trailer)
+*
+* G.CLAUS 02/07/2019
+*
+===================================================================================
+*/
+
+#define MIS1__DS_TOT_FRAME_SZ_W16 MIS1__DS_TOT_FRAME_SZ_W128 * 8
+
+
+/**
+===================================================================================
+* \def MIS1__FRAME_PIX_LIST_MAX_PIX_NB
+*
+* \brief Maximum number of pixels in MIS1__TFrPixList
+*
+* G.CLAUS 08/06/2020
+*
+===================================================================================
+*/
+
+#define MIS1__FRAME_PIX_LIST_MAX_PIX_NB 800
+
+
+/**
+===================================================================================
+* \def MIS1__DS_TOT_FRAME_SZ_W8
+*
+* \brief Maximum size in W8 of one frame (header, data, iddle, checksum, trailer)
+*
+* G.CLAUS 06/12/2019
+*
+===================================================================================
+*/
+
+#define MIS1__DS_TOT_FRAME_SZ_W8 MIS1__DS_TOT_FRAME_SZ_W128 * 16
+
+
+// ===================================================================================
+// * Simple / short macros (comment not processed by DOXYGEN)
+// *
+// ===================================================================================
+
+
+// ===================================================================================
+// * \brief Macro tags to indentify the type of W16 in data stream
+// *
+// ===================================================================================
+
+
+/**
+===================================================================================
+* \enum MIS1__EDsTag
+*
+* \brief Tags to identify the type of W16 in data stream
+*
+*
+* G.CLAUS 06/05/2019
+*
+===================================================================================
+*/
+
+typedef enum  {
+    
+  MIS1__DS_TAG_EMPTY    = 0XFCAA, /*!< Data stream word tag (b15b00) indicating an empty W16        */
+  MIS1__DS_TAG_HEADER   = 0XFE00,   /*!< Data stream word tag (b15b08) indicating a header W16        */
+  MIS1__DS_TAG_TRAILER  = 0XFF00,   /*!< Data stream word tag (b15b08) indicating a trailer W16       */
+  MIS1__DS_TAG_REGION   = 0XFD00,   /*!< Data stream word tag (b15b08) indicating a region header w16 */
+  MIS1__DS_TAG_SPARE_1  = 0XFC00,   /*!< Data stream word tag (b15b08) indicating a spare W16 No 1    */
+  MIS1__DS_TAG_SPARE_2  = 0XFD8,  /*!< Data stream word tag (b15b07) indicating a spare W16 No 2    */
+ 
+} MIS1__EDsTag;
+
+
+
+/**
+===================================================================================
+* \def MIS1__
+*
+* \brief Maximum size in W64 of one frame (header, data, iddle, checksum, trailer)
+*
+* G.CLAUS 09/04/2020
+*
+===================================================================================
+*/ 
+
+#define MIS1__MAX_W64_NB_PER_FR   MIS1__DS_TOT_FRAME_SZ_W64 // Before 02/06/2020 =>200
+
+#define MIS1__MAX_FR_NB_PER_ACQ   8100 // Before 26/02/21 => 1010, Before 02/06/2020 => 1010, before 17/07/2020 => 110
+
+#define MIS1__MAX_BUFFERED_ACQ_NB 110 // Before 08/06/20 => 1000 03/06/2020 => Can be reduced if nedded, because max ~ 30-100 acq bufferised
+
+#define MIS1__MAX_W64_PER_ACQ (MIS1__MAX_FR_NB_PER_ACQ * MIS1__MAX_W64_NB_PER_FR)
+
+
+/**
+===================================================================================
+* \def MIS1__MAX_OUT_NB
+*
+* \brief Mimosis 1 maximum outputs number = 8
+*
+* G.CLAUS 16/06/2020
+*
+===================================================================================
+*/
+
+#define MIS1__RUN_CONF_FFORMAT_TAG 0x5ABCDE00    /*! Conf file tag, low 8 bits = can be use for format version */
+
+#define MIS1__RUN_STATUS_FFORMAT_TAG 0x1633CA00  /*! Status file tag, low 8 bits = can be use for format version */
+
+
+/**
+===================================================================================
+* \def MIS1__MAX_RUN_FILES
+*
+* \brief Maximum number of TRunFiles items in MIS1__VGARunFile array
+*
+* G.CLAUS 25/05/2020
+*
+===================================================================================
+*/
+
+#define MIS1__MAX_RUN_FILES 10
+
+
+#define MIS1__MAX_OBUFF_PER_RUN_FILES 6 // Raw index and data
+
+
+// ===================================================================================
+// * Complex macros (comment not processed by DOXYGEN)
+// *
+// ===================================================================================
+
+
+/**
+===================================================================================
+* \def MIS1__MACRO_COMPLICATED_TO_EXPLAIN
+*
+* \brief Short macro explanation, must fit in one line
+*
+* Longer macro explaction, can take
+* ...
+* ...
+* ...
+* can take many lines
+*
+* G.CLAUS 11/04/2019
+*
+===================================================================================
+*/ 
+
+
+#define MIS1__MACRO_COMPLICATED_TO_EXPLAIN 100
+
+/**
+===================================================================================
+* \def MIS1__CAR_MAX_STEP_NB
+*
+* \brief Maximum number of steps for characterization = nb of thresholds in a scan
+*
+* G.CLAUS 18/06/2020
+*
+===================================================================================
+*/
+
+#define MIS1__CAR_MAX_STEP_NB 60 // Before 16/11/2020 50
+ 
+
+/**
+===================================================================================
+* \def MIS1__CAR_MAX_SUB_STEP_NB
+*
+* \brief Maximum number of sub steps for characterization, one sub step = one group \n
+*        of pixels selected (the whole matrix can't be selected at one time)
+*
+* G.CLAUS 18/06/2020
+*
+===================================================================================
+*/
+
+#define MIS1__CAR_MAX_SUB_STEP_NB 505
+
+
+/**
+===================================================================================
+* \def MSIS1__CAR_NB_MAX_TH_REG
+*
+* \brief Maximum number of bias registers to configure one step of threshol scan
+*
+* G.CLAUS 18/06/2020
+*
+===================================================================================
+*/
+
+#define MSIS1__CAR_NB_MAX_BIAS_REG 4
+
+
+/**
+===================================================================================
+* \def MIS1__CAR_MSIS1_MAX_REG_NB
+*
+* \brief Maximum number of MSis1 registers (DAC, etc), stored for each characterization step \n
+*  DAC nb = 15 + 2 pulse length = 17 => Use 32 regsitsers
+*
+* G.CLAUS 07/10/2020
+*
+===================================================================================
+*/
+
+#define MIS1__CAR_MSIS1_MAX_REG_NB 32
+
+
+
+/**
+===================================================================================
+* \def MIS1__CAR_MSIS1_MAX_SCAN_PAR_NB
+*
+* \brief Maximum number of MSis1 scannning parameters, set to 6 
+*
+* G.CLAUS 07/10/2020
+*
+===================================================================================
+*/
+
+#define MIS1__CAR_MSIS1_MAX_SCAN_PAR_NB 6
+
+
+/**
+===================================================================================
+* \def MIS1__WE_MAX_MSIS_NB
+*
+* \brief Maximum number of MSis1 for MIS1__TCCarWarnErr class
+*
+* G.CLAUS 26/02/2021
+*
+===================================================================================
+*/
+
+#define MIS1__WE_MAX_MSIS_NB 6
+
+/**
+===================================================================================
+* \enum MIS1__EWarnErr
+*
+* \brief Tags to identify warnign, errors
+*
+*
+* G.CLAUS 26/02/2021
+*
+===================================================================================
+*/
+ 
+typedef enum  {
+  
+  MIS1__WE_RECORD_EMPTY,  /*!< Record is empty = not used  */
+  MIS1__WE_SW_ERR,        /*!< SW acq truncated  */
+  MIS1__WE_SW_REG_OVF,    /*!< SW region overflow  */
+  MIS1__WE_SW_ACQ_TRUNC,  /*!< SW acq truncated  */
+  MIS1__WE_MSIS_FR_OVF,    /*!< MSis 1 frame overflow (flags bits of trailer field)  */
+  MIS1__WE_NB
+  
+} MIS1__EWarnErr;
+
+
+/**
+===================================================================================
+* \def MIS1__CAR_MSIS1_MAX_SCAN_PAR_NB
+*
+* \brief Maximum number of MSis1 scannning parameters, set to 6
+*
+* G.CLAUS 26/02/2021
+*
+===================================================================================
+*/
+
+#define  MIS1__MAX_CAR_WARN_ERR_NB 10000
+
+
+/**
+===================================================================================
+* \def MIS1__CAR_MSIS1_MAX_SCAN_PAR_NB
+*
+* \brief Maximum number of MSis1 scannning parameters, set to 6
+*
+* G.CLAUS 01/05/2021
+*
+===================================================================================
+*/
+
+
+
+
+#define MIS1__BT_REC_TAG_BEGIN  0x66778800  // Record beginning  tag = first W32 of a record
+                                            // 0x667788 = fixed part
+                                            // 00 = Data format version, OR done with function parameter => LET IT TO 00 in MIS1__BT_REC_TAG_BEGIN !!!
+
+#define MIS1__BT_REC_TAG_ENDIAN 0x11223344  // Record endian  tag = Secoond W32 of a record, if used
+
+
+#define MIS1__BT_MAX_ACQ_PER_FILE 120
+
+
+// File format version
+
+#define MIS1__BT_RUN_CONF_FILE_FORMAT 1  // Run conf file format version
+
+#define MIS1__BT_RUN_RD_FILE_FORMAT   1  // Run RD  = Raw Data, file format version
+#define MIS1__BT_RUN_RDI_FILE_FORMAT  1  // Run RDI = Raw Data Index, file format version
+
+#define MIS1__BT_RUN_TD_FILE_FORMAT   1  // Run TD  = Trigger Data, file format version
+#define MIS1__BT_RUN_TDI_FILE_FORMAT  1  // Run TDI = Trigger Data Index, file format version
+
+
+
+
+#define MIS1__BT_TOT_FRAME_SZ_W128  25 // 100 W16 / OUT x 2 OUT = 200 W16 = 25 W128 to be checked !!!
+
+#define MIS1__BT_TOT_FRAME_SZ_W64  (MIS1__BT_TOT_FRAME_SZ_W128 * 2)
+#define MIS1__BT_TOT_FRAME_SZ_W32  (MIS1__BT_TOT_FRAME_SZ_W128 * 4)
+#define MIS1__BT_TOT_FRAME_SZ_W16  (MIS1__BT_TOT_FRAME_SZ_W128 * 8)
+#define MIS1__BT_TOT_FRAME_SZ_W8   (MIS1__BT_TOT_FRAME_SZ_W128 * 16)
+
+
+#define MIS1__BT_MAX_MSIS_NB_ACQ 8
+
+#define MIS1__BT_MAX_REAL_MSIS_NB_ACQ 6
+
+
+#define MIS1__BT_MAX_TRIG_NB_PER_ACQ 4095
+
+// Fixed Record Size (FRS) parameters
+
+#define MIS1__BT_FRS_MAX_FR_NB_PER_ACQ 1000 // Max allowed = 3000, more => linker bug, static structure too big
+
+#define MIS1__BT_FRS_MAX_ACQ_DATA_SZ_W8 (MIS1__BT_MAX_MSIS_NB_ACQ *  MIS1__BT_FRS_MAX_FR_NB_PER_ACQ * MIS1__BT_TOT_FRAME_SZ_W8)
+
+#define MIS1__BT_FRS_MAX_ACQ_DATA_SZ_W16 (MIS1__BT_FRS_MAX_ACQ_DATA_SZ_W8 / 2)
+
+#define MIS1__BT_FRS_MAX_ACQ_DATA_SZ_W32 (MIS1__BT_FRS_MAX_ACQ_DATA_SZ_W8 / 4)
+
+#define MIS1__BT_FRS_MAX_ACQ_DATA_SZ_W64 (MIS1__BT_FRS_MAX_ACQ_DATA_SZ_W8 / 8)
+
+
+// Variable Record Size Size (VRS) parameters
+
+
+#define MIS1__BT_VRS_MAX_FR_NB_PER_ACQ 60000
+
+#define MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W8 (MIS1__BT_MAX_MSIS_NB_ACQ *  MIS1__BT_VRS_MAX_FR_NB_PER_ACQ * MIS1__BT_TOT_FRAME_SZ_W8)
+
+#define MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W16 (MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W8 / 2)
+
+#define MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W32 (MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W8 / 4)
+
+#define MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W64 (MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W8 / 8)
+
+
+#define MIS1__TBtRunRead_CHECK_RET_S32 {                        \
+                                                                \
+  if ( _RunConfLoaded < 1 ) {                                   \
+    err_retfail ( -1, (ERR_OUT,"Abort => No run loaded !") );   \
+  }                                                             \
+                                                                \
+  err_retfail ( _LastError, (ERR_OUT,"Abort => Due to previous error not cleared !") ); \
+}
+
+
+
+#define MIS1__TBtRunRead_CHECK_RET_NULL {                        \
+\
+    if ( _RunConfLoaded < 1 ) {                                   \
+      err_retfailnull ( -1, (ERR_OUT,"Abort => No run loaded !") );   \
+    }                                                             \
+    \
+    err_retfailnull ( _LastError, (ERR_OUT,"Abort => Due to previous error not cleared !") ); \
+  }
+
+
+
+
+#endif
