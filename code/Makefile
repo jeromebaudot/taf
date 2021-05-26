@@ -24,9 +24,9 @@
 # You should use the Makefile.arch provided with your installation (choice 1a or 1b depending on ROOT VERSION)
 # If not available, you can use the given Makefile.arch (choice 2)
 
-include $(ROOTSYS)/etc/Makefile.arch # choice 1a
+#include $(ROOTSYS)/etc/Makefile.arch # choice 1a
 #include $(ROOTSYS)/test/Makefile.arch # choice 1b (old ROOT versions)
-#include ./Makefile.arch # choice 2
+include ./Makefile.arch # choice 2
 # ----------------------------------------
 #        SVN revision <-- DEPRECATED
 # TAF welcome message displays the SVN revision of the code used during the compilation
@@ -71,7 +71,7 @@ endif
 
 #------------------------------------------------------------------------------
 
-DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
+DTHDRS          = TNTBoardReader.h PXIBoardReader.h \
 		GIGBoardReader.h IMGBoardReader.h BoardReader.h VMEBoardReader.h  MCBoardReader.h BoardReaderIHEP.h \
     AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h BoardReaderMIMOSIS.h \
     DSession.h DSetup.h \
@@ -80,13 +80,13 @@ DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
 		DEvent.h  DEventMC.h  DParticle.h DGlobalTools.h \
     DPrecAlign.h DPixel.h DLadder.h DMiniVector.h DHelix.h DHelixFitter.h\
     DTrackFitter.h DBeaster.h MKalmanFilter.h MLeastChiSquare.h\
-# DXRay2DPdf.h
+# DXRay2DPdf.h # PXIeBoardReader.h 
 
 
 MHDRS		= MAnalysis.h  MAlign.h MHist.h MRaw.h MRax.h MAlignment.h MMillepede.h MGlobalAlign.h MKalmanFilter.h MLeastChiSquare.h
 
 DTSRCS		= MMain.cxx \
-		TNTBoardReader.cxx PXIBoardReader.cxx PXIeBoardReader.cxx \
+		TNTBoardReader.cxx PXIBoardReader.cxx  \
 		GIGBoardReader.cxx IMGBoardReader.cxx BoardReader.cxx VMEBoardReader.cxx MCBoardReader.cxx BoardReaderIHEP.cxx \
     AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx BoardReaderMIMOSIS.cxx \
     DSession.cxx DSetup.cxx \
@@ -95,7 +95,7 @@ DTSRCS		= MMain.cxx \
 		DEvent.cxx  DEventMC.cxx  DParticle.cxx DGlobalTools.cxx \
 		DPrecAlign.cxx DPixel.cxx DLadder.cxx DMiniVector.cxx DHelix.cxx DHelixFitter.cxx \
     DTrackFitter.cxx DBeaster.cxx MKalmanFilter.cxx MLeastChiSquare.cxx\
-# DXRay2DPdf.cxx
+# DXRay2DPdf.cxx # PXIeBoardReader.cxx
 
 MSRCS		= MPrep.cxx MAnalysis.cxx MPost.cxx MCommands.cxx  MMCGeneration.cxx  MAlign.cxx MHist.cxx MRaw.cxx MRax.cxx \
            MAlignment.cxx MMillepede.cxx MGlobalAlign.cxx MKalmanFilter.cxx MLeastChiSquare.cxx

@@ -20,6 +20,7 @@
 #include "Riostream.h"
 #include "TObject.h"
 #include "DGlobalTools.h" // to have fTool has a data member
+
 //using namespace std;
 
 //##############################################################################
@@ -66,6 +67,7 @@ private:
 
 public:
 
+    int test();
   BoardReaderMIMOSIS(int boardNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int headerSize=0, int trailerSize=0, int endianness=0);
   ~BoardReaderMIMOSIS();
 
