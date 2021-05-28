@@ -94,6 +94,7 @@
   DAcq::DAcq()
 {
   // Default DAcq ctor.
+    cout << "Default DAcq Constructor " << endl;
 }
 
 //______________________________________________________________________________
@@ -247,6 +248,8 @@ DAcq::DAcq(DSetup& c)
 
       // The real module type is defined by Type/10
       // JB 2010/08/23
+        cout << "Ziad --> Module Type : " << (fc->GetModulePar(mdt).Type)/10 <<endl;
+        
       switch ( (fc->GetModulePar(mdt).Type)/10 ) {
         
         // -+-+- IMG modules
@@ -484,6 +487,7 @@ DAcq::DAcq(DSetup& c)
             fc->GetAcqPar().EventHeaderSize,
             fc->GetAcqPar().EventTrailerSize,
             fc->GetAcqPar().BinaryCoding);
+        /*
         fMSIS[iModule]->SetDebugLevel( fDebugAcq);
         fMSIS[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
@@ -513,6 +517,7 @@ DAcq::DAcq(DSetup& c)
         } else {
           initOK &= kTRUE;
         }
+         */
         break;
 
 

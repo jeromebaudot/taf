@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <errno.h> // GC 19/05/2021 :
 
-#include "var_decl_def.h"
+#include "../var_decl_def.h"
 
 
 #ifdef APP_ERR_MSG_MACROS_NOT_SUPPORTED
