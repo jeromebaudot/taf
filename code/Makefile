@@ -79,7 +79,7 @@ DTHDRS          = TNTBoardReader.h PXIBoardReader.h \
     DHit.h DTrack.h DLine.h DR3.h DCut.h DAlign.h \
 		DEvent.h  DEventMC.h  DParticle.h DGlobalTools.h \
     DPrecAlign.h DPixel.h DLadder.h DMiniVector.h DHelix.h DHelixFitter.h\
-    DTrackFitter.h DBeaster.h MKalmanFilter.h MLeastChiSquare.h\
+    DTrackFitter.h DBeaster.h MKalmanFilter.h MLeastChiSquare.h \
 # DXRay2DPdf.h # PXIeBoardReader.h 
 
 
@@ -94,7 +94,7 @@ DTSRCS		= MMain.cxx \
 		DHit.cxx DTrack.cxx DLine.cxx DR3.cxx DCut.cxx DAlign.cxx \
 		DEvent.cxx  DEventMC.cxx  DParticle.cxx DGlobalTools.cxx \
 		DPrecAlign.cxx DPixel.cxx DLadder.cxx DMiniVector.cxx DHelix.cxx DHelixFitter.cxx \
-    DTrackFitter.cxx DBeaster.cxx MKalmanFilter.cxx MLeastChiSquare.cxx\
+    DTrackFitter.cxx DBeaster.cxx MKalmanFilter.cxx MLeastChiSquare.cxx \
 # DXRay2DPdf.cxx # PXIeBoardReader.cxx
 
 MSRCS		= MPrep.cxx MAnalysis.cxx MPost.cxx MCommands.cxx  MMCGeneration.cxx  MAlign.cxx MHist.cxx MRaw.cxx MRax.cxx \

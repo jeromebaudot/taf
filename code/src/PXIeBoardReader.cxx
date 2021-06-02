@@ -421,7 +421,7 @@ PXIeBoardReader::PXIeBoardReader( int boardNumber, char *configFileName, int run
   //VetoPixel          = NULL; // default is no pixels are vetoed, JB 2012/03/11
   
   // Initialisation required by DAQ library
-  APP__TContext* VPtCont = &APP__VGContext;
+  APP__TContext* VPtCont = &APP__VGContext;  
   SInt32 VMyVar          = 666;
   char msgFile[100], errFile[100]; // JB 2011/06/28
   sprintf( msgFile, "Results/%d/msg_run%d.txt", runNumber, runNumber);
