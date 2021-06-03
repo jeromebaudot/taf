@@ -30,7 +30,7 @@
 //#include "mimo_daq_lib/mimo_daq_lib.h"
 //#include "mimo_daq_lib/mimo_daq_lib.c"
 
-using namespace std;
+//using namespace std;
 
 //##############################################################################
 class BoardReaderMIMOSIS : public TObject  {
@@ -54,6 +54,8 @@ private:
   std::vector<string> fListInputFileNames;
   size_t          fCurrentFileNumber;
   bool            fNoMoreFile;
+  bool            isfirstAcq;
+  int             nbFrPerAcq;
 
   int             fCurrentTriggerNumber;
   int             fCurrentEventNumber;
@@ -82,7 +84,7 @@ private:
   bool  CloseRawFile();
   bool  OpenRawFile();
   bool  DecodeNextEvent();
-  bool  DecodeFrame(int aFrame);
+  bool  DecodeFrame();
 //  bool  DecodeFrame(MIS1__BT_FBtAcqW16AAlloc*, MIS1__TBtAcqRawRec*, int moduleID, int frameID,
 //  UInt8 MeasExecTime, UInt8 PrintLvl); // ZE 2021/06/02
   void  AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime=0);
