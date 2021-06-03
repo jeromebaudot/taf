@@ -2624,9 +2624,9 @@ class MIS1__TBtRunRead {
   
     // Acq header printing options, used by run scanning functions like FAcqFirst (...), FAcqNext (...), FAcqGoto (...)
   
-    SInt32 _HeadPrintTriggers = 5;                   // Print triggers, -1 => All, 0 => No, > 0 => value = nb of triggers to print
-    SInt32 _HeadPrintFrCnt = 3;                      // Print frames counters, -1 => All, 0 => No, > 0 => value = nb of frames to print
-    SInt32 _HeadPrintFiredPixels= 1;                // Print fired pixels, 0 / 1
+    SInt32 _HeadPrintTriggers;                   // Print triggers, -1 => All, 0 => No, > 0 => value = nb of triggers to print
+    SInt32 _HeadPrintFrCnt;                      // Print frames counters, -1 => All, 0 => No, > 0 => value = nb of frames to print
+    SInt32 _HeadPrintFiredPixels;                // Print fired pixels, 0 / 1
     
     
   
@@ -2642,8 +2642,8 @@ class MIS1__TBtRunRead {
     // Private methods
     // --------------------------------------------------------------
     
-    
-    
+  
+  
 
 };
 

@@ -94,6 +94,7 @@
   DAcq::DAcq()
 {
   // Default DAcq ctor.
+    cout << "Default DAcq Constructor " << endl;
 }
 
 //______________________________________________________________________________
@@ -140,6 +141,7 @@ DAcq::DAcq(DSetup& c)
   fEventsModuleNotOK = 0;// JB 2014/12/16
   Int_t          mdt, mdl;
   fModuleTypes  = fc->GetAcqPar().ModuleTypes;
+    
   fMaxSegments = 50; // JB 2013/08/14
 
   // Timing information, 0 is the default which could be updated from data
@@ -247,6 +249,7 @@ DAcq::DAcq(DSetup& c)
 
       // The real module type is defined by Type/10
       // JB 2010/08/23
+                
       switch ( (fc->GetModulePar(mdt).Type)/10 ) {
         
         // -+-+- IMG modules
@@ -475,16 +478,20 @@ DAcq::DAcq(DSetup& c)
 
         // -+-+- MIMOSIS modules
         case 13:
-
+        //cout << "ZIAD --> Module Type : " << 13 << endl;
         fUseTimestamp[mdt-1][mdl-1] = kFALSE;
         fMSIS[iModule] = new BoardReaderMIMOSIS( iModule,
+        fc->GetRunPar().DataPath, // ZE 2021/06/01
+        fRunNumber, //ZE 2021/05/28
 	    fc->GetModulePar(mdt).Inputs,
             fc->GetAcqPar().TriggerMode,
             fc->GetModulePar(mdt).EventBuildingBoardMode,
             fc->GetAcqPar().EventHeaderSize,
             fc->GetAcqPar().EventTrailerSize,
             fc->GetAcqPar().BinaryCoding);
+        
         fMSIS[iModule]->SetDebugLevel( fDebugAcq);
+        /*
         fMSIS[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
           if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
@@ -513,6 +520,7 @@ DAcq::DAcq(DSetup& c)
         } else {
           initOK &= kTRUE;
         }
+         */
         break;
 
 
@@ -600,6 +608,10 @@ for (mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modu
           // Comment added by Ziad EL BITAR on May 25, 2021, disregard PXIeModule when using MimosisBoardReader
           //    case 5:
           //      fPXIe[iModule]->AddDUTSensor( fc->GetPlanePar(aPlaneNumber).InputNumber[0]-1 );
+        
+          // ZE on May 31, 2021
+       //         case 13:
+        //          fMSIS[iModule]->AddDUTSensor( fc->GetPlanePar(aPlaneNumber).InputNumber[0]-1 );
             };
           }
 
@@ -662,7 +674,7 @@ void DAcq::SetDebug(Int_t aDebug)
   if( aDebug<=0 ) { // if negative level, set acquisition module level
 
     for ( Int_t mdt = 1; mdt <= fModuleTypes; mdt++){ // loop on module types
-
+        
       switch ( (fc->GetModulePar(mdt).Type)/10 ) {
 
           // -+-+- IMG modules
@@ -1252,7 +1264,8 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
   //====================
   if (fDebugAcq)  cout << " DAcq: getting raw data:" << endl;
   Int_t iModule=0; // module index, from 0 to totalNmodules
-  for ( Int_t mdt = 1; mdt <= fModuleTypes; mdt++){ // loop on module types
+
+    for ( Int_t mdt = 1; mdt <= fModuleTypes; mdt++){ // loop on module types
 
     switch ( (fc->GetModulePar(mdt).Type)/10 ) {
 
@@ -2061,8 +2074,8 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
         // -+-+- MIMOSIS modules
         // JB 2021/05/01
       case 13:
+            
         for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
-
           moduleOK = fMSIS[iModule]->HasData(); // ask for an event
           eventOK &= moduleOK;
           if (fDebugAcq)  cout << " DAcq: getting raw data for module " << iModule << " or " << mdl << " of type " << fc->GetModulePar(mdt).Type << ", OK? " << moduleOK << endl;
@@ -2100,9 +2113,11 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
             // Set values for hit pixels
             for( Int_t iPix=0; iPix<readerEvent->GetNumberOfPixels(); iPix++) { // loop on Pixels
               readerPixel = (BoardReaderPixel*)readerEvent->GetPixelAt( iPix);
-	              cout << " Got pixel " << iPix << " for input " << readerPixel->GetInput() << endl;
+              //    cout << " Got pixel " << iPix << " for input " << readerPixel->GetInput() << endl;
               aPlaneNumber = fMatchingPlane[mdt-1][mdl-1][readerPixel->GetInput()-1][0];
-              if(fDebugAcq>2) cout << "  pixel " << iPix << " line " << readerPixel->GetLineNumber() << " column " << readerPixel->GetColumnNumber() << " at timestamp " << readerPixel->GetTimeStamp() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << endl;
+                
+            //  if(fDebugAcq>2)
+                   cout << "  pixel " << iPix << " line " << readerPixel->GetLineNumber() << " column " << readerPixel->GetColumnNumber() << " at timestamp " << readerPixel->GetTimeStamp() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << endl;
               DPixel* APixel = new DPixel( aPlaneNumber, readerPixel->GetLineNumber(), readerPixel->GetColumnNumber(), (Double_t)readerPixel->GetValue(), readerPixel->GetTimeStamp());
               // if(readerPixel->GetInput()!=5 && readerPixel->GetInput()!=6 && readerPixel->GetTimeStamp()==1)
               fListOfPixels[aPlaneNumber-1].push_back(APixel);
