@@ -1015,7 +1015,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     
     VPtRunConf = APP_VGPtRunRead->FRunHeaderGet ( 1 /* Print */ );
     nbFrPerAcq = VPtRunConf->FrNbPerAcq ;
-    //cout << " Number of Frames per Acq : " <<  VPtRunConf->FrNbPerAcq << endl;
+    cout << " Number of Frames per Acq : " <<  VPtRunConf->FrNbPerAcq << endl;
     
     // AcqW16A record
      
@@ -1273,6 +1273,11 @@ bool BoardReaderMIMOSIS::HasData( ) {
    fCurrentEvent->SetListOfTriggers( &fListOfTriggers);
    fCurrentEvent->SetListOfFrames( &fListOfFrames);
    if(fDebugLevel) cout << " fBoardNumber " << fBoardNumber << " created new event " << fCurrentEventNumber << " with " << fListOfPixels.size() << " pixels from " << fListOfTriggers.size() << " triggers and " << fListOfFrames.size() << " frames." << endl;
+     
+   fListOfTriggers.push_back( fCurrentEventNumber);
+   fListOfTimestamps.push_back( 0);
+   fListOfFrames.push_back( fCurrentEventNumber);
+     
    fCurrentEventNumber++;
 
  } // getting next buffer was not OK
@@ -1397,8 +1402,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
         printf(" End Of Run Reached --> ReachEndOfRun = % d \n", ReachEndOfRun);
         printf(" Number of processed events/acquisitions : %d \n ", fCurrentAcqNumber );
         }
-    
-    
+
    
     return ready;
 
@@ -1416,10 +1420,11 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
    // ZE 2021/06/02. This is Gilles's standalone methode. Had to write a method specific to TAF.
    //VRet = MIS1__BT_FAcqDecPrintPix ( APP_VGPtAcqDec,  0 /* MSIsId 0 to 5 */, frameID, VPrintMaxPix, 0 /* PrintMode */ );
    
+    /*
     fListOfTriggers.push_back( fCurrentEventNumber);
     fListOfTimestamps.push_back( 0);
     fListOfFrames.push_back( fCurrentEventNumber);
-   
+   */   
     
     // ZE 2021/06/03. Loop over sensors to decode pixels of current frame.
     for ( int MSisId = 0; MSisId < fNSensors; MSisId++ ) {
@@ -1442,22 +1447,22 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
         
        // Decode pixels only for frames with FiredPixNb > 0
          if ( APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb > 0 ) {
-             
+             printf(" Number of Fired pixels : %d in frameID :  %d and Sensor : %d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentFrameNumber, MSisId  );
             for ( int ViPix = 0; ViPix < APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb; ViPix++ ) {
                 
-                VPix = APP_VGPtAcqDec->ResAAAFrPix[MSisId][fCurrentFrameNumber][ViPix]; 
-                printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %.4d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
+                VPix = APP_VGPtAcqDec->ResAAAFrPix[MSisId][fCurrentFrameNumber][ViPix];
+                printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
                 printf(" \n ");
-                AddPixel( MSisId, 1, VPix.C.x ,VPix.C.y );
+                AddPixel( MSisId, 1, VPix.C.y ,VPix.C.x );
                 
             }// End of Loop over pixels in a sensor for the current frame
          
         } // End of if condition : FiredPixNb > 0
         
     }// End of Loop over sensors
-    
-    fCurrentFrameNumber ++ ;
     cout << "Physical Frame Number : " << fCurrentFrameNumber % nbFrPerAcq << endl;
+    fCurrentFrameNumber ++ ;
+    
 }
     
     
@@ -1473,7 +1478,7 @@ void BoardReaderMIMOSIS::AddPixel( int iSensor, int value, int aLine, int aColum
   //if (fDebugLevel>3)
       printf("BoardReaderMIMOSIS::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
 
-    fListOfPixels.push_back( BoardReaderPixel( iSensor+1, value, aLine, aColumn) );
+    fListOfPixels.push_back( BoardReaderPixel( iSensor + 1, value, aLine, aColumn, 0 /*TimeStamp has to be given for the constructor*/) );
 
 }
 
