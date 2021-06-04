@@ -2129,7 +2129,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
 
 
   } //end loop on planes
-  cout << "\n Event number : " << fSession->GetCurrentEventNumber() - 1 <<" " << endl;
+  cout << "\n Event number : " << fSession->GetCurrentEventNumber() <<" " << endl;
 
   //if(MultiFramePlane>0) cdisplaymultiframe->Update();
   //cdisplayraw->Update();

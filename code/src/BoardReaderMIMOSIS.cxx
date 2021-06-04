@@ -1471,7 +1471,7 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
                  if (fCurrentFrameNumber >= APP_VGPtAcqDec->ResAFrNb[MSisId]) //ZE 2021/06/04 Check if frameID > nbFramesPerAcq
                      
                      printf("fCurrentFrameNumber %d Exceeded the number of frames %d for sensor %d \n ", fCurrentFrameNumber, APP_VGPtAcqDec->ResAFrNb[MSisId], MSisId);
-                     printf(" Number of Fired pixels : %d in frameID :  %d and Sensor : %d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentFrameNumber, MSisId  );
+                     printf(" nbFiredPix : %.4d in AcqID : %.4d - frID :  %.4d - SensorID : %.4d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentAcqNumber, fCurrentFrameNumber, MSisId );
              }
              
             for ( int ViPix = 0; ViPix < APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb; ViPix++ ) {
