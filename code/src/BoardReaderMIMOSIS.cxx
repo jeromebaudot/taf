@@ -1347,11 +1347,13 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
             VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */ );
             fCurrentAcqNumber ++;
             fisfirstAcq = false;
+            fCurrentFrameNumber = 0; // ZE 2021/06/04
             }
         else {
-             printf (" Changing to NextAcq since fCurrentFrameNumber = % d \n", fCurrentFrameNumber);
+             printf (" Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
              VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */, &VResReachEndOfRun );
              fCurrentAcqNumber ++;
+             fCurrentFrameNumber = 0; // ZE 2021/06/04
             }
     }
         
@@ -1464,13 +1466,22 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
         
        // Decode pixels only for frames with FiredPixNb > 0
          if ( APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb > 0 ) {
-             if (fDebugLevel > 3)
-             printf(" Number of Fired pixels : %d in frameID :  %d and Sensor : %d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentFrameNumber, MSisId  );
+            
+             if (fDebugLevel > 3) {
+                 if (fCurrentFrameNumber >= APP_VGPtAcqDec->ResAFrNb[MSisId]) //ZE 2021/06/04 Check if frameID > nbFramesPerAcq
+                     
+                     printf("fCurrentFrameNumber %d Exceeded the number of frames %d for sensor %d \n ", fCurrentFrameNumber, APP_VGPtAcqDec->ResAFrNb[MSisId], MSisId);
+                     printf(" nbFiredPix : %.4d in AcqID : %.4d - frID :  %.4d - SensorID : %.4d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentAcqNumber, fCurrentFrameNumber, MSisId );
+             }
+             
             for ( int ViPix = 0; ViPix < APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb; ViPix++ ) {
                 
                 VPix = APP_VGPtAcqDec->ResAAAFrPix[MSisId][fCurrentFrameNumber][ViPix];
-           //     printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
-           //     printf(" \n ");
+               
+                if (fDebugLevel > 3) {
+                        printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
+                        printf(" \n ");
+                }
                 AddPixel( MSisId, 1, VPix.C.y ,VPix.C.x );
                 
             }// End of Loop over pixels in a sensor for the current frame
