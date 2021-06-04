@@ -929,9 +929,11 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fSizeOfTrailer = trailerSize;
   fEndianness = endianness;
   fVetoOverflow = false; // set later by SetVetoPixel
-  isfirstAcq = true;
+  fisfirstAcq = true;
     
-  ReachEndOfRun = 0;
+  fBadDecFrameCounter = 0;
+    
+  fReachEndOfRun = 0;
   
   SInt32 VRet;                              // Error code returned by functions ( 0 => ok, < 0 => error )
     
@@ -1014,9 +1016,18 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     // ZE 2021/06/03 two following steps to get the number of frames per acquisition
     
     VPtRunConf = APP_VGPtRunRead->FRunHeaderGet ( 1 /* Print */ );
-    nbFrPerAcq = VPtRunConf->FrNbPerAcq ;
+    fnbFrPerAcq = VPtRunConf->FrNbPerAcq ;
     cout << " Number of Frames per Acq : " <<  VPtRunConf->FrNbPerAcq << endl;
     
+    VRet = APP_VGPtRunRead->FAcqHeadPrintOptSet ( VParHdPrintTriggers, VParHdPrintFrCnt, VParHdPrintFiredPixels );
+          
+          if ( VRet < 0 ) {
+            printf ( "\n" );
+            printf ( "Configure Acq header printing option has failed \n" );
+            printf ( "\n" );
+         //   return (-1);
+          }
+          
     // AcqW16A record
      
        APP_VGPtAcqW16A = MIS1__BT_FBtAcqW16AAlloc ( 1 /* Alloc */, &VAcqW16ASz );
@@ -1117,6 +1128,8 @@ BoardReaderMIMOSIS::~BoardReaderMIMOSIS()
         printf ( "\n" );
         printf ( "Free of AcqDec done :-) \n" );
       }
+    
+    
 //  delete fCurrentEvent;
 //  delete fInputFileName;
 
@@ -1274,9 +1287,9 @@ bool BoardReaderMIMOSIS::HasData( ) {
    fCurrentEvent->SetListOfFrames( &fListOfFrames);
    if(fDebugLevel) cout << " fBoardNumber " << fBoardNumber << " created new event " << fCurrentEventNumber << " with " << fListOfPixels.size() << " pixels from " << fListOfTriggers.size() << " triggers and " << fListOfFrames.size() << " frames." << endl;
      
-   fListOfTriggers.push_back( fCurrentEventNumber);
-   fListOfTimestamps.push_back( 0);
-   fListOfFrames.push_back( fCurrentEventNumber);
+     fListOfTriggers.push_back( fCurrentEventNumber);
+     fListOfTimestamps.push_back( 0);
+     fListOfFrames.push_back( fCurrentEventNumber);
      
    fCurrentEventNumber++;
 
@@ -1316,7 +1329,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
                         // Size of AcqDec record = Decoded acquisition
                         // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
 
-    UInt8 VResReachEndOfRun = (UInt8) ReachEndOfRun;
+    UInt8 VResReachEndOfRun = (UInt8) fReachEndOfRun;
  
     
   // Decoding status
@@ -1325,16 +1338,15 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
   
   if(fDebugLevel>2) printf( "  BoardReaderMIMOSIS board %d::DecodeNextEvent() trying with event %d\n", fBoardNumber, fCurrentEventNumber);
   
-  // Check if first Acquisition or if CurrentFrameNumber less than nbFrPerAcq; nbFrPerAcq is not mandatory equal to MIS1__BT_VRS_MAX_FR_NB_PER_ACQ
+  // Check if first Acquisition or if CurrentFrameNumber less than fnbFrPerAcq; fnbFrPerAcq is not mandatory equal to MIS1__BT_VRS_MAX_FR_NB_PER_ACQ
     
-    if ((fCurrentFrameNumber % nbFrPerAcq == 0) || (fCurrentFrameNumber % MIS1__BT_VRS_MAX_FR_NB_PER_ACQ == 0)) {
+    if ((fCurrentFrameNumber % fnbFrPerAcq == 0) || (fCurrentFrameNumber % MIS1__BT_VRS_MAX_FR_NB_PER_ACQ == 0)) {
         
-        printf ("Acquistion Number = %d \n", fCurrentFrameNumber / nbFrPerAcq );
-        
-        if (isfirstAcq == true) {
+        if (fisfirstAcq == true) {
+            cout << "Getting the pointer for the first acquisition " << endl;
             VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */ );
             fCurrentAcqNumber ++;
-            isfirstAcq = false;
+            fisfirstAcq = false;
             }
         else {
              printf (" Changing to NextAcq since fCurrentFrameNumber = % d \n", fCurrentFrameNumber);
@@ -1343,10 +1355,10 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
             }
     }
         
-    ReachEndOfRun = (int) VResReachEndOfRun;
+    fReachEndOfRun = (int) VResReachEndOfRun;
     
     if(fDebugLevel>1) {
-    printf("ReachEndOfRun = %d ", ReachEndOfRun);
+    printf("fReachEndOfRun = %d ", fReachEndOfRun);
     printf("\n");
     }
     
@@ -1369,7 +1381,12 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
             }
         
     }
-      
+    /*
+      if ( 1 ) {
+        memset ( APP_VGPtAcqW16A, 0, sizeof (MIS1__TBtAcqW16A) );
+        memset ( APP_VGPtAcqDec , 0, sizeof (MIS1__TBtAcqDec) );
+      }
+    */
     // Convert FleRIO memory image to list of W16 for each MSis
     VRet = MIS1__BT_FBtAcqW16AFill ( APP_VGPtAcqSrc , APP_VGPtAcqW16A, -1 /* FrNb, -1 => All */, 0 /* MeasExecTime */, 0 /* PrintLvl */, 80 /* FuncVers */ );
     
@@ -1397,9 +1414,9 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
         //VRet = MIS1__BT_FAcqDecPrintPix ( APP_VGPtAcqDec,  0 /* MSIsId 0 to 5 */, ViFr, VPrintMaxPix, 0 /* PrintMode */ );
         DecodeFrame();
 
-    if (ReachEndOfRun > 0){
+    if (fReachEndOfRun > 0){
         ready = false;
-        printf(" End Of Run Reached --> ReachEndOfRun = % d \n", ReachEndOfRun);
+        printf(" End Of Run Reached --> fReachEndOfRun = % d \n", fReachEndOfRun);
         printf(" Number of processed events/acquisitions : %d \n ", fCurrentAcqNumber );
         }
 
@@ -1420,12 +1437,11 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
    // ZE 2021/06/02. This is Gilles's standalone methode. Had to write a method specific to TAF.
    //VRet = MIS1__BT_FAcqDecPrintPix ( APP_VGPtAcqDec,  0 /* MSIsId 0 to 5 */, frameID, VPrintMaxPix, 0 /* PrintMode */ );
    
-    /*
+  /*
     fListOfTriggers.push_back( fCurrentEventNumber);
     fListOfTimestamps.push_back( 0);
     fListOfFrames.push_back( fCurrentEventNumber);
-   */   
-    
+    */
     // ZE 2021/06/03. Loop over sensors to decode pixels of current frame.
     for ( int MSisId = 0; MSisId < fNSensors; MSisId++ ) {
     
@@ -1435,6 +1451,7 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
         if ( VRet < 0 ) {
             printf ( "Decoding MSis data failed for Sensor : %d and FrameNb : %d \n", MSisId, fCurrentFrameNumber );
             printf ( "\n" );
+            fBadDecFrameCounter ++;
             return (-1);
         }
         VRet = MIS1__BT_FAcqDecPrintGen ( APP_VGPtAcqDec, MSisId, 0 /* PrintMode */ );
@@ -1447,12 +1464,13 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
         
        // Decode pixels only for frames with FiredPixNb > 0
          if ( APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb > 0 ) {
+             if (fDebugLevel > 3)
              printf(" Number of Fired pixels : %d in frameID :  %d and Sensor : %d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentFrameNumber, MSisId  );
             for ( int ViPix = 0; ViPix < APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb; ViPix++ ) {
                 
                 VPix = APP_VGPtAcqDec->ResAAAFrPix[MSisId][fCurrentFrameNumber][ViPix];
-                printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
-                printf(" \n ");
+           //     printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
+           //     printf(" \n ");
                 AddPixel( MSisId, 1, VPix.C.y ,VPix.C.x );
                 
             }// End of Loop over pixels in a sensor for the current frame
@@ -1460,7 +1478,7 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
         } // End of if condition : FiredPixNb > 0
         
     }// End of Loop over sensors
-    cout << "Physical Frame Number : " << fCurrentFrameNumber % nbFrPerAcq << endl;
+   
     fCurrentFrameNumber ++ ;
     
 }
@@ -1476,7 +1494,7 @@ void BoardReaderMIMOSIS::AddPixel( int iSensor, int value, int aLine, int aColum
    // - time = something related to the frame or the trigger
 
   //if (fDebugLevel>3)
-      printf("BoardReaderMIMOSIS::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
+    //  printf("BoardReaderMIMOSIS::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
 
     fListOfPixels.push_back( BoardReaderPixel( iSensor + 1, value, aLine, aColumn, 0 /*TimeStamp has to be given for the constructor*/) );
 
@@ -1517,7 +1535,8 @@ void BoardReaderMIMOSIS::PrintStatistics(ostream &stream) {
  stream << fTriggerCount << " triggers read overall," << endl;
  stream << fCurrentEventNumber << " events in total," << endl;
  stream << fNEventsWithOverflow << " events with an overflow (veto overflow " << fVetoOverflow << ")," << endl;
- stream << fFrameCount << " frames read overall." << endl;
+ stream << fFrameCount << " frames read overall " << endl;
+ stream << fBadDecFrameCounter << " frames with decoding errors. " << endl;
  stream << "***********************************************" << endl;
 
 }

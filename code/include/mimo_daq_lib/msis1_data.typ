@@ -2550,9 +2550,15 @@ class MIS1__TBtRunRead {
     MIS1__TBtAcqRawRec* _FAcqNextSeq ( UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd );
     
     // Returns a pointer to the Acq of no = AcqId of run
-    
+
+
+    // MIS1__TBtAcqRawRec* _FAcqGotoSeq__New ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd );
+
+
     MIS1__TBtAcqRawRec* _FAcqGotoSeq ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd );
 
+    MIS1__TBtAcqRawRec* _FAcqGotoSeq_before_300521 ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd );
+    
 
 
 
@@ -2590,8 +2596,9 @@ class MIS1__TBtRunRead {
     
     // Size calculated from Run conf parameters
     
-    UInt32 _AcqHeadSzW8;   // Size of Acq header, can't be calculated by  sizeof ( MIS1__TBtAcqRawHead ) => Read in FRunConf
-    UInt32 _AcqMaxTotSzW8; // Maximum size of one Acq, it is calculated from Fr nb / Acq read at run configuration from run header record    
+    UInt32 _AcqHeadSzW8;    // Size of Acq header, can't be calculated by  sizeof ( MIS1__TBtAcqRawHead ) => Read in FRunConf
+    UInt32 _AcqMaxDataSzW8; // Maximum data size of one Acq, it is calculated from Fr nb / Acq read at run configuration
+    UInt32 _AcqMaxTotSzW8;  // Maximum size of one Acq, it is calculated from Fr nb / Acq read at run configuration from run header record    
 
     // Acq
     
@@ -2599,7 +2606,7 @@ class MIS1__TBtRunRead {
         
     MIS1__TBtAcqRawRec* _PtAcqRaw;
         
-    // New Acq file id, rw finename, index filename, built by _FBuildNewAcqFile ( UInt32 AcqNo, UInt8 Print )
+    // New Acq file id, rw filename, index filename, built by _FBuildNewAcqFile ( UInt32 AcqNo, UInt8 Print )
     
     SInt32 _NewAcqId;                            // The Id of the new acq
     
@@ -2624,9 +2631,9 @@ class MIS1__TBtRunRead {
   
     // Acq header printing options, used by run scanning functions like FAcqFirst (...), FAcqNext (...), FAcqGoto (...)
   
-    SInt32 _HeadPrintTriggers = 5;                   // Print triggers, -1 => All, 0 => No, > 0 => value = nb of triggers to print
-    SInt32 _HeadPrintFrCnt = 3;                      // Print frames counters, -1 => All, 0 => No, > 0 => value = nb of frames to print
-    SInt32 _HeadPrintFiredPixels= 1;                // Print fired pixels, 0 / 1
+    SInt32 _HeadPrintTriggers;                   // Print triggers, -1 => All, 0 => No, > 0 => value = nb of triggers to print
+    SInt32 _HeadPrintFrCnt;                      // Print frames counters, -1 => All, 0 => No, > 0 => value = nb of frames to print
+    SInt32 _HeadPrintFiredPixels;                // Print fired pixels, 0 / 1
     
     
   
@@ -2642,8 +2649,8 @@ class MIS1__TBtRunRead {
     // Private methods
     // --------------------------------------------------------------
     
-    
-    
+  
+  
 
 };
 
@@ -2684,6 +2691,33 @@ typedef struct {
 
 /**
 ===================================================================================
+* \typedef MIS1__TBtFrError
+*
+* \brief MSis 1 frame error
+*
+* ...
+* ...
+* ...
+*
+* G.CLAUS 30/05/2021
+*
+===================================================================================
+*/
+
+typedef enum MIS1__EBtFrError {
+  
+  MIS1__BT_FR_ERR_SW            = -1,         /*!< SW error  */
+  MIS1__BT_FR_ERR_OK            =  0,         /*!< No error, frame is ok */
+  MIS1__BT_FR_ERR_TRUNC         =  1,   /*!< Frame is too long => has been truncated */
+  MIS1__BT_FR_ERR_TRUNC_LAST_FR =  2,   /*!< Frame is too long BUT it is the last one of the Acq => has been truncated */
+  MIS1__BT_FR_ERR_NB
+  
+} MIS1__TBtFrError;
+
+
+
+/**
+===================================================================================
 * \struct MIS1__TBtFrDecHead
 *
 * \brief Msis BT, decoded frame header for one MSis 1: header record = MSis fr head, fr cnt, ptr to data
@@ -2705,7 +2739,7 @@ typedef struct {
   
   UInt32 FrCnt;                    /*!<  Frame counter extracted from MSisFrHead */
   
-  SInt32 Errors;                   /*!<  Errors detected in frame, 0 = None, < 0 SW error in data decoding, > 0 Msis HW error, ovf etc */
+  SInt32 Errors;                   /*!<  Errors detected in frame, 0 = None, < 0 SW error in data decoding, > 0 Msis HW error, ovf etc => Values are defined by MIS1__TBtFrError */
 
   SInt32 FrDataSzW16;                               /*!< Size of frame data part in W16 => Without header and trailer, < 0 => not calculated / error   */
   SInt32 FirstDataW16Pos;                           /*!< Position of first W16 of frame in MIS1__TBtAcqW16A.AAMsis[MSisId][W16Id], unit = W16, < 0 => not calculated / error  */
@@ -2733,13 +2767,17 @@ typedef struct {
 
 typedef struct {
 
-  SInt32 AcqId; /*!<  Id of the Acq, only used for messages printing */
-  
+  SInt32 AcqId;           /*!<  Id of the Acq, only used for messages printing */
+
+  SInt32 TrigNb;          /*!<  Triggers nb in the Acq, added on 30/05/2021 */
+
   SInt32 ParFrNbInSrcAcq;  /*!< Nb of frames in this Acq = Info from DAQ paramters  */
   
   SInt32 ResAFrNb         [MIS1__BT_MAX_REAL_MSIS_NB_ACQ]; /*!< Array of frames nb in each MSis1 (detected by frame decoding), index is [MSisId] */
   SInt32 ResAFrFakeHeadCnt[MIS1__BT_MAX_REAL_MSIS_NB_ACQ]; /*!< Counter of fake header detected in frames, index  is [MSisId]  */
   SInt32 ResAFrNbWoTrailer[MIS1__BT_MAX_REAL_MSIS_NB_ACQ]; /*!< Array of frames nb without trailer at the end in each MSis1 (detected by frame decoding), index is [MSisId] */
+  SInt32 ResAFrNbTrunc    [MIS1__BT_MAX_REAL_MSIS_NB_ACQ]; /*!< Array of frames nb which have been truncated (detected by frame decoding), index is [MSisId] */
+  SInt32 ResAFrNbErr      [MIS1__BT_MAX_REAL_MSIS_NB_ACQ]; /*!< Array of frames nb with error(s) detected by frame decoding), truncated fr is not counted as en error, index is [MSisId] */
   SInt32 ResARegNb        [MIS1__BT_MAX_REAL_MSIS_NB_ACQ]; /*!< Counter regions, index  is [MSisId]  */
   SInt32 ResAPixNb        [MIS1__BT_MAX_REAL_MSIS_NB_ACQ]; /*!< Counter fired pixels, index  is [MSisId]  */
 
