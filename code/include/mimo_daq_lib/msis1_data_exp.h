@@ -47,15 +47,23 @@ double            MIS1__BT_FBtAcqW16AFill_v80 ( MIS1__TBtAcqRawRec* PtSrc, MIS1_
 SInt32            MIS1__BT_FBtAcqW16APrintMSisU16 ( MIS1__TBtAcqW16A* Pt, UInt8 MSisId, UInt32 FirstW16, UInt32 W16Nb );
 
 MIS1__TBtAcqDec*  MIS1__BT_FBtAcqDecAlloc ( UInt8 Alloc, UInt32* PtRecSz );
+
 SInt32            MIS1__BT_FBtAcqDecFree ( MIS1__TBtAcqDec* PtRec );
 double            MIS1__BT_FBtDecodeFrLight ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtDest, SInt8 MSisId, SInt32 FrNb, UInt8 MeasExecTime, UInt8 PrintLvl );
+SInt32            MIS1__BT_FBtDecodeFrGetWarnErr ( UInt8 Reset );
+
 double            MIS1__BT_FBtDecodeFr ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtDest, SInt8 MSisId, SInt32 FrNb, UInt8 MeasExecTime, UInt8 PrintLvl );
 SInt32            MIS1__BT_FFrDecHeadPrint ( MIS1__TBtFrDecHead* Pt, UInt8 PrintMode );
 SInt32            MIS1__BT_FAcqDecPrintGen ( MIS1__TBtAcqDec* Pt, SInt8 MSisId, UInt8 PrintMode );
 SInt32            MIS1__BT_FAcqDecPrintPix ( MIS1__TBtAcqDec* Pt, SInt8 MSisId, UInt32 FrId, UInt32 MaxPixToPrint, UInt8 PrintMode );
 
+SInt32            MIS1__BT_FAcqDecCheckFrCntOneMSis ( MIS1__TBtAcqDec* Pt, SInt8 MSisId, UInt8 PrintLvl, UInt32* PtErrNb );
+SInt32            MIS1__BT_FAcqDecCheckFrCnt6MSis ( MIS1__TBtAcqDec* Pt, UInt8 PrintLvl, UInt32* PtErrNb );
+
 char*  MIS1__FFrHeader2Str ( MIS1__TDsFrHeader* PtSrc, char* DestStr, SInt32 DestStrSz, SInt32 Mode );
 char* MIS1__FFrTrailer2Str ( MIS1__TDsFrTrailer* PtSrc, char* DestStr, SInt32 DestStrSz, SInt32 Mode );
+
+
 
 
 #endif

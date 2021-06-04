@@ -54,18 +54,19 @@ private:
   std::vector<string> fListInputFileNames;
   size_t          fCurrentFileNumber;
   bool            fNoMoreFile;
-  bool            isfirstAcq;
-  int             nbFrPerAcq;
+  bool            fisfirstAcq;
+  int             fnbFrPerAcq;
 
   int             fCurrentTriggerNumber;
   int             fCurrentEventNumber;
   
-  int             ReachEndOfRun;
+  int             fReachEndOfRun;
   
   int             fCurrentAcqNumber;
   int             fCurrentFrameNumber;
   int             fTriggerCount;
   int             fFrameCount;
+  int             fBadDecFrameCounter ; // ZE 2021/06/04 - Counter for bad decoded frames
   int             fNEventsWithOverflow;
   BoardReaderEvent   *fCurrentEvent;
     

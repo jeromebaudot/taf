@@ -722,9 +722,9 @@ typedef enum  {
 #define MIS1__BT_RUN_TDI_FILE_FORMAT  1  // Run TDI = Trigger Data Index, file format version
 
 
+#define MIS1__BT_SUP_FRAME_FACTOR  8 // Super frame multiplicator or factor, one frame can bu up to MIS1__BT_SUP_FRAME_FACTOR normal frame size
 
-
-#define MIS1__BT_TOT_FRAME_SZ_W128  25 // 100 W16 / OUT x 2 OUT = 200 W16 = 25 W128 to be checked !!!
+#define MIS1__BT_TOT_FRAME_SZ_W128  (25 * MIS1__BT_SUP_FRAME_FACTOR) // 100 W16 / OUT x 2 OUT = 200 W16 = 25 W128 to be checked !!!  // 31/05/2021 => X 8
 
 #define MIS1__BT_TOT_FRAME_SZ_W64  (MIS1__BT_TOT_FRAME_SZ_W128 * 2)
 #define MIS1__BT_TOT_FRAME_SZ_W32  (MIS1__BT_TOT_FRAME_SZ_W128 * 4)
@@ -756,7 +756,7 @@ typedef enum  {
 // Variable Record Size Size (VRS) parameters
 
 
-#define MIS1__BT_VRS_MAX_FR_NB_PER_ACQ 10000
+#define MIS1__BT_VRS_MAX_FR_NB_PER_ACQ  6000 // 7000 // 10000
 
 #define MIS1__BT_VRS_MAX_ACQ_DATA_SZ_W8 (MIS1__BT_MAX_MSIS_NB_ACQ *  MIS1__BT_VRS_MAX_FR_NB_PER_ACQ * MIS1__BT_TOT_FRAME_SZ_W8)
 

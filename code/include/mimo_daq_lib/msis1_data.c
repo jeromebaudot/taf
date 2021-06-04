@@ -32,6 +32,9 @@
 #ifndef CC_MSIS1_BDF_LIGHT
 
 
+
+
+
 // ===================================================================================
 // * Functions (comment not processed by DOXYGEN)
 // *
@@ -14922,6 +14925,17 @@ SInt32 MIS1__TCCarWarnErr::FBinFileLoad ( char* Directory, char* FileName ) {
 
 
 
+// ===================================================================================
+// * Global variable
+// *
+// ===================================================================================
+
+SInt32 MIS1__BT_VGDecodecFrWarnErr = 0; // Used by MIS1__BT_FBtDecodeFrGetWarnErr ( UInt8 Reset )
+                                        // Should be in *.var but I don't want to distribute this file
+                                        // => It must be here
+
+
+
 
 /* DOC_FUNC_BEGIN */
 /**
@@ -16605,6 +16619,7 @@ SInt32 MIS1__TBtRunRead::_FBegin () {
   
   _AcqHeadSzW8    = 0;
   _AcqMaxTotSzW8  = 0;
+  _AcqMaxDataSzW8 = 0;
   
   _PtAcqRaw       = NULL;
   
@@ -17165,7 +17180,7 @@ SInt32 MIS1__TBtRunRead::FRunConf ( char* RunRootDir, UInt32 RunNo, UInt8 PrintR
   }
 
   // ------------------------------
-  // Calculated Acq maw size
+  // Calculated Acq max size
   // ------------------------------
 
   _PtAcqRaw = (MIS1__TBtAcqRawRec*) malloc ( sizeof (MIS1__TBtAcqRawRec) );  // Alloc Acq (fixed size) only to get a record for header size calcualtion
@@ -17181,7 +17196,10 @@ SInt32 MIS1__TBtRunRead::FRunConf ( char* RunRootDir, UInt32 RunNo, UInt8 PrintR
 
   _AcqHeadSzW8 = (UInt32) ((UInt8*) &_PtAcqRaw->MSisData.Au64[0] - (UInt8*) _PtAcqRaw);
 
-  _AcqMaxTotSzW8 = _AcqHeadSzW8 + ( _RunCnfRec.FrNbPerAcq * MIS1__BT_MAX_MSIS_NB_ACQ * MIS1__BT_TOT_FRAME_SZ_W8 ); // Since 17/05/2021
+  // _AcqMaxTotSzW8 = _AcqHeadSzW8 + ( _RunCnfRec.FrNbPerAcq * MIS1__BT_MAX_MSIS_NB_ACQ * MIS1__BT_TOT_FRAME_SZ_W8 ); // Since 17/05/2021 and Before 31/05/2021
+
+  _AcqMaxDataSzW8 = ( _RunCnfRec.FrNbPerAcq * MIS1__BT_MAX_MSIS_NB_ACQ * MIS1__BT_TOT_FRAME_SZ_W8 ); // Since 31/05/2021 : _AcqMaxDataSzW8 added to check size on Acq data read from file
+  _AcqMaxTotSzW8  = _AcqHeadSzW8 + _AcqMaxDataSzW8;                                                  // Since 31/05/2021
 
   free ( _PtAcqRaw ); // It will be allocated hereafter with the add-hoc size
 
@@ -17335,8 +17353,9 @@ SInt32 MIS1__TBtRunRead::FRunClose () {
   _RunConfLoaded  = 0;
   _RunNo          = 0; 
 
-  _AcqHeadSzW8   = 0;
-  _AcqMaxTotSzW8 = 0;
+  _AcqHeadSzW8    = 0;
+  _AcqMaxTotSzW8  = 0;
+  _AcqMaxDataSzW8 = 0;
   
   _CurRawFilePt   = NULL;
   _CurIndexFilePt = NULL;
@@ -18283,11 +18302,12 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FFirstAcqOfRawFileGetSeq ( UInt32 RawFile
   // ----------------------
 
   // Read header
+      
     
   VRecNbRead = fread ( &_PtAcqRaw->Head, _AcqHeadSzW8 /* Record size */ , 1 /* Record number */, _CurRawFilePt );
   
   if ( VRecNbRead != 1 ) {
-    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq header of first acq, file = %s failed !", _CurRawFileName ) );
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq header of first acq, file = %s failed ! Sys = %s", _CurRawFileName, _strerror ( "" )  ) );
   }
   
   
@@ -18318,13 +18338,22 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FFirstAcqOfRawFileGetSeq ( UInt32 RawFile
   
   
   // Read data
-
-  err_trace (( ERR_OUT, "Read data sz = %d W8", _PtAcqRaw->Head.DataSz ));
   
+  // 333
+
+  // Check size
+  // 31/05/2021 : Add size checking, handled by fread under Windows (generates invalid argument error), but Linux ? + portability ? => Add check
+   
+  if ( _PtAcqRaw->Head.DataSz > _AcqMaxDataSzW8 ) {
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Acq No %d Data size = %d W8 > Allocated size = %d W8", _PtAcqRaw->Head.Ids.AcqIdInRun, _PtAcqRaw->Head.DataSz, _AcqMaxDataSzW8 ) );
+  }
+
+  // err_trace (( ERR_OUT, "Read data sz = %d W8", _PtAcqRaw->Head.DataSz ));
+    
   VRecNbRead = fread ( &_PtAcqRaw->MSisData, _PtAcqRaw->Head.DataSz /* Record size */ , 1 /* Record number */, _CurRawFilePt );
  
   if ( VRecNbRead != 1 ) {
-    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq data of first acq, file = %s failed !", _CurRawFileName ) );
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq data of first acq, file = %s failed ! Sys = %s", _CurRawFileName, _strerror ( "" )  ) );
   }
   
   
@@ -18449,11 +18478,12 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FNextAcqOfRawFileGetSeq  ( UInt32 RawFile
   // ---------------------------------------
   
   // Read header
+  
     
   VRecNbRead = fread ( &_PtAcqRaw->Head, _AcqHeadSzW8 /* Record size */ , 1 /* Record number */, _CurRawFilePt );
   
   if ( VRecNbRead != 1 ) {
-    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq header of first acq, file = %s failed !", _CurRawFileName ) );
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq header of next acq, file = %s failed ! Sys = %s", _CurRawFileName, _strerror ( "" )  ) );
   }
   
 
@@ -18480,19 +18510,28 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FNextAcqOfRawFileGetSeq  ( UInt32 RawFile
   if ( PrintHead ) {
     VRet = MIS1__BT_FAcqRawHeadRecPrint ( &_PtAcqRaw->Head, _HeadPrintTriggers, _HeadPrintFrCnt, _HeadPrintFiredPixels );
     
-    err_retfailnull ( VRet, (ERR_OUT,"Abort => Print first acq header failed ! Ret = %d", VRet) );
+    err_retfailnull ( VRet, (ERR_OUT,"Abort => Print next acq header failed ! Ret = %d", VRet) );
   }
   
   
   // Read data
   
-  err_trace (( ERR_OUT, "Read data sz = %d W8", _PtAcqRaw->Head.DataSz ));
- 
+  // Check size
+  // 31/05/2021 : Add size checking, handled by fread under Windows (generates invalid argument error), but Linux ? + portability ? => Add check
   
+  if ( _PtAcqRaw->Head.DataSz > _AcqMaxDataSzW8 ) {
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Acq No %d Data size = %d W8 > Allocated size = %d W8", _PtAcqRaw->Head.Ids.AcqIdInRun, _PtAcqRaw->Head.DataSz, _AcqMaxDataSzW8 ) );
+  }
+  
+  
+  // 333
+  
+  // err_trace (( ERR_OUT, "Read data sz = %d W8", _PtAcqRaw->Head.DataSz ));
+    
   VRecNbRead = fread ( &_PtAcqRaw->MSisData, _PtAcqRaw->Head.DataSz /* Record size */ , 1 /* Record number */, _CurRawFilePt );
   
   if ( VRecNbRead != 1 ) {
-    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq data of first acq, file = %s failed !", _CurRawFileName ) );
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq data of next acq, file = %s failed ! Sys = %s", _CurRawFileName, _strerror ( "" ) ) );
   }   
   
 
@@ -18631,7 +18670,9 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqNextSeq ( UInt8 ChkHead, UInt8 PrintH
   if ( _CurAcqId >= _RunCnfRec.AcqNb ) {
         
     _CurAcqId = _RunCnfRec.AcqNb;
-    
+
+    // msg (( MSG_OUT, "End of run reached : _CurAcqId = %d, _RunCnfRec.AcqNb = %d", _CurAcqId, _RunCnfRec.AcqNb ));  // 03/06/2021 Debug
+
     if ( PtReachEnd != NULL ) {
       *PtReachEnd = 1;
     }
@@ -18648,16 +18689,24 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqNextSeq ( UInt8 ChkHead, UInt8 PrintH
   // Calc raw file id
   
   VRawFileId = _CurAcqId / _RunCnfRec.AcqNbPerFile;
-  
+
+  // msg (( MSG_OUT, "_CurAcqId = %d, _RunCnfRec.AcqNbPerFile = %d, VRawFileId = %d", _CurAcqId, _RunCnfRec.AcqNbPerFile, VRawFileId )); // 03/06/2021 Debug
+
+
   // Read next Acq
   
   if ( ( _CurAcqId % _RunCnfRec.AcqNbPerFile) == 0 ) {
-    
+
+    // msg (( MSG_OUT, "_FFirstAcqOfRawFileGetSeq (...)" )); // // 03/06/2021 Debug
+
     VPtAcq = _FFirstAcqOfRawFileGetSeq ( VRawFileId, ChkHead, PrintHead );
     
   }
   
   else {
+
+    // msg (( MSG_OUT, "_FNextAcqOfRawFileGetSeq (...)" )); // 03/06/2021 Debug
+
     VPtAcq = _FNextAcqOfRawFileGetSeq ( VRawFileId /* RawFileId */, ChkHead, PrintHead, PtReachEnd );
   }
     
@@ -18673,13 +18722,215 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqNextSeq ( UInt8 ChkHead, UInt8 PrintH
 
 
 
+/* DOC_FUNC_BEGIN */
+/**
+===================================================================================
+* \fn      : MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqGotoSeq ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd )
+*          :
+* \brief   : Returns a pointer to the xext Acq of run \n
+*          : \n
+*          :
+* \param   : AcqId     - Id / No of the Acq
+*          :
+* \param   : ChkHead   - Checks header fields values
+*          :
+* \param   : PrintHead - Prints header fields
+*          :
+* \param   : PtReachEn - A pointer on a flag set to 1 if end of file is reached, set it to NULL if not used
+*          :
+*          :
+* \return  : Error code
+*          :   0 - OK
+*          : < 0 - Error
+*          :
+* \warning : Globals   :
+* \warning : Remark    : Privare method
+* \warning : Level     :
+*          :
+* \warning : Items not filled now :
+*  todo    :
+*          :
+*  bug     :
+*          :
+* \date    : Date      : 18/05/2021
+* \date    : Rev       : 30/05/2021 : Reduce acces time if AcqId is in current opened run file
+* \date    : Doc date  : 18/05/2021
+* \author  : Name      : Gilles CLAUS
+* \author  : E-mail    : gilles.claus@iphc.cnrs.fr
+* \author  : Labo      : IPHC
+*
+===================================================================================
+*/
+/* DOC_FUNC_END */
+
+
+MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqGotoSeq ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd ) {
+  
+  SInt32 VRet;
+  UInt32 VRawFileId;
+  SInt32 ViAcq;
+  MIS1__TBtAcqRawRec* VPtAcq;
+  
+  // Check
+  
+  MIS1__TBtRunRead_CHECK_RET_NULL
+  
+  // Check param
+  
+  if ( _CurAcqId >= _RunCnfRec.AcqNb ) {
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq No = %d > Nb of acq in run = %d", AcqId, _RunCnfRec.AcqNb ) );
+  }
+  
+  
+  // Calc raw file id
+  
+  VRawFileId = AcqId / _RunCnfRec.AcqNbPerFile;
+  
+  
+  // 30/05/2021 : If Acq to go is in current run file
+  
+  if ( VRawFileId == _CurRawFileId ) {
+    
+    // msg (( MSG_OUT, "Search GOTO Acq = %d in current run file Id = %d", AcqId, _CurRawFileId ));
+    
+    // AcqId == current one => Done
+    
+    if ( AcqId == _CurAcqId ) {
+      return ( _PtAcqRaw );
+    }
+    
+    // AcqId < current one => goto first Acq of file
+    
+    if ( AcqId < _CurAcqId ) {
+      
+      // msg (( MSG_OUT, "Search GOTO Acq = %d in current run file Id = %d => Goto first Acq", AcqId, _CurRawFileId ));
+  
+      VPtAcq = _FFirstAcqOfRawFileGetSeq ( VRawFileId, ChkHead, 0 /* PrintHead */ );
+  
+      if ( VPtAcq == NULL ) {
+        err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq No = %d of run failed ! file = %s", AcqId, _CurRawFileName ) );
+      }
+  
+      // If AcqId is the first one of the run => Done
+  
+      if ( VPtAcq->Head.Ids.AcqIdInRun == AcqId) {
+
+        _CurAcqId = AcqId; // 03/06/2021 Debug
+
+        if ( PrintHead ) {
+          VRet = MIS1__BT_FAcqRawHeadRecPrint ( &VPtAcq->Head, _HeadPrintTriggers, _HeadPrintFrCnt, _HeadPrintFiredPixels );
+      
+          err_retfailnull ( VRet, (ERR_OUT,"Abort => Print acq header failed ! Ret = %d", VRet) );
+        }
+
+        return ( VPtAcq );
+      }
+    
+    } // End if ( AcqId < _CurAcqId )
+    
+    
+    // Scan Acq 
+
+    // msg (( MSG_OUT, "Search GOTO Acq = %d in current run file Id = %d => Scan Acqs", AcqId, _CurRawFileId ));
+      
+
+    for ( ViAcq = 1; ViAcq < _RunCnfRec.AcqNbPerFile; ViAcq++ ) {
+      
+      VPtAcq = _FNextAcqOfRawFileGetSeq ( VRawFileId /* RawFileId */, ChkHead, 0 /* PrintHead */, PtReachEnd  );
+      
+      if ( VPtAcq == NULL ) {
+        err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq No = %d of run failed ! file = %s", AcqId, _CurRawFileName ) );
+      }
+      
+      if ( VPtAcq->Head.Ids.AcqIdInRun == AcqId) {
+
+        _CurAcqId = AcqId; // 03/06/2021 Debug
+
+        if ( PrintHead ) {
+          VRet = MIS1__BT_FAcqRawHeadRecPrint ( &VPtAcq->Head, _HeadPrintTriggers, _HeadPrintFrCnt, _HeadPrintFiredPixels );
+          
+          err_retfailnull ( VRet, (ERR_OUT,"Abort => Print acq header failed ! Ret = %d", VRet) );
+        }
+        
+        return ( VPtAcq );
+        
+      } // End if ( VPtAcq->Head.Ids.AcqIdInRun == AcqId)
+      
+    } // End for (ViAcq )
+    
+    
+    
+  } // End if ( VRawFileId == _CurRawFileId )
+  
+  
+  // 30/05/2021 : If Acq to go is NOT in current run file
+  
+  
+  // Scan the acq of file
+  
+  
+  if ( PtReachEnd != NULL ) {
+    *PtReachEnd = 0;
+  }
+  
+  
+  VPtAcq = _FFirstAcqOfRawFileGetSeq ( VRawFileId, ChkHead, 0 /* PrintHead */ );
+  
+  if ( VPtAcq == NULL ) {
+    err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq No = %d of run failed ! file = %s", AcqId, _CurRawFileName ) );
+  }
+  
+  
+  if ( VPtAcq->Head.Ids.AcqIdInRun == AcqId) {
+
+    _CurAcqId = AcqId; // 03/06/2021 Debug
+
+    if ( PrintHead ) {
+      VRet = MIS1__BT_FAcqRawHeadRecPrint ( &VPtAcq->Head, _HeadPrintTriggers, _HeadPrintFrCnt, _HeadPrintFiredPixels );
+      
+      err_retfailnull ( VRet, (ERR_OUT,"Abort => Print acq header failed ! Ret = %d", VRet) );
+    }
+       
+    return ( VPtAcq );
+  }
+  
+  
+  for ( ViAcq = 1; ViAcq < _RunCnfRec.AcqNbPerFile; ViAcq++ ) {
+    
+    VPtAcq = _FNextAcqOfRawFileGetSeq ( VRawFileId /* RawFileId */, ChkHead, 0 /* PrintHead */, PtReachEnd  );
+    
+    if ( VPtAcq == NULL ) {
+      err_retfailnull ( -1, (ERR_OUT,"Abort => Read acq No = %d of run failed ! file = %s", AcqId, _CurRawFileName ) );
+    }
+    
+    if ( VPtAcq->Head.Ids.AcqIdInRun == AcqId) {
+
+      _CurAcqId = AcqId; // 03/06/2021 Debug
+
+      if ( PrintHead ) {
+        VRet = MIS1__BT_FAcqRawHeadRecPrint ( &VPtAcq->Head, _HeadPrintTriggers, _HeadPrintFrCnt, _HeadPrintFiredPixels );
+        
+        err_retfailnull ( VRet, (ERR_OUT,"Abort => Print acq header failed ! Ret = %d", VRet) );
+      }
+            
+      return ( VPtAcq );
+      
+    } // End if ( VPtAcq->Head.Ids.AcqIdInRun == AcqId)
+    
+  } // End for (ViAcq )
+  
+  
+  return ( NULL );
+}
+
+
 
 
 
 /* DOC_FUNC_BEGIN */
 /**
 ===================================================================================
-* \fn      : MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqGotoSeq ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd )
+* \fn      : MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqGotoSeq_before_300521 ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd )
 *          :
 * \brief   : Returns a pointer to the xext Acq of run \n
 *          : \n
@@ -18717,8 +18968,9 @@ MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqNextSeq ( UInt8 ChkHead, UInt8 PrintH
 /* DOC_FUNC_END */
 
 
-MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqGotoSeq ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd ) {
-  
+MIS1__TBtAcqRawRec* MIS1__TBtRunRead::_FAcqGotoSeq_before_300521 ( UInt32 AcqId, UInt8 ChkHead, UInt8 PrintHead, UInt8* PtReachEnd ) {
+
+
   SInt32 VRet;
   UInt32 VRawFileId;
   SInt32 ViAcq;
@@ -19111,6 +19363,10 @@ double MIS1__BT_FBtAcqW16AFill ( MIS1__TBtAcqRawRec* PtSrc, MIS1__TBtAcqW16A* Pt
   
   PtDest->AcqId = PtSrc->Head.Ids.AcqIdInRun;
   
+  // Propagates Acq header info to destination MIS1__TBtAcqW16A
+
+  PtDest->AcqRawHead = PtSrc->Head; // Added on 30/05/22021  // 789
+  
   // Call the conversion function
   
   switch ( FuncVers ) {
@@ -19479,6 +19735,394 @@ double MIS1__BT_FBtAcqW16AFill_v10 ( MIS1__TBtAcqRawRec* PtSrc, MIS1__TBtAcqW16A
 }
 
 
+/* DOC_FUNC_BEGIN */
+/**
+===================================================================================
+* \fn      : double MIS1__BT_FBtAcqW16AFill_v80 ( MIS1__TBtAcqRawRec* PtSrc, MIS1__TBtAcqW16A* PtDest, SInt32 FrNb, UInt8 MeasExecTime, UInt8 PrintLvl )
+*          :
+* \brief   : Convert MIS1__TBtAcqRawRec to MIS1__TBtAcqW16A record, for 8 channels, implementation V80  \n
+*          :
+* \param   : PtSrc    - Pointer to source record MIS1__TBtAcqRawRec
+*          :
+* \param   : PtDest   - Pointer to destination record MIS1__TBtAcqW16A
+*          :
+* \param   : FrNb     - Frames nb to convert, if -1 => All frames from  source record
+*          :
+* \param   : MeasExecTime - Measure exec time 0 = No, 1 = Yes
+*
+* \param   : PrintLvl     - Debug print level, 0 = No, 1 = Print record sizes, 2 = More print, to be implemented
+*          :
+*          :
+*          :
+* \return  : Execution time in us or error code
+*          : >=  0 - Execution time in us
+*          : < 0   - Error code
+*          :
+* \warning : Globals   :
+* \warning : Remark    : WARNING => ONLY 2 channels IMPLEMENTED on 22/05/2021
+* \warning : Level     :
+*          :
+* \warning : Items not filled now :
+*  todo    :
+*          :
+*  bug     :
+*          :
+* \date    : Date      : 22/05/2021
+* \date    : Doc date  : 22/05/2021
+* \author  : Name      : Gilles CLAUS
+* \author  : E-mail    : gilles.claus@iphc.cnrs.fr
+* \author  : Labo      : IPHC
+*
+===================================================================================
+*/
+/* DOC_FUNC_END */
+
+
+double MIS1__BT_FBtAcqW16AFill_v80 ( MIS1__TBtAcqRawRec* PtSrc, MIS1__TBtAcqW16A* PtDest, SInt32 FrNb, UInt8 MeasExecTime, UInt8 PrintLvl ) {
+  
+  UInt32  VSrcSzW64;      // Size of the full acq memory in W64
+  UInt32  VSrcSzW128;      // Size of the full acq memory in W64
+  UInt32  VSrcLowOfsW64;  // Offset in W64 of high half of  memory
+  UInt32  VSrcChanSzW16;
+  UInt32  VSrcChanSzW128;
+  UInt32  VSrcChanHafSzW16;
+  double  VExecTimeUs;
+  
+  
+  UInt32  ViW128;
+  
+  UInt16* VPtSLowW16;     // Pt on src low half of acq memory
+  UInt16* VPtSHighW16;    // Pt on src low half of acq memory
+  
+  UInt16* VPtSCh0Low;     // Pt src Chip 0, low half of acq memory = In0
+  UInt16* VPtSCh0High;    // Pt src Chip 0, high half of acq memory = In8
+  UInt16* VPtDCh0;        // Pt dest Chip 0
+  
+  UInt16* VPtSCh1Low;     // Pt src Chip 1, low half of acq memory = In0
+  UInt16* VPtSCh1High;    // Pt src Chip 1, high half of acq memory = In8
+  UInt16* VPtDCh1;        // Pt dest Chip 1
+  
+  UInt16* VPtSCh2Low;     // Pt src Chip 2, low half of acq memory = In0
+  UInt16* VPtSCh2High;    // Pt src Chip 2, high half of acq memory = In8
+  UInt16* VPtDCh2;        // Pt dest Chip 2
+  
+  UInt16* VPtSCh3Low;     // Pt src Chip 3, low half of acq memory = In0
+  UInt16* VPtSCh3High;    // Pt src Chip 3, high half of acq memory = In8
+  UInt16* VPtDCh3;        // Pt dest Chip 3
+  
+  UInt16* VPtSCh4Low;     // Pt src Chip 4, low half of acq memory = In0
+  UInt16* VPtSCh4High;    // Pt src Chip 4, high half of acq memory = In8
+  UInt16* VPtDCh4;        // Pt dest Chip 4
+  
+  UInt16* VPtSCh5Low;     // Pt src Chip 5, low half of acq memory = In0
+  UInt16* VPtSCh5High;    // Pt src Chip 5, high half of acq memory = In8
+  UInt16* VPtDCh5;        // Pt dest Chip 5
+  
+  UInt16* VPtSCh6Low;     // Pt src trig chan = [6], low half of acq memory = In7
+  UInt16* VPtSCh6High;    // Pt src trig chan = [6], high half of acq memory = In15
+  UInt16* VPtDCh6;        // Pt dest trig chan = [6]
+  
+  
+  
+  UInt32 ViW16;
+  UInt32 ViW16Trig;
+  
+  
+  // Check param
+  
+  // ----------------------------------------------
+  // WARNING
+  // ----------------------------------------------
+  //
+  // NO parameters checking to save executiuin time, it is done in MIS1__BT_FBtAcqW16AFill (...)
+  // => This function SHOULD not be called directly, but only via MIS1__BT_FBtAcqW16AFill (...)
+  // => In case you need to call it directly => Check paraùeters you provide
+  
+  // Measure exec time
+  
+  #ifndef CC_NOT_CPP_BUILDER
+  
+    if ( MeasExecTime ) {
+      TIME__FMeasTimeUsBegin ( 0 /* Index */ );
+    }
+    
+  
+  #else
+  
+    // You can implement here exec tiome measurement for compiler <> C++ Builder
+  
+  
+  #endif
+  
+  
+  
+  // Convert
+  
+  // Convets all frames
+  
+  if ( FrNb < 0 ) {
+    VSrcSzW128 = PtSrc->Head.DataSz / 16;
+    FrNb       = PtSrc->Head.Res.FrNb;
+  }
+  
+  
+  // Selects a fraction of all frames from beginning => TBC if it generates no bug ...
+  
+  else {
+    VSrcSzW128 = PtSrc->Head.DataSz / 16;
+    VSrcSzW128 = VSrcSzW128 * ( FrNb / PtSrc->Head.Res.FrNb );
+  }
+  
+  
+  VSrcSzW64 = VSrcSzW128 * 2;
+  
+  
+  VSrcLowOfsW64  = VSrcSzW64 / 2;
+  
+  VSrcChanSzW16    = PtSrc->Head.DataSz / 16; // divide by 8 because 8 chan, divide by 2 W8 => W16
+  VSrcChanHafSzW16 = VSrcChanSzW16 / 2;
+  
+  VSrcChanSzW128   = VSrcSzW128 / 8; //  divide by 8 because 8 chan
+  
+  PtDest->MSisW16Nb = VSrcSzW128; // Size of each MSis 1 channel in W16
+  
+  VPtSLowW16     = (UInt16*) PtSrc->MSisData.Au64;
+  VPtSHighW16    = (UInt16*) &PtSrc->MSisData.Au64[VSrcLowOfsW64];
+  
+  // Chan 0 ptr init
+  
+  VPtSCh0Low   = VPtSLowW16;
+  VPtSCh0High  = VPtSHighW16;
+  VPtDCh0      = &PtDest->AAMsis[0][0];
+  
+  // Chan 1 ptr init
+  
+  VPtSCh1Low   = VPtSLowW16  + 1;
+  VPtSCh1High  = VPtSHighW16 + 1;
+  VPtDCh1      = &PtDest->AAMsis[1][0];
+  
+  // Chan 2 ptr init
+  
+  VPtSCh2Low   = VPtSLowW16  + 2;
+  VPtSCh2High  = VPtSHighW16 + 2;
+  VPtDCh2      = &PtDest->AAMsis[2][0];
+  
+  // Chan 3 ptr init
+  
+  VPtSCh3Low   = VPtSLowW16  + 3;
+  VPtSCh3High  = VPtSHighW16 + 3;
+  VPtDCh3      = &PtDest->AAMsis[3][0];
+  
+  // Chan 4 ptr init
+  
+  VPtSCh4Low   = VPtSLowW16  + 4;
+  VPtSCh4High  = VPtSHighW16 + 4;
+  VPtDCh4      = &PtDest->AAMsis[4][0];
+  
+  // Chan 5 ptr init
+  
+  VPtSCh5Low   = VPtSLowW16  + 5;
+  VPtSCh5High  = VPtSHighW16 + 5;
+  VPtDCh5      = &PtDest->AAMsis[5][0];
+  
+  // Chan 6 ptr init
+  
+  VPtSCh6Low   = VPtSLowW16  + 7;
+  VPtSCh6High  = VPtSHighW16 + 7;
+  VPtDCh6      = &PtDest->AAMsis[6][0];
+  
+  
+  
+  // Update size fields
+  
+  PtDest->FrNb = FrNb;     // Frames nb in source Acq converted in MIS1__TBtAcqW16A
+  
+  
+  // Debug print
+  
+  if ( PrintLvl >= 1 ) {
+    msg (( MSG_OUT, "Src size          = %d W128 => %d W128 / Chan", VSrcSzW128, VSrcChanSzW128 ));
+    msg (( MSG_OUT, "Src size          = %d W64  = %d W16", VSrcSzW64, VSrcSzW64 * 8 ));
+    msg (( MSG_OUT, "Src low W64 pos   = 0 "  ));
+    msg (( MSG_OUT, "Src high W64 pos  = %d W16 ", VSrcChanHafSzW16  ));
+    msg (( MSG_OUT, "Dest chan sz      = %d W16 ", VSrcChanSzW16  ));
+  }
+  
+  
+  // Convert
+  
+  ViW16     = 0;
+  ViW16Trig = 0;
+  
+  for ( ViW128 = 0; ViW128 < VSrcChanSzW128; ViW128++ ) {
+    
+    // Trigger on D15
+    
+    VPtDCh6[ViW16Trig] = *VPtSCh6Low; // Trig
+    VPtSCh6Low += 8;
+    ViW16Trig++;
+    VPtDCh6[ViW16Trig] = *VPtSCh6Low; // Trig
+    VPtSCh6Low += 8;
+    ViW16Trig++;
+    VPtDCh6[ViW16Trig] = *VPtSCh6Low; // Trig
+    VPtSCh6Low += 8;
+    ViW16Trig++;
+    VPtDCh6[ViW16Trig] = *VPtSCh6Low; // Trig
+    VPtSCh6Low += 8;
+    ViW16Trig++;
+    
+    
+    
+    // Low memory part
+    
+    VPtDCh0[ViW16] = *VPtSCh0Low; // W0 - CH0
+    VPtSCh0Low += 8;
+    VPtDCh1[ViW16] = *VPtSCh1Low; // W0 - CH1
+    VPtSCh1Low += 8;
+    VPtDCh2[ViW16] = *VPtSCh2Low; // W0 - CH2
+    VPtSCh2Low += 8;
+    VPtDCh3[ViW16] = *VPtSCh3Low; // W0 - CH3
+    VPtSCh3Low += 8;
+    VPtDCh4[ViW16] = *VPtSCh4Low; // W0 - CH4
+    VPtSCh4Low += 8;
+    VPtDCh5[ViW16] = *VPtSCh5Low; // W0 - CH5
+    VPtSCh5Low += 8;
+    ViW16++;
+    
+    
+    VPtDCh0[ViW16] = *VPtSCh0Low; // W1 - CH0
+    VPtSCh0Low += 8;
+    VPtDCh1[ViW16] = *VPtSCh1Low; // W1 - CH1
+    VPtSCh1Low += 8;
+    VPtDCh2[ViW16] = *VPtSCh2Low; // W1 - CH2
+    VPtSCh2Low += 8;
+    VPtDCh3[ViW16] = *VPtSCh3Low; // W1 - CH3
+    VPtSCh3Low += 8;
+    VPtDCh4[ViW16] = *VPtSCh4Low; // W1 - CH4
+    VPtSCh4Low += 8;
+    VPtDCh5[ViW16] = *VPtSCh5Low; // W1 - CH5
+    VPtSCh5Low += 8;
+    ViW16++;
+    
+    VPtDCh0[ViW16] = *VPtSCh0Low; // W2 - CH0
+    VPtSCh0Low += 8;
+    VPtDCh1[ViW16] = *VPtSCh1Low; // W2 - CH1
+    VPtSCh1Low += 8;
+    VPtDCh2[ViW16] = *VPtSCh2Low; // W2 - CH2
+    VPtSCh2Low += 8;
+    VPtDCh3[ViW16] = *VPtSCh3Low; // W2 - CH3
+    VPtSCh3Low += 8;
+    VPtDCh4[ViW16] = *VPtSCh4Low; // W2 - CH4
+    VPtSCh4Low += 8;
+    VPtDCh5[ViW16] = *VPtSCh5Low; // W2 - CH5
+    VPtSCh5Low += 8;
+    ViW16++;
+    
+    VPtDCh0[ViW16] = *VPtSCh0Low; // W3 - CH0
+    VPtSCh0Low += 8;
+    VPtDCh1[ViW16] = *VPtSCh1Low; // W3 - CH1
+    VPtSCh1Low += 8;
+    VPtDCh2[ViW16] = *VPtSCh2Low; // W3 - CH2
+    VPtSCh2Low += 8;
+    VPtDCh3[ViW16] = *VPtSCh3Low; // W3 - CH3
+    VPtSCh3Low += 8;
+    VPtDCh4[ViW16] = *VPtSCh4Low; // W3 - CH4
+    VPtSCh4Low += 8;
+    VPtDCh5[ViW16] = *VPtSCh5Low; // W3 - CH5
+    VPtSCh5Low += 8;
+    ViW16++;
+    
+    
+    // High memory part
+    
+    
+    VPtDCh0[ViW16] = *VPtSCh0High; // W4 - CH0
+    VPtSCh0High += 8;
+    VPtDCh1[ViW16] = *VPtSCh1High; // W4 - CH1
+    VPtSCh1High += 8;
+    VPtDCh2[ViW16] = *VPtSCh2High; // W4 - CH2
+    VPtSCh2High += 8;
+    VPtDCh3[ViW16] = *VPtSCh3High; // W4 - CH3
+    VPtSCh3High += 8;
+    VPtDCh4[ViW16] = *VPtSCh4High; // W4 - CH4
+    VPtSCh4High += 8;
+    VPtDCh5[ViW16] = *VPtSCh5High; // W4 - CH5
+    VPtSCh5High += 8;
+    ViW16++;
+    
+    
+    
+    VPtDCh0[ViW16] = *VPtSCh0High; // W5 - CH0
+    VPtSCh0High += 8;
+    VPtDCh1[ViW16] = *VPtSCh1High; // W5 - CH1
+    VPtSCh1High += 8;
+    VPtDCh2[ViW16] = *VPtSCh2High; // W5 - CH2
+    VPtSCh2High += 8;
+    VPtDCh3[ViW16] = *VPtSCh3High; // W5 - CH3
+    VPtSCh3High += 8;
+    VPtDCh4[ViW16] = *VPtSCh4High; // W5 - CH4
+    VPtSCh4High += 8;
+    VPtDCh5[ViW16] = *VPtSCh5High; // W5 - CH5
+    VPtSCh5High += 8;
+    ViW16++;
+    
+    VPtDCh0[ViW16] = *VPtSCh0High; // W6 - CH0
+    VPtSCh0High += 8;
+    VPtDCh1[ViW16] = *VPtSCh1High; // W6 - CH1
+    VPtSCh1High += 8;
+    VPtDCh2[ViW16] = *VPtSCh2High; // W6 - CH2
+    VPtSCh2High += 8;
+    VPtDCh3[ViW16] = *VPtSCh3High; // W6 - CH3
+    VPtSCh3High += 8;
+    VPtDCh4[ViW16] = *VPtSCh4High; // W6 - CH4
+    VPtSCh4High += 8;
+    VPtDCh5[ViW16] = *VPtSCh5High; // W6 - CH5
+    VPtSCh5High += 8;
+    ViW16++;
+    
+    VPtDCh0[ViW16] = *VPtSCh0High; // W7 - CH0
+    VPtSCh0High += 8;
+    VPtDCh1[ViW16] = *VPtSCh1High; // W7 - CH1
+    VPtSCh1High += 8;
+    VPtDCh2[ViW16] = *VPtSCh2High; // W7 - CH2
+    VPtSCh2High += 8;
+    VPtDCh3[ViW16] = *VPtSCh3High; // W7 - CH3
+    VPtSCh3High += 8;
+    VPtDCh4[ViW16] = *VPtSCh4High; // W7 - CH4
+    VPtSCh4High += 8;
+    VPtDCh5[ViW16] = *VPtSCh5High; // W7 - CH5
+    VPtSCh5High += 8;
+    ViW16++;
+    
+    
+  } // End for
+  
+  
+  
+  #ifndef CC_NOT_CPP_BUILDER
+  
+    if ( MeasExecTime ) {
+      VExecTimeUs = TIME__FMeasTimeUsEnd ( 0 /* Index */ );
+    }
+    
+    else {
+      VExecTimeUs = 0;
+    }
+    
+  #else
+  
+    // You can implement here exec tiome measurement for compiler <> C++ Builder
+    
+    VExecTimeUs = 0; // No exec time measurement implementation => Returns 0
+    
+  
+  #endif
+  
+  
+  
+  return (VExecTimeUs);
+}
+
 
 
 
@@ -19525,7 +20169,7 @@ double MIS1__BT_FBtAcqW16AFill_v10 ( MIS1__TBtAcqRawRec* PtSrc, MIS1__TBtAcqW16A
 /* DOC_FUNC_END */
 
 
-double MIS1__BT_FBtAcqW16AFill_v80 ( MIS1__TBtAcqRawRec* PtSrc, MIS1__TBtAcqW16A* PtDest, SInt32 FrNb, UInt8 MeasExecTime, UInt8 PrintLvl ) {
+double MIS1__BT_FBtAcqW16AFill_v80__010621_before_trig_upg ( MIS1__TBtAcqRawRec* PtSrc, MIS1__TBtAcqW16A* PtDest, SInt32 FrNb, UInt8 MeasExecTime, UInt8 PrintLvl ) {
   
   UInt32  VSrcSzW64;      // Size of the full acq memory in W64
   UInt32  VSrcSzW128;      // Size of the full acq memory in W64
@@ -20063,16 +20707,63 @@ SInt32 MIS1__BT_FBtAcqDecFree ( MIS1__TBtAcqDec* PtRec ) {
 /* DOC_FUNC_BEGIN */
 /**
 ===================================================================================
+* \fn      : SInt32 MIS1__BT_FBtDecodeFrGetWarnErr ( UInt8 Reset )
+*
+* \brief   : Returns warning / errors counter of MIS1__BT_FBtDecodeFrLight (...), MIS1__BT_FBtDecodeFr (...)  \n
+*
+* \param   : Reset  - 0 => Do nothing, 1 => Reset warning / errors counter
+*
+*          :
+* \return  : Warnign / Errors count
+*          : =  0 - No warning, no error
+*          : > 0  - Warnings + errors count
+*          : < 0  - Ovf of the counter ...
+*          :
+* \warning : Globals   :
+* \warning : Remark    : Reset = 1 should never be needed, but who knows ...
+* \warning : Level     :
+*          :
+* \warning : Items not filled now :
+*  todo    :
+*          :
+*  bug     :
+*          :
+* \date    : Date      : 30/05/2021
+* \date    : Rev       : 30/05/2021
+* \date    : Doc date  : 24/05/2021
+* \author  : Name      : Gilles CLAUS
+* \author  : E-mail    : gilles.claus@iphc.cnrs.fr
+* \author  : Labo      : IPHC
+*
+===================================================================================
+*/
+/* DOC_FUNC_END */
+
+
+SInt32 MIS1__BT_FBtDecodeFrGetWarnErr ( UInt8 Reset ) {
+
+
+  if ( Reset == 1 ) {
+    MIS1__BT_VGDecodecFrWarnErr = 0;
+  }
+
+  return ( MIS1__BT_VGDecodecFrWarnErr );
+}
+
+
+/* DOC_FUNC_BEGIN */
+/**
+===================================================================================
 * \fn      : double MIS1__BT_FBtDecodeFrLight ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtDest, SInt8 MSisId, SInt32 FrNb, UInt8 MeasExecTime, UInt8 PrintLvl )
-*          
+*
 * \brief   : Decode the frames for one MSis 1 : List frames, exytract fr header, fr cnt but NO PIXELS DECODING  \n
-*          
+*
 * \param   : PtSrc    - Pointer to source record MIS1__TBtAcqW16A
-*          
+*
 * \param   : PtDest   - Pointer to destination record MIS1__TBtAcqDec
-*          
+*
 * \param   : MSisId   - If of the MSis to deocde 0 to MIS1__BT_MAX_REAL_MSIS_NB_ACQ-1
-*          
+*
 * \param   : FrNb     - Frames nb to convert, if -1 => All frames from  source record (NOT HANDLED NOW => Full frame decoding)
 *          :
 * \param   : MeasExecTime - Measure exec time 0 = No, 1 = Yes
@@ -20178,10 +20869,11 @@ double MIS1__BT_FBtDecodeFrLight ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtD
   
   #endif
   
-  // Propagates AcqId
+  // Propagates AcqId and Triggers nb
   
-  PtDest->AcqId = PtSrc->AcqId;
-
+  PtDest->AcqId  = PtSrc->AcqId;
+  PtDest->TrigNb = PtSrc->AcqRawHead.Trigs.TrigNb; // Added on 30/05/2021
+  
 
   // Init var
   
@@ -20207,9 +20899,16 @@ double MIS1__BT_FBtDecodeFrLight ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtD
     
   
   VPtFrDecHead = &PtDest->ResAAFrHead[MSisId][0];
-  
-  
-  
+
+  // Reset frames truncated & errors counters - 30/05/2021
+
+  PtDest->ResAFrNbTrunc[MSisId]     = 0;
+  PtDest->ResAFrNbErr[MSisId]       = 0;
+
+  // Reset decoding function warnings + errors counter - 30/05/2021
+
+  MIS1__BT_VGDecodecFrWarnErr = 0;
+
   // -------------------------------------------------------------
   // Frames decoding
   // -------------------------------------------------------------
@@ -20238,7 +20937,7 @@ double MIS1__BT_FBtDecodeFrLight ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtD
       
       VFrHdW0 = VSrcW16;
             
-      // Checks that next 7 are also fraem header tags
+      // Checks that next 7 are also frame header tags
       
       VFrHdW1 = PtSrc->AAMsis[MSisId][ViW16];
       ViW16++;
@@ -20415,11 +21114,28 @@ double MIS1__BT_FBtDecodeFrLight ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtD
 
             // Frame too long => Exits on error
             // No time now to handle it in a better way => TBD later
+            // Upgraded on 29/05/2021
+            // If it is the last frame of Acq => Warning, because the frame is probably only cut
+            // If it is NOT the last frame of Acq => Error because it should not happne => There is a problem
 
             if ( VFrTooLong ) {
-              err_error (( ERR_OUT, "Stop frame processing max W16 nb = %d reached => Error ?", VW16Nb ));
-              return (-1);
-            }
+
+              PtDest->ResAFrNbTrunc[MSisId]++; // Update truncated frames counter - 30/05/2021
+
+              MIS1__BT_VGDecodecFrWarnErr++;
+
+              if ( VFrCnt >= PtSrc->FrNb ) {
+                VPtFrDecHead->Errors = MIS1__BT_FR_ERR_TRUNC_LAST_FR;
+                // err_warning (( ERR_OUT, "Stop frame processing max W16 nb = %d reached => VFrCnt = %d >= FrNbInAcq = %d => Last frame cut", VW16Nb, VFrCnt, PtSrc->FrNb ));
+              }
+
+              else {
+                VPtFrDecHead->Errors = MIS1__BT_FR_ERR_TRUNC;
+                err_error (( ERR_OUT, "Stop frame processing max W16 nb = %d reached => VFrCnt = %d < FrNbInAcq = %d => MSis 1 or decoding sw bug !", VW16Nb, VFrCnt, PtSrc->FrNb ));
+                return (-1);
+              }
+
+            } // End if ( VFrTooLong )
 
             // Normal end of frame => break frame decoding loop
 
@@ -20635,9 +21351,10 @@ double MIS1__BT_FBtDecodeFr ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtDest, 
   #endif
   
   
-  // Propagates AcqId
+  // Propagates AcqId and Triggers nb
   
-  PtDest->AcqId = PtSrc->AcqId;
+  PtDest->AcqId  = PtSrc->AcqId;
+  PtDest->TrigNb = PtSrc->AcqRawHead.Trigs.TrigNb; // Added on 30/05/2021
   
   
   // Init var
@@ -20674,6 +21391,14 @@ double MIS1__BT_FBtDecodeFr ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtDest, 
   
   VPtFrDecHead = &PtDest->ResAAFrHead[MSisId][0];
   
+  // Reset frames truncated & errors counters - 30/05/2021
+
+  PtDest->ResAFrNbTrunc[MSisId]     = 0;
+  PtDest->ResAFrNbErr[MSisId]       = 0;
+
+  // Reset decoding function warnings + errors counter - 30/05/2021
+
+  MIS1__BT_VGDecodecFrWarnErr = 0;
 
   
   // -------------------------------------------------------------
@@ -20913,14 +21638,44 @@ double MIS1__BT_FBtDecodeFr ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtDest, 
               VPtFrDecHead->RegionNb        = VRegCntInFr;
               VPtFrDecHead->FiredPixNb      = VPixCntInFr;
 
+
+
               // Frame too long => Exits on error
               // No time now to handle it in a better way => TBD later
+              // Upgraded on 29/05/2021
+              // If it is the last frame of Acq => Warning, because the frame is probably only cut
+              // If it is NOT the last frame of Acq => Error because it should not happne => There is a problem
               
+
               if ( VFrTooLong ) {
-                err_error (( ERR_OUT, "Stop frame processing max W16 nb = %d reached => Error ?", VW16Nb ));
-                return (-1);
-              }
-              
+
+                PtDest->ResAFrNbTrunc[MSisId]++; // Update truncated frames counter - 30/05/2021
+
+                MIS1__BT_VGDecodecFrWarnErr++;
+
+                if ( VFrCnt >= PtSrc->FrNb ) {
+                  VPtFrDecHead->Errors = MIS1__BT_FR_ERR_TRUNC_LAST_FR;
+                  // err_warning (( ERR_OUT, "Stop frame processing max W16 nb = %d reached => VFrCnt = %d >= FrNbInAcq = %d => Last frame cut", VW16Nb, VFrCnt, PtSrc->FrNb ));
+                }
+
+                else {
+                  VPtFrDecHead->Errors = MIS1__BT_FR_ERR_TRUNC;
+                  err_error (( ERR_OUT, "Stop frame processing max W16 nb = %d reached => VFrCnt = %d < FrNbInAcq = %d => MSis 1 or decoding sw bug !", VW16Nb, VFrCnt, PtSrc->FrNb ));
+                  return (-1);
+                }
+
+             } // End if ( VFrTooLong )
+
+
+
+
+
+
+
+
+
+
+
               // Normal end of frame => break frame decoding loop
               
               break;
@@ -20967,7 +21722,7 @@ double MIS1__BT_FBtDecodeFr ( MIS1__TBtAcqW16A* PtSrc, MIS1__TBtAcqDec* PtDest, 
     
     
     if ( (VFrCnt == 0) || (VFakeHdCnt > 0) ) {
-      err_error (( ERR_OUT, "Error : VFrCnt = %d, VFakeHdCnt = %d", VFrCnt, VFakeHdCnt ));
+      err_error (( ERR_OUT, "Error : MSisId = %d, VFrCnt = %d, VFakeHdCnt = %d", MSisId, VFrCnt, VFakeHdCnt ));
       VRetOk = -1;
     }
 
@@ -21090,8 +21845,10 @@ SInt32 MIS1__BT_FFrDecHeadPrint ( MIS1__TBtFrDecHead* Pt, UInt8 PrintMode ) {
     msg (( MSG_OUT, "------------------------------------------------------" ));
     msg (( MSG_OUT, "MSis = %d, FrId = %.4d ", Pt->MSisId, Pt->FrId ));
     msg (( MSG_OUT, "------------------------------------------------------" ));
+    msg (( MSG_OUT, "FrCnt           = %.4d", Pt->FrCnt ));
     msg (( MSG_OUT, "FiredPixNb      = %.4d", Pt->FiredPixNb ));
     msg (( MSG_OUT, "RegionNb        = %.4d", Pt->RegionNb ));
+        
     err_retok (( ERR_OUT, "Ok" ));
   }
 
@@ -21283,6 +22040,278 @@ SInt32 MIS1__BT_FAcqDecPrintPix ( MIS1__TBtAcqDec* Pt, SInt8 MSisId, UInt32 FrId
   
   
   err_retok (( ERR_OUT, "Ok" ));
+}
+
+
+
+/* DOC_FUNC_BEGIN */
+/**
+===================================================================================
+* \fn      : SInt32 MIS1__BT_FAcqDecCheckFrCntOneMSis ( MIS1__TBtAcqDec* Pt, SInt8 MSisId, UInt8 PrintLvl, UInt32* PtErrNb )
+*          :
+* \brief   : Check frame counter on one MSis = Check if it increases without missing codes 1 \n
+*
+* \param   : Pt            - Pointer to AcqDec
+*
+* \param   : MSisId        - Id of MSis 1 from which to print pixels
+*
+* \param   : PritnLvl      - Print level 0 = no, 1 = Final result, 2 = Each error, 3 = Print frame counter of all frames
+*
+* \param   : PtErrNb       - Pointer to an errors counter, set to NULL if not used
+*
+*
+* \return  : Error code
+*          :   1 - Frame counter error(s)
+*          :   0 - OK
+*          : < 0 - SW error 
+*          :
+* \warning : Globals   :
+* \warning : Remark    :
+* \warning : Level     :
+*          :
+* \warning : Items not filled now :
+*  todo    :
+*          :
+*  bug     :
+*          :
+* \date    : Date      : 28/05/2021
+* \date    : Doc date  : 28/05/2021
+* \author  : Name      : Gilles CLAUS
+* \author  : E-mail    : gilles.claus@iphc.cnrs.fr
+* \author  : Labo      : IPHC
+*
+===================================================================================
+*/
+/* DOC_FUNC_END */
+
+
+SInt32 MIS1__BT_FAcqDecCheckFrCntOneMSis ( MIS1__TBtAcqDec* Pt, SInt8 MSisId, UInt8 PrintLvl, UInt32* PtErrNb ) {
+  
+  SInt32 VRet;
+  SInt32 VFrNb;
+  SInt32 ViFr;
+  UInt32 VFrCntBase;
+  UInt32 VFrCntExpected;
+  MIS1__TBtFrDecHead* VPtFrH;
+  SInt32 VErrCnt;
+
+  
+  // Check param
+  
+  err_retnull ( Pt, (ERR_OUT,"Abort Pt == NULL") );
+  
+  err_retfail ( MSisId, (ERR_OUT,"Abort => MSisId = %d < 0", MSisId) );
+  
+  if ( MSisId >= MIS1__BT_MAX_REAL_MSIS_NB_ACQ ) {
+    err_retfail ( -1, (ERR_OUT,"Abort => MSisId = %d out of range 0..%d", MSisId, MIS1__BT_MAX_REAL_MSIS_NB_ACQ - 1) );
+  }
+  
+
+  // Checking loop
+  
+  VPtFrH = &Pt->ResAAFrHead[MSisId][0]; // Get ptr on fr 0
+  
+  VFrNb          = Pt->ResAFrNb[MSisId];
+  VFrCntBase     = VPtFrH->FrCnt;
+  VFrCntExpected = VFrCntBase;
+  
+  VErrCnt = 0;
+  
+  for ( ViFr = 0; ViFr < VFrNb; ViFr++ ) {
+    
+    VPtFrH = &Pt->ResAAFrHead[MSisId][ViFr];
+            
+    if ( VPtFrH->FrCnt != VFrCntExpected ) {
+      ++VErrCnt;
+      
+      if ( PrintLvl >= 2 ) {
+        msg (( MSG_OUT, "FrCnt error : AcqId[%.6d]MSisId[%d] FrId[%.6d] : FrCnt = %d <> Expected = %d", Pt->AcqId, MSisId, ViFr,VPtFrH->FrCnt, VFrCntExpected ));
+      }
+      
+    }
+    
+    else {
+      if ( PrintLvl == 3 ) {
+        msg (( MSG_OUT, "FrCnt : AcqId[%.6d]MSisId[%d]  FrId[%.6d]: FrCnt = %d", Pt->AcqId, MSisId, ViFr, VPtFrH->FrCnt ));
+      }
+    }
+    
+    ++VFrCntExpected;
+    
+  } // End for ( ViFr  )
+  
+  // Prints
+  
+  if ( PrintLvl >= 1 ) {
+    msg (( MSG_OUT, "" ));
+    msg (( MSG_OUT, "------------------------------------------------------" ));
+    msg (( MSG_OUT, "Test FrCnt : AcqId[%.6d]MSisId[%d] on %d frames : %d errors", Pt->AcqId, MSisId, VFrNb, VErrCnt ));
+    msg (( MSG_OUT, "------------------------------------------------------" ));
+    msg (( MSG_OUT, "" ));
+  }
+  
+  
+  // Returns result
+  
+  if ( PtErrNb != NULL ) {
+    *PtErrNb = VErrCnt;
+  }
+  
+  if ( VErrCnt > 0 ) {
+    return (1);
+  }
+  
+  return (0);
+}
+
+
+
+/* DOC_FUNC_BEGIN */
+/**
+===================================================================================
+* \fn      : SInt32 MIS1__BT_FAcqDecCheckFrCnt6MSis ( MIS1__TBtAcqDec* Pt, UInt8 PrintLvl, UInt32* PtErrNb )
+*          :
+* \brief   : Check frame counter on 6 x  MSis = Check if it increases without missing codes 1 \n
+*
+* \param   : Pt            - Pointer to AcqDec
+*
+* \param   : PritnLvl      - Print level 0 = no, 1 = Final result, 2 = Each error, 3 = Print frame counter of all frames
+*
+* \param   : PtErrNb       - Pointer to an errors counter, set to NULL if not used
+*
+*
+* \return  : Error code
+*          :   1 - Frame counter error(s)
+*          :   0 - OK
+*          : < 0 - SW error
+*          :
+* \warning : Globals   :
+* \warning : Remark    :
+* \warning : Level     :
+*          :
+* \warning : Items not filled now :
+*  todo    :
+*          :
+*  bug     :
+*          :
+* \date    : Date      : 28/05/2021
+* \date    : Doc date  : 28/05/2021
+* \author  : Name      : Gilles CLAUS
+* \author  : E-mail    : gilles.claus@iphc.cnrs.fr
+* \author  : Labo      : IPHC
+*
+===================================================================================
+*/
+/* DOC_FUNC_END */
+
+
+SInt32 MIS1__BT_FAcqDecCheckFrCnt6MSis ( MIS1__TBtAcqDec* Pt, UInt8 PrintLvl, UInt32* PtErrNb ) {
+  
+  SInt32 VRet;
+  SInt32 VFrNb;
+  SInt32 ViFr;
+  SInt8 ViMSis;
+  UInt32 VFrCntBase;
+  UInt32 VFrCntExpected;
+  MIS1__TBtFrDecHead* VAPtFrH[MIS1__BT_MAX_REAL_MSIS_NB_ACQ];
+  SInt32 VErrCnt;
+  UInt8 VFrNbErr;
+  
+  
+  // Check param
+  
+  err_retnull ( Pt, (ERR_OUT,"Abort Pt == NULL") );
+
+  
+  // Get ptr on frames header
+  
+  for ( ViMSis = 0; ViMSis < MIS1__BT_MAX_REAL_MSIS_NB_ACQ; ViMSis++ ) {
+    VAPtFrH[ViMSis] = &Pt->ResAAFrHead[ViMSis][0]; // Get ptr on fr 0
+  }
+  
+  
+  // Check if each MSis 1 contains the same frames nb
+  // Takes MSis no 0 as reference for frames nb
+  
+  VFrNb  = Pt->ResAFrNb[0];
+  
+  VFrNbErr = 0;
+  
+  for ( ViMSis = 1; ViMSis < MIS1__BT_MAX_REAL_MSIS_NB_ACQ; ViMSis++ ) {
+    
+    if ( Pt->ResAFrNb[ViMSis] != VFrNb ) {
+      ++VFrNbErr;
+      msg (( MSG_OUT, "FrNb difference AcqId[%.6d]MSisId[%d] = %d frames ", Pt->AcqId, ViMSis, Pt->ResAFrNb[ViMSis] ));
+    }
+        
+  }
+  
+  if ( VFrNbErr > 0 ) {
+    msg (( MSG_OUT, "FrNb difference AcqId[%.6d]MSisId[0] = %d frames ", Pt->AcqId, Pt->ResAFrNb[0] ));
+    msg (( MSG_OUT, "Error : Some MSis 1 have different frames nb !" ));
+    return (1);
+  }
+  
+  
+  // Take MSis 0 FrCnt as reference
+  
+  
+  VFrCntBase     = VAPtFrH[0]->FrCnt;
+  VFrCntExpected = VFrCntBase;
+  
+  // Checking loop
+  
+  VErrCnt = 0;
+  
+  for ( ViFr = 0; ViFr < VFrNb; ViFr++ ) {        
+    
+    for ( ViMSis = 0; ViMSis < MIS1__BT_MAX_REAL_MSIS_NB_ACQ; ViMSis++ ) {
+      
+      VAPtFrH[ViMSis] = &Pt->ResAAFrHead[ViMSis][ViFr];
+      
+      if ( VAPtFrH[ViMSis]->FrCnt != VFrCntExpected ) {
+        
+        ++VErrCnt;
+      
+        if ( PrintLvl >= 2 ) {
+          msg (( MSG_OUT, "FrCnt error : AcqId[%.6d]MSisId[%d] FrId[%.6d] : FrCnt = %d <> Expected = %d", Pt->AcqId, ViMSis, ViFr, VAPtFrH[ViMSis]->FrCnt, VFrCntExpected ));
+        }
+      
+      }    
+      
+    } // End for ( ViMSis )
+    
+    
+    if ( PrintLvl == 3 ) {
+      msg (( MSG_OUT, "FrCnt : AcqId[%.6d] FrId[%.6d] : 0 = %.6d, 1 = %.6d, 2 = %.6d, 3 = %.6d, 4 = %.6d, 5 = %.6d", Pt->AcqId, ViFr, VAPtFrH[0]->FrCnt, VAPtFrH[1]->FrCnt, VAPtFrH[2]->FrCnt, VAPtFrH[3]->FrCnt, VAPtFrH[4]->FrCnt, VAPtFrH[5]->FrCnt ));
+    }
+                
+    ++VFrCntExpected;
+                 
+  } // End for ( ViFr  )
+  
+  // Prints
+  
+  if ( PrintLvl >= 1 ) {
+    msg (( MSG_OUT, "" ));
+    msg (( MSG_OUT, "------------------------------------------------------" ));
+    msg (( MSG_OUT, "Test FrCnt : AcqId[%.6d] on %d frames : %d errors", Pt->AcqId, VFrNb, VErrCnt ));
+    msg (( MSG_OUT, "------------------------------------------------------" ));
+    msg (( MSG_OUT, "" ));
+  }
+  
+  
+  // Returns result
+  
+  if ( PtErrNb != NULL ) {
+    *PtErrNb = VErrCnt;
+  }
+  
+  if ( VErrCnt > 0 ) {
+    return (1);
+  }
+  
+  return (0);
 }
 
 
