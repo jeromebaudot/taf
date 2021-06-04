@@ -588,7 +588,7 @@ void MRaw::RSDisplay()
     fSession->NextRawEvent();
     tTracker->Update();
     cout << "\n Event number : " << fSession->GetCurrentEventNumber()-1<<" ";
-
+    
     showit = kTRUE ;
   }
   Char_t name[100];
@@ -2129,7 +2129,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
 
 
   } //end loop on planes
-  cout << "\n Event number : " << fSession->GetCurrentEventNumber()-1<<" " << endl;
+  cout << "\n Event number : " << fSession->GetCurrentEventNumber() - 1 <<" " << endl;
 
   //if(MultiFramePlane>0) cdisplaymultiframe->Update();
   //cdisplayraw->Update();

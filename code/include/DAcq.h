@@ -32,7 +32,7 @@
 //#include "DMonteCarlo.h"
 #include "TNTBoardReader.h"
 #include "PXIBoardReader.h"
-#include "PXIeBoardReader.h"
+//#include "PXIeBoardReader.h"
 #include "GIGBoardReader.h"
 #include "IMGBoardReader.h"
 #include "BoardReader.h"
@@ -58,7 +58,7 @@ class DAcq : public TObject {
 
       TNTBoardReader  **fTNT;              // pointer to TNT boards
       PXIBoardReader  **fPXI;              // pointer to PXI boards
-      PXIeBoardReader **fPXIe;             // pointer to PXIexpress boards
+//      PXIeBoardReader **fPXIe;             // pointer to PXIexpress boards
       GIGBoardReader  **fGIG;              // pointer to GIG boards, JB 2012/04/25
       IMGBoardReader  **fIMG;              // pointer to IMG boards, JB 2012/07/22
       VMEBoardReader  **fVME;              // pointer to VME boards, JB 2014/05/13
