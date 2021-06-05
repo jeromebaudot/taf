@@ -999,9 +999,6 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     sprintf( errFile, "Results/%d/err_run%d.txt", runNumber, runNumber);
     sprintf(errFile,"%s", fTool.LocalizeDirName( errFile)); // JB 2011/07/07
     
-    //cout << " Ziad --> dataPath : " << dataPath << endl;
-    //cout << " Ziad --> msgFile : " << msgFile << " errFile = " << errFile << " runNumber : " << runNumber <<  endl;
-   
     // ZE 2021/06/01 access configuration file
     
     VRet = APP_VGPtRunRead->FRunConf ( dataPath, runNumber, 0 /* PrintRunHeader */, MIS1__BT_RUN_RD_FILE_FORMAT );
@@ -1018,6 +1015,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     VPtRunConf = APP_VGPtRunRead->FRunHeaderGet ( 1 /* Print */ );
     fnbFrPerAcq = VPtRunConf->FrNbPerAcq ;
     
+    // In case of more info required in log_msg and log_err use the syntax below
     /*
     err_trace   (( ERR_OUT, "This is a trace message   - VMyVar=%d", VMyVar ));
     err_warning (( ERR_OUT, "This is a warning message - VMyVar=%d", VMyVar ));
@@ -1048,7 +1046,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
          }
        
          // OK
-       /*
+       
         if(fDebugLevel>1) {
          printf ( "\n" );
          printf ( "Allocation of AcqW16A of %.1f MB  ... \n", VAcqW16ASz / 1024. / 1024. );
@@ -1056,7 +1054,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
          printf ( "Done :-) \n" );
          printf ( "\n" );
         }
-       */
+       
        // AcqDec
        
          APP_VGPtAcqDec = MIS1__BT_FBtAcqDecAlloc ( 1 /* Alloc */, &VAcqDecSz );
