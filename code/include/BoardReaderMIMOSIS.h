@@ -113,13 +113,7 @@ public:
   BoardReaderEvent*   GetEvent() { return fCurrentEvent; }
   void  PrintEventHeader();
   void  PrintStatistics(ostream &stream);
-//    MIS1__TBtRunCnfRec* VPtRunConf;
- //   MIS1__TBtAcqRawRec* VPtAcq;
-    
-  int APP_VGErrFileLogLvl = 1;
-  int APP_VGErrUserLogLvl = 1;
-  int APP_VGMsgFileLogLvl = 1;
-  int APP_VGMsgUserLogLvl = 1;
+
 };
 
 #endif

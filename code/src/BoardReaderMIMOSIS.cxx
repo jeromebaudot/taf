@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
 // Class Description of BoardReaderMIMOSIS
 //
 // Dedicated to decode output files from the PXI acquisition system
@@ -72,9 +72,7 @@ MIS1__TBtAcqDec*   APP_VGPtAcqDec;  // 26/05/2021 V1.1
                                     // AcqDec record = Decoded acquisition
                                     // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
 
-//MIS1__TBtAcqDec**   APP_VGPtAcqSensorDec;  // 26/05/2021 V1.1
-                                           // AcqDec record = Decoded acquisition
-                                           // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
+
 // ---------------------------------------------------------------------------------
 // Main : Mimosis 1 beam test run file access example, via class MIS1__TBtRunRead
 // ---------------------------------------------------------------------------------
@@ -991,17 +989,19 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
       printf ( "MIS1__TBtRunRead class creation done :-) \n" );
       printf ( "\n" );
     
+    // Initialisation required by DAQ library
+    APP__TContext* VPtCont = &APP__VGContext;
     
     char msgFile[100], errFile[100]; // JB 2011/06/28
    // int runNumber ;
     sprintf( msgFile, "Results/%d/msg_run%d.txt", runNumber, runNumber);
     sprintf(msgFile,"%s", fTool.LocalizeDirName( msgFile)); // JB 2011/07/07
-    sprintf( errFile, "Results/%d/errors_run%d.txt", runNumber, runNumber);
+    sprintf( errFile, "Results/%d/err_run%d.txt", runNumber, runNumber);
     sprintf(errFile,"%s", fTool.LocalizeDirName( errFile)); // JB 2011/07/07
     
-    cout << " Ziad --> dataPath : " << dataPath << endl;
-    cout << " Ziad --> msgFile : " << msgFile << " errFile = " << errFile << " runNumber : " << runNumber <<  endl;
-    
+    //cout << " Ziad --> dataPath : " << dataPath << endl;
+    //cout << " Ziad --> msgFile : " << msgFile << " errFile = " << errFile << " runNumber : " << runNumber <<  endl;
+   
     // ZE 2021/06/01 access configuration file
     
     VRet = APP_VGPtRunRead->FRunConf ( dataPath, runNumber, 0 /* PrintRunHeader */, MIS1__BT_RUN_RD_FILE_FORMAT );
@@ -1017,17 +1017,26 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     
     VPtRunConf = APP_VGPtRunRead->FRunHeaderGet ( 1 /* Print */ );
     fnbFrPerAcq = VPtRunConf->FrNbPerAcq ;
-    cout << " Number of Frames per Acq : " <<  VPtRunConf->FrNbPerAcq << endl;
     
+    /*
+    err_trace   (( ERR_OUT, "This is a trace message   - VMyVar=%d", VMyVar ));
+    err_warning (( ERR_OUT, "This is a warning message - VMyVar=%d", VMyVar ));
+    err_error   (( ERR_OUT, "This is an error message  - VMyVar=%d", VMyVar ));
+    
+    
+    msg  (( MSG_OUT, "This is the log file of run : %d \n", runNumber));
+    msg  (( MSG_OUT, "Data Path : %s \n", dataPath));
+    msg  (( MSG_OUT, "Number of Frames per Acquisition : %d \n", VPtRunConf->FrNbPerAcq));
+   */
+   
     VRet = APP_VGPtRunRead->FAcqHeadPrintOptSet ( VParHdPrintTriggers, VParHdPrintFrCnt, VParHdPrintFiredPixels );
           
           if ( VRet < 0 ) {
             printf ( "\n" );
             printf ( "Configure Acq header printing option has failed \n" );
             printf ( "\n" );
-         //   return (-1);
           }
-          
+    
     // AcqW16A record
      
        APP_VGPtAcqW16A = MIS1__BT_FBtAcqW16AAlloc ( 1 /* Alloc */, &VAcqW16ASz );
@@ -1036,7 +1045,6 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
            printf ( "\n" );
            printf ( "Allocation of AcqW16A of %.1f MB failed ! \n", VAcqW16ASz / 1024. / 1024. );
            printf ( "You can try to reduce max frames nb / Acq via constant MIS1__BT_VRS_MAX_FR_NB_PER_ACQ = %d \n", MIS1__BT_VRS_MAX_FR_NB_PER_ACQ );
-          // return (-1);
          }
        
          // OK
