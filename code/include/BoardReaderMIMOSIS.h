@@ -81,26 +81,20 @@ private:
   std::vector<int>       fListOfNextTimestamps; // JB 2012/05/04
 
 
-  bool  LookUpRawFile();
-  bool  CloseRawFile();
-  bool  OpenRawFile();
   bool  DecodeNextEvent();
   bool  DecodeFrame();
 //  bool  DecodeFrame(MIS1__BT_FBtAcqW16AAlloc*, MIS1__TBtAcqRawRec*, int moduleID, int frameID,
 //  UInt8 MeasExecTime, UInt8 PrintLvl); // ZE 2021/06/02
   void  AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime=0);
 
-  // ==> PROBABLY MORE PRIVATE METHODS are needed <==
 
 public:
 
     int test();
     BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int headerSize=0, int trailerSize=0, int endianness=0);
-   // BoardReaderMIMOSIS(int boardNumber, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int headerSize=0, int trailerSize=0, int endianness=0);
   ~BoardReaderMIMOSIS();
 
   void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderMIMOSIS " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }
-  bool  AddFileList(std::string prefixFileName, int startIndex, int endIndex, std::string suffixFileName);
   void  SetVetoPixel( int noiseRun=0);
   bool  HasData();
   void  SkipNextEvent();
@@ -113,13 +107,7 @@ public:
   BoardReaderEvent*   GetEvent() { return fCurrentEvent; }
   void  PrintEventHeader();
   void  PrintStatistics(ostream &stream);
-//    MIS1__TBtRunCnfRec* VPtRunConf;
- //   MIS1__TBtAcqRawRec* VPtAcq;
-    
-  int APP_VGErrFileLogLvl = 1;
-  int APP_VGErrUserLogLvl = 1;
-  int APP_VGMsgFileLogLvl = 1;
-  int APP_VGMsgUserLogLvl = 1;
+
 };
 
 #endif

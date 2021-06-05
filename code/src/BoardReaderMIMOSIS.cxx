@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
 // Class Description of BoardReaderMIMOSIS
 //
 // Dedicated to decode output files from the PXI acquisition system
@@ -74,9 +74,7 @@ MIS1__TBtAcqDec*   APP_VGPtAcqDec;  // 26/05/2021 V1.1
                                     // AcqDec record = Decoded acquisition
                                     // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
 
-//MIS1__TBtAcqDec**   APP_VGPtAcqSensorDec;  // 26/05/2021 V1.1
-                                           // AcqDec record = Decoded acquisition
-                                           // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
+
 // ---------------------------------------------------------------------------------
 // Main : Mimosis 1 beam test run file access example, via class MIS1__TBtRunRead
 // ---------------------------------------------------------------------------------
@@ -978,9 +976,9 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     
   // Initialization of Current Acquisition Number and Current Frame Number
 
-     // ----------------------------------------------------------------
-      // Reading Class creation
-      // ----------------------------------------------------------------
+  // ----------------------------------------------------------------
+  // Reading Class creation
+  // ----------------------------------------------------------------
    MIS1__TBtRunCnfRec* VPtRunConf = NULL; // Pointer to run conf record
    MIS1__TBtAcqRawRec* VPtAcq     = NULL; // Pointer to current Acq
         
@@ -995,15 +993,16 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
       printf ( "MIS1__TBtRunRead class creation done :-) \n" );
       printf ( "\n" );
     
+    // Initialisation required by DAQ library
+    APP__TContext* VPtCont = &APP__VGContext;
     
     char msgFile[100], errFile[100]; // JB 2011/06/28
    // int runNumber ;
     sprintf( msgFile, "Results/%d/msg_run%d.txt", runNumber, runNumber);
     sprintf(msgFile,"%s", fTool.LocalizeDirName( msgFile)); // JB 2011/07/07
-    sprintf( errFile, "Results/%d/errors_run%d.txt", runNumber, runNumber);
+    sprintf( errFile, "Results/%d/err_run%d.txt", runNumber, runNumber);
     sprintf(errFile,"%s", fTool.LocalizeDirName( errFile)); // JB 2011/07/07
     
-
     cout << " * msgFile : " << msgFile << " errFile = " << errFile << endl;
     
     // ZE 2021/06/01 access configuration file
@@ -1026,8 +1025,20 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     
     VPtRunConf = APP_VGPtRunRead->FRunHeaderGet ( 1 /* Print */ );
     fnbFrPerAcq = VPtRunConf->FrNbPerAcq ;
-    cout << " * Number of Frames per Acq : " <<  VPtRunConf->FrNbPerAcq << endl;
+    cout << " * Number of Frames per Acq : " << fnbFrPerAcq << endl;
     
+    // In case of more info required in log_msg and log_err use the syntax below
+    /*
+    err_trace   (( ERR_OUT, "This is a trace message   - VMyVar=%d", VMyVar ));
+    err_warning (( ERR_OUT, "This is a warning message - VMyVar=%d", VMyVar ));
+    err_error   (( ERR_OUT, "This is an error message  - VMyVar=%d", VMyVar ));
+    
+    
+    msg  (( MSG_OUT, "This is the log file of run : %d \n", runNumber));
+    msg  (( MSG_OUT, "Data Path : %s \n", dataPath));
+    msg  (( MSG_OUT, "Number of Frames per Acquisition : %d \n", VPtRunConf->FrNbPerAcq));
+   */
+   
     VRet = APP_VGPtRunRead->FAcqHeadPrintOptSet ( VParHdPrintTriggers, VParHdPrintFrCnt, VParHdPrintFiredPixels );
           
           if ( VRet < 0 ) {
@@ -1036,7 +1047,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
             printf ( "\n" );
             return;
           }
-          
+    
     // AcqW16A record
      
        APP_VGPtAcqW16A = MIS1__BT_FBtAcqW16AAlloc ( 1 /* Alloc */, &VAcqW16ASz );
@@ -1045,11 +1056,10 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
            printf ( "\n" );
            printf ( "Allocation of AcqW16A of %.1f MB failed ! \n", VAcqW16ASz / 1024. / 1024. );
            printf ( "You can try to reduce max frames nb / Acq via constant MIS1__BT_VRS_MAX_FR_NB_PER_ACQ = %d \n", MIS1__BT_VRS_MAX_FR_NB_PER_ACQ );
-          // return (-1);
          }
        
          // OK
-       /*
+       
         if(fDebugLevel>1) {
          printf ( "\n" );
          printf ( "Allocation of AcqW16A of %.1f MB  ... \n", VAcqW16ASz / 1024. / 1024. );
@@ -1057,7 +1067,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
          printf ( "Done :-) \n" );
          printf ( "\n" );
         }
-       */
+       
        // AcqDec
        
          APP_VGPtAcqDec = MIS1__BT_FBtAcqDecAlloc ( 1 /* Alloc */, &VAcqDecSz );
@@ -1141,122 +1151,6 @@ BoardReaderMIMOSIS::~BoardReaderMIMOSIS()
     
 //  delete fCurrentEvent;
 //  delete fInputFileName;
-
-}
-
-// --------------------------------------------------------------------------------------
-bool BoardReaderMIMOSIS::AddFileList(string prefixFileName, int startIndex, int endIndex, string suffixFileName) {
-  // Try opening each input files built from name=prefix+index+suffix
-  // Keep only the good one
-  // Work also for a single file with startIndex=endIndex
-  //
-  // Return true if at least one file can be opened
-
-  bool rc = true;
-  std::string fileName;
-
-  if(fDebugLevel) {
-    cout << "BoardReaderMIMOSIS::AddFileList => Adding files with indexes from " << startIndex << " to " << endIndex;
-    cout << " prefix=" << prefixFileName << ", suffix=" << suffixFileName << endl;
-  }
-
-  // Try each filename looping on indexes, and keep in the list only the good ones
-  for (size_t iFile = startIndex; iFile <= endIndex; iFile++) {
-    fileName = prefixFileName + "_" + std::to_string(iFile) + suffixFileName;
-    if(fDebugLevel>1) cout << "  trying file " << fileName << endl;
-  	fRawFileStream.open( fileName);
-  	if( fRawFileStream.fail() ) {
-  		cout << endl << "ERROR BoardReaderMIMOSIS " << fBoardNumber << " file " << fileName << " does not exist!!" << endl;
-      fRawFileStream.close();
-  		rc = false;
-  	}
-  	else{
-      fListInputFileNames.push_back( fileName);
-  		cout << " BoardReaderMIMOSIS " << fBoardNumber << " New file " << fileName << ", total of " << fListInputFileNames.size() << " files." << endl;
-      fRawFileStream.close();
-    }
-  }
-
-  // If there is only one file, try a filename without an index
-  if ( !rc &&  endIndex==startIndex ) {
-    fileName = prefixFileName + suffixFileName;
-    if(fDebugLevel>1) cout << "  trying file " << fileName << endl;
-  	fRawFileStream.open( fileName);
-  	if( fRawFileStream.fail() ) {
-  		cout << endl << " ERROR BoardReaderMIMOSIS " << fBoardNumber << " file " << fileName << " does not exist!!" << endl;
-      fRawFileStream.close();
-  		rc = false;
-  	}
-  	else{
-      fListInputFileNames.push_back( fileName);
-  		cout << " BoardReaderMIMOSIS " << fBoardNumber << " New file " << fileName << ", total of " << fListInputFileNames.size() << " files." << endl;
-      fRawFileStream.close();
-    }
-  }
-
-  cout << "#files OK = " << fListInputFileNames.size() << " out of " << endIndex-startIndex+1 << endl;
-
-  // if at least one file is OK, reopens the very first file
-  if ( fListInputFileNames.size() == 0 ) {
-    fNoMoreFile = true;
-    return false;
-  }
-
-  fCurrentFileNumber = 0;
-  return LookUpRawFile();
-
-}
-
-// --------------------------------------------------------------------------------------
-bool BoardReaderMIMOSIS::LookUpRawFile() {
-  // Try to open the next rawdata file
-
-  // If the stream is open, close it
-  if( fRawFileStream.is_open() ) {
-    CloseRawFile();
-    fCurrentFileNumber++;
-  }
-
-  // Try to go to the next file, if any are left
-  if( fCurrentFileNumber < fListInputFileNames.size() ) {
-    if(fDebugLevel) cout << "  --> BoardReaderMIMOSIS " << fBoardNumber << " New file to read " << fCurrentFileNumber << " < " << fListInputFileNames.size() << "." << endl;
-    return OpenRawFile();
-  }
-  else { // Otherwise no more file, end the reading
-    cout << "  -+-+- INFO BoardReaderMIMOSIS " << fBoardNumber << ": No more files to read " << fCurrentFileNumber << " >= " << fListInputFileNames.size() << " closing!" << endl;
-    fNoMoreFile = true;
-    return false;
-  }
-
-}
-
-// --------------------------------------------------------------------------------------
-bool BoardReaderMIMOSIS::OpenRawFile() {
-  // Open the next rawdata file
-
-  fRawFileStream.open( fListInputFileNames[fCurrentFileNumber]);
-  bool b = fRawFileStream.fail();
-  if (b == 0)  {
-    cout << " -+-+- INFO BoardReaderMIMOSIS " << fBoardNumber << ": File " << fListInputFileNames[fCurrentFileNumber] << " opened." << endl;
-  }
-  else {
-    cout << " -/-/- INFO BoardReaderMIMOSIS " << fBoardNumber << ": File " << fListInputFileNames[fCurrentFileNumber] << " not opened, rc = " << b << "." << endl;
-  }
-  return !b;
-
-}
-
-// --------------------------------------------------------------------------------------
-bool BoardReaderMIMOSIS::CloseRawFile() {
-  // Closes a File of a Run
-
-  fRawFileStream.close();
-  bool b = fRawFileStream.fail();
-  if (b == 0)
-    cout << " -+-+- INFO BoardReaderMIMOSIS " << fBoardNumber << ": File " << fCurrentFileNumber << " closed " << endl;
-  else
-    cout << " -/-/- INFO BoardReaderMIMOSIS " << fBoardNumber << ":  File " << fCurrentFileNumber << " not closed, rc = " << b << "(eof="<< fRawFileStream.eof() << ", bad="<< fRawFileStream.bad() <<"." << endl;
-  return b;
 
 }
 
