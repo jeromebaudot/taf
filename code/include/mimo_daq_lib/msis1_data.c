@@ -16778,9 +16778,7 @@ char* MIS1__TBtRunRead::FErrLogSetFilename () {
 char* MIS1__TBtRunRead::FMsgLogSetFilename () {
   
   SInt32 VRet;
-  static char VMsgLogFile[GLB_FILE_PATH_SZ]  = MIS1__TBtRunRead_DEF_MSG_LOG_FILE;
-    
-  
+  static char VMsgLogFile[GLB_FILE_PATH_SZ]  = MIS1__TBtRunRead_DEF_MSG_LOG_FILE;  
   return (  VMsgLogFile );
 }
 

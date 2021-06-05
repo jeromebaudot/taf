@@ -696,9 +696,9 @@ typedef enum  {
   #define MIS1__TBtRunRead_DEF_ERR_LOG_FILE "C:/iphc/C4PI/sw/log/err_MIS1__TBtRunRead.txt" // 21/05/2021
 #endif
 
-#ifndef MIS1__TBtRunRead_DEF_MSG_LOG_FILE
-  #define MIS1__TBtRunRead_DEF_MSG_LOG_FILE "C:/iphc/C4PI/sw/log/msg_MIS1__TBtRunRead.txt" // 21/05/2021
-#endif
+//#ifndef MIS1__TBtRunRead_DEF_MSG_LOG_FILE
+//  #define MIS1__TBtRunRead_DEF_MSG_LOG_FILE "C:/iphc/C4PI/sw/log/msg_MIS1__TBtRunRead.txt" // 21/05/2021
+//#endif
 
 
 #define MIS1__BT_REC_TAG_BEGIN  0x66778800  // Record beginning  tag = first W32 of a record
