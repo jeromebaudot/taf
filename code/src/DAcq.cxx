@@ -478,7 +478,6 @@ DAcq::DAcq(DSetup& c)
 
         // -+-+- MIMOSIS modules
         case 13:
-        //cout << "ZIAD --> Module Type : " << 13 << endl;
         fUseTimestamp[mdt-1][mdl-1] = kFALSE;
         fMSIS[iModule] = new BoardReaderMIMOSIS( iModule,
         fc->GetRunPar().DataPath, // ZE 2021/06/01
@@ -548,7 +547,7 @@ DAcq::DAcq(DSetup& c)
 
   Int_t aModuleType, aModuleNumber, aInput, aChannel, aOffset, aSegment;
   //Int_t aChannelNumber;
-    cout << " Ziad Number of Planes: " << fc->GetTrackerPar().Planes << endl;
+  cout << "Number of Planes: " << fc->GetTrackerPar().Planes << endl;
   for ( Int_t iPlane = 1; iPlane <= fc->GetTrackerPar().Planes; iPlane++){ // loop on planes
     for ( Int_t iInp = 0; iInp < fc->GetPlanePar(iPlane).Inputs; iInp++) { // loop on inputs for this plane
       if (fc->GetPlanePar(iPlane).ModuleType[iInp] == 0) {

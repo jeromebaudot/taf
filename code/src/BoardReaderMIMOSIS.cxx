@@ -4,11 +4,13 @@
 // Dedicated to decode output files from the PXI acquisition system
 //  dedicated to MIMOSIS sensors
 //
+// Use Gilles Claus library to decode rawdata file, see code/inculde/mimo_daq_lib
 //
 /////////////////////////////////////////////////////////////
 //
 // created JB, 2021/04/21
-// Last Modified:
+// Last Modified: Ziad, 2021/06/04
+
 #define AP 0
 #include "TCanvas.h"
 #include "TApplication.h"
@@ -909,10 +911,11 @@ int BoardReaderMIMOSIS::test() {
      
 }
 //------------------------------------------+-----------------------------------
-//BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, int runNumber, int nSensors, int triggerMode, int eventBuildingMode, int headerSize, int trailerSize, int endianness) {
 BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int eventBuildingMode, int headerSize, int trailerSize, int endianness) {
-// Board creator
-  // ==> OF COURSE the list of arguments might be changed if needed! <==
+  // Board creator
+  // Load the rawdata file
+  //
+  // Ziad, 2021
 
     
   int VParHdPrintTriggers     = 5; // Nb of triggers to print -1 => All, 0 => None, N > 0 => N first triggers
@@ -953,12 +956,13 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   cout << "*****************************************" << endl;
   cout << "Creating a BoardReaderMIMOSIS" << endl;
   cout << " * board nb: " << fBoardNumber << endl;
+  cout << " * runNumber : " << runNumber <<  endl;
   cout << " * nb of sensors: " << fNSensors << endl;
   cout << " * trigger mode: " << fTriggerMode << endl;
   cout << " * event building mode: " << fEventBuildingMode << endl;
-  cout << " * event header & trailer sizes: " << fSizeOfHeader << " & " << fSizeOfTrailer << endl;
   cout << " * Endiannes: " << fEndianness << " => " << (fEndianness==0?"NO SWAP":"SWAP") << endl;
   cout << " * usage of veto for event with overflow: " << fVetoOverflow << " => " << (fVetoOverflow?"YES":"NO") << endl;
+  cout << " * dataPath : " << dataPath << endl;
 
   // Initialization
   fCurrentFileNumber = 0; // See also AddFileList
@@ -975,7 +979,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   // Initialization of Current Acquisition Number and Current Frame Number
 
      // ----------------------------------------------------------------
-      // Class creation
+      // Reading Class creation
       // ----------------------------------------------------------------
    MIS1__TBtRunCnfRec* VPtRunConf = NULL; // Pointer to run conf record
    MIS1__TBtAcqRawRec* VPtAcq     = NULL; // Pointer to current Acq
@@ -999,13 +1003,18 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     sprintf( errFile, "Results/%d/errors_run%d.txt", runNumber, runNumber);
     sprintf(errFile,"%s", fTool.LocalizeDirName( errFile)); // JB 2011/07/07
     
-    cout << " Ziad --> dataPath : " << dataPath << endl;
-    cout << " Ziad --> msgFile : " << msgFile << " errFile = " << errFile << " runNumber : " << runNumber <<  endl;
+
+    cout << " * msgFile : " << msgFile << " errFile = " << errFile << endl;
     
     // ZE 2021/06/01 access configuration file
     
     VRet = APP_VGPtRunRead->FRunConf ( dataPath, runNumber, 0 /* PrintRunHeader */, MIS1__BT_RUN_RD_FILE_FORMAT );
-    
+    if( VRet<0 ) {
+	cout << endl << "ERROR: cannot configure run -> return of RunConf = " << VRet << endl;
+	cout << "  Consult " << errFile << " to investigate." << endl << endl;
+	return; 
+  }
+
     ERR_FBegin             ( ( APP_VGErrFileLogLvl != 0 ) /* Enable */, errFile );
     ERR_FSetFileLogLevel   ( APP_VGErrFileLogLvl   );
     ERR_FSetUserLogLevel   ( APP_VGErrUserLogLvl   );
@@ -1017,15 +1026,15 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
     
     VPtRunConf = APP_VGPtRunRead->FRunHeaderGet ( 1 /* Print */ );
     fnbFrPerAcq = VPtRunConf->FrNbPerAcq ;
-    cout << " Number of Frames per Acq : " <<  VPtRunConf->FrNbPerAcq << endl;
+    cout << " * Number of Frames per Acq : " <<  VPtRunConf->FrNbPerAcq << endl;
     
     VRet = APP_VGPtRunRead->FAcqHeadPrintOptSet ( VParHdPrintTriggers, VParHdPrintFrCnt, VParHdPrintFiredPixels );
           
           if ( VRet < 0 ) {
             printf ( "\n" );
-            printf ( "Configure Acq header printing option has failed \n" );
+            printf ( "ERROR: Configure Acq header printing option has failed \n" );
             printf ( "\n" );
-         //   return (-1);
+            return;
           }
           
     // AcqW16A record
@@ -1065,19 +1074,19 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
        
        
          // OK
-       if(fDebugLevel>1) {
+       //if(fDebugLevel>1) {
          printf ( "\n" );
          printf ( "Allocation of AcqDec of %.1f MB  ... \n", VAcqDecSz / 1024. / 1024. );
          printf ( "Max frames nb / Acq   = %d \n", MIS1__BT_VRS_MAX_FR_NB_PER_ACQ );
          printf ( "Max pixels nb / Frame = %d \n", MIS1__BT_FR_DEC_MAX_PIX_NB );
-         printf ( "Done :-) \n" );
-         printf ( "\n" );
-       }
+         //printf ( "Done :-) \n" );
+         //printf ( "\n" );
+       //}
    
-    
-    
+   
+    cout << "*****************************************" << endl;    
     cout << "    < BoardReaderMIMOSIS constructor DONE >      " << endl;
-    
+    cout << "*****************************************" << endl;    
 }
 
 //------------------------------------------+-----------------------------------
@@ -1336,21 +1345,21 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
     
     bool ready = false;
   
-  if(fDebugLevel>2) printf( "  BoardReaderMIMOSIS board %d::DecodeNextEvent() trying with event %d\n", fBoardNumber, fCurrentEventNumber);
+  if(fDebugLevel>1) printf( "  BoardReaderMIMOSIS board %d::DecodeNextEvent() trying with event %d (current Acq=%d, frame=%d)\n", fBoardNumber, fCurrentEventNumber, fCurrentAcqNumber, fCurrentFrameNumber);
   
   // Check if first Acquisition or if CurrentFrameNumber less than fnbFrPerAcq; fnbFrPerAcq is not mandatory equal to MIS1__BT_VRS_MAX_FR_NB_PER_ACQ
     
     if ((fCurrentFrameNumber % fnbFrPerAcq == 0) || (fCurrentFrameNumber % MIS1__BT_VRS_MAX_FR_NB_PER_ACQ == 0)) {
         
         if (fisfirstAcq == true) {
-            cout << "Getting the pointer for the first acquisition " << endl;
+            if(fDebugLevel>1) cout << "BoardReaderMIMOSIS  Getting the pointer for the first acquisition " << endl;
             VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */ );
             fCurrentAcqNumber ++;
             fisfirstAcq = false;
             fCurrentFrameNumber = 0; // ZE 2021/06/04
             }
         else {
-             printf (" Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
+             if(fDebugLevel>1) printf (" BoardReaderMIMOSIS Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
              VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */, &VResReachEndOfRun );
              fCurrentAcqNumber ++;
              fCurrentFrameNumber = 0; // ZE 2021/06/04
@@ -1369,7 +1378,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
     
     if ( APP_VGPtAcqSrc == NULL    ) {
       printf ( "\n" );
-      printf ( "Get a pointer on first Acq of run has failed ! \n" );
+      printf ( "WARNING: BoardReaderMIMOSIS Get a pointer on first Acq of run has failed ! \n" );
       printf ( "\n" );
       return (-1);
     }
@@ -1378,7 +1387,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
     
         if(fDebugLevel>1) {
             printf ( "\n" );
-            printf ( "Get a pointer on first Acq of run done ! \n" );
+            printf ( " BoardReaderMIMOSIS Get a pointer on first Acq of run done ! \n" );
             printf ( "\n" );
             }
         
@@ -1396,7 +1405,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
     
       if ( VRet < 0 ) {
           
-          printf ( "Filling AcqW16A failed ! \n" );
+          printf ( "WARNING: BoardReaderMIMOSIS Filling AcqW16A failed ! \n" );
           printf ( "\n" );
           return (-1);
           
@@ -1404,7 +1413,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
        else if(fDebugLevel>1) {
            
            printf ( "\n" );
-           printf ( "Filling AcqW16A done ! \n" );
+           printf ( " BoardReaderMIMOSIS Filling AcqW16A done ! \n" );
            printf ( "\n" );
            
         }
@@ -1451,7 +1460,7 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
         VRet = MIS1__BT_FBtDecodeFr ( APP_VGPtAcqW16A, APP_VGPtAcqDec, MSisId, fCurrentFrameNumber, 0 /* MeasExecTime */, 0 /* PrintLvl */ );
        
         if ( VRet < 0 ) {
-            printf ( "Decoding MSis data failed for Sensor : %d and FrameNb : %d \n", MSisId, fCurrentFrameNumber );
+            printf ( "WARNING: Decoding MSis data failed for Sensor : %d and FrameNb : %d \n", MSisId, fCurrentFrameNumber );
             printf ( "\n" );
             fBadDecFrameCounter ++;
             return (-1);
@@ -1480,7 +1489,6 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
                
                 if (fDebugLevel > 3) {
                         printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
-                        printf(" \n ");
                 }
                 AddPixel( MSisId, 1, VPix.C.y ,VPix.C.x );
                 
