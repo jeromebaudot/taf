@@ -3720,7 +3720,7 @@ void DPlane::find_hits(){
           // All pusleheight is 1 so all pixels are seed candidates
           // JB 2009/08/21
           else if ( fAnalysisMode==3 ){
-            if( fDebugPlane>3) printf("DPlane: finding hits try pixel %d with Pulseheight %f\n", tci, fListOfPixels->at(tci)->GetPulseHeight());
+            if( fDebugPlane>3) printf("DPlane(%d): finding hits (current index %d) try pixel %d with Pulseheight %f\n", fPlaneNumber, fHitsN, tci, fListOfPixels->at(tci)->GetPulseHeight());
 
             seed = tci;
             break;
@@ -3742,7 +3742,7 @@ void DPlane::find_hits(){
     if( seed > -1 ) { // if a seed is defined
 
 
-      if( fDebugPlane>1 ) printf("DPlane: finding hits found potential seed pixel %d with pulse %.3f and SN %.3f (<?> %f)\n", seed, fListOfPixels->at(seed)->GetPulseHeight(), fListOfPixels->at(seed)->GetPulseHeightToNoise(), fCut->GetSeedPulseHeightToNoise());
+      if( fDebugPlane>1 ) printf("DPlane(%d): finding hits (current index %d) found potential seed pixel %d with pulse %.3f and SN %.3f (<?> %f), already found=%d\n", fPlaneNumber, fHitsN, seed, fListOfPixels->at(seed)->GetPulseHeight(), fListOfPixels->at(seed)->GetPulseHeightToNoise(), fCut->GetSeedPulseHeightToNoise(), tested[seed]);
 
       fListOfPixels->at(seed)->SetFound(kTRUE); // mark the strip as found
       tested[seed] = kTRUE; // mark the strip as already tested for seed
@@ -3763,7 +3763,7 @@ void DPlane::find_hits(){
             bool IsBigCluster = false;
             int MaxClusterSize = fc->GetPlanePar(fPlaneNumber).MaxNStrips;
             hitOK = fHit[fHitsN]->Analyse_Iterative( GetStrip( stPhys),IsBigCluster,MaxClusterSize);
-            if(IsBigCluster) cout << "  DHit: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
+            if(IsBigCluster) cout << "  DPlane::find_hits: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
           }
           else {
             //Reseach region clustering algorith as default:
@@ -3775,14 +3775,14 @@ void DPlane::find_hits(){
         else {
           if(fHitFinder == 0) {
             //Reseach region clustering algorith
-            hitOK = fHit[fHitsN]->Analyse( seed, fListOfPixels);
+           hitOK = fHit[fHitsN]->Analyse( seed, fListOfPixels);
           }
           else if(fHitFinder == 1) {
             //Iterative clustering algorithm
             bool IsBigCluster = false;
             int MaxClusterSize = fc->GetPlanePar(fPlaneNumber).MaxNStrips;
             hitOK = fHit[fHitsN]->Analyse_Iterative( seed, fListOfPixels,IsBigCluster,MaxClusterSize);
-            if(IsBigCluster) cout << "  DHit: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
+            if(IsBigCluster) cout << "  DPlane::find_hits:: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
           }
           else if(fHitFinder == 2){
             // Compare the distance from real center of gravity to the pixel position with a search radius to associate this pixel
@@ -3846,7 +3846,7 @@ void DPlane::find_hits(){
 
   delete[] tested; // reduce memory leakage, BH 2013/08/21
 
-  if( fDebugPlane>1 ) printf("         %d hits found\n", fHitsN);
+  if( fDebugPlane>1 ) printf("  ==>  DPlane(%d)::find_hits %d hits found\n", fPlaneNumber, fHitsN);
 
   return;
 

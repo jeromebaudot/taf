@@ -15,18 +15,18 @@ Web page: http://www.iphc.cnrs.fr/TAF.html
 ## BASIC RECIPES & DOC
 *********************************************************************************************************
 
-Before doing anything, set the configuration:
+# Before doing anything, set the configuration:
 - cd to the taf directory
 - source Scripts/thistaf.sh (no configuration needed, except if asked during sourcing)
       (note the old method: source Script/TAF-config is not available anymore)
 
-Documentation is avalibale under the 'doc" directory
+# Documentation is avalibale under the 'doc" directory
 - taf_shortDoc.pdf : provides basic help on TAF
 - maf_doc.pdf      : provides a detailed description of a former but similar software named MAF
 - ClassIndex.html  : provides web-based browsing of classes
   -> You may generate the HTML doc yoursel using the Scripts/makeHTML.doc scripts, read instructions in the script source file.
 
-To run the software:
+# To run the software: (faster methods just below)
 - simply issue the command: TAF
 - first thing to do in TAF:
 MimosaAnalysis *gTAF = new MimosaAnalysis() // optional, depends on your system
@@ -34,7 +34,7 @@ gTAF->InitSession([runNumber])
 gTAF->SetDebug([level])
 gTAF->Help();
 
-Note that TAF accepts arguments that can speed up the initialisation step:
+# Note that TAF accepts arguments that can speed up the initialisation step:
 - run TAF --help to know more
 - run TAF on a specific run, use
   TAF -run runNumber
@@ -49,7 +49,7 @@ Note that TAF accepts arguments that can speed up the initialisation step:
 - run TAF with any of the above options and set a debug level
   TAF -run runNumber -debug 2 
 
-To compile the software:
+# To compile the software:
 - Prefered method, use the command (from anywhere): maketaf
 - Alternative method 1) (equivalent to maketaf script)
 > cd code; make

@@ -485,8 +485,6 @@ DAcq::DAcq(DSetup& c)
 	    fc->GetModulePar(mdt).Inputs,
             fc->GetAcqPar().TriggerMode,
             fc->GetModulePar(mdt).EventBuildingBoardMode,
-            fc->GetAcqPar().EventHeaderSize,
-            fc->GetAcqPar().EventTrailerSize,
             fc->GetAcqPar().BinaryCoding);
         
         fMSIS[iModule]->SetDebugLevel( fDebugAcq);

@@ -3,9 +3,9 @@
 
 - Overall strategy
 - Status
-- Step 1: connecting with Gilles' library
-- Step 2: File & acquisition reading within BoardReaderClass
-- Step 3: Frame decoding and simple event building
+- Step 1: connecting with Gilles' library -> done
+- Step 2: File & acquisition reading within BoardReaderClass -> done
+- Step 3: Frame decoding and simple event building -> done
 - Step 4: Triggers reading and related event building
 *********************************************************************************************************
 
@@ -39,7 +39,8 @@ The class BoardReaderMIMOSIS is an empty template but already connected to TAF. 
 ## Step 1: connecting with Gilles' library
 
 - Goal: integrate the main() from gcc_src_loc/msis1_run_read_light_bt_v10.c into BoardReaderMIMOSIS
-- Responsible: ?
+- Responsible: Ziad
+- DONE: commited to main mimosis branch on 2021/05/26
 
 This task requires to extract the elements of Gilles'code and to include them into TAF.
 
@@ -68,7 +69,8 @@ TAF should compile with the new mimo_daq_lib. To use the test method:
 ## Step 2: File & acquisition reading within BoardReaderClass
 
 - Goal: Get the functionalities of opening rawdata files and reading Acquisition in BoarReaderMIMOSIS class
-- Responsible: ?
+- Responsible: Ziad
+- DONE: commited to main mimosis branch on 2021/06/05
 
 This task requires to break up the various parts in the program msis1_run_read_light_bt_v10.c.
 The main() contains indeed various functions, which should be interface with TAF.
@@ -111,7 +113,8 @@ You should see the printouts prepared depending on the debug level set (gTAF->Se
 ## Step 3: Frame decoding and simple event building
 
 - Goal: Get the functionalities to decode frames and build simple event in BoarReaderMIMOSIS class
-- Responsible: ?
+- Responsible: Ziad
+- DONE: commited to main mimosis branch on 2021/06/03
 
 This tasks assumes Gilles'library provide functions to navigate through frames and decode them.
 The triggerMode here will be 0, one event is built from each frame.

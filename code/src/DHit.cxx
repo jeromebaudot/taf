@@ -128,7 +128,7 @@ DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber)
     fStoNover2 = 0; // MB/12/11/2010 
     fIsFromPreviousEvent = 0;// VR 2014.08.28
     fTimestamp = 0; // JB 2015/05/25
-  }
+ }
   
   // Hit Monte Carlo
   fIfMonteCarlo       = 0;
@@ -1975,10 +1975,10 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   // Last Modified, JB 2013/11/08 store initial seed information
   // Last Modified, VR 2014/07/12 Condition to look for a new seed change : cogRow type Int_t -> Double_t
   // Modified: JB 2015/05/26 to introduce timestamps and TimeLimit
-  
+ 
+  if(fDebugHit>2)  cout << "DHit:: Starting Analyze of potential hit nb " << fHitNumber << endl;
   fFound      = kFALSE; // JB 2009/05/22
   fPSeed      = aListOfPixels->at( aPixelIndexInList);
-  
   DPixel   *aNeighbour;
   DPixel   *aPixel=NULL;
   Bool_t    pixelTwice = kFALSE; // test if a pixel is present twice in the neighbour list
@@ -1987,9 +1987,8 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   Int_t     tStripIndex;
   Int_t     tStripsInClusterPossible = 0; // remove a warning 
   //Int_t     tPixelIndexList[500];
-
   Int_t     tTimeLimit = fPlane->GetTimeLimit(); // 2015/05/26
-  
+ 
   fPositionHitCG->Zero();           // clear the position
   fPositionHitEta->Zero();
   fPositionHitEta22->Zero(); // JB 2010/12/8
@@ -1999,7 +1998,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   fSeedU      = fPSeed->GetPosition()(0);
   fSeedV      = fPSeed->GetPosition()(1); 
   fIndexSeed  = fPSeed->GetPixelIndex();
-  
+
   Int_t seedRow = fPSeed->GetPixelLine(); 
   Int_t seedCol = fPSeed->GetPixelColumn(); 
   Double_t cogRow = fPSeed->GetPixelLine(); //VR 2014/07/12
@@ -2019,6 +2018,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   fClusterNoiseAverage    = (fPSeed->GetNoise())*(fPSeed->GetNoise());  // => so it's only a seed  strip in the beginning
   fStripsInClusterFound   = 1;                       
   fPSeed->SetFound(kTRUE);                            
+
   
   if (fStripsInClusterDemanded >0) {        // exact number demanded
     tStripsInClusterPossible = fStripsInClusterDemanded;
@@ -2042,16 +2042,26 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   fStripDistanceU[0] = 0.;                             // distance seed to seed = 0.
   fStripDistanceV[0] = 0.;                             // distance seed to seed = 0.
   fStoNover2 = 0;                                      // MB/12/11/2010 
+ 
 
   //===============
   // associate neighbouring pixels to seed one
   //===============
-  if(fDebugHit>1) printf("  DHit:Analyse seed pixel index %d (%d in list, r%d, c%d) (q=%f, time=%d) with possibly %d neighbours\n", fIndexSeed, aPixelIndexInList, fPSeed->GetPixelLine(), fPSeed->GetPixelColumn(), fPSeed->GetPulseHeight(), fPSeed->GetTimestamp(), tStripsInClusterPossible);
+  if(fDebugHit>1) printf("  DHit:Analyse hit nb %d with seed pixel index %d (%d in list, r%d, c%d) (q=%f, time=%d) with possibly %d neighbours\n", fHitNumber, fIndexSeed, aPixelIndexInList, fPSeed->GetPixelLine(), fPSeed->GetPixelColumn(), fPSeed->GetPulseHeight(), fPSeed->GetTimestamp(), tStripsInClusterPossible);
 
   tStripIndex = 1; // start with the first neighbour, in the geometric ordered neighbourhood, avoid 0 because it is the seed itself!
   for (Int_t iPix = 0; iPix < (Int_t)aListOfPixels->size(); iPix++){ // loop over hit pixels
     
     aNeighbour = aListOfPixels->at(iPix);
+
+    // Test that the pixel is actually different from the seed
+    // (could happen in case of bad DAQ behaviour)
+    // If it happens, set as true but ignore as neighbour
+    if( aNeighbour->GetPixelIndex() == fPSeed->GetPixelIndex() ) {
+	aNeighbour->SetFound(kTRUE);
+        if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) is identical as seed at index %d => set as found and ignore!\n", tStripIndex, aNeighbour->GetPixelIndex(), aNeighbour->GetPixelLine(), aNeighbour->GetPixelColumn(), fPSeed->GetPixelIndex());
+    }
+
     // Test if the pixel can be associated to the seed 
     //   inside the geometrical cluster limits
     // and also in the time limit using the timestamp (which are all 0 if unavailable).
@@ -2077,7 +2087,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 	//  pixelTwice = kTRUE;
 	//  break;
 	//}
-	pixelTwice &= aNeighbour->GetPixelIndex() == aPixel->GetPixelIndex();
+	pixelTwice |= aNeighbour->GetPixelIndex() == aPixel->GetPixelIndex();
       } // end loop on currently found pixels
       
       if( !pixelTwice ) { // if pixel is not counted twice
@@ -2162,7 +2172,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   //=============
   // order pixels
   //=============
-  Int_t *nOfneighbours = new Int_t[fStripsInClusterFound];
+  Int_t *nOfneighbours;
 
   // For analog readout
   // re-order pixels from the highest charge to the lowest
@@ -2187,6 +2197,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
     // Redefine the seed as the one with the highest number of direct neighbours
     // This is only needed when the dynamic seed reallocation is not used
     // JB 2011/07/21
+    nOfneighbours = new Int_t[fStripsInClusterFound];
     DPixel *aPixel=NULL, *bPixel=NULL;
     for( Int_t iPix=0; iPix<fStripsInClusterFound; iPix++) { // loop on pixels in candidate hit
       nOfneighbours[ iPix] = 0;
@@ -2239,7 +2250,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
     }
 
     if( fDebugHit>2 ) {
-      printf("  DHit:Analyse  seed is now pixel %d in list, index %d, with %d direct neighbours\n", tPixelIndexList[ 0], fIndexSeed, nOfneighbours[ iSeed]);
+      printf("  DHit:Analyse  seed is now pixel %d in list, index %d, with %d direct neighbours\n", tPixelIndexList[ 0], fIndexSeed, fStripsInClusterFound);
     }
     
   } // end if binary readout
@@ -2520,7 +2531,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   } // end if !valid
 
   else if(fDebugHit>1) {
-    printf("        hit selected with %d pixels\n", fStripsInClusterFound);
+    printf("        hit nb %d selected with %d pixels\n", fHitNumber, fStripsInClusterFound);
   }
 
   return valid;

@@ -713,6 +713,7 @@ void TRint::PrintLogo(Bool_t lite)
   authors.push_back("L.Cousin(1)");
   authors.push_back("R.De Masi(1)");
   authors.push_back("C.Dritsa(1)");
+  authors.push_back("Z.El Bitar(1)");
   authors.push_back("M.Gelin(1)");
   authors.push_back("Y.Gornoushkin(1)");
   authors.push_back("D.Grandjean(1)");

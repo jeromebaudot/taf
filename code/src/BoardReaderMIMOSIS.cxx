@@ -909,7 +909,7 @@ int BoardReaderMIMOSIS::test() {
      
 }
 //------------------------------------------+-----------------------------------
-BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int eventBuildingMode, int headerSize, int trailerSize, int endianness) {
+BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int eventBuildingMode, int endianness) {
   // Board creator
   // Load the rawdata file
   //
@@ -926,8 +926,6 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fNSensors = nSensors;
   fTriggerMode = triggerMode;
   fEventBuildingMode = eventBuildingMode;
-  fSizeOfHeader = headerSize;
-  fSizeOfTrailer = trailerSize;
   fEndianness = endianness;
   fVetoOverflow = false; // set later by SetVetoPixel
   fisfirstAcq = true;
@@ -1247,14 +1245,14 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
         
         if (fisfirstAcq == true) {
             if(fDebugLevel>1) cout << "BoardReaderMIMOSIS  Getting the pointer for the first acquisition " << endl;
-            VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */ );
+            VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */ );
             fCurrentAcqNumber ++;
             fisfirstAcq = false;
             fCurrentFrameNumber = 0; // ZE 2021/06/04
             }
         else {
              if(fDebugLevel>1) printf (" BoardReaderMIMOSIS Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
-             VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */, &VResReachEndOfRun );
+             VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */, &VResReachEndOfRun );
              fCurrentAcqNumber ++;
              fCurrentFrameNumber = 0; // ZE 2021/06/04
             }
@@ -1359,13 +1357,13 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
             fBadDecFrameCounter ++;
             return (-1);
         }
-        VRet = MIS1__BT_FAcqDecPrintGen ( APP_VGPtAcqDec, MSisId, 0 /* PrintMode */ );
+ //       VRet = MIS1__BT_FAcqDecPrintGen ( APP_VGPtAcqDec, MSisId, 0 /* PrintMode */ );
             
-            if ( VRet < 0 ) {
-                printf ( "Printing info of decoded Acq failed for sensor : % d :-( \n", MSisId );
-                printf ( "\n" );
-             return (-1);
-           }
+ //           if ( VRet < 0 ) {
+ //               printf ( "Printing info of decoded Acq failed for sensor : % d :-( \n", MSisId );
+ //               printf ( "\n" );
+ //            return (-1);
+ //          }
         
        // Decode pixels only for frames with FiredPixNb > 0
          if ( APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb > 0 ) {
