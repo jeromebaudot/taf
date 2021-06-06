@@ -3,6 +3,7 @@
 
 - Overall strategy
 - Status
+- Usage
 - Step 1: connecting with Gilles' library -> done
 - Step 2: File & acquisition reading within BoardReaderClass -> done
 - Step 3: Frame decoding and simple event building -> done
@@ -19,8 +20,9 @@ This strategy was already followed for the MIMOSA-26/28 sensors. Solutions can b
 
 ### Technicalities with GIT
 - We work with https://github.com/jeromebaudot/taf (may change to gitlab.cern.ch if we decide to).
-- The reference branch will be mimosis, update should only come from pull-requests.
-- Each developper creates its own branch to develop his/her code. When ready creates a pull-request to the mimosis branch.
+- The reference branch will be <mimosis>, update should only come from pull-requests.
+- Each developper creates its own branch to develop his/her code. When ready the deveopper creates a pull-request to the <mimosis> branch.
+- A specific branch is created for the analysis computer at the beam-test location: <desy>. Commits should be done by the person doing the analysis on the beam-test computer.
 
 ### Required steps
 The class BoardReaderMIMOSIS is an empty template but already connected to TAF. The steps described below target to integrate the decoding and event building into the class.
@@ -32,8 +34,31 @@ The class BoardReaderMIMOSIS is an empty template but already connected to TAF. 
 *********************************************************************************************************
 ## Status
 
-
+- 2021/06/06: Steps 1 to 3 have been implemented by Ziad -> data analysis possible through simplest mode
 - 2021/05/20: this document has been written (Jerome), only steps 1 and 2 are possible
+
+*********************************************************************************************************
+## Usage
+
+Note that, in the following, [] should not be typed and stands for a command argument.
+
+# Expectation on rawdata directory structure
+- Gilles' library expects files associated to a given run to be in a datapath like [generic-path]/[run-number]
+
+# Getting your configuration files ready
+- Directory config_TEST contains two usefull template (both for 6 equidistant sensors)
+ - mimosis.cfg => without hot pixel suppression
+ - mimosis-nohotpixels.cfg => with  hot pixel suppression based on run 999 (to be updated)
+- Both files can be copied into your config directory
+ - pay attention to update the datapath to the correct [generic-path] (don't add the run-number in this path!)
+ - there is no need to rename them according to run number, but you can also do it like run998.cfg
+ - you can rename them with whatever name you like, for instance mimo1-align7june.cfg
+
+# Launching TAF
+- With a generic config file (like mimosis.cfg) used for several runs (TAF will find the data don't worry)
+	taf -run [run-number] -cfg ./config/mimosis.cfg
+- If you created a config file for a specific run (so run[run-number].cfg)
+	taf -run [run-number]
 
 *********************************************************************************************************
 ## Step 1: connecting with Gilles' library
