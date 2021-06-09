@@ -53,6 +53,10 @@ private:
   size_t          fCurrentFileNumber;
   bool            fNoMoreFile;
   bool            fisfirstAcq;
+  bool            fisTruncatedAcq; // Boolean variable to test whether the acquisition is truncated
+                                   // Acquisition is truncated if the number of frames/Acq is not the same
+                                   // in all the sensors for a giving acquisition.
+                                   
   int             fnbFrPerAcq;
 
   int             fCurrentTriggerNumber;
@@ -81,6 +85,7 @@ private:
 
   bool  DecodeNextEvent();
   bool  DecodeFrame();
+  
 //  bool  DecodeFrame(MIS1__BT_FBtAcqW16AAlloc*, MIS1__TBtAcqRawRec*, int moduleID, int frameID,
 //  UInt8 MeasExecTime, UInt8 PrintLvl); // ZE 2021/06/02
   void  AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime=0);
