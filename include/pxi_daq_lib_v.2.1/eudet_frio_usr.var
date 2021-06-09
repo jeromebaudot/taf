@@ -1,0 +1,34 @@
+
+/*******************************************************************************
+File      : x:\lib\win\eudet_frio\eudet_frio_usr.var
+Goal      : Variables definition of USER PART of flex rio board library for EUDET Mimosa 26 DAQ
+Prj date  : 05/08/2010
+File date : 11/11/2010
+Doc date  : 11/11/2010
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef EUDET_FRIO_USR_VAR
+#define EUDET_FRIO_USR_VAR
+
+
+
+
+/* ================= */
+/* Global variables  */
+/* ================= */
+
+EXTERN VAR_STATIC EFRIO__USR_TContext EFRIO__USR_VGContext;
+
+
+
+#endif

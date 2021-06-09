@@ -1,0 +1,153 @@
+/*******************************************************************************
+File      : x:\lib\com\errors\errors.def
+Goal      : Macros definition of error messages logging library
+Prj date  : 2000 - 2002
+File date : 20/02/2005
+Doc date  :
+Remark    : Library exists since 2000, but split in files .def, .typ, .var, .h, .c
+          : was done on 20/02/2005.
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef ERRORS_DEF
+#define ERRORS_DEF
+
+#define ERR_LOG_LVL_NONE             0
+#define ERR_LOG_LVL_ALL              1
+#define ERR_LOG_LVL_WARINGS_ERRORS   2
+#define ERR_LOG_LVL_WARNINGS_ERRORS  2
+#define ERR_LOG_LVL_ERRORS           3
+
+
+
+#ifdef CC_APP_WINDOWS
+
+  #ifndef __FUNCTION__
+  
+    #ifdef CC_COMPILER_CPPB_4
+      #define __FUNCTION__ "? Not available"
+    #endif
+  
+    #ifdef CC_COMPILER_CPPB_6
+      #define __FUNCTION__ __FUNC__
+    #endif
+           
+  #endif
+
+#endif
+// ms 24 11 2009 changed size from 100 to 256
+#define ERR_USR_MSG_SZ 256
+#define ERR_SYS_MSG_SZ 256
+#define ERR_TOT_MSG_SZ (ERR_USR_MSG_SZ + ERR_SYS_MSG_SZ)
+
+
+/* 07/04/2007 ERR_VGStrUserMsg identifier replaced by ERR_OUT because of ROOT CINT macros limitations */
+/* #define ERR_OUT ERR_VGStrUserMsg */
+
+
+/* 07/04/2007 - Use a local variable in each function because __FUNCTION__ IS NOT handled by CNT ... */
+/* __LINE__ is replaced by 0 because __LINE__ because ... __LINE__ is not handled file by file ...  */
+
+#ifdef APP_ROOT
+  #define ERR_LOCATION(MsgType)  {sprintf ( ERR_VGStrLocationMsg, "%.4d #%c - %-35s - %-25s - %.4d = ", ERR_VGMsgCnt++, MsgType, __FILE__,VFuncName, 0 /* __LINE__ */ );}
+#else
+  #define ERR_LOCATION(MsgType)  {sprintf ( ERR_VGStrLocationMsg, "%.4d #%c - %-35s - %-25s - %.4d = ", ERR_VGMsgCnt++, MsgType, __FILE__,__FUNCTION__,__LINE__ );}
+#endif
+
+
+
+#define ERR_WARNING(Msg) { sprintf Msg; ERR_LOCATION ('W'); ERR_FGenError ('W'); }
+
+#define ERR_ERROR(Msg) { sprintf Msg; ERR_LOCATION ('E'); ERR_FGenError ('E'); }
+
+#define ERR_TRACE(Msg) { sprintf Msg; ERR_LOCATION ('T'); ERR_FGenError ('T'); }
+
+
+#define ERR_RET(Code,MsgOk,MsgFail) { \
+ if ((Code)<0) ERR_ERROR (MsgFail) \
+    else ERR_TRACE (MsgOk) \
+    return (Code); \
+  }
+
+
+#define ERR_RET_FAIL(Code,MsgFail) { \
+ if ((SInt32)(Code)<0) { ERR_ERROR (MsgFail) return (Code); } \
+  }
+
+
+
+#define ERR_RET_FAIL_NULL(Code,MsgFail) { \
+if ((SInt32)(Code)<0) { ERR_ERROR (MsgFail) return (NULL); } \
+  }
+
+
+
+#define ERR_RET_NULL(Ptr,MsgFail) { \
+if ((void*)(Ptr)==NULL) { ERR_ERROR (MsgFail) return (-1); } \
+  }
+
+
+
+#define ERR_RET_OK(MsgOk) { \
+ERR_TRACE (MsgOk) \
+    return (0); \
+  }
+
+
+
+#define ERR_RET_VAL(Code,MsgOk) { \
+ERR_TRACE (MsgOk) \
+    return (Code); \
+  }
+
+
+#define ERR_TYPE_ID(Id) ( 0x5A00 | Id )
+
+#define ERR_TYPE_CHK(Pt,TypeId) { \
+if ( *( (UInt16*) (Pt) ) != ERR_TYPE_ID(TypeId) ) { \
+  err_retfail ( -1, (ERR_OUT,"Bad type used Type Id = %x MUST be %x => Check the function call parameters in your source code", *( (UInt8*) (Pt) ) , TypeId ) ); \
+    } \
+  }
+
+
+#define err_trace(Msg)                  ERR_TRACE(Msg)
+#define err_tracel(Lvl,Msg)             ERR_TRACE(Msg)
+#define err_warning(Msg)                ERR_WARNING(Msg)
+#define err_error(Msg)                  ERR_ERROR(Msg)
+
+#define err_ret(Code,MsgOk,MsgFail)     ERR_RET(Code,MsgOk,MsgFail)
+#define err_retok(MsgOk)                ERR_RET_OK(MsgOk)
+#define err_retval(Code,MsgOk)          ERR_RET_VAL(Code,MsgOk)
+#define err_retfail(Code,MsgFail)       ERR_RET_FAIL(Code,MsgFail)
+#define err_retfailnull(Code,MsgFail)   ERR_RET_FAIL_NULL(Code,MsgFail)
+#define err_retnull(Ptr,MsgFail)        ERR_RET_NULL(Ptr,MsgFail)
+
+#define err_typechk(Pt,TypeId)          ERR_TYPE_CHK(Pt,TypeId)
+
+#define PRINT(msg)                  { sprintf (VGOut, "%s",msg); FPrint (); }
+#define RETURN_ERROR(msg)           { sprintf (VGOut, "%s",msg); FPrint (); return (FALSE); }
+#define RETURN_ERROR_2(msg1,msg2)   { sprintf (VGOut, "%s %s",msg1,msg2); FPrint (); return (FALSE); }
+
+#define RETURN_ERROR_NULL(msg)      { sprintf (VGOut, "%s",msg); FPrint (); return (NULL); }
+#define RETURN_OK                   { return (TRUE);}
+
+
+
+
+#endif
+
+
+// trace (( ERR_OUT, "", par ));
+// retfail ( Code, (ERR_OUT,"MsgFail",par) );
+// retnull ( Code, (ERR_OUT,"MsgFail",par) );  // Pointer == NULL => Ret -1
+// error (( ERR_OUT, "", par ));
+
+

@@ -1,0 +1,75 @@
+
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/pipe/
+Goal      : Constants ( Macros ) definitions of pipe unit.
+Prj date  : 26/03/2003
+File date : 26/03/2003
+Doc date  : 26/03/2003
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef PIP_DEF
+#define PIP_DEF
+
+#define PIP_OBJ_NB 10                 /* Max object number handle by unit   */
+#define PIP_OBJ_0  0                  /* Default object Id for applications */
+
+/* Block buffer size ( max value ) */
+
+#define PIP_MAX_SEND_BUFF_SZ (10 * 1024 * 1024) /* Sender side  */
+#define PIP_MAX_REC_BUFF_SZ  (10 * 1024 * 1024) /* Receive side */
+
+/* Header size and field indexs */
+
+/*
+WARNING => a enumerated type is better to define
+this list of fields, more safe, but some compilers
+have trouble with them ...
+*/
+
+
+#define PIP_DATA_HEAD_W32SZ        10 /* Header = 10 x W32 words */
+
+#define PIP_TRANS_TAG_HD_INDEX      0 /* Used to detect beginning of transaction */
+#define PIP_TRANS_TOT_SZ_HD_INDEX   1 /* Store transaction size                  */
+#define PIP_TRANS_BLK_SZ_HD_INDEX   2 /* Store block size                        */
+#define PIP_TRANS_MSG_TYPE_HD_INDEX 3 /* Store message type                      */
+#define PIP_TRANS_CRC_HD_INDEX      4 /* Store CRC value - not used yet          */
+#define PIP_LAST_HD_INDEX           9 /* Must be < PIP_DATA_HEAD_W32SZ           */
+
+/* Value which identify the beginning of a transaction => PIP_TRANS_TAG_HD_INDEX  */
+
+#define PIP_TRANS_TAG_BEGIN  0xdeadface  /* */ 
+
+/* Messages type */
+
+#define PIP_TRANS_MSG_TYPE_COMMAND 1
+#define PIP_TRANS_MSG_TYPE_DATA    2
+
+
+/* Index of first data W32 word */
+
+#define PIP_DATA_INDEX PIP_DATA_HEAD_W32SZ
+
+/* Sender status - stored in SendStatus object fiedl */
+
+#define PIP_TRANS_STATUS_FIRST_BLK 1 /* First block of a transaction               */
+#define PIP_TRANS_STATUS_RUN       2 /* Transaction running - First < Block < Last */
+#define PIP_TRANS_STATUS_LAST_BLK  3 /* Last block of a transaction                */
+
+/* A macro which check the object id and return -1 if it's a bad one */
+
+#define PIP_CHK_OBJ_ID(ObjId) { \
+  if ( ObjId >= PIP_OBJ_NB ) { \
+    err_retfail ( -1, (ERR_OUT,"ObjId=%d >= PIP_OBJ_NB=%d", ObjId, PIP_OBJ_NB ) ); \
+  } \
+}
+
+/* Pipe files directory for the demo which use file system as media */
+
+#define PIP_FILE_TRF_DIR "t:\\tmp\\pipes"
+
+
+#endif

@@ -1,0 +1,95 @@
+
+
+/*******************************************************************************
+File      : x:\lib\com\inter_app_com\inter_app_com.def
+Goal      : Macros definition of inter applications communication library.
+Prj date  : 05/12/2007
+File date : //200
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef INTER_APP_COM_DEF
+#define INTER_APP_COM_DEF
+
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+#ifdef ROOT_ROOT
+  #define SO_MAX_MSG_SIZE 8195
+#endif
+
+
+#define IAC__CMD_TYPE__RMP 																	2
+
+#define IAC__CMD_STYPE__RMP__ASK_RUN_STATUS   1
+#define IAC__CMD_STYPE__RMP__ASK_EVENT        2
+#define IAC__CMD_STYPE__RMP__ASK_RUN_STATUS_2 3
+
+
+#define IAC__RMP_MAX_EV_NB_REQUEST 10
+
+#define IAC__RMP_DATA_BLOCK_SZ (1024 * 1024)
+
+/* ================= */
+/*  Sockets          */
+/* ================= */
+
+#ifdef ROOT_ROOT
+
+#else
+
+  #ifdef _WIN32
+    #define	IAC__SOCKET_ERRNO	WSAGetLastError()
+    #define	IAC__ERRNO		GetLastError()
+  #else
+    #define	IAC__SOCKET_ERRNO	errno
+    #define	IAC__ERRNO		errno
+    #define closesocket	close
+  #endif
+
+
+#endif
+
+
+
+#define IAC__SOCK_HEADER_STR       "SZ="
+#define IAC__SOCK_HEADER_STR_SZ    3                          /* = IAC__SOCK_HEADER_STR characters number                       */
+#define IAC__SOCK_HEADER_TOT_SZ    (IAC__SOCK_HEADER_STR_SZ + 5) /* = IAC__SOCK_HEADER_STR_SZ + 1 byte = 0 + 4 bytes used to store message size */
+
+#define IAC__SOCK_HEADER_START_TAG  0x84541444 // "HEAD"
+#define IAC__SOCK_TRAILER_STOP_TAG  0x451494C4 // "TAIL"
+
+#define IAC__SOCK_MAX_SENDER_PORT_NB   10
+#define IAC__SOCK_MAX_REC_PORT_NB      10
+#define IAC__SOCK_MAX_STR_HOST_SZ     255
+#define IAC__SOCK_ACK_SZ                4
+
+#define IAC__SOCK_MAX_LONG_MSG_SZ  (1024*1024*35) // 10 before 22/06/2009
+
+
+#define IAC__MSG_ID_STR "#IAC MESSAGE$"
+
+#define IAC__TWHO_MAX_NAME_SZ 255
+#define IAC__MSG_ID_STR_SZ 	   14
+
+
+#define IAC__SO_MAX_SHORT_MSG_SIZE (SO_MAX_MSG_SIZE - 100)
+
+/* ============== */
+/*  */
+/* ============== */
+
+
+#endif

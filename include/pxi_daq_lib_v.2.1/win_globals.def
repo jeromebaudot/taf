@@ -1,0 +1,37 @@
+/*************************************************************
+File      : /dd/sdev_src/c/work/common/include/globals.def
+Goal      : Globals things : constants, conditional compilation,
+          : variables, functions.
+Remark    : It should be splitted in separate files, but ...
+Prj date  : 2000 - 2002
+File date :
+Doc date  : 23/11/2002
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : LEPSI */
+/*************************************************************/
+
+
+#ifndef GLOBALS_DEF
+#define GLOBALS_DEF
+
+#include "globals_root.def"
+
+#ifndef ROOT_ROOT
+  #define GLB_READ_CR { while ( getchar () != '\n' ); };
+#endif
+
+
+#ifndef ROOT_ROOT
+  #define GLB_KEYB_CR { while ( getchar () != '\n' ); }
+#endif
+
+
+
+#endif

@@ -1,0 +1,40 @@
+
+
+/*******************************************************************************
+File      : x:\lib\com\time\time.def
+Goal      : Macros definition of time lib.
+Prj date  : 21/02/2010
+File date : 21/02/2010
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef TIME_DEF
+#define TIME_DEF
+
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+#define TIME__STR_DATE_SZ 11
+#define TIME__STR_TIME_SZ 11
+
+#define TIME__LANG_FRENCH  0
+#define TIME__LANG_ENGLISH 1
+
+/* ============== */
+/*  */
+/* ============== */
+
+
+#endif

@@ -1,0 +1,27 @@
+
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/com_uc/
+Goal      : Constants ( Macros ) definitions of com_uc unit.
+Prj date  : 26/03/2003
+File date : 26/03/2003
+Doc date  : 26/03/2003
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef COM_UC_DEF
+#define COM_UC_DEF
+
+#define CUC_OBJ_NB 4
+#define CUC_OBJ_0  0
+
+#define CUC_REC_BUFF_SZ (1024*4)
+
+#define CUC_CHK_OBJ_ID(ObjId) { \
+  if ( ObjId >= CUC_OBJ_NB ) { \
+    err_retfail ( -1, (ERR_OUT,"ObjId=%d >= CUC_OBJ_NB=%d", ObjId, CUC_OBJ_NB ) ); \
+  } \
+}
+
+#endif

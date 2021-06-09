@@ -1,0 +1,18 @@
+/* 24/02/05 */
+
+
+#ifndef FIL_VAR
+#define FIL_VAR
+
+/* 07/04/2007 - New macros VAR_DCL and VAR_DCL_INIT for variable declaration to solve a ROOT CINT limitation on macros               */
+/* CINT doesn't handle macros like #define EMPTY_MACRO ... EMPTY_MACRO IS NOT replaced by empty space BUT LET as si = not replaced   */
+
+// Examples
+//
+// VAR_DCL_INIT ( EXTERN, VAR_STATIC, SInt8              ERR_VGLogClosed                      , 0);
+// VAR_DCL      ( EXTERN, VAR_STATIC, char               ERR_OUT[ERR_TOT_MSG_SZ]     );
+
+
+#endif
+
+

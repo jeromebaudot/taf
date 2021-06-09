@@ -1,0 +1,204 @@
+/*******************************************************************************
+File      : x:\lib\com\maps\fsbb0\fsbb0.def
+Goal      : Macros definition of Ultimate 1 library.
+          : It provides Ultimate 1 types definition and data handling functions.
+Prj date  : 28/02/2011
+File date : 28/02/2011
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+: as it stays in a public research context. You are not allowed to use it
+: for commercial purpose. You must put this header with laboratory and
+: authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef FSBB0_DEF
+#define FSBB0_DEF
+
+#define FSBB0__APP_IGNORE_GC_MOD_220514
+
+
+
+#ifdef FSBB0__APP_DLL_TEST_ULT1
+  #include "fsbb0_test_ult1.def"
+#else
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+
+#define FSBB0__REG_DISCRI_BIT_SZ      416 // Ult1 = 960 // Mi26 = 1152
+#define FSBB0__REG_DISCRI_W32_SZ      13  // Ult1 = 30 // Mi26 = 36
+
+
+
+
+  // Size in CLK unit of the frame which contains the readout of ONE line
+  #define FSBB0__DISCRI_RO_NO_SCAN_FRAME_CLK_NB 832 // Single line = nop scanning mode
+  #define FSBB0__DISCRI_RO_SCAN_FRAME_CLK_NB    836 // Scanning mode
+  
+
+
+
+
+// This register is not implemented on Ultimate
+//
+// #define FSBB0__REG_AFTER_ZS_BIT_SZ    160
+// #define FSBB0__REG_AFTER_ZS_W32_SZ      5
+
+#define FSBB0__REG_AFTER_MUX_BIT_SZ   160 // Mi26 = 160
+#define FSBB0__REG_AFTER_MUX_W32_SZ     5 // Mi26 =   5
+
+#define FSBB0__MAT_DISCRI_COL_NB          416  // 23/01/2013
+#define FSBB0__MAT_DISCRI_LINES_NB        424 //
+#define FSBB0__MAT_DISCRI_USEFUL_LINES_NB 416 // 23/01/2013 - Without the two markers lines
+
+
+#define FSBB0__ZS_FFRAME_MODE0_1X80MHZ  0
+#define FSBB0__ZS_FFRAME_MODE1_2X80MHZ  1
+#define FSBB0__ZS_FFRAME_MODE2_1X160MHZ 2
+#define FSBB0__ZS_FFRAME_MODE3_2X160MHZ 3
+
+
+#define FSBB0__ZS_FFRAME_MODE_1X80MHZ_BIT_SZ  13312 // 832 W16  // Ult1 = 14848 //  928 W16
+#define FSBB0__ZS_FFRAME_MODE_2X80MHZ_BIT_SZ  13312 // 832 W16  // Ult1 = 14848 //  928 W16
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_BIT_SZ 13312 //26624 // 1772 W16 // Ult1 = 29696 // 1856 W16
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_BIT_SZ 13312 //26624 // 1772 W16 // Ult1 = 29696 // 1856 W16
+
+
+
+// #define FSBB0__ZS_FFRAME_MODE_2X80MHZ_W16_SZ 576
+/*
+#define FSBB0__ZS_FFRAME_MODE_1X80MHZ_W16_SZ   416 // Ult1 = 928 // Mi26 = 288
+#define FSBB0__ZS_FFRAME_MODE_2X80MHZ_W16_SZ   416 // Ult1 = 928 // Mi26 = 576
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_W16_SZ  832 // Ult1 = 1856 // Mi26 = 576
+
+#define FSBB0__ZS_FFRAME_MODE_1X80MHZ_W32_SZ   208// Ult1 = 464 // Mi26 = 288
+#define FSBB0__ZS_FFRAME_MODE_2X80MHZ_W32_SZ   208// Ult1 = 464 // Mi26 = 288
+#define FSBB0__ZS_FFRAME_MODE_1X160MHZ_W32_SZ  416// Ult1 = 928 // Mi26 = 144
+#define FSBB0__ZS_FFRAME_MODE_2X160MHZ_W32_SZ  416// Ult1 = 928 // Mi26 = 288*/
+
+
+// Id to select FSBB0 register
+
+#define FSBB0__REG_DISCRI                     0
+// #define FSBB0__REG_AFTER_ZS                   1 -> Not implemented on Ultimate
+//#define FSBB0__REG_AFTER_MUX                  1 -> not implemented on fsbb
+#define FSBB0__REG_DISCRI_SCAN                1
+
+#define FSBB0__REG_DISCRI_SCAN__SRC_CLK_160MHZ 2 // 23/06/2010
+
+// ======================================
+// For FSBB0 discri analysis tools
+// ======================================
+
+
+// --------------------
+// Bias registers index
+// --------------------
+
+// $ #define FSBB0__REG_BIAS_NB        19
+
+// $ #define FSBB0__REG_BIAS_ICLPDISC   0
+// $ #define FSBB0__REG_BIAS_IPWRSW     1
+// $ #define FSBB0__REG_BIAS_IBUF       2
+// $ #define FSBB0__REG_BIAS_ID1PWRS    3
+// $ #define FSBB0__REG_BIAS_ID2PWRS    4
+// $ #define FSBB0__REG_BIAS_ILVDSTX    5
+// $ #define FSBB0__REG_BIAS_ILVDSRX    6
+// $ #define FSBB0__REG_BIAS_IVTST1     7
+// $ #define FSBB0__REG_BIAS_IVTST2     8
+// $ #define FSBB0__REG_BIAS_IANABUF    9
+// $ #define FSBB0__REG_BIAS_IVDREF1D  10
+// $ #define FSBB0__REG_BIAS_IVDREF1C  11
+// $ #define FSBB0__REG_BIAS_IVDREF1B  12
+// $ #define FSBB0__REG_BIAS_IVDREF1A  13
+// $ #define FSBB0__REG_BIAS_IVDREF2   14
+// $ #define FSBB0__REG_BIAS_IDIS1     15
+// $ #define FSBB0__REG_BIAS_IDIS2     16
+// $ #define FSBB0__REG_BIAS_IPXI      17
+// $ #define FSBB0__REG_BIAS_VPIXCLP   18
+
+
+// ---------------------------------------------------------------------------------
+// User defined parameters for each step ( threshold = run ) of discri measurement
+// ---------------------------------------------------------------------------------
+
+// Maximum parameters number
+
+#define FSBB0__DIS_MEAS_STEP_MAX_PAR_NB 20
+
+// Index of each parameter to access them in array
+// User can create new parameters here
+
+#define FSBB0__DIS_MEAS_STEP_PAR_FIRST   0
+#define FSBB0__DIS_MEAS_STEP_PAR_LAST    (FSBB0__DIS_MEAS_STEP_MAX_PAR_NB - 1)
+
+// Maximum number of steps
+
+#define FSBB0__DIS_TEST_MAX_STEP_NB 50
+
+
+/* ============================================================================ */
+/*                                                     */
+/*                                                          */
+/*                                                              */
+/* ---------------------------------------------------------------------------- */
+/*   */
+/* ---------------------------------------------------------------------------- */
+/* Date :                                                             */
+/* ============================================================================ */
+
+#define FSBB0__NB_MAX_FSBB0_PER_DAQ 8
+
+
+// --------------------
+// ZS Run info record
+// --------------------
+
+#define FSBB0__TZSRunCnf__HW_TRIG_PAR_NB 10 // WARNING !!! MUST be >= DPXI__HW_TRIG_PAR_NB
+
+#define FSBB0__TZSRunRes__MAX_ACQ_REJ_NB 1000
+
+#define FSBB0__TCZsRunRW__CHK_INIT() {err_retfail ( ProConfDone, (ERR_OUT,"Conf NOT done => Abort") ); }
+
+
+
+
+
+// --------------------
+// FSBB0__TCTelMon
+// --------------------
+
+#define FSBB0__COLOR_BROWN   0x000066CC
+#define FSBB0__COLOR_ORANGE  0x0000A5FF
+#define FSBB0__COLOR_YELLOW  0x0000FFFF
+#define FSBB0__COLOR_GREEN   0x0000FF00
+#define FSBB0__COLOR_BLUE    0x00FF0000
+#define FSBB0__COLOR_VIOLET  0x00990066
+
+#define FSBB0__TCTelMon__COL_PLANE_0 (TColor) FSBB0__COLOR_ORANGE
+#define FSBB0__TCTelMon__COL_PLANE_1 (TColor) FSBB0__COLOR_BLUE
+#define FSBB0__TCTelMon__COL_PLANE_2 (TColor) FSBB0__COLOR_BROWN
+#define FSBB0__TCTelMon__COL_PLANE_3 (TColor) FSBB0__COLOR_YELLOW 
+#define FSBB0__TCTelMon__COL_PLANE_4 (TColor) FSBB0__COLOR_GREEN
+#define FSBB0__TCTelMon__COL_PLANE_5 (TColor) FSBB0__COLOR_VIOLET
+
+
+#define FSBB0__TCTelMon__EV_LIST_MAX_CHAN_NB  (MAPS__TCDigTelMon_MAX_PLANE_NB + 1) // 1 channel = 1 plane
+                                                                                  // Last channel = cumul hit nb of all planes
+                                                                                  
+#define FSBB0__TCTelMon__EV_LIST_CHAN_ID_CUMUL MAPS__TCDigTelMon_MAX_PLANE_NB         // Channel for cumul hit nb of all planes
+
+                                                                                  
+#define FSBB0__TCTelMon__EV_LIST_MAX_ELT_NB  200000
+
+#endif
+
+#endif

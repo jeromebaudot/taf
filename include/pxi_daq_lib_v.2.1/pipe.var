@@ -1,0 +1,22 @@
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/pipe/
+Goal      : Variables definition of pipe unit.
+Prj date  : 26/03/2003
+File date : 26/03/2003
+Doc date  : 26/03/2003
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+
+#ifndef PIP_VAR
+#define PIP_VAR
+
+  PIP_TContext  PIP_VGContext[PIP_OBJ_NB]; /* Object contexts array */
+
+  /* Global buffer for demo which use memory as media */
+
+  static SInt32 PIP_VGDummyPc2UcBuffer[PIP_DATA_HEAD_W32SZ + (PIP_MAX_SEND_BUFF_SZ/4)];
+  
+#endif

@@ -1,0 +1,21 @@
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/com_uc/
+Goal      : Variables definition of com_uc unit.
+Prj date  : 26/03/2003
+File date : 26/03/2003
+Doc date  : 26/03/2003
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+
+#ifndef COM_UC_VAR
+#define COM_UC_VAR
+
+
+  CUC_TContext CUC_VGContext[CUC_OBJ_NB];
+  
+  char CUC_VGRecBuffer[CUC_OBJ_NB][CUC_REC_BUFF_SZ];
+
+#endif

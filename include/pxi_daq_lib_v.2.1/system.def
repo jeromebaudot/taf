@@ -1,0 +1,110 @@
+
+/*************************************************************
+File      : /dd/sdev_src/c/work/common/include/system.def
+Goal      : Old system file keeped for compatibility which
+          : provides RETURN and PRINT macros.
+Prj date  : 2000 - 2002
+File date : 18/09/97
+Doc date  : 23/11/2002
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : LEPSI */
+/*************************************************************/
+
+
+
+
+#ifndef SYSTEM_H
+#define SYSTEM_H
+
+
+/****************************************************************************
+SYSTEME
+*****************************************************************************/
+
+
+#undef  UNIX_VXI
+#undef	 OS9_VME
+#undef  PC_WINDOWS
+#define PC_CONSOLE
+
+#undef  I2C_IO_SIROCO
+#undef  I2C_IO_PC_SERIAL
+#undef  I2C_IO_PC_PARA
+
+
+/****************************************************************************
+COMPILATION
+*****************************************************************************/
+
+
+#undef  IO_SIROCO_LOG_FILE 
+#undef 	IO_SIROCO_VECT_FILE
+#undef 	IO_HP82000_VECT_FILE
+#undef  IO_LOG_FILE 
+#undef  IO_VECT_FILE
+
+
+
+/****************************************************************************
+*****************************************************************************/
+
+
+typedef enum SYS_EOsType {OS_LINUX, OS_LYNX, OS_WINDOWS, OS_MAX } SYS_TOsType;
+
+#ifdef CREATE_VARIABLES
+
+char* SYS_StrOs[OS_MAX] = { "OS_LINUX  ",
+                            "OS_LYNX   ",
+                            "OS_WINDOWS"
+                          };
+
+#else
+  extern char* SYS_StrOs[OS_MAX];
+#endif
+
+
+#ifndef TRUE
+  #define TRUE     true
+#endif
+
+#ifndef FALSE
+  #define FALSE    false
+#endif
+  
+typedef unsigned char Boolean;
+  
+#ifndef true
+  #define true   1
+#endif
+
+#ifndef false
+  #define false  0
+#endif
+  
+
+/****************************************************************************
+*****************************************************************************/
+
+/*
+
+#ifdef CREATE_VARIABLES
+  #define EXTERN
+#else
+  #define EXTERN extern
+#endif
+
+#undef EXTERN
+
+*/
+
+#endif
+
+
+

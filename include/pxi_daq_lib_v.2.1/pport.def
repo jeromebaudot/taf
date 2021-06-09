@@ -1,0 +1,33 @@
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/u/u.def
+Goal      : Macros definition of 
+Prj date  : 12/01/2004
+File date : //2004
+Doc date  : //2002
+Rev       : 30/12/2005
+          : - stb lib for DLL building
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef PPORT_DEF
+#define PPORT_DEF
+
+
+/* ================= */
+/*  Macro example    */
+/* ================= */
+
+#define PPO_MAX_PORT_NB     2
+#define PPO_ADR_BYTES_SPACE 3
+
+
+
+/* ============== */
+/*  */
+/* ============== */
+
+#define PPO_WAIT(fin) { for ( CptWait = 0 ; CptWait < fin ; CptWait++ ); }
+#define PPO_WT   100  /* 0 - 10000 */
+#endif

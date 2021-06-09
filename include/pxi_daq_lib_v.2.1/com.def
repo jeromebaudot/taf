@@ -1,0 +1,36 @@
+
+/*******************************************************************************
+File      : /dd/sdev_src/c/work/common/units/com/
+Goal      : Constants ( Macros ) definitions common to com_pc & com_uc units.
+Prj date  : 26/03/2003
+File date : 26/03/2003
+Doc date  : 26/03/2003
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*******************************************************************************/
+
+#ifndef COM_DEF
+#define COM_DEF
+
+#define COM_STR_CMD_SZ 50 /* Size of command string ( used for human ) */
+
+/* FSendCmd return modes */
+
+#define COM_CMD_RET_MODE_WAIT     0 /* Wait answer of receiver */
+#define COM_CMD_RET_MODE_NO_WAIT  1 /* Return                  */ 
+
+/* Commands types and subtypes */
+
+/* System commands type */
+
+#define COM_CMD_TYPE_SYS 1
+
+#define COM_CMD_STYPE_SYS_HELLO 1
+
+#define COM_CMD_STYPE_SYS_USB_LISTEN 2 
+
+
+
+
+#endif

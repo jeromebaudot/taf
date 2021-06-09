@@ -1,0 +1,36 @@
+
+/*******************************************************************************
+File      : x:\lib\com\inter_app_com\inter_app_com.var
+Goal      : Variables definition of inter applications communication library.
+Prj date  : 05/12/2007
+File date : //200
+Doc date  : //200
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef INTER_APP_COM_VAR
+#define INTER_APP_COM_VAR
+
+
+/* ================= */
+/*  Variable example */
+/* ================= */
+
+EXTERN VAR_STATIC SInt8 IAC__VGMyVar VAR_INIT(0);
+
+/* ============== */
+/*  */
+/* ============== */
+
+EXTERN VAR_STATIC IAC__TContext IAC__VGContext;
+
+#endif

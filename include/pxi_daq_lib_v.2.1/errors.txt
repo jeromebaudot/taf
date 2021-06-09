@@ -1,0 +1,73 @@
+0010 #T - main.c                              - APP__FPrintRecSzChkAlign  - 0397 =  
+0011 #T - main.c                              - main                      - 0916 = This is a trace message   - VMyVar=10 
+0012 #W - main.c                              - main                      - 0917 = This is a warning message - VMyVar=10 
+0013 #E - main.c                              - main                      - 0918 = This is an error message  - VMyVar=10 
+0014 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFConf                  - 1402 =  
+0015 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFOpen                  - 1645 =  
+0016 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFSeqRead               - 1773 =  
+0017 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFConf                  - 2659 = RequestedBlocSz=227008800 - BlocSz=227009024 
+0018 #W - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFConf                  - 2669 = ProParMaxBlocSz=0 must be adjusted -> Set to ProParBlocSz=227009024 
+0019 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFConf                  - 2758 = Info file=/Users/jeromeb/Data/cmos/fsbb/35400/RUN_35400.bin.inf read 
+0020 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFPrintInfFile          - 3031 =  
+0021 #W - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFConf                  - 2777 = Requested bloc sz=227008800 <> Info file bloc sz=32727040 => Use Info file bloc sz 
+0022 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFConf                  - 2858 =  
+0023 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFOpen                  - 3241 =  
+0024 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFGetBlocNb             - 3137 = File /Users/jeromeb/Data/cmos/fsbb/35400/RUN_35400.bin contains 30 blocs  
+0025 #T - main.c                              - APP__FLoadRun             - 0503 = Run 35400 loaded => Contains 30 acquistions 
+0026 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_print.c - EFRIO__FPrintRunContRec   - 0198 =  
+0027 #T - main.c                              - APP__FAllocAcqBuffer      - 0578 =  
+0028 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_print.c - EFRIO__FPrintRunContRec   - 0198 =  
+0029 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFGotoBloc              - 3792 =  
+0030 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFSeqRead               - 3634 =  
+0031 #T - main.c                              - APP__FBuildFrameListFromAcq - 0709 =  
+0032 #T - main.c                              - APP__FGotoAcq             - 0782 = Acquisiton No 0 loaded in memory - Contains 1500 frames 
+0033 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0034 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0035 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0036 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0037 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0038 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0039 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFGotoBloc              - 3792 =  
+0040 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFSeqRead               - 3634 =  
+0041 #T - main.c                              - APP__FBuildFrameListFromAcq - 0709 =  
+0042 #T - main.c                              - APP__FGotoAcq             - 0782 = Acquisiton No 1 loaded in memory - Contains 1500 frames 
+0043 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0044 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0045 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0046 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0047 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0048 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0049 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFGotoBloc              - 3792 =  
+0050 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFSeqRead               - 3634 =  
+0051 #T - main.c                              - APP__FBuildFrameListFromAcq - 0709 =  
+0052 #T - main.c                              - APP__FGotoAcq             - 0782 = Acquisiton No 10 loaded in memory - Contains 1500 frames 
+0053 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0054 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0055 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0056 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0057 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0058 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0059 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFGotoBloc              - 3792 =  
+0060 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFSeqRead               - 3634 =  
+0061 #T - main.c                              - APP__FBuildFrameListFromAcq - 0709 =  
+0062 #T - main.c                              - APP__FGotoAcq             - 0782 = Acquisiton No 25 loaded in memory - Contains 1500 frames 
+0063 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0064 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0065 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0066 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0067 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0068 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0069 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFGotoBloc              - 3792 =  
+0070 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFSeqRead               - 3634 =  
+0071 #T - main.c                              - APP__FBuildFrameListFromAcq - 0709 =  
+0072 #T - main.c                              - APP__FGotoAcq             - 0782 = Acquisiton No 25 loaded in memory - Contains 1500 frames 
+0073 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0074 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0075 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0076 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0077 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0078 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/eudet_frio_fsbb0.c - EFRIO__FSBB0_FMatDiscriPrintHit - 0084 =  
+0079 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - ProFUpdateIndexTable      - 4113 =  
+0080 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFClose                 - 4261 =  
+0081 #T - /Users/jeromeb/Documents/techdoc/daq/fsbb_daq_library_15102014/pxi_daq_lib_v2.1/files.c - PubFClose                 - 2029 =  
+0082 #T - main.c                              - APP__FFreeAcqBuffer       - 0620 =  

@@ -1,0 +1,268 @@
+
+
+/*******************************************************************************
+File      : x:\lib\win\eudet_frio\eudet_frio.def
+Goal      : Macros definition of flex rio board library for EUDET Mimosa 26 DAQ
+Prj date  : 05/08/2010
+File date : 05/08/2010
+Doc date  : 05/08/2010
+Author    : Gilles CLAUS
+E-mail    : gilles.claus@ires.in2p3.fr
+----------------------------------------------------------------------------------
+License   : You are free to use this source files for your own development as long
+          : as it stays in a public research context. You are not allowed to use it
+          : for commercial purpose. You must put this header with laboratory and
+          : authors names in all development based on this library.
+----------------------------------------------------------------------------------
+Labo      : IPHC */
+/*******************************************************************************/
+
+
+#ifndef EUDET_FRIO_DEF
+#define EUDET_FRIO_DEF
+
+
+/* ======================= */
+/* Conditional compilation */
+/* ======================= */
+
+// Enable EFRIO__FRAME_TAGS_ENABLE to add tags at beginning of EFRIO__TFrame record and sub-records
+//
+// Each sub-record has it own tag, see list of constants at end of file
+//
+// EFRIO__TFrame       -> EFRIO__FRAME_TAG
+// EFRIO__TFrameHeader -> EFRIO__FRAME_TAG_HEADER
+// EFRIO__TFrameData   -> EFRIO__FRAME_TAG_DATA
+// EFRIO__TTriggerRec  -> EFRIO__FRAME_TAG_TRIG
+
+#define EFRIO__FRAME_TAGS_ENABLE
+
+
+
+
+// Enable / Disable demultiplexing of Mimosa 26 data part
+//
+// It has NO effect if running with a single Mimosa 26
+//
+// In case of multiple Mimosa 26 acquisition, Flex RIO provides multiplexed data
+//
+// W32[0] Mi26 No 0 , W32[0] Mi26 No 1 ... W32[0] Mi26 No 5
+// W32[1] Mi26 No 0 , W32[1] Mi26 No 1 ... W32[1] Mi26 No 5
+// W32[2] Mi26 No 0 , W32[2] Mi26 No 1 ... W32[2] Mi26 No 5
+// W32[3] Mi26 No 0 , W32[3] Mi26 No 1 ... W32[3] Mi26 No 5
+//
+// Data are demultiplexed if this directive is enabled
+// This processing will cost CPU time -> it may be done on EUDET SW side if needed
+// that's why this processing can be disabled
+
+
+// #define NO_MI26
+
+#define EFRIO__DEMUX_MI26_DATA_PART
+#define EFRIO__DEMUX_ULT1_DATA_PART
+
+
+
+
+/* ================= */
+/* Macro             */
+/* ================= */
+
+
+// Test if board Id is valid, if not return (-1) and lof error message
+
+#define EFRIO__CHK_BOARD_ID(BoardId) { if ( (BoardId < 0) || (BoardId > EFRIO__MAX_BOARDS_NB) ) err_retfail ( -1, (ERR_OUT,"Abort : Bad board Id=%d out of range [0..%d]", BoardId, EFRIO__MAX_BOARDS_NB-1 ) ); }
+
+
+/* ================= */
+/* Constants         */
+/* ================= */
+
+
+// Maximum board number handle by the lib ( define arrays size )
+
+#define EFRIO__MAX_BOARDS_NB 2
+
+// Maximum ASIC nb handle by the lib ( define arrays size )
+
+// #define EFRIO__MAX_ASIC_NB 6 before 21/02/2011
+
+#define EFRIO__MAX_ASIC_NB 16 // Set to 16 on 21/02/2011
+
+#define EFRIO__MAX_ASIC_NB_FOR_DMA 8 // 25/05/2011
+                                     // Used to calculate DmaHostSz because Labview can't allocate memory for EFRIO__MAX_ASIC_NB = 16
+
+
+// Maximum number of frames per acquisition ( define arrays size )
+// - One frame = one readout of MAPS
+// - One acquisition = N consecutives frames acquired in one call of board readout function
+
+#define EFRIO__MAX_FRAME_NB_PER_ACQ 1800
+
+
+// *************************************************************************************************************
+// Data transfer modes
+// *************************************************************************************************************
+// Few information about how the Flex RIO board acquired Mimosa 26
+//
+// - Flex RIO board can acquire the data of up to 6 Mimosa 26 and deserialize them
+//   Each Mimosa 26 is seen as an "acquisition channel", because fw is organized / Mimosa 26
+//
+// - Now the fw doesn't care about trigger to select which frame to acquire, all frames are stored and the selection
+//   is done on-line by DAQ sw. Because it will be more flexible to adjust & modify trigger handling by sw rather than
+//   by fw and for 6 Mimosa 26 it seems possible to do it on execution time point of view.
+//   Later, this processing will be moved in fw, for AIDA but for EUDET it should work fine by sw.
+//
+// - The fw counts triggers and store it's own trigger information "Mimosa 26 trigger" ( the Mimosa 26 line read when trigger occurs )
+//   This trigger information is written in the zero fields of Mimosa 26 ( by overwritting them )
+//   Up to 3 triggers can be stored
+//   Field Zero1 => B31B16 = trigger nb   - B15B00 = Trigger No 0
+//   Field Zero2 => B31B16 = Trigger No 1 - B15B00 = Trigger No 2
+//
+// - An extra acquisition channel can be enabled to store trigger from TLU ( it has the same size as a Mimosa 26 channel = 2304 W8 )
+//   It will store two W32 informations for each trigger
+//   - The trigger TLU                                      -> See record EFRIO__TTluTrigger
+//   - The trigger from Flex RIO ( Mimosa 26 line + frame ) -> See record EFRIO__TFlexRioTimeStamp1
+//   The extra channel can store up to 288 triggers ( 288 * W32 * 2 = 2304 )
+//
+// We have decided to implement 4 data transfert mode, the difference is on trigger handling and only the last one will
+// be useful for EUDET => EFRIO__TRF_MODE_EUDET__TRG_CHAN__SEND_FRAMES_WITH_TRIG
+//
+//
+// * EFRIO__TRF_MODE_IPHC
+//
+// Keep compatibility with IPHC DAQ -> limited to 3 triggers + data demultiplex which cost CPU time
+//
+// * EFRIO__TRF_MODE_EUDET__NO_TRG_CHAN,
+//
+// Send all frames, store 3 first "Mimosa 26 trigger", don't store TLU trigger
+//
+// * EFRIO__TRF_MODE_EUDET__TRG_CHAN__SEND_ALL_FRAMES,
+//
+// Send all frames, store 3 first "Mimosa 26 trigger", store TLU trigger + Flex RIO trigegr in extra channel = trigger channel
+//
+// * EFRIO__TRF_MODE_EUDET__TRG_CHAN__SEND_FRAMES_WITH_TRIG
+//
+// Send only frame with trigger + EFRIO__FRAME_NB_TO_READ_AFTER_TRIG
+// store 3 first "Mimosa 26 trigger", store TLU trigger + Flex RIO trigegr in extra channel = trigger channel
+//
+
+
+typedef enum EFRIO__TRF_MODE {
+  EFRIO__TRF_MODE_IPHC,
+  EFRIO__TRF_MODE_EUDET_1__NO_TRG_CHAN,
+  EFRIO__TRF_MODE_EUDET_2__TRG_CHAN__SEND_ALL_FRAMES,
+  EFRIO__TRF_MODE_EUDET_3__TRG_CHAN__SEND_FRAMES_WITH_TRIG
+  
+} EFRIO__TTrfMode;
+
+
+// We use the two "zero fields" of each 32 bits at the end of Mimosa 26 data stream to store first three triggers
+// It's not trigger from TLU but the trigger we used in our first BT with flex RIO = Mimosa 26 line index when trigger occurs
+//
+// This is the field Mi26Line of the record EFRIO__TFlexRioTimeStamp1 x 16 because unit is Mimosa 26 clock cycle
+// Up to 3 triggers can be stored
+// Field Zero1 => B31B16 = trigger nb   - B15B00 = Trigger No 0
+// Field Zero2 => B31B16 = Trigger No 1 - B15B00 = Trigger No 2
+
+
+#define EFRIO__MAX_TRIGGER_NB_STORED_IN_FRAME_DATA 3 // CAN'T be higher than 3 !!!!!!!!!!
+
+
+// The current frame - with trigger - is not enough to build the physics event
+// due to internal MAPS logic ( double memory, pipelines etc ... ) following frames must be also used
+// => This is the number of frames to read after the one which contains trigger to build physics event
+
+#define EFRIO__FRAME_NB_TO_READ_AFTER_TRIG 3 // For Mimosa 26 it's 3
+
+// Constants to define extra channel size -> Hard coded ( don't use sizeof ( xyz) ) in order to reduce execution time
+// The extra channel is a MAPS acquisition channel ( it has he same size ) but used to store trigger information
+// It can store up to 288 triggers / MAPS frame
+//
+// Now 28/10/2010
+// - Each trigger info stored in extra channel contain two fields, each one is a W32, in the following order
+// -- EFRIO__TTluTrigger
+// -- EFRIO__TFlexRioTimeStamp1
+// --> Total trigger info size is 2 x W32 = 8 bytes
+// - The extral channel has the same size of one Mi26 frame = 2304 W8
+// --> Maximum number of trigger info which can be stored = 2304 / 8 = 288
+// --> It means one trigger each two lines of Mimosa 26 readout ... ;-)
+
+// -------------------------------------------------------------------------------------------------
+// WARNING - 20/05/2011 => Solve bug of 19/05 = memory crash at second run ( first one ok ) )
+// -------------------------------------------------------------------------------------------------
+// - Ultimate allows 928 triggers / frame - Mi26 was limited to 288
+// - The test on max allowed trig number was not done in data processing loop => to save exec time
+//   but after the loop when padding zero part of frame is processed to find triggers
+// - A test was done in this part, but only a warning was generated and waring messages were disabled ...
+// -------------------------------------------------------------------------------------------------
+// Now ( 20/05/2011 )
+// - The size of temporary record used to stored trigger info has been increased to fit with Ultimate
+// -- EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB  288
+// -- EFRIO__EXTRA_CHAN__MAX_TRIGGER_FIELD_NB 576
+//
+// - But, in order to KEEP COMPATIBILIY with Mi26, the number of trigger copied to frame record has
+//   been limited to EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB_COMPATIBLE_WITH_MI26 = 288
+//
+// - This may be increased LATER because frame record has variable size ( also for triggers part )
+//   BUT now I DON'T KNOW if there are limitations somewhere else in sources ( run readout lib ? )
+//   therefore I prefer to keep Mimosa 26 " triggers number limitation "
+// -------------------------------------------------------------------------------------------------
+
+#define EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB   928  // Maximum number of trigger info = pair of W32 fields TLU Trig + Felx RIO TS
+#define EFRIO__EXTRA_CHAN__MAX_TRIGGER_FIELD_NB 1856  // Maximum number of W32 fields
+
+#define EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB_COMPATIBLE_WITH_MI26  288
+
+// #define EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB  288  // Maximum number of trigger info = pair of W32 fields TLU Trig + Felx RIO TS
+// #define EFRIO__EXTRA_CHAN__MAX_TRIGGER_FIELD_NB 576  // Maximum number of W32 fields
+
+
+#define EFRIO__EXTRA_CHAN__TRIGGER_INFO_SZ        8  // Size of the trigger info = pair of W32 fields TLU Trig + Flex RIO TS
+
+#define EFRIO__EXTRA_CHAN__TRIGGER_FIELD_SZ       4  // Size of one W32 field
+
+
+// Maximum number of messages / board -> define array in EFRIO__TBoardStatus
+
+#define EFRIO__ERROR_MSG_LIST_MAX_NB 100
+
+
+// Maximum number of triggers in DAQ emulation configurable by GUI
+// We can emulate more triggers than EFRIO__MAX_GUI_TRIG_NB but their value is hard coded in emulation function to 0
+//
+// Only the first three triggers and the last one ( if EFRIO__MAX_GUI_TRIG_NB = 4 ) are configurable from GUI
+
+// #define EFRIO__MAX_GUI_TRIG_NB 4 // WARNING => Redined (with same value) in C++ Builder emulation application !
+
+#define EFRIO__MAX_EMUL_GUI_TRIG_NB 4 // WARNING => Redefined (with same value) in C++ Builder emulaion application !
+
+
+// Tags values to be added at beginning of each EFRIO__TFrame  sub-record
+
+#define EFRIO__FRAME_TAG        0x55550000
+#define EFRIO__FRAME_TAG_HEADER 0x00000001
+#define EFRIO__FRAME_TAG_DATA   0x00000002
+#define EFRIO__FRAME_TAG_TRIG   0x00000003
+
+// Maximum size of one acquisition store to disk => Used by FIL__TCStreamFile class
+// 20/05/2011 => Calculated for Ultimate
+
+// #define EFRIO__MAX_DATA_FILE_BLOC_SZ ( EFRIO__MAX_FRAME_NB_PER_ACQ * ( sizeof ( EFRIO__TFrame ) + ( EFRIO__MAX_ASIC_NB * MI26__ZS_FFRAME_RAW_MAX_W8 ) + sizeof ( EFRIO__TTriggerRec ) + (EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB * EFRIO__EXTRA_CHAN__TRIGGER_INFO_SZ) ) )
+
+
+#ifdef CC_UNIX
+  #define ULT1__ZS_FFRAME_RAW_MAX_W8   7400 // Data part size ( sum of 2 links ) in W8  - Mi26 = 2280
+  #define EFRIO__MAX_DATA_FILE_BLOC_SZ ( EFRIO__MAX_FRAME_NB_PER_ACQ * ( sizeof ( EFRIO__TFrame ) + ( EFRIO__MAX_ASIC_NB * ULT1__ZS_FFRAME_RAW_MAX_W8 ) + sizeof ( EFRIO__TTriggerRec ) + (EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB * EFRIO__EXTRA_CHAN__TRIGGER_INFO_SZ) ) )
+#else
+  #define EFRIO__MAX_DATA_FILE_BLOC_SZ ( EFRIO__MAX_FRAME_NB_PER_ACQ * ( sizeof ( EFRIO__TFrame ) + ( EFRIO__MAX_ASIC_NB * ULT1__ZS_FFRAME_RAW_MAX_W8 ) + sizeof ( EFRIO__TTriggerRec ) + (EFRIO__EXTRA_CHAN__MAX_TRIGGER_INFO_NB * EFRIO__EXTRA_CHAN__TRIGGER_INFO_SZ) ) )
+#endif
+
+
+
+/* ============== */
+/*  */
+/* ============== */
+
+
+#endif

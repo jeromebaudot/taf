@@ -1,0 +1,33 @@
+
+/*************************************************************
+File      : /dd/sdev_src/c/work/common/include/cc.def
+Goal      : Set conditional compilation options common for
+          : all softwares.
+Prj date  : 2000 - 2002
+File date : 01/01/2002
+Doc date  : 23/11/2002
+Author    : Gilles CLAUS
+E-mail    : claus@lepsi.in2p3.fr
+Labo      : LEPSI */
+/*************************************************************/
+
+
+#ifndef CC_DEF
+#define CC_DEF
+
+  #undef  APP_VFAS_DONT_CARE_READ_MODE
+  #define GC_CASCADE
+
+  #define CC_MAX_BOARDS_NB 5  // 10 EUDET demo - 5 DAQ APP
+  
+  // #define CC_COMPILER_CPPB_4
+  #define CC_COMPILER_CPPB_6
+  
+  #define CC_LIB_JTAG_BEFORE_090608 // Must be defined to compil with JTAG lib prior to 09/06/2008
+
+  // #define CC_IMG_FW__MAX_CYCLE_24_BITS // New imager board fw of september 2008 
+
+#endif
+
+
+
