@@ -58,6 +58,8 @@ private:
                                    // in all the sensors for a giving acquisition.
                                    
   int             fnbFrPerAcq;
+  int             fnbTrg;
+  int             fendTrg;
 
   int             fCurrentTriggerNumber;
   int             fCurrentEventNumber;
@@ -69,6 +71,7 @@ private:
   int             fTriggerCount;
   int             fFrameCount;
   int             fBadDecFrameCounter ; // ZE 2021/06/04 - Counter for bad decoded frames
+  int             fTruncatedAcqCounter ; // ZE 2021/06/09 - Counter for Truncated Acquistions (risky)
   int             fNEventsWithOverflow;
   BoardReaderEvent   *fCurrentEvent;
     
@@ -85,6 +88,7 @@ private:
 
   bool  DecodeNextEvent();
   bool  DecodeFrame();
+  //bool  DecodeFrame();
   
 //  bool  DecodeFrame(MIS1__BT_FBtAcqW16AAlloc*, MIS1__TBtAcqRawRec*, int moduleID, int frameID,
 //  UInt8 MeasExecTime, UInt8 PrintLvl); // ZE 2021/06/02

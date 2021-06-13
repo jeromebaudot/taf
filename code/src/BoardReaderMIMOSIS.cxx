@@ -74,7 +74,6 @@ MIS1__TBtAcqDec*   APP_VGPtAcqDec;  // 26/05/2021 V1.1
                                     // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
 
 
-
 // ---------------------------------------------------------------------------------
 // Main : Mimosis 1 beam test run file access example, via class MIS1__TBtRunRead
 // ---------------------------------------------------------------------------------
@@ -83,7 +82,7 @@ int BoardReaderMIMOSIS::test() {
     
    // ----------------------------------------------------------------
      // Variables
-     // ----------------------------------------------------------------
+     // --------------------------------------------------------------
      
      SInt32 VRet;                              // Error code returned by functions ( 0 => ok, < 0 => error )
      
@@ -255,10 +254,8 @@ int BoardReaderMIMOSIS::test() {
      printf ( "\n" );
      printf ( "MIS1__TBtRunRead class creation done :-) \n" );
      printf ( "\n" );
-     
-     
-   
-     // ----------------------------------------------------------------
+    
+     //-----------------------------------------------------------------
      // Error messages logging configuration
      // ----------------------------------------------------------------
      //
@@ -547,9 +544,6 @@ int BoardReaderMIMOSIS::test() {
      }
    
    
-     
-   
-   
      // ----------------------------------------------------------------
      // Decode first Acq of run
      // Only for foirst MSis, a loop must done to convert all MSis
@@ -581,7 +575,8 @@ int BoardReaderMIMOSIS::test() {
    
        // Convert FleRIO memory image to list of W16 for each MSis
      
-       VRet = MIS1__BT_FBtAcqW16AFill ( APP_VGPtAcqSrc , APP_VGPtAcqW16A, -1 /* FrNb, -1 => All */, 0 /* MeasExecTime */, 0 /* PrintLvl */, 80 /* FuncVers */ ); // A partir de là on peut lire des pixels.
+       VRet = MIS1__BT_FBtAcqW16AFill ( APP_VGPtAcqSrc , APP_VGPtAcqW16A, -1 /* FrNb, -1 => All */, 0 /* MeasExecTime */, 0 /* PrintLvl */, 80 /* FuncVers */ );
+         // A partir de là on peut lire des pixels.
    
        // Error
    
@@ -932,6 +927,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fisTruncatedAcq = false; // ZE, 2021/06/0ç we start assuming the current acquisition is not risky
   
   fBadDecFrameCounter = 0;
+  fTruncatedAcqCounter = 0;
     
   fReachEndOfRun = 0;
   
@@ -972,8 +968,10 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   
   fCurrentAcqNumber = -1;
   fCurrentFrameNumber = 0;
-    
-  // Initialization of Current Acquisition Number and Current Frame Number
+  fnbTrg = 0;
+  fendTrg = 0;
+  
+// Initialization of Current Acquisition Number and Current Frame Number
 
   // ----------------------------------------------------------------
   // Reading Class creation
@@ -1208,6 +1206,7 @@ bool BoardReaderMIMOSIS::HasData( ) {
  return eventOK;
 }
 
+
 //------------------------------------------+-----------------------------------
 bool BoardReaderMIMOSIS::DecodeNextEvent() {
   // THIS IS THE MAIN PLACE FOR ROMA's WORK!
@@ -1219,11 +1218,10 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 
    SInt32 VRet;                              // Error code returned by functions ( 0 => ok, < 0 => error )
    
-   
    MIS1__TBtAcqRawRec* VPtAcq     ; // Pointer to current Acq
    MIS1__TBtAcqRawHead* VPtAcqHead; // Pointer to current Acq Header
-   MIS1__TBtTrigRec* VPtTrig; // Pointer to triggers of current Acquisition
-    
+   MIS1__TBtTrigRec* VGPtTrig; // Pointer to triggers of current Acquisition
+
     
   // UInt32 VAcqW16ASz; // 26/05/2021 V1.1
                         // Size of AcqW16A record = Flex RIO data reoorganized
@@ -1236,19 +1234,22 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
                         // Size of AcqDec record = Decoded acquisition
                         // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
 
-    UInt8 VResReachEndOfRun = (UInt8) fReachEndOfRun;
     SInt32 nbTrg;
+    UInt8 VResReachEndOfRun = (UInt8) fReachEndOfRun;
     
   // Decoding status
     
     bool ready = false;
-      
-  if(fDebugLevel>1) printf( "  BoardReaderMIMOSIS board %d::DecodeNextEvent() trying with event %d (current Acq=%d, frame=%d)\n", fBoardNumber, fCurrentEventNumber, fCurrentAcqNumber, fCurrentFrameNumber);
   
+  if(fDebugLevel>1) printf( "  BoardReaderMIMOSIS board %d::DecodeNextEvent() trying with event %d (current Acq=%d, frame=%d)\n", fBoardNumber, fCurrentEventNumber, fCurrentAcqNumber, fCurrentFrameNumber);
+    
+    switch (fTriggerMode) {
+        case 0:
+    
   // Check if first Acquisition or if CurrentFrameNumber less than fnbFrPerAcq; fnbFrPerAcq is not mandatory equal to MIS1__BT_VRS_MAX_FR_NB_PER_ACQ
     
     if ((fCurrentFrameNumber % fnbFrPerAcq == 0) || (fCurrentFrameNumber % MIS1__BT_VRS_MAX_FR_NB_PER_ACQ == 0)) {
-        
+         
         if (fisfirstAcq == true) {
             if(fDebugLevel>1) cout << "BoardReaderMIMOSIS  Getting the pointer for the first acquisition " << endl;
             VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */ );
@@ -1270,42 +1271,41 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
             fCurrentAcqNumber ++;
             fCurrentFrameNumber = 0; // ZE 2021/06/04
             }
-        
-        
-        // ZE 2021/06/09. Access Triggers
-         
-         // Get A point for the hear of acquisition
-         VPtAcqHead = &(APP_VGPtAcqW16A->AcqRawHead);
-         
-         if (VPtAcqHead == NULL){
-              printf ( "\n" );
-              printf ( " ERROR in getting pointer to the acquisition header ! \n" );
-              printf ( "\n" );
-            }
-                  
-         // Getting the information on the triggers in the current acquisition
-         VPtTrig = &(VPtAcqHead->Trigs);
-         nbTrg = VPtAcqHead->Trigs.TrigNb;
-         
-         // Printing the Triggers information
-         // printf("Printing triggers information in Acquistion % d\n", fCurrentAcqNumber);
-  //       VRet = MIS1__BT_FTrigRecPrint ( nbTrg, VPtTrig); // Function described in line file msis1_data.c, line 15312
-  /*
-         if ( VRet < 0 ) {
-           
-           printf ( "WARNING: Failed in printing Trigger information for Acquisition : %d ! \n", VPtAcqHead->Ids.AcqIdInRun);
-           printf ( "\n" );
-           return (-1);
-           
-         }
-    */
     }
         
-    fReachEndOfRun = (int) VResReachEndOfRun;
     
-    if(fDebugLevel>1) {
-    printf("fReachEndOfRun = %d ", fReachEndOfRun);
-    printf("\n");
+            break;
+            
+        case 1 :
+          
+            if (fCurrentTriggerNumber ==  fnbTrg) {
+                if (fisfirstAcq == true) {
+                     printf(" Getting Pointer for first Acq \n");
+                    if(fDebugLevel>1) cout << "BoardReaderMIMOSIS  Getting the pointer for the first acquisition " << endl;
+                   
+                    VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */ );
+                    fCurrentAcqNumber ++;
+                    fCurrentTriggerNumber = 0;
+                    fisfirstAcq = false;
+                    }
+              else {
+                    //Check if the current Acquisition was truncated before accessing and processing next one.
+                    if (fisTruncatedAcq == true)
+                        printf(" The Acquisition %d is risky due to different number of frames in sensors \n", fCurrentAcqNumber);
+                    if(fDebugLevel>1)
+                        printf (" BoardReaderMIMOSIS Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
+                    printf(" Getting Pointer for Next Acq : %d \n", fCurrentAcqNumber);
+                    
+                    VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */, &VResReachEndOfRun );
+                    
+                    fisTruncatedAcq = false;
+                    
+                    fCurrentAcqNumber ++;
+                    fCurrentTriggerNumber = 0;
+                  
+                }
+            }
+            break;
     }
 
     // Get a pointer for the first Acquisition
@@ -1360,92 +1360,101 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
       
          // Gilles's method rewritten for TAF in DecodeFrame() method
         //VRet = MIS1__BT_FAcqDecPrintPix ( APP_VGPtAcqDec,  0 /* MSIsId 0 to 5 */, ViFr, VPrintMaxPix, 0 /* PrintMode */ );
-      
-        DecodeFrame();
+    
+    if (fTriggerMode == 0) DecodeFrame ();
+    
+    else if (fTriggerMode == 1 ) {
+        
+        VPtAcqHead = &(APP_VGPtAcqW16A->AcqRawHead);
+        VGPtTrig = &(VPtAcqHead->Trigs);
+        fnbTrg = VPtAcqHead->Trigs.TrigNb;
+        
+        if (fCurrentTriggerNumber < fnbTrg){
+        printf("Once pointer set, fCurrentTriggerNumber = %d   fnTrg = %d \n", fCurrentTriggerNumber, fnbTrg) ;
+        fCurrentFrameNumber = (VGPtTrig->ATrig[fCurrentTriggerNumber])/100;
+        VRet = MIS1__BT_FTrigRecPrint ( fnbTrg, VGPtTrig); // Function described in line file msis1_data.c, line 15312
+        }
+        if ((fCurrentTriggerNumber < fnbTrg) && (fnbTrg != 0))
+             DecodeFrame();
+    }
 
     if (fReachEndOfRun > 0){
         ready = false;
         printf(" End Of Run Reached --> fReachEndOfRun = % d \n", fReachEndOfRun);
         printf(" Number of processed events/acquisitions : %d \n ", fCurrentAcqNumber );
         }
-
-   
+    
     return ready;
-
+    
 }
 
 //------------------------------------------+-----------------------------------
 
 bool BoardReaderMIMOSIS::DecodeFrame() {
-   
-   SInt32 VRet;
-   
-   MIS1__TPixXY VPix;
-   SInt32 VPrintMaxPix = 100;
-   
-   // ZE 2021/06/02. This is Gilles's standalone methode. Had to write a method specific to TAF.
-   //VRet = MIS1__BT_FAcqDecPrintPix ( APP_VGPtAcqDec,  0 /* MSIsId 0 to 5 */, frameID, VPrintMaxPix, 0 /* PrintMode */ );
-   
-  /*
-    fListOfTriggers.push_back( fCurrentEventNumber);
-    fListOfTimestamps.push_back( 0);
-    fListOfFrames.push_back( fCurrentEventNumber);
-    */
-    // ZE 2021/06/03. Loop over sensors to decode pixels of current frame.
-    
-          
-    for ( int MSisId = 0; MSisId < fNSensors; MSisId++ ) {
-           
-        VRet = MIS1__BT_FBtDecodeFr ( APP_VGPtAcqW16A, APP_VGPtAcqDec, MSisId, fCurrentFrameNumber, 0 /* MeasExecTime */, 0 /* PrintLvl */ );
-       
-        if ( VRet < 0 ) {
-            printf ( "WARNING: Decoding MSis data failed for Sensor : %d and FrameNb : %d \n", MSisId, fCurrentFrameNumber );
-            printf ( "\n" );
-            fBadDecFrameCounter ++;
-            return (-1);
-        }
-       
-        if (MSisId > 0) {
-            if (APP_VGPtAcqDec->ResAFrNb[MSisId] != APP_VGPtAcqDec->ResAFrNb[MSisId-1]){
-                    fisTruncatedAcq = true;
-            }
-        }
-        
-        //VRet = MIS1__BT_FAcqDecPrintGen ( APP_VGPtAcqDec, MSisId, 0 /* PrintMode */ );
-            
-        //    if ( VRet < 0 )
-        //        printf ( "Printing info of decoded Acq failed for sensor : % d :-( \n\n", MSisId );
-        
-        
-       // Decode pixels only for frames with FiredPixNb > 0 and not truncated acquisition
-                   
-            if (( APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb > 0 ) && ( fisTruncatedAcq == false)) {
-            
-                            if (fDebugLevel > 3) {
-                                    if (fCurrentFrameNumber >= APP_VGPtAcqDec->ResAFrNb[MSisId]) //ZE 2021/06/04 Check if frameID > nbFramesPerAcq
-                     
-                                            printf("fCurrentFrameNumber %d Exceeded the number of frames %d for sensor %d \n ", fCurrentFrameNumber, APP_VGPtAcqDec->ResAFrNb[MSisId], MSisId);
-                                            printf(" nbFiredPix : %.4d in AcqID : %.4d - frID :  %.4d - SensorID : %.4d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentAcqNumber, fCurrentFrameNumber, MSisId );
-                                    }
-             
-                        for ( int ViPix = 0; ViPix < APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb; ViPix++ ) {
-                
-                            VPix = APP_VGPtAcqDec->ResAAAFrPix[MSisId][fCurrentFrameNumber][ViPix];
-               
-                            if (fDebugLevel > 3) {
-                                printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
-                            }
-                            AddPixel( MSisId, 1, VPix.C.y ,VPix.C.x );
-                
-                        }// End of Loop over pixels in a sensor for the current frame
          
-                    } // End of if condition : FiredPixNb > 0
-        
-        }// End of Loop over sensors
-   
-    fCurrentFrameNumber ++ ;
-    
-}
+      SInt32 VRet;
+      
+      MIS1__TPixXY VPix;
+      SInt32 VPrintMaxPix = 100;
+      
+      // ZE 2021/06/02. This is Gilles's standalone methode. Had to write a method specific to TAF.
+      //VRet = MIS1__BT_FAcqDecPrintPix ( APP_VGPtAcqDec,  0 /* MSIsId 0 to 5 */, frameID, VPrintMaxPix, 0 /* PrintMode */ );
+      
+     /*
+       fListOfTriggers.push_back( fCurrentEventNumber);
+       fListOfTimestamps.push_back( 0);
+       fListOfFrames.push_back( fCurrentEventNumber);
+       */
+       // ZE 2021/06/03. Loop over sensors to decode pixels of current frame.
+    printf("Decoding Frame %d in Acquisition %d associated to trigger number %d from %d triggers\n", fCurrentFrameNumber, fCurrentAcqNumber, fCurrentTriggerNumber, fnbTrg);
+       for ( int MSisId = 0; MSisId < fNSensors; MSisId++ ) {
+              
+           VRet = MIS1__BT_FBtDecodeFr ( APP_VGPtAcqW16A, APP_VGPtAcqDec, MSisId, fCurrentFrameNumber, 0 /* MeasExecTime */, 0 /* PrintLvl */ );
+          
+           if ( VRet < 0 ) {
+               printf ( "WARNING: Decoding MSis data failed for Sensor : %d and FrameNb : %d \n", MSisId, fCurrentFrameNumber );
+               printf ( "\n" );
+               fBadDecFrameCounter ++;
+               return (-1);
+           }
+           
+           //VRet = MIS1__BT_FAcqDecPrintGen ( APP_VGPtAcqDec, MSisId, 0 /* PrintMode */ );
+               
+           //    if ( VRet < 0 )
+           //        printf ( "Printing info of decoded Acq failed for sensor : % d :-( \n\n", MSisId );
+           
+           
+          // Decode pixels only for frames with FiredPixNb > 0 and not truncated acquisition
+                      
+               if (( APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb > 0 ) && ( fisTruncatedAcq == false)) {
+               
+                               if (fDebugLevel > 3) {
+                                       if (fCurrentFrameNumber >= APP_VGPtAcqDec->ResAFrNb[MSisId]) //ZE 2021/06/04 Check if frameID > nbFramesPerAcq
+                        
+                                               printf("fCurrentFrameNumber %d Exceeded the number of frames %d for sensor %d \n ", fCurrentFrameNumber, APP_VGPtAcqDec->ResAFrNb[MSisId], MSisId);
+                                               printf(" nbFiredPix : %.4d in AcqID : %.4d - frID :  %.4d - SensorID : %.4d \n ", APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb, fCurrentAcqNumber, fCurrentFrameNumber, MSisId );
+                                       }
+                
+                           for ( int ViPix = 0; ViPix < APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb; ViPix++ ) {
+                   
+                               VPix = APP_VGPtAcqDec->ResAAAFrPix[MSisId][fCurrentFrameNumber][ViPix];
+                  
+                               if (fDebugLevel > 3) {
+                                   printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
+                               }
+                               AddPixel( MSisId, 1, VPix.C.y ,VPix.C.x );
+                   
+                           }// End of Loop over pixels in a sensor for the current frame
+            
+                       } // End of if condition : FiredPixNb > 0
+           
+           }// End of Loop over sensors
+      
+    if (fTriggerMode == 0)
+       fCurrentFrameNumber ++ ;
+    else
+       fCurrentTriggerNumber ++;
+   }
     
     
 // --------------------------------------------------------------------------------------
@@ -1500,7 +1509,9 @@ void BoardReaderMIMOSIS::PrintStatistics(ostream &stream) {
  stream << fCurrentEventNumber << " events in total," << endl;
  stream << fNEventsWithOverflow << " events with an overflow (veto overflow " << fVetoOverflow << ")," << endl;
  stream << fFrameCount << " frames read overall " << endl;
- stream << fBadDecFrameCounter << " frames with decoding errors. " << endl;
+ stream << fBadDecFrameCounter << " frames with decoding errors " << endl;
+ stream << fTruncatedAcqCounter << " Truncated Acquisitions " << endl;
+ stream << fCurrentAcqNumber << " Total Acquisitions Number. " << endl;
  stream << "***********************************************" << endl;
 
 }
