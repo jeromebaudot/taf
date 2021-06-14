@@ -1,5 +1,5 @@
 // @(#)maf/maf:$Name:  $:$Id: MHist.cxx,v.1 2005/10/02 18:03:46 sha Exp $
-// Author: A. Shabetai 
+// Author: A. Shabetai
 // Last Modified JB 2009/07/20
 // Last Modified JB 2009/08/25
 // Last Modified JB 2009/09/07
@@ -19,7 +19,7 @@
   //                                                         //
   //  Contains all analysis  histograms and canvas           //
   //  (those which are filled by MimosaPro())                //
-  //                                                         //   
+  //                                                         //
   ////////////////////////////////////////////////////////////
 
 
@@ -66,8 +66,8 @@ void MHist::Dir() {
 //
 TH1F* MHist::AutoZoom(TH1F* H,Option_t* aType, Int_t EntryMin/*=0*/)
 {
-  
-  // Redefine the display range of the histogram according to 
+
+  // Redefine the display range of the histogram according to
   //  an option and a minimal number of entries in a bin (EntryMin):
   // - aType="all" subrange where left and right exclude wings are below EntryMin
   // - aType="sym" same as before but right limit is symetric
@@ -75,12 +75,12 @@ TH1F* MHist::AutoZoom(TH1F* H,Option_t* aType, Int_t EntryMin/*=0*/)
   //
   // Default is aType="all", EntryMin=0 which basically finds the subrange
   //  of the histo where entries are not 0.
-  
+
   Int_t shift = (Int_t)(H->GetNbinsX()/50.);
-  
+
   TString opt = aType;
   opt.ToLower();
-  
+
   int min =0;
   int max = H->GetNbinsX();
   int New_min = min;
@@ -88,14 +88,14 @@ TH1F* MHist::AutoZoom(TH1F* H,Option_t* aType, Int_t EntryMin/*=0*/)
 
   if (opt.Contains("all")) opt = TString("min,max");
   if (opt.Contains("sym")) opt = TString("min,sym");
-  
+
   if (opt.Contains("calib"))
   {
     for (New_max=max;New_max>=min;New_max--)
     {Stat_t c = H->GetBinContent(New_max);  if (c>EntryMin) break;}
-    
+
     Stat_t  EntryMax=H->GetEntries()-H->GetEntries()/30; // previously /100
-    
+
     Stat_t t = 0;
     for  (New_min=min; New_min<=New_max;New_min++)
     {t+=H->GetBinContent(New_min); if (t>EntryMax) break;}
@@ -104,27 +104,27 @@ TH1F* MHist::AutoZoom(TH1F* H,Option_t* aType, Int_t EntryMin/*=0*/)
   }
 
   else {
-    
+
     if (opt.Contains("min"))
     {
-      for  (New_min=min; New_min<=max;New_min++)   
+      for  (New_min=min; New_min<=max;New_min++)
       {Stat_t c = H->GetBinContent(New_min);  if (c>EntryMin) break;}
     }
-    
+
     if (opt.Contains("max"))
     {
-      for (New_max=max;New_max>=min;New_max--) 
+      for (New_max=max;New_max>=min;New_max--)
       {Stat_t c = H->GetBinContent(New_max);  if (c>EntryMin) break;}
     }
-    
-    else if (opt.Contains("sym")) 
+
+    else if (opt.Contains("sym"))
     {
       New_max = H->FindBin(-1*H->GetXaxis()->GetBinCenter(New_min));
     }
-    
+
   }
-  
-  H->GetXaxis()->SetRange(New_min - shift  , New_max + shift);  
+
+  H->GetXaxis()->SetRange(New_min - shift  , New_max + shift);
   return H;
 }
 
@@ -135,23 +135,23 @@ TH2F* MHist::AutoZoom(TH2F* H,Option_t* aType/*="all"*/, Int_t EntryMin/*=0*/)
 {
 
   Int_t shiftX = (Int_t)(H->GetNbinsX()/30.);
-  Int_t shiftY = (Int_t)(H->GetNbinsY()/30.); 
-  
+  Int_t shiftY = (Int_t)(H->GetNbinsY()/30.);
+
   TString opt = aType;
   opt.ToLower();
- 
+
   int minX =0;
   int maxX = H->GetNbinsX();
   int New_minX = minX;
   int New_maxX = maxX;
-  
+
   int minY =0;
   int maxY = H->GetNbinsY();
   int New_minY = minY;
   int New_maxY = maxY;
-  
+
   if (opt.Contains("all")) opt = TString("minx,maxx,miny,maxy");
-  
+
   if (opt.Contains("maxx"))
     {
       for  (New_maxX = maxX;New_maxX >=minX; New_maxX--)
@@ -161,22 +161,22 @@ TH2F* MHist::AutoZoom(TH2F* H,Option_t* aType/*="all"*/, Int_t EntryMin/*=0*/)
 	if (c>EntryMin) break;
 	}
     }
-  
+
   if (opt.Contains("maxy"))
     {
-      
-      for  (New_maxY = maxY;New_maxY >=minY;New_maxY--) 
+
+      for  (New_maxY = maxY;New_maxY >=minY;New_maxY--)
 	{  Stat_t c = 0;
-	for  (int i_x=maxX; i_x>=minX;i_x--)   
+	for  (int i_x=maxX; i_x>=minX;i_x--)
 	  { c = H->GetBinContent(i_x, New_maxY );  if (c>EntryMin) break;}
 	if (c>EntryMin) break;
 	}
- 
+
     }
-  
+
   if (opt.Contains("minx"))
     {
-     
+
       for  (New_minX = minX;New_minX <=maxX; New_minX++)
 	{  Stat_t c = 0;
 	for  (int i_y = minY; i_y <= maxY;i_y++)
@@ -184,23 +184,23 @@ TH2F* MHist::AutoZoom(TH2F* H,Option_t* aType/*="all"*/, Int_t EntryMin/*=0*/)
 	if (c>EntryMin) break;
 	}
     }
-  
-  
+
+
 
 if (opt.Contains("miny"))
     {
-      for  (New_minY = minY;New_minY <=maxY;New_minY++) 
+      for  (New_minY = minY;New_minY <=maxY;New_minY++)
 	{  Stat_t c = 0;
-	for  (int i_x=minX; i_x<=maxX;i_x++)   
+	for  (int i_x=minX; i_x<=maxX;i_x++)
 	  { c = H->GetBinContent(i_x, New_minY );  if (c>EntryMin) break;}
 	if (c>EntryMin) break;
-	}      
+	}
     }
-  
 
-  H->GetXaxis()->SetRange(New_minX - shiftX  , New_maxX + shiftX);  
-  H->GetYaxis()->SetRange(New_minY - shiftY  , New_maxY + shiftY);  
-   
+
+  H->GetXaxis()->SetRange(New_minX - shiftX  , New_maxX + shiftX);
+  H->GetYaxis()->SetRange(New_minY - shiftY  , New_maxY + shiftY);
+
   return H;
 }
 
@@ -219,28 +219,30 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   // Below, histograms are grouped by such hit status.
   //
   // See modifications on top of this file
-   
+
   Bool_t HistDebug = kTRUE;
-  
+
   // Save current directory and cd to "dir".
   saved = gDirectory;
-  //   if(!dir) 
+  //   if(!dir)
   //     gDirectory = gROOT;
-  dir = new TDirectory("histograms", "all histograms"); 
+  dir = new TDirectory("histograms", "all histograms");
   dir->cd();
-  
+
   Int_t NofPixels = NofPixelInRaw*NofPixelInColumn; // JB 2010/07/26
-  
-  Info("MHist","Booking histograms..."); 
-  
+
+  Info("MHist","Booking histograms...");
+
+  Int_t sizeReducingFactor = 4; // usefull to limit nb of bins in multi-dim histo (hence memory size)
+
   //----------------------------------------------------------------------------
   //----- Setting of binnings
   //----------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: settings" << endl;
-  
+
   Int_t Mtype=RunNumber/1000;
   if(RunNumber==2110)Mtype=4;
-  
+
   //Float_t scf  =  2.0;  // removed -> info now in config file, JB 2013/08/21
   /*
    // this will not work anymore because tSession is not anymore a global var, JB 2011/07/21
@@ -304,7 +306,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     H_Nbinhu = int((humax - humin)/PixelSizeU);
     H_Nbinhv = int((hvmax - hvmin)/PixelSizeV);
   }
-  printf("HistoBooking: U,V axis: hits Nbins(%d,%d) for u(%.0f,%.0f)-v(%.0f,%.0f), tracks Nbins(%d,%d)  for u(%.0f,%.0f)-v(%.0f,%.0f)\n", H_Nbinhu, H_Nbinhv, humin, humax, hvmin, hvmax, H_Nbintu, H_Nbintv, tumin, tumax, tvmin, tvmax); 
+  printf("HistoBooking: U,V axis: hits Nbins(%d,%d) for u(%.0f,%.0f)-v(%.0f,%.0f), tracks Nbins(%d,%d)  for u(%.0f,%.0f)-v(%.0f,%.0f)\n", H_Nbinhu, H_Nbinhv, humin, humax, hvmin, hvmax, H_Nbintu, H_Nbintv, tumin, tumax, tvmin, tvmax);
 
 //------------------------------------------------------------------------------
 //
@@ -315,7 +317,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   //----- general control
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: general control" << endl;
-  
+
 
  selection = new TH1F("selection","Event selection",10,0.,10.);
  selection->SetYTitle("# counts");
@@ -344,8 +346,8 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   //----- Counters of GOOD/ALL hits.
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: GOOD/ALL hits" << endl;
-  
-  hnhit  = new TH1F("nhit","# hits per event, ALL hits",600,-0.5,599.5); 
+
+  hnhit  = new TH1F("nhit","# hits per event, ALL hits",600,-0.5,599.5);
   hnhitievt = new TH1F("hnhitievt","# ALL hits vs event number",20000,0,20000);
   hnahitievt = new TH2F("hnahitievt","# GOOD hits in plane vs event number",500,0,500000,510,0.0,510.0);
   hnGOODhit  = new TH1F("hnGOODhit","# GOOD hits per event in plane",600,-0.5,599.5); // changed for correct mean, JB 2011/07/05
@@ -362,7 +364,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
 			   50,
 			   0.0,100.0);
   hTrackDensity->SetXTitle("# tracks / cm^{2} / event");
-  hTrackDensity->SetYTitle("Events");  
+  hTrackDensity->SetYTitle("Events");
 
   hnTracksInGeomatrixVsTrackPerEvent  = new TH1F("hnTracksInGeomatrixVsTrackPerEvent",
 						 "Total # tracks inside geomatrix vs Tracks per event",
@@ -411,33 +413,33 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   //----------------------------------------------------------------------------
   //----- Charges, noise, S/N, pixel multiplicity plots for ALL hits
   //----------------------------------------------------------------------------
-  
+
   hseedQvsS2NAll = new TH2F("hseedQvsS2NAll","Qseed vs S/N seed, ALL hits",ChargePixNbins,0,ChargePixRange,SNRNbins,0,SNRRange);
 
   hQseedAll = new TH1F("hQseedAll","Pixel charge in seeds, ALL hits",ChargePixNbins,0.,ChargePixRange);
 
   hAllS2N = new TH1F("hAllS2N","Seed S/N, ALL HITS",SNRNbins,0.,SNRRange);
-  
-  hallSNneighbour =  new TH1F("hallSNneighbour"," S/N Neighbours (wo seed) for ALL hits",SNRNbins/2,0.0,SNRRange/2); 
-  
+
+  hallSNneighbour =  new TH1F("hallSNneighbour"," S/N Neighbours (wo seed) for ALL hits",SNRNbins/2,0.0,SNRRange/2);
+
   hallSN_vs_SNN = new TH2F("hallSN_vs_SNN","S/N vs S/N Neigh for ALL hits",SNRNbins,0.0,SNRRange,SNRNbins,0.0,SNRRange);
-  
+
   hallSN_minus_hgoodSN_vs_SNN = new TH2F("hallSN-hgoodSN_vs_SNN","substract ALL hits and GOOD hits",SNRNbins,0.0,SNRRange,SNRNbins,0.0,SNRRange);
 
   hS2N2All = new TH2F("hS2N2All","Signal-to-noise of center vs 2nd, ALL hits",SNRNbins,0,SNRRange,SNRNbins,0,SNRRange);
 
   hS2N2nd = new TH1F("hS2N2nd","Signal-to-noise for 2nd pixel, ALL hits",SNRNbins,0,SNRRange);
 
-  Char_t titre1[50] ; 
-  Char_t nom1[50]; 
+  Char_t titre1[50] ;
+  Char_t nom1[50];
   for (Int_t i=0 ; i<2 ; i++) {
-    sprintf(nom1,"etal%d",i+1); 
+    sprintf(nom1,"etal%d",i+1);
     sprintf(titre1,"Neighbours (wo seed) charge (%d), ALL hits ",i+1);  // ??
-    etal[i]=new TH1F (nom1,titre1,ChargeNbins,-100.0,ChargeRange); 
+    etal[i]=new TH1F (nom1,titre1,ChargeNbins,-100.0,ChargeRange);
     etal[i]->SetXTitle("Charge (electrons)");
-    sprintf(nom1,"etal1%d",i+1); 
-    sprintf(titre1,"Cluster charge / Seed charge - 1. (%d), ALL hits",i+1); 
-    etal1[i]=new TH1F (nom1,titre1,20,0.0,3.0); 
+    sprintf(nom1,"etal1%d",i+1);
+    sprintf(titre1,"Cluster charge / Seed charge - 1. (%d), ALL hits",i+1);
+    etal1[i]=new TH1F (nom1,titre1,20,0.0,3.0);
     etal1[i]->SetXTitle("ratio of charges");
   }
 
@@ -447,17 +449,17 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
 
   h2dallhits   = new TH2F("h2dallhits","ALL hits HUdig HVdig",H_Nbinhu,humin,humax,H_Nbinhv,hvmin,hvmax);
   h2dallhits->SetXTitle("X (#mum)");
-  h2dallhits->SetYTitle("X (#mum)");
-  
+  h2dallhits->SetYTitle("Y (#mum)");
+
 
   //----------------------------------------------------------------------------
   //----- Charges, noise, S/N, pixel multiplicity plots for GOOD hits
   //----------------------------------------------------------------------------
-  
+
   hnpix  = new TH1F("npix","Nb of pixels in GOOD cluster",MaxNofPixelsInCluster+2,-0.5,MaxNofPixelsInCluster+1.5);
   hnpix->SetXTitle("# pixels / cluster");
 
-  hgoodSNneighbour =  new TH1F("hgoodSNneighbour"," S/N Neighbours (wo seed) for GOOD hits",SNRNbins/2,0.0,SNRRange/2); 
+  hgoodSNneighbour =  new TH1F("hgoodSNneighbour"," S/N Neighbours (wo seed) for GOOD hits",SNRNbins/2,0.0,SNRRange/2);
 
   hgoodSN_vs_SNN = new TH2F("hgoodSN_vs_SNN","S/N vs S/N Neighbours for GOOD hits",SNRNbins,0.0,SNRRange,SNRNbins/2,0.0,SNRRange/2);
 
@@ -474,21 +476,21 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   h2DgoodSeedPixel = new TH2F("h2DgoodSeedPixel","Seed pixel map for GOOD clusters",NofPixelInRaw,0,NofPixelInRaw,NofPixelInColumn,0,NofPixelInColumn);
   h2DgoodSeedPixel->SetXTitle("U pixel index");
   h2DgoodSeedPixel->SetYTitle("V pixel index");
-  
+
   hSeedBetweenDist = new TH1F( "hseedbetweendist", "Distance between seed pix of same event", (Int_t)(TMath::Min(128, NofPixelInRaw)*sqrt(2.)), 0, NofPixelInRaw*sqrt(2.));
   hSeedBetweenDist->SetXTitle("distance in pixel index");
   hSeedBetweenDist->SetFillColor(29);
 
-  
+
   //------------------------------------------------------------------------------
   //----- Charges, noise, S/N, pixel multiplicity plots for SELECTED/MATCHED clusters
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: matched hits" << endl;
-  
+
   hdummy  = new TH1F("hdummy","",10,0.,10.0);
 
   // seed
-  
+
   hChargeInSeed = new TH1F("hChargeInSeed","Seed pixel charge, MATCHED hits",ChargePixNbins,0.,ChargePixRange);
   hChargeInSeed->SetFillColor(29);
   hChargeInSeed->SetXTitle("Charge (electrons)");
@@ -497,62 +499,62 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hRealTrackNoise->SetXTitle("Noise (electrons)");
   hRealTrackNoise_time = new TH2F("hRealTrackNoise_time","Seed Noise vs ievt, MATCHED hits",500,0,500000,NoiseNbins,0.0,NoiseRange);
   hRealTrackNoise_time->SetXTitle("Noise (electrons)");
-  hSNReal = new TH1F("hSNReal","Seed (highest S/N) pixel S/N, MATCHED hits",SNRNbins,0.,SNRRange); 
+  hSNReal = new TH1F("hSNReal","Seed (highest S/N) pixel S/N, MATCHED hits",SNRNbins,0.,SNRRange);
   hSNReal->SetFillColor(29);
   hSNReal->SetXTitle("Seed pixel SNR");
-  
+
   // 2nd higest S/N pixel
-  
+
   hS2N2ndRH = new TH1F("hS2N2ndRH","S/N for 2nd highest charge pixel, MATCHED hits",SNRNbins,0.,SNRRange);
   hS2N2ndRH->SetFillColor(29);
-  hSNNReal =  new TH1F("hSNNReal","S/N for 2nd highest S/N pixel, MATCHED hits",SNRNbins,0.,SNRRange); 
+  hSNNReal =  new TH1F("hSNNReal","S/N for 2nd highest S/N pixel, MATCHED hits",SNRNbins,0.,SNRRange);
   hSNNReal->SetXTitle("S/N pixel with 2nd highest S/N");
   hSNNReal->SetFillColor(29);
-  
+
   hind  = new TH1F("hind","Index in cluster pixel1- pixel0, MATCHED hits",200,-100,100);
-    
+
   // all pixels mixed
-  
+
   hChargeInCluster = new TH1F("hChargeInCluster","all pixel charges in MATCHED hits",ChargeNbins,0.,ChargeRange);
   hChargeInCluster->SetFillColor(29);
-  
+
   // each pixel separately
-  
+
   for (Int_t i=0 ; i<MaxNofPixelsInCluster ; i++) {
-    sprintf(nom,"hqc%d",i+1); 
-    sprintf(titre," Sum of %d charge ordered pixels, MATCHED hits",i+1); 
+    sprintf(nom,"hqc%d",i+1);
+    sprintf(titre," Sum of %d charge ordered pixels, MATCHED hits",i+1);
     hqcn[i]=new TH1F (nom,titre,ChargeNbins,.0,ChargeRange);
     hqcn[i]->SetXTitle("charge (electrons)");
     hqcn[i]->SetFillColor(29);
 
-    sprintf(nom,"hqcgeom%d",i+1); 
-    sprintf(titre," Sum of %d geometrically ordered pixels, MATCHED hits",i+1); 
-    hqcngeom[i]=new TH1F (nom,titre,ChargeNbins,.0,ChargeRange); 
+    sprintf(nom,"hqcgeom%d",i+1);
+    sprintf(titre," Sum of %d geometrically ordered pixels, MATCHED hits",i+1);
+    hqcngeom[i]=new TH1F (nom,titre,ChargeNbins,.0,ChargeRange);
     hqcngeom[i]->SetXTitle("charge (electrons)");
     hqcngeom[i]->SetFillColor(29);
-    
-    sprintf(nom,"hindivq%d",i+1); 
+
+    sprintf(nom,"hindivq%d",i+1);
     if(i==0){
-      sprintf(titre,"Charge seed pixel ordered by charge, MATCHED hits"); 
+      sprintf(titre,"Charge seed pixel ordered by charge, MATCHED hits");
     }else{
-      sprintf(titre,"Charge %dth pixel ordered by charge, MATCHED hits",i+1); 
+      sprintf(titre,"Charge %dth pixel ordered by charge, MATCHED hits",i+1);
     }
-    sprintf(titre,"Charge in %dth pixel ordered by charge, MATCHED hits",i+1); 
-    hindivq[i]=new TH1F (nom,titre,1.05*ChargePixNbins,-0.05*ChargePixRange,ChargePixRange); 
+    sprintf(titre,"Charge in %dth pixel ordered by charge, MATCHED hits",i+1);
+    hindivq[i]=new TH1F (nom,titre,1.05*ChargePixNbins,-0.05*ChargePixRange,ChargePixRange);
     hindivq[i]->SetXTitle("pixel charge (electrons)");
     hindivq[i]->SetFillColor(29);
-    
-    sprintf(nom,"hsn%d",i+1); 
+
+    sprintf(nom,"hsn%d",i+1);
     if(i==0){
-      sprintf(titre,"S/N seed pixel ordered by S/N, MATCHED hits"); 
+      sprintf(titre,"S/N seed pixel ordered by S/N, MATCHED hits");
     }else{
-      sprintf(titre,"S/N %dth pixel ordered by S/N, MATCHED hits",i); 
+      sprintf(titre,"S/N %dth pixel ordered by S/N, MATCHED hits",i);
     }
     hsnn[i]=new TH1F (nom,titre,SNRNbins,0.0,SNRRange);
     hsnn[i]->SetXTitle("pixel SNR");
     hsnn[i]->SetFillColor(29);
   }
-  
+
   hChargeCor_1_2 = new TH2F("hChargeCor_1_2","Ch pixel 1 vs pixel 2 (q order)",ChargePixNbins,.0,ChargePixRange,ChargePixNbins,.0,ChargePixRange);
   hChargeCor_1_2->SetXTitle("Q 2nd highest (electrons");
   hChargeCor_1_2->SetYTitle("Q 1st highest (electrons");
@@ -574,9 +576,9 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hChargeRap_1_over_4->SetFillColor(29);
   hChargeRap_2_over_3 = new TH1F("hChargeRap_2_over_3","Ratio of 2nd over 3rd pixel(q order)",100,0.0,10.0);
   hChargeRap_2_over_3->SetFillColor(29);
-  
+
   h_SNRratioL           = new TH1F("h_SNRratioL","Ratio SNR(seed)/SNR(2nd highest q)",250,-10,10);
-  
+
   hQofPix3x3 = new TH1F("hQofPix3x3","Mixed pixel charge in 3x3",ChargeNbins,.0,ChargeRange);
   hQ3x34 = new TH1F("hQ4","Q3x3[4]",ChargeNbins,.0,ChargeRange);
   hQ3x35 = new TH1F("hQ5","Q3x3[4]",ChargeNbins,.0,ChargeRange);
@@ -585,11 +587,11 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hQ3x345r = new TH1F("hQ45r","(q4-q5)/(q4+q5)",40,-1,1);
   hQ3x327r = new TH1F("hQ27r","(q2-q7)/q2+q7)",40,-1,1);
 
-  
-  // cluster wise 
-  
+
+  // cluster wise
+
   hIndex2x2  = new TH1F("hIndex2x2","Index of cluster 2x2",5,0.0,5.0);
-  hsnc = new TH1F ("hsnc","S/N optimized, cluster restricted for highest S/N track-MATCHED",SNRNbins,0.,SNRRange); 
+  hsnc = new TH1F ("hsnc","S/N optimized, cluster restricted for highest S/N track-MATCHED",SNRNbins,0.,SNRRange);
   hsnc->SetXTitle("S/N seed");
   hsnc->SetFillColor(29);
   hChargeSum_4 = new TH1F("hChargeSum_4","Sum of the 4 first pixel from TTree",ChargeNbins,0.0,ChargeRange);
@@ -608,15 +610,15 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hsnc1  = new TH1F("snc1","Cluster signal / seed noise",SNRNbins,0.,SNRRange);
   hqcel  = new TH1F("qcel","Charge in optimized(largest S/N) cluster track-MATCHED",ChargeNbins,.0,ChargeRange);
   hoptimalsize  = new TH1F("optimalsize","Nb of pixels in optimized(largest S/N) cluster track-MATCHED",MaxNofPixelsInCluster+2,-0.5,MaxNofPixelsInCluster+1.5);
-  hSNneighbour =  new TH1F("hSNneighbour"," S/N Neighbours (wo seed) for track-MATCHED hits",SNRNbins/2,0.,SNRRange/2); 
+  hSNneighbour =  new TH1F("hSNneighbour"," S/N Neighbours (wo seed) for track-MATCHED hits",SNRNbins/2,0.,SNRRange/2);
   hSNneighbour->SetXTitle("S/N neighbours");
-  
+
   hnpix_c  = new TH1F("npix_c",
 		      "nb of pixels in MATCHED hits",
 		      MaxNofPixelsInCluster+2,-0.5,MaxNofPixelsInCluster+1.5); // space replaced by _, JB 2009/09/01  YV 03/11/09 changed the upper limit of the histo - 11 was too low
   hnpix_c->SetXTitle("# pixels / cluster");
   hnpix_c->SetFillColor(29);
-  
+
   hNomEffic = new TH1F("hNomEffic","Nominal value of corrected efficiency",1,0.0,1.0);
 
   //AP 2015/05/30, Histograms with the number of withdows (2x4) needed for each associated cluster
@@ -649,7 +651,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   h2DWindows->SetXTitle("col(super-window)");
   h2DWindows->SetYTitle("lin(super-window)");
 
-  hnpixCumul_c  = new TH1F("npixcumul_c","rate of hits with at least #pixels in MATCHED hits",hnpix_c->GetNbinsX(), hnpix_c->GetXaxis()->GetXmin(), hnpix_c->GetXaxis()->GetXmax()); // JB, 2014/11/13 
+  hnpixCumul_c  = new TH1F("npixcumul_c","rate of hits with at least #pixels in MATCHED hits",hnpix_c->GetNbinsX(), hnpix_c->GetXaxis()->GetXmin(), hnpix_c->GetXaxis()->GetXmax()); // JB, 2014/11/13
   hnpixCumul_c->SetXTitle("# pixels / cluster");
   hnpixCumul_c->SetFillColor(29);
 
@@ -682,14 +684,14 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hDuplicate_npixc_vs_TrkDistToDiode->SetYTitle("Distance(trk - closest diode) (#mum)");
 
   // Correlation between different charges, S/N and noises
-  
+
   hSN_vs_SNNReal = new TH2F("hSN_vs_SNNReal","Seed S/N vs 2nd highest S/N, MATCHED hits",SNRNbins/4,0.0,SNRRange,SNRNbins/4,0.0,SNRRange);
   hSN_vs_SNNReal->SetXTitle("S/N pixel with 2nd highest S/N");
   hSN_vs_SNNReal->SetYTitle("S/N seed");
   hS2N2RH = new TH2F("hS2N2RH","Seed S/N vs 2nd (chare ordered), MATCHED hits",SNRNbins/4,0.0,SNRRange,SNRNbins/4,0.0,SNRRange);
   hseedQvsS2NGood = new TH2F("hseedQvsS2NGood","Charge vs S/N seed, MATCHED hits",SNRNbins/4,0,SNRRange,ChargePixNbins/4,0,ChargePixRange);
-  hseedQvsS2NGood->SetXTitle("S/N");  
-  hseedQvsS2NGood->SetYTitle("Charge (electrons)");  
+  hseedQvsS2NGood->SetXTitle("S/N");
+  hseedQvsS2NGood->SetYTitle("Charge (electrons)");
   hSNseedvsSNneighbour =  new TH2F("hSNseedvsSNneighbour","S/N Neighbours (wo seed) vs S/N seed for track-MATCHED hits",SNRNbins,0.,SNRRange,SNRNbins/2,0.,SNRRange/2); // JB 2013/11/07
   hSNseedvsSNneighbour->SetXTitle("S/N seed");
   hSNseedvsSNneighbour->SetYTitle("S/N neighbours");
@@ -702,78 +704,78 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hSNseedvsQcluster =  new TH2F("hSNseedvsQcluster","Cluster charge vs seed S/N for track-MATCHED hits",SNRNbins,0.,SNRRange,ChargePixNbins/4,0,ChargePixRange); // JB 2014/05/22
   hSNseedvsQcluster->SetYTitle("cluster charge(electrons)");
   hSNseedvsQcluster->SetXTitle("S/N seed");
-  
+
   Int_t i=0;
-  for (Int_t j=0 ; j<jpixmax ; j++) {    
-    sprintf(nom,"hsn_pix_%d_%d",i,j+1); 
-    sprintf(titre,"S/N cluster %d-%d ",i,j+1); 
-    hsn_pix_0[j] = new TH1F (nom,titre,SNRNbins,0.0,SNRRange); 
+  for (Int_t j=0 ; j<jpixmax ; j++) {
+    sprintf(nom,"hsn_pix_%d_%d",i,j+1);
+    sprintf(titre,"S/N cluster %d-%d ",i,j+1);
+    hsn_pix_0[j] = new TH1F (nom,titre,SNRNbins,0.0,SNRRange);
   }
-  
+
   i = 1;
-  for (Int_t j=0 ; j<jpixmax ; j++) {    
-    sprintf(nom,"hsn_pix_%d_%d",i,j+1); 
-    sprintf(titre,"S/N cluster %d-%d ",i,j+1); 
-    hsn_pix_1[j] = new TH1F (nom,titre,SNRNbins,0.0,SNRRange); 
+  for (Int_t j=0 ; j<jpixmax ; j++) {
+    sprintf(nom,"hsn_pix_%d_%d",i,j+1);
+    sprintf(titre,"S/N cluster %d-%d ",i,j+1);
+    hsn_pix_1[j] = new TH1F (nom,titre,SNRNbins,0.0,SNRRange);
   }
-  
-  // Signal / noise seed vs Signal / noise in the pixel range [i-j] 
+
+  // Signal / noise seed vs Signal / noise in the pixel range [i-j]
   i=0;
-  for (Int_t j=0 ; j<jpixmax ; j++) {    
-    sprintf(nom,"hsn_seed_vs_pix_%d_%d",i,j+1); 
-    sprintf(titre,"S/N clusterseed vs S/N %d-%d ",i,j+1); 
+  for (Int_t j=0 ; j<jpixmax ; j++) {
+    sprintf(nom,"hsn_seed_vs_pix_%d_%d",i,j+1);
+    sprintf(titre,"S/N clusterseed vs S/N %d-%d ",i,j+1);
     hsn_seed_vs_pix_0[j] = new TH2F(nom,titre,SNRNbins/4,0.0,SNRRange,SNRNbins/4,0.0,SNRRange);
   }
-  
+
   i=1;
-  for (Int_t j=0 ; j<jpixmax ; j++) {    
-    sprintf(nom,"hsn_seed_vs_pix_%d_%d",i,j+1); 
-    sprintf(titre,"S/N clusterseed vs S/N %d-%d ",i,j+1); 
+  for (Int_t j=0 ; j<jpixmax ; j++) {
+    sprintf(nom,"hsn_seed_vs_pix_%d_%d",i,j+1);
+    sprintf(titre,"S/N clusterseed vs S/N %d-%d ",i,j+1);
     hsn_seed_vs_pix_1[j] = new TH2F(nom,titre,SNRNbins/4,0.0,SNRRange,SNRNbins/4,0.0,SNRRange);
   }
-  
-  //----ALL HITS: Signal/noise seed vs Signal/noise in the pixel range [i-j] 
+
+  //----ALL HITS: Signal/noise seed vs Signal/noise in the pixel range [i-j]
   i=0;
-  for (Int_t j=0 ; j<jpixmax ; j++) {    
-    sprintf(nom,"hsnALL_seed_vs_pix_%d_%d",i,j+1); 
-    sprintf(titre,"ALL S/N clusterseed vs S/N %d-%d ",i,j+1); 
+  for (Int_t j=0 ; j<jpixmax ; j++) {
+    sprintf(nom,"hsnALL_seed_vs_pix_%d_%d",i,j+1);
+    sprintf(titre,"ALL S/N clusterseed vs S/N %d-%d ",i,j+1);
     hsnALL_seed_vs_pix_0[j] = new TH2F(nom,titre,SNRNbins/4,0.0,SNRRange,SNRNbins/4,0.0,SNRRange);
   }
   i=1;
   //TH2F *hsnALL_seed_vs_pix_1[jpixmax];
-  for (Int_t j=0 ; j<jpixmax ; j++) {    
-    sprintf(nom,"hsnALL_seed_vs_pix_%d_%d",i,j+1); 
-    sprintf(titre,"ALL S/N clusterseed vs S/N %d-%d ",i,j+1); 
+  for (Int_t j=0 ; j<jpixmax ; j++) {
+    sprintf(nom,"hsnALL_seed_vs_pix_%d_%d",i,j+1);
+    sprintf(titre,"ALL S/N clusterseed vs S/N %d-%d ",i,j+1);
     hsnALL_seed_vs_pix_1[j] = new TH2F(nom,titre,SNRNbins/4,0.0,SNRRange,SNRNbins/4,0.0,SNRRange);
   }
-  
+
 
   //------------------------------------------------------------------------------
   //----- Charges, noise, S/N, pixel multiplicity plots for UNMATCHED clusters
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: unmatched hits" << endl;
-  
+
   hqc_nc   = new TH1F("qc nc","Cluster charge for track-UNMATCHED hits",ChargeNbins,0.0,ChargeRange);
-    
+
   hnpix_nc = new TH1F("npix_nc","nb pix in track-UNMATCHED cluster",MaxNofPixelsInCluster+2,-0.5,MaxNofPixelsInCluster+1.5); // space replaced by _, JB 2009/09/01
   hnpix_nc->SetXTitle("# pixels");
 
 
   //------------------------------------------------------------------------------
-  //----- Comparebadgoodraw() Analysis of raw frame data 
+  //----- Comparebadgoodraw() Analysis of raw frame data
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: Comparebadgoodraw" << endl;
-  
+
   hPedestal = new TH1F("hPedestal","Pedestal", 100, -10.,10.) ; // never filled !
-  
+
   hraw1badone = new TH1F("hrawbadone","Frame 1 before CDS BAD",3500,0.0,3500.0);
   hraw1goodone = new TH1F("hrawgoodone","Frame 1 before CDS GOOD",3500,0.0,3500.0);
   hraw1goodone_time = new TH2F("hraw1goodone_time","raw signal before CDS GOOD vs ievt",500,0,500000,2000,0.0,4000.0);
   hraw1badone_time = new TH2F("hraw1badone_time","raw signal before CDS BAD vs ievt",500,0,500000,2000,0.0,4000.0);
   hraw1goodoneNoise_time = new TH2F("hraw1goodoneNoise_time","Noise (e-) GOOD vs ievt",500,0,500000,200,0.0,NoiseRange);
   hraw1badoneNoise_time = new TH2F("hraw1badoneNoise_time","Noise (e-) BAD vs ievt",500,0,500000,200,0.0,NoiseRange);
-  
-  
+
+
   hraw1PFrfr1GOOD = new TH1F("hraw1PFrfr1GOOD","Average Frame 1  (ADC) before CDS GOOD",3500,0.0,3500.0);
   hraw1PFrfr1BAD = new TH1F("hraw1PFrfr1BAD","Average Frame 1 (ADC)  before CDS BAD",3500,0.0,3500.0);
   hraw1PFrfr1GOOD_time = new TH2F("hraw1PFrfr1GOOD_time","Average Frame 1 (ADC)  before CDS GOOD vs ievt",500,0,500000,2000,0.0,4000.0);
@@ -784,7 +786,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hraw1PFrfr2BAD_time = new TH2F("hraw1PFrfr2BAD_time","Average Frame 2  (ADC) before CDS BAD vs ievt",500,0,500000,2000,0.0,4000.0);
   hraw1NoiseGOOD_time = new TH2F("hraw1NoiseGOOD_time","Average Noise  (ADC) GOOD vs ievt",500,0,500000,200,0.0,10.0);
   hraw1NoiseBAD_time = new TH2F("hraw1NoiseBAD_time","Average Noise  (ADC) BAD vs ievt",500,0,500000,200,0.0,10.0);
-  
+
   hraw1Noise = new TH1F("hraw1Noise","Average Noise (ADC)",200,0.0,10.0);
   hraw1Pedestal = new TH1F("hraw1Pedestal","Average Pedestal (ADC)",401,-20.0,20.0);
   hraw1CDS  = new TH1F("hraw1CDS","Average CDS (ADC)",401,-20.0,20.0);
@@ -793,8 +795,8 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hraw1Pedestal_time = new TH2F("hraw1Pedestal_time","Average Pedestal  (ADC) vs ievt",500,0,500000,401,-20.0,20.0);
   hraw1CDS_time  = new TH2F("hraw1CDS_time","Average CDS  (ADC) vs ievt",500,0,500000,401,-20.0,20.0);
   hraw1Signal_time  = new TH2F("hraw1Signal_time","Average Signal  (ADC) (CDS-Ped-Com) vs ievt",500,0,500000,401,-40.0,40.0);
-  
-  
+
+
   //------------------------------------------------------------------------------
   //--- Charges for calibration peak
   //------------------------------------------------------------------------------
@@ -803,22 +805,22 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
 
     hqSeedCalibration = new TH1F( "hqSeedCalibration", "Seed pixel charge for calibration", ChargeNbins,-100.0,ChargeRange);
     hqSeedCalibration->SetXTitle("ADC counts");
-    
+
     hqNeighbourCalibration = new TH1F( "hqNeighbourCalibration", "Neighbour pixels charge sum for calibration", ChargeNbins,-100.0,ChargeRange);
     hqNeighbourCalibration->SetXTitle("ADC counts");
-    
+
     hqSeedVsNeighbourCalibration = new TH2F( "hqSeedVsNeighbourCalibration", "Neibourgs charge sum vs Seed pixel charge for calibration",ChargeNbins,-100.0,ChargeRange, ChargeNbins,-100.0,ChargeRange);
     hqSeedVsNeighbourCalibration->SetXTitle("Seed charge(ADC)");
     hqSeedVsNeighbourCalibration->SetYTitle("Neighbours charge sum (ADC)");
-    
+
   } // end if calibration histograms required
-  
-  
+
+
   //------------------------------------------------------------------------------
   //---- cluster shape study, JB 2010/04/13 based on cdritsa stuff
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: cluster shape" << endl;
-  
+
   int Nbins_U = 7;
   double R_U[2];
   R_U[0] = -(double)Nbins_U/2;
@@ -837,7 +839,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hClusterTest1->SetXTitle("V pixel index - seed index");
   hClusterTest2         = new TH1F("ClusTest2","Pixel column wrt seed",7,-3,4);
   hClusterTest2->SetXTitle("U pixel index - seed index");
-  
+
   hClusterSizeInLines   = new TH1F("ClSizeLines","Cluster size in #lines",9,-0.5,8.5);
   hClusterSizeInLines->SetXTitle("Nb of lines");
   hClusterSizeInColumns = new TH1F("ClSizeColumns","Cluster size in #columns",9,-0.5,8.5);
@@ -863,16 +865,16 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hClusterTypesBeyond4->GetXaxis()->SetBinLabel( i, clusterTypeBeyond4[i-1]);
   }
 
-  
+
   Char_t name[50], title[200];
   for( Int_t i=0; i<10; i++) {
-    
+
     sprintf( name, "multipl%d", i);
     sprintf( title, "cluster multiplicity with Charge>[%d] e", i);
     hCountPixels[i] = new TH1F(name, title ,MaxNofPixelsInCluster+2,-0.5,MaxNofPixelsInCluster+1.5);
     hCountPixels[i]->SetXTitle("# pixels");
     hCountPixels[i]->SetFillColor(29);
-    
+
     sprintf( name, "pxlOverThresh%d", i);
     sprintf( title, "Percentage of pixels over threshold (SNR>[%d])", i);
     hPixelsOverSNR[i] = new TH2F( name, title, 7,-3,4,7,-3,4);
@@ -880,7 +882,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hPixelsOverSNR[i]->SetYTitle("V pixel index - seed index");
     hPixelsOverSNR[i]->SetZTitle("(%)");
 
-    
+
     sprintf( name, "pxlOverCharge%d", i);
     sprintf( title, "Percentage of pixels over threshold (Charge>[%d])", i);
     hPixelsOverCharge[i] = new TH2F( name, title, 7,-3,4,7,-3,4);
@@ -894,14 +896,14 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hMultVsFormFactor[i]->SetXTitle("# pixels");
     hMultVsFormFactor[i]->SetYTitle("# pix(Central row) / # pix(central col)");
     hMultVsFormFactor[i]->SetFillColor(29);
-    
+
     sprintf( name, "hMultVsFormFactor1D%d", i);
     sprintf( title, "cluster multiplicity with SNR>[%d]", i);
     hMultVsFormFactor1D[i] = new TH1F( name, title, MaxNofPixelsInCluster+2,-0.5,MaxNofPixelsInCluster+1.5);
     hMultVsFormFactor1D[i]->Sumw2(); //clm added back clu mult vs S/N 2013.08.25
     hMultVsFormFactor1D[i]->SetXTitle("# pixels");
     hMultVsFormFactor1D[i]->SetFillColor(29);
-    
+
     sprintf( name, "Cl%d", i);
     sprintf( title, "Cluster %d", i);
     Cluster[i]     = new TH2F( name, title ,7,-3,4,7,-3,4);
@@ -910,16 +912,16 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     Cluster[i]->SetZTitle("average charge");
 
   }
-  
+
   hChargeCoG_Correl     = new TH2F("hChargeCoG_Correl"  , "SUM(Q*Pos)/totQ U vs V"  ,250,0,10,250,0,10);
   hChargeCoG_Correl->SetXTitle("(#mum)");
   hChargeCoG_Correl->SetYTitle("(#mum)");
   hChargeCoG_Correl2    = new TH2F("hChargeCoG_Correl2" , "SUM(Q*Pos)mean/totQ U vs V" ,250,0,10,250,0,10);
   hChargeCoG_Correl2->SetXTitle("(#mum)");
   hChargeCoG_Correl2->SetYTitle("(#mum)");
-  
+
   hChargeDistrInLine    = new TH1F("hChargeDistrInLine","hChargeDistrInLine",210,-10,10);
-  
+
   hChargeDistrIn3rdLeftNeigh = new TH1F("h3rdLeftNeigh","h3rdLeftNeigh",ChargePixNbins,0.0,ChargePixRange);
   hChargeDistrIn2ndLeftNeigh = new TH1F("h2ndLeftNeigh","h2ndLeftNeigh",ChargePixNbins,0.0,ChargePixRange);
   hChargeDistrIn1stLeftNeigh = new TH1F("h1stLeftNeigh","h1stLeftNeigh",ChargePixNbins,0.0,ChargePixRange);
@@ -927,31 +929,31 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hChargeDistrIn1stRightNeigh = new TH1F("h1stRightNeigh","h1stRightNeigh",ChargePixNbins,0.0,ChargePixRange);
   hChargeDistrIn2ndRightNeigh = new TH1F("h2ndRightNeigh","h2ndRightNeigh",ChargePixNbins,0.0,ChargePixRange);
   hChargeDistrIn3rdRightNeigh = new TH1F("h3rdRightNeigh","h3rdRightNeigh",ChargePixNbins,0.0,ChargePixRange);
-  
-  
+
+
   // histograms needed for charge distribution function:
   Int_t nb=25; Int_t SpreadRange=100;
   hChargeIntegral = new TH2F("hChargeIntegral","",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
   hChargeIntSmoothed = new TH2F("hChargeSmoothed","Smoothed",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
-  
-  
+
+
   //------------------------------------------------------------------------------
   //----- histos to compute eta correction
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: positions" << endl;
-  
+
   hEta2x2  = new TH1F("hEta2x2","Eta 2x2", 50,0.,1.);
   hEta2x2U  = new TH1F("hEta2x2U","Eta 2x2", 50,0.,1.);
   hEta2x2V  = new TH1F("hEta2x2V","Eta 2x2", 50,0.,1.);
   hEta2x2m = new TH1F("hEta2x2m","UCG2x2-Udigital", 60,-15.,15.);
-  
-    
+
+
   //------------------------------------------------------------------------------
   //----- Hit position in pixel matrix for MATCHED or SELECTED hits
   //------------------------------------------------------------------------------
-  
+
   // Distribution (1D or 2D) of hits
-  
+
   // Using the "standard" position
   huv    = new TH2F("huv","Hit map (V:U)",H_Nbinhu,humin,humax,H_Nbinhv,hvmin,hvmax);
 //  huv    = new TH2F("huv","Hit map (V:U)",100, 1620, 1720, 100, 120, 220);
@@ -971,7 +973,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   division    = geomUmax / PixelSizeU;
   intdivision = int(division);
   if (TMath::Abs(division - intdivision) > 1.0e-6 ) {
-    if(division >= -1 && 
+    if(division >= -1 &&
        division <= 0)       R_uv_Rate_U[1] = 0.0*PixelSizeU;
     else if(division >  0)  R_uv_Rate_U[1] = (intdivision + 1)*PixelSizeU;
     else if(division < -1)  R_uv_Rate_U[1] = (intdivision + 0)*PixelSizeU;
@@ -980,17 +982,17 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   division    = geomUmin / PixelSizeU;
   intdivision = int(division);
   if (TMath::Abs(division - intdivision) > 1.0e-6 ) {
-    if(division >= -1 && 
+    if(division >= -1 &&
        division <= 0)      R_uv_Rate_U[0] = -1.0*PixelSizeU;
     else if(division >  0) R_uv_Rate_U[0] = (intdivision + 0)*PixelSizeU;
     else if(division < -1) R_uv_Rate_U[0] = (intdivision - 1)*PixelSizeU;
   }
   else R_uv_Rate_U[0] = geomUmin;
-  
+
   division    = geomVmax / PixelSizeV;
   intdivision = int(division);
   if (TMath::Abs(division - intdivision) > 1.0e-6 ) {
-    if(division >= -1 && 
+    if(division >= -1 &&
        division <= 0)      R_uv_Rate_V[1] = 0.0*PixelSizeV;
     else if(division >  0) R_uv_Rate_V[1] = (intdivision + 1)*PixelSizeV;
     else if(division < -1) R_uv_Rate_V[1] = (intdivision + 0)*PixelSizeV;
@@ -999,7 +1001,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   division    = geomVmin / PixelSizeV;
   intdivision = int(division);
   if (TMath::Abs(division - intdivision) > 1.0e-6 ) {
-    if(division >= -1 && 
+    if(division >= -1 &&
        division <= 0)      R_uv_Rate_V[0] = -1.0*PixelSizeV;
     else if(division >  0) R_uv_Rate_V[0] = (intdivision + 0)*PixelSizeV;
     else if(division < -1) R_uv_Rate_V[0] = (intdivision - 1)*PixelSizeV;
@@ -1057,7 +1059,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hhv    = new TH1F("hv","Hit V position",H_Nbinhv,hvmin,hvmax);
 //  hhv    = new TH1F("hv","Hit V position", 100, 120, 220);
   hhv->SetXTitle("V position (#mum)");
-  
+
   hxy    = new TH2F("hxy","Hit map (Y:X)",H_Nbinhu,humin,humax,H_Nbinhv,hvmin,hvmax);
   hxy->SetXTitle("X position (#mum)");
   hxy->SetYTitle("Y position (#mum)");
@@ -1065,7 +1067,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hhx->SetXTitle("X position (#mum)");
   hhy    = new TH1F("hy","Hit Y position",H_Nbinhv,hvmin,hvmax);
   hhy->SetXTitle("Y position (#mum)");
-  
+
   h2dmatchedhits   = new TH2F("h2dmatchedhits","MATCHED hit map",H_Nbinhu,humin,humax,H_Nbinhv,hvmin,hvmax);
   h2dmatchedhits->SetXTitle("U digital (#mum)");
   h2dmatchedhits->SetYTitle("V digital (#mum)");
@@ -1074,22 +1076,22 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   h2DpictureMatched->SetXTitle("U pixel index");
   h2DpictureMatched->SetYTitle("V pixel index");
   h2DpictureMatched->SetZTitle("Average charge");
-  
+
   // Using the digital position
   hhuS    = new TH1F("huS","Hit U digital position ",H_Nbinhu,humin,humax);
   hhuS->SetXTitle("U position (#mum)");
   hhvS    = new TH1F("hvS","Hit V digital position",H_Nbinhv,hvmin,hvmax);
   hhvS->SetXTitle("V position (#mum)");
-  
+
   // Using the Eta position
   hEta2x2UL  = new TH1F("hEta2x2UL","Eta 2x2 large",H_Nbinhu,humin,humax);
   hEta2x2UL->SetXTitle("(#mum)");
   hEta2x2VL  = new TH1F("hEta2x2VL","Eta 2x2 large",H_Nbinhv,hvmin,hvmax);
   hEta2x2VL->SetXTitle("(#mum)");
-  
-  
+
+
   // Digital - CoG - Eta positions comparison
-  
+
   hdCGEtaU   = new TH1F("hdCGEtaU","MATCHED hits CoG-eta3x3 U",int(PixelSize*4),-PixelSize*2,PixelSize*2);
   hdCGEtaU->SetXTitle("(#mum)");
   hdCGEtaV   = new TH1F("hdCGEtaV","MATCHED hits CoG-eta3x3 V",int(PixelSize*4),-PixelSize*2,PixelSize*2);
@@ -1118,15 +1120,15 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   //------------------------------------------------------------------------------
   // modified, JB 2010/06/03
   if( HistDebug) cout << "HistoBooking: binary output" << endl;
-  
+
   hBinary_test = new TH1F("hBinary_test","hBinary_test title",100,0.0,100.0);
   hBinary_NumberOf_1_ALL = new TH1F("hBinary_NumberOf_1_ALL","Number of binary pixels in all matrix",100,-0.5,99.5);
   hBinary_NumberOf_1_goodhit = new TH1F("hBinary_NumberOf_1_goodhit","Number of binary pixels in good hits",100,-0.5,99.5);
   hBinary_NumberOf_1_submatrix = new TH1F("hBinary_NumberOf_1_submatrix","Number of binary pixels in submatrix",100,-0.5,99.5);
   hBinary_Nhitperpixel_submatrix = new TH1F("hBinary_Nhtiperpixel_submatrix","Number of hits per binary pixel",5000,0.0,5000.0);
   hBinary_NhitRateperpixel_submatrix = new TH1F("hBinary_NhitRateperpixel_submatrix","Hit rate per binary pixel",1000,0.0,1.0);
-  
-    
+
+
   //****************************************************
   if( ifReferenceTrack ) { // If RefTrack option
     //****************************************************
@@ -1134,24 +1136,24 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     //------------------------------------------------------------------------------
     //----- Hit - track positions correlation for GOOD hits
     //------------------------------------------------------------------------------
-    
+
     duvall  = new TH1F("duvall","2D distance from hit to nearest track, GOOD hits",250,0.0,1000.0);
     duvall->SetXTitle("(#mum)");
-    
+
     hAllHvvsAllTv = new TH2F("tvhv3","hv vs tv for GOOD hits", H_Nbintv,tvmin,tvmax,H_Nbinhv,hvmin,hvmax);
-    
+
     hAllHuvsAllTv = new TH2F("tvhu3","tv hu for GOOD hits", H_Nbintv,tvmin,tvmax,H_Nbinhu,humin,humax);
-    
+
     hAllHvvsAllTu = new TH2F("tuhv3","tu hv for GOOD hits", H_Nbintu,tumin,tumax,H_Nbinhv,hvmin,hvmax);
-    
+
     hAllHuvsAllTu   = new TH2F("tuhu3","hu vs tu for GOOD hits", H_Nbintu,tumin,tumax,H_Nbinhu,humin,humax);
-    
-    
+
+
     //------------------------------------------------------------------------------
     //----- Hit - track positions correlation for MATCHED hits
     //------------------------------------------------------------------------------
     if( HistDebug) cout << "HistoBooking: correlation track-hit position" << endl;
-    
+
     vec    = new TH2F("dudv","tv-hv(dig) vs tu-hu(dig), MATCHED hits",200,10*dumin,10*dumax,200,10*dvmin,10*dvmax);
     vec->SetXTitle("TU-HUdig (#mum)");
     vec->SetYTitle("TV-HVdig (#mum)");
@@ -1165,13 +1167,13 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     tvhv   = new TH2F("tvhv","hVdigital vs tv",H_Nbintu/2,tvmin,tvmax,H_Nbinhv,hvmin,hvmax);
     tuhv   = new TH2F("tuhv","tu vs hv(dig)",H_Nbinhu/2,tumin,tumax,H_Nbinhv/2,hvmin,hvmax);
     tvhu   = new TH2F("tvhu","tv vs hu(dig)",H_Nbintv/2,tumin,tumax,H_Nbinhv/2,hvmin,hvmax);
-    
-    
+
+
     huCG5tu   = new TH2F("huCG5tu","huCG5 tu",H_Nbintu/2,tumin,tumax,H_Nbinhu/2,humin,humax);
     hvCG5tv   = new TH2F("hvCG5tv","hvCG5 tv",H_Nbintv/2,tvmin,tvmax,H_Nbinhv/2,hvmin,hvmax);
     huCGtu   = new TH2F("huCGtu","huCG tu",H_Nbintu/2,tumin,tumax,H_Nbinhu/2,humin,humax);
     hvCGtv   = new TH2F("hvCGtv","hvCG tv",H_Nbintv/2,tvmin,tvmax,H_Nbinhv/2,hvmin,hvmax);
-    
+
     huCGtuInPix = new TH2F("huCGtuInPix","tu-hu(dig) vs hu(cog5x5)-hu(dig)",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     hvCGtvInPix = new TH2F("hvCGtvInPix","tv-hv(dig) vs hv(cog5x5)-hv(dig)",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     huCGtuInPix5 = new TH2F("huCGtuInPix5","tu-hu(dig) vs hu(cog5x5)-hu(dig)",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
@@ -1183,32 +1185,32 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     huCGtuInPix4 = new TH2F("huCGtuInPix4","tu-hu(dig) vs hu(cg4x4)-hu(dig)",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     huCG2x2tuInPix = new TH2F("huCG2x2tuInPix","tu-hu(dig) vs hu(cg2x2)-hu(dig)",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     hvCG2x2tvInPix = new TH2F("hvCG2x2tvInPix","tv-hv(dig) vs hv(cg2x2)-hv(dig)",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
-    
+
     hEta2x2tu1L = new TH1F("hEta2x2tu1L","UEta2x2-tuL",ResNbins,-ResRange,ResRange);
     hEta2x2tv1L = new TH1F("hEta2x2tv1L","VEta2x2-tvL",ResNbins,-ResRange,ResRange);
     hEta2x2tu2L = new TH2F("hUeta2x2TuInPixL","hu tuL",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     hEta2x2tv2L = new TH2F("hVeta2x2TvInPixL","hv tvL",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     hCG2x2tu1L = new TH1F("hCG2x2tu1L","UCG2x2L-tu",ResNbins,-ResRange,ResRange);
     hCG2x2tv1L = new TH1F("hCG2x2tv1L","VCG2x2L-tv",ResNbins,-ResRange,ResRange);
-    
-    
+
+
     hEta2x2tu2 = new TH2F("hUeta2x2TuInPix","hu tu",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     hEta2x2tv2 = new TH2F("hVeta2x2TvInPix","hv tv",ResNbins/2,-ResRange,ResRange,ResNbins/2,-ResRange,ResRange);
     hTHCorr2 = new TH2F("hTHCorr2","Track-Hit",40,-20,20,40,-20,20);
     hAllHuvsAllTu2   = new TH1F("tuhu2","tu-huDig corrected",ResNbins,-ResRange,ResRange);
     hAllHvvsAllTv2   = new TH1F("tvhv2","tv-hvDig corrected",ResNbins,-ResRange,ResRange);
-    
+
     ProfUCG = new TProfile("ProfUCG","Profile UCG-Udig vs Utrack-Udig",ResNbins/2,-ResRange,ResRange,-ResRange,ResRange);
     ProfVCG = new TProfile("ProfVCG","Profile VCG-Vdig vs Vtrack-Vdig",ResNbins/2,-ResRange,ResRange,-ResRange,ResRange);
     ProfACGn = new TProfile("ProfACGn","Profile UCG-Udig vs Vtrack-Vdig and reverse",ResNbins/2,-ResRange,ResRange,-ResRange,ResRange);
-    
-    
+
+
     // track to hit distance
-    
+
     htmp5 = new TH1F("htmp5","adist",50,0,100);
-    
+
     // to check alignement
-    
+
     Int_t nBinsDistance = (Int_t)TrackToHitDistanceLimit*2;
     hAlignHuTu     = new TH1F("hAlignHuTu","tu-hu",nBinsDistance,-TrackToHitDistanceLimit,TrackToHitDistanceLimit); //JB 2010/03/12
     hAlignHuTu->SetXTitle("U residual (#mum)");
@@ -1228,7 +1230,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hAlignHvTvvsTv->SetYTitle("track V position (#mum)");
     hAlignHuTuvsHv = new TH2F("hAlignHuTuvsHv","tu-hu vs Hv",H_Nbinhv,hvmin,hvmax,nBinsDistance,-TrackToHitDistanceLimit,TrackToHitDistanceLimit); //JB 2012/11/22
     hAlignHvTvvsHu = new TH2F("hAlignHvTvvsHu","tv-hv vs Hu",H_Nbinhu,humin,humax,nBinsDistance,-TrackToHitDistanceLimit,TrackToHitDistanceLimit); //JB 2012/11/22
-    
+
     hEta2x2vsInd   = new TH2F("hEta2x2vsInd","",50,-30,30,5,0,5);
     hChargeVsPosition = new TH2F("hChargeVsPosition","Relative charge vs dig hit position wrt diode",int(PixelSize*2),-PixelSize,PixelSize,int(PixelSize*2),-PixelSize,PixelSize);
     hChargeVsPosition->SetZTitle("q(seed)/q(3x3)");
@@ -1238,34 +1240,34 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hChargeVsPosition->SetYTitle("q(seed)");
     hChargeVsPosition->SetXTitle("track-seed distance (#mum)");
     hAllHitsInPixel = new TH2F("hAllHitsInPixel","Hdig - T position MATCHED hits",200,10*dumin,10*dumax,200,10*dvmin,10*dvmax);
-    
-    
+
+
     hGOODqcel  = new TH1F("qGOODcel","GOOD Total cluster charge(3x3) MATCHED hits",125,0.0,2500.0);
-    
-    
+
+
     hClusterChargeProfile = new TH1F("Cluster charge","Charge profile",120,0.,60.);
     hClusterChargeNorm = new TH1F("Cluster "," ",120,0.,60.);
-    
+
     DuvCG  = new TH1F("DuvCG","Track-Hit Distance, MATCHED hits",500,0.0,1000.0);
     DuvCG->SetXTitle("(#mum)");
     DuvCG->SetFillColor(29);
-    
+
     hCDSvar = new TH1F("hCDSvar","",100,0,10);
     CDSVarvsTime = new TH2F("CDSvsTime","",50,0,25,50,0.,10.);
     dtime = new TH1F("timelast","Time since last trigger",100,0,50);
-    
+
     for (Int_t i=0; i<64; i++){
-      sprintf(nom1,"group%d",i+1); 
-      sprintf(titre1,"Charge in seed of group %d ",i+1); 
-      hChargeInSeedInGroup[i]=new TH1F (nom1,titre1,50,60.,110.);    
+      sprintf(nom1,"group%d",i+1);
+      sprintf(titre1,"Charge in seed of group %d ",i+1);
+      hChargeInSeedInGroup[i]=new TH1F (nom1,titre1,50,60.,110.);
     }
-    
-    
+
+
     //------------------------------------------------------------------------------
     //----- Spatial Resolution
     //------------------------------------------------------------------------------
     if( HistDebug) cout << "HistoBooking: spatial resolution" << endl;
-    
+
     hAllHuvsAllTu1   = new TH1F("hAhuAtu1","Tu-huDig",ResNbins,-ResRange,ResRange);
     hAllHvvsAllTv1   = new TH1F("hAhvAtv1","Tv-hvDig",ResNbins,-ResRange,ResRange);
     hAllHuvsAllTu1->SetXTitle("U residue (#mum)");
@@ -1279,12 +1281,12 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     //Defining residue for different multiplicities
     //The multiplicities considered are from 1 up to NMultPoints
     //const int NMultPoints(9);
-    
+
     int Nbins_DistTrk = 50;
     double R_DistTrk[2];
     R_DistTrk[0] = 0.0;
     R_DistTrk[1] = 0.7*sqrt(pow(PixelSizeU,2) + pow(PixelSizeV,2));
-    
+
     const int NMultPoints(6);
     int Ndivisions = 1*100 + 1*NMultPoints;
     huCGtu1_vs_Mult  = new TH1F*[NMultPoints];
@@ -1332,7 +1334,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
       hDist_Trck_Diode_Asso_vs_Mult[imult]->SetLineWidth(1);
       hDist_Trck_Diode_Asso_vs_Mult[imult]->SetMarkerColor(1);
     }
-    
+
     hnpixc_vs_TrkDistToDiode = new TH2F("hnpixc_vs_TrkDistToDiode",
 					"Probability of duplicated hits vs cluster multiplicity vs Track-distance to diode of earliest MATCHED hit",
 					MaxNofPixelsInCluster+2,-0.5,MaxNofPixelsInCluster+1.5,
@@ -1383,7 +1385,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hEffic_vs_Dist_Trck_Diode->SetLineColor(4);
     hEffic_vs_Dist_Trck_Diode->SetLineWidth(1);
     hEffic_vs_Dist_Trck_Diode->SetMarkerColor(4);
-    
+
 
     huCGwidth_vs_Mult = new TH1F("huCGwidth_vs_Mult","CG(DSF) residue width vs cluster multicity",
 				 NMultPoints,
@@ -1498,13 +1500,13 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hAHTVRes = new TH1F("hAHTVRes","Tv-vAHT",ResNbins+40,-ResRange-20,ResRange+20);
     hAHTURes->SetXTitle("U residue (#mum)");
     hAHTVRes->SetXTitle("V residue (#mum)");
-    
-    
+
+
     //------------------------------------------------------------------------------
     //----- Hit - track positions correlation for UNMATCHED
     //------------------------------------------------------------------------------
     if( HistDebug) cout << "HistoBooking: unmatched track position" << endl;
-    
+
     if(Mtype<5){
       tuv    = new TH2F("tuv","Track and cluster position",64,-640,640,64,-640,640);
       tuv1    = new TH2F("tuv1","Track and cluster position",64,-640,640,64,-640,640);
@@ -1531,18 +1533,18 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     FalseHitMap = new TH2F("FalseHitMap","UNMATCHED tracks UV when no hit",H_Nbinhu,humin,humax,H_Nbinhv,hvmin,hvmax);
     huvBad    = new TH2F("huvBad","UNMATCHED tracks UV when hit too far",H_Nbinhu,humin,humax,H_Nbinhv,hvmin,hvmax);
     hxyBad    = new TH2F("hxyBad","UNMATCHED tracks XY when hit too far",H_Nbinhu,humin,humax,H_Nbinhv,hvmin,hvmax);
-    
+
     htuvInPix = new TH2F("htuvInPix","UNMATCHED tracks UV position inside pixel",20,-ResRange,ResRange,20,-ResRange,ResRange);
-    
-    
-    
+
+
+
     //------------------------------------------------------------------------------
     //----- tracks properties
     //------------------------------------------------------------------------------
     if( HistDebug) cout << "HistoBooking: starting track property" << endl;
-    
+
     //-- ALL tracks
-    
+
     hchi2  = new TH1F("chi2","Track chi2 for ALL tracks",400,0.,200.0);
     hchi2->SetXTitle("#chi2/ndf");
     hAllTvTu  = new TH2F("AllTvTu","Map of ALL tracks",100,4*tumin,4*tumax,100,4*tvmin,4*tvmax);
@@ -1554,9 +1556,9 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hAllTv->SetYTitle("Tv (#mum)");
     hNhitsPerTrack_all = new TH1F("hitspertrackall","# hits per ALL track",11,0,11);
     hNhitsPerTrack_all->SetXTitle("# hits");
-    
+
     //-- GOOD tracks (mostly chi2 cut)
-    
+
     hNTracksPerEvent = new TH1F("hNTracksPerEvent","# GOOD tracks per event",100,0,100);
     hNTracksPerEventievt = new TH1F("hNTracksPerEventievt","# GOOD tracks in telescope per event vs event number",1000,0,500000);
     hGoodChi2TvTu  = new TH2F("GoodChi2TvTu","Map of GOOD tracks", 200, -15000., 15000., 200, 15000., 15000.); //100,4*tumin,4*tumax,100,4*tvmin,4*tvmax);
@@ -1571,77 +1573,77 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hNhitsPerTrack_good = new TH1F("hitspertrackall_good","# hits per GOOD track",11,0,11);
     hNhitsPerTrack_good->SetXTitle("# hits");
 
-    
+
     //-- GOOD tracks in GEOMATRIX
-    
+
     hTrackToClusterMinDistance  = new TH1F("hTrackToClusterMinDistance","Track-hit distance of closest GOOD cluster for GOOD track in GEOMATRIX",500,0.0,1000.0);
     hTrackToClusterMinDistance->SetXTitle("#mum"); // same param as histo DuvCG
-    
+
     hNGoodGeomTracksPerEvent = new TH1F("NGoodGeomTracksPerEvent","# tracks in EXCLUSION GEOMATRIX per event",100,0,100);
-    
+
     hTrackTo2ndclosestClusterDistance  = new TH1F("hTrackTo2ndclosestClusterDistance","Track-hit distance of 2nd closest GOOD cluster for GOOD track in GEOMATRIX",1000,0.0,10000.0);
     hTrackTo2ndclosestClusterDistance->SetXTitle("#mum"); // same param as histo DuvCG
-    
+
     hMinDistance_vs_2ndDistance = new TH2F("hMinDistance_vs_2ndDistance","MinDistance_vs_2ndDistance",1000,0.,10000.0,200,0.0,400.0);
     hMinDistance_vs_2ndDistance->SetXTitle("2ndDistance #mum");
     hMinDistance_vs_2ndDistance->SetYTitle("MinDistance #mum");
 
     hWrongAssociationProba = new TH1F("hWrongAssociationProba","Wrong Association Probability vs distance",1000,0.0,10000.0);
-    hWrongAssociationProba->SetXTitle("#mum"); // same param as histo DuvCG ; 
+    hWrongAssociationProba->SetXTitle("#mum"); // same param as histo DuvCG ;
 
 
     //-- MATCHED tracks
-    
+
     hchi2_c  = new TH1F("chi2 c","Track chi2 when hit MATCHED",400,0.0,200.0);
     hchi2_c->SetFillColor(29);
     hchi2_c->SetXTitle("#chi2/ndf");
-    
+
     hdistchi2 = new TH2F("hdistchi2","Track-hit distance vs track Chi2, MATCHED",400,0.,200.0,100,0.0,200.0);
     hdistchi2->SetXTitle("#chi2/ndf");
     hdistchi2->SetYTitle("(#mum)");
     hNhitsPerTrack_matched = new TH1F("hitspertrackall_matched","# hits per MATCHED track",11,0,11);
     hNhitsPerTrack_matched->SetXTitle("# hits");
 
-    Char_t titreref[100] ; 
-    Char_t nomRef[50]; 
+    Char_t titreref[100] ;
+    Char_t nomRef[50];
     for (Int_t i=0 ; i<NRefPlane; i++){
-      sprintf(nomRef,"Tud_vs_Tv_%d",i+1); 
-      sprintf(titreref,"Hu - Tu vs Tv, pl%d ",i+1); 
+      sprintf(nomRef,"Tud_vs_Tv_%d",i+1);
+      sprintf(titreref,"Hu - Tu vs Tv, pl%d ",i+1);
       hRef_Tud_vs_Tv[i] = new TH2F (nomRef,titreref,100,-5000.,5000.,100,-100.,100.);
-      sprintf(nomRef,"Tud_vs_Tu_%d",i+1); 
-      sprintf(titreref,"Hu - Tu vs Tu, pl%d ",i+1); 
+      sprintf(nomRef,"Tud_vs_Tu_%d",i+1);
+      sprintf(titreref,"Hu - Tu vs Tu, pl%d ",i+1);
       hRef_Tud_vs_Tu[i] = new TH2F (nomRef,titreref,100,-5000.,5000.,100,-100.,100.);
-      sprintf(nomRef,"Tud_vs_TOX_%d",i+1); 
-      sprintf(titreref,"Hu - Tu  vs TOX, pl%d ",i+1); 
+      sprintf(nomRef,"Tud_vs_TOX_%d",i+1);
+      sprintf(titreref,"Hu - Tu  vs TOX, pl%d ",i+1);
       hRef_Tud_vs_TDOX[i] = new TH2F (nomRef,titreref,100,-100.,100.,100,-100.,100.);
-      sprintf(nomRef,"Tud_vs_TOY_%d",i+1); 
-      sprintf(titreref,"Hu - Tu  vs TOY, pl%d ",i+1); 
+      sprintf(nomRef,"Tud_vs_TOY_%d",i+1);
+      sprintf(titreref,"Hu - Tu  vs TOY, pl%d ",i+1);
       hRef_Tud_vs_TDOY[i] = new TH2F (nomRef,titreref,100,-100.,100.,100,-100.,100.);
-      sprintf(nomRef,"Tud_vs_Chi2_%d",i+1); 
-      sprintf(titreref,"Hu - Tu  vs Chi2, pl%d ",i+1); 
+      sprintf(nomRef,"Tud_vs_Chi2_%d",i+1);
+      sprintf(titreref,"Hu - Tu  vs Chi2, pl%d ",i+1);
       hRef_Tud_vs_Chi2[i] = new TH2F (nomRef,titreref,100,0.,4000.,100,-100.,100.);
-      sprintf(nomRef,"Tud_vs_Tu1_%d",i+1); 
-      sprintf(titreref,"Hu - Tu  vs Tu1, pl%d ",i+1); 
+      sprintf(nomRef,"Tud_vs_Tu1_%d",i+1);
+      sprintf(titreref,"Hu - Tu  vs Tu1, pl%d ",i+1);
       hRef_Tud_vs_Tu1[i] = new TH2F (nomRef,titreref,100,-10000.,10000.,100,-100.,100.);
-      sprintf(nomRef,"Tud_vs_Tk1_%d",i+1); 
-      sprintf(titreref,"Hu - Tu  vs Tk1, pl%d ",i+1); 
+      sprintf(nomRef,"Tud_vs_Tk1_%d",i+1);
+      sprintf(titreref,"Hu - Tu  vs Tk1, pl%d ",i+1);
       hRef_Tud_vs_Tk1[i] = new TH2F (nomRef,titreref,100,-1000.,1000.,100,-100.,100.);
     }
-    
+
     //-- UNMATCHED tracks
-    
+
     hchi2_nc = new TH1F("chi2 nc","Track chi2 without hit (UNMATCHED)",400,0.0,200.0);
     hchi2_nc->SetXTitle("#chi2/ndf");
-    
+
     if( HistDebug) cout << " track property done." << endl;
-    
-    
+
+
     //------------------------------------------------------------------------------
     //----- efficiency
     // MG 2010/06/04
     //------------------------------------------------------------------------------
     if( HistDebug) cout << "HistoBooking: efficiency" << endl;
-    
+
     effimap = new TH2F("effimap","Efficiency map.",H_Nbinhu/16,humin,humax,H_Nbinhv/16,hvmin,hvmax);
     effimap->SetTitle("Efficency Pixel MAP");
     effimap->SetXTitle("U position (#mum)");
@@ -1649,7 +1651,17 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     effimap->Sumw2();
     goodtracks = new TH2F("goodtracks","Good tracks for efficiency.",H_Nbinhu/16,humin,humax,H_Nbinhv/16,hvmin,hvmax); // JB/2010/06/04
     TrkInMimo   = new TH2F("trkinmimo","GOOD tracks in GEOMATRIX for effciency",H_Nbinhu/16,humin,humax,H_Nbinhv/16,hvmin,hvmax); //MG 2010/06/11
-  
+
+    // Efficiency map inside pixel,
+    effinpixel = new TH2F("effinpixel","Efficiency map in pixel.",(Int_t)PixelSizeU*4/sizeReducingFactor,-PixelSizeU*2.,PixelSizeU*2,(Int_t)PixelSizeV*4/sizeReducingFactor,-PixelSizeV*2.,PixelSizeV*2);
+    effinpixel->SetTitle("Efficency map IN PIXEL");
+    effinpixel->SetXTitle("U position (#mum)");
+    effinpixel->SetYTitle("V position (#mum)");
+    effinpixel->Sumw2();
+    HitInPixel = new TH2F("hitinoixel","MATCHED hits in pixel.",(Int_t)PixelSizeU*4/sizeReducingFactor,-PixelSizeU*2.,PixelSizeU*2,(Int_t)PixelSizeV*4/sizeReducingFactor,-PixelSizeV*2.,PixelSizeV*2);
+    TrkInPixel = new TH2F("trkinoixel","MATCHED hits in pixel.",(Int_t)PixelSizeU*4/sizeReducingFactor,-PixelSizeU*2.,PixelSizeU*2,(Int_t)PixelSizeV*4/sizeReducingFactor,-PixelSizeV*2.,PixelSizeV*2);
+
+
     //Efficiency vs Track-hit distance,   AP 13/01/2015
     int Nbins_TrkHitDist = 76;
     double R_TrkHitDist[2];
@@ -1680,16 +1692,16 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     effiCorr_vs_TrkHitDist->SetMarkerStyle(20);
     effiCorr_vs_TrkHitDist->SetStats(false);
     effiCorr_vs_TrkHitDist->Sumw2();
-    
+
     //------------------------------------------------------------------------------
     //----- Charge distribution and Pixel homogeneity depending on real track position
     //------------------------------------------------------------------------------
     if( HistDebug) cout << "HistoBooking: charge distribution" << endl;
-    
-    Int_t sizeReducingFactor = 4; // usefull to limit nb of bins in multi-dim histo (hence memory zise)
-    
+
+    // Int_t sizeReducingFactor = 4; // usefull to limit nb of bins in multi-dim histo (hence memory size)
+
     // Charge distribution
-    
+
     hChargeIntegral1 = new TH2F("hChInt1","Charge Integral 1",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
     hChargeNorm1 = new TH2F("hChNorm1","Norm",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
     hChargeIntegral2 = new TH2F("hChInt2","Charge Integral 2",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
@@ -1698,38 +1710,38 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hChargeNorm3 = new TH2F("hChNorm3","Norm",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
     hChargeIntegral4 = new TH2F("hChInt4","Charge Integral 4",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
     hChargeNorm4 = new TH2F("hChNorm4","Norm",nb,-SpreadRange,SpreadRange,nb,-SpreadRange,SpreadRange);
-    
-    
+
+
     // Pixel homogeneity
-    
+
     hHOM_tu_tv_modulo = new TH2F("hHOM_tu_tv_modulo","track position within pixel",(Int_t)PixelSizeU*4/sizeReducingFactor,-PixelSizeU*2.,PixelSizeU*2,(Int_t)PixelSizeV*4/sizeReducingFactor,-PixelSizeV*2.,PixelSizeV*2);
-    
+
     hHOM_ResU_tu  = new TH2F("hHOM_ResU_tu","Residue U vs Residue track position",(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU,(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU);
     hHOM_ResV_tv  = new TH2F("hHOM_ResV_tv","Residue V vs Residue track position",(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV);
     ProfHOM_ResU_tu = new TProfile("ProfHOM_ResU_tu","Profile Residue U  vs Residue track position",20,-10,10,-100,100);
     ProfHOM_ResV_tv = new TProfile("ProfHOM_ResV_tv","Profile Residue V  vs Residue track position",20,-10,10,-100,100);
-    
+
     hHOM_modUCG_modtu = new TH2F("hHOM_modUCG_modtu","mod UCG vs mod tu",(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU,(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU);
     hHOM_modVCG_modtv = new TH2F("hHOM_modVCG_modtv","mod VCG vs mod tv",(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV);
-    
+
     hHOM_modUeta3_modtu  = new TH2F("hHOM_modUeta3_modtu","mod Eta3U vs mod tu",(Int_t)PixelSizeU*2,-PixelSizeU,PixelSizeU,(Int_t)PixelSizeU*2,-PixelSizeU,PixelSizeU);
     hHOM_modVeta3_modtv  = new TH2F("hHOM_modVeta3_modtv","mod Eta3V vs mod tv",(Int_t)PixelSizeV*2,-PixelSizeV,PixelSizeV,(Int_t)PixelSizeV*2,-PixelSizeV,PixelSizeV);
-    
+
     hHOM_modUeta3_realtu  = new TH2F("hHOM_modUeta3_realtu","mod Eta3U vs tu",H_Nbintu/2,tumin,tumax,(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU);
     hHOM_modVeta3_realtv = new TH2F(" hHOM_modVeta3_realtv","mod Eta3V vs tv",H_Nbintv/2,tvmin,tvmax,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV);
-    
+
     hHOM_modUCG_realtu  = new TH2F("hHOM_modUCG_realtu","mod UCG vs tu",H_Nbintu/2,tumin,tumax,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSize,PixelSize);
     hHOM_modVCG_realtv  = new TH2F("hHOM_modVCG_realtv","mod VCG vs tv",H_Nbintv/2,tvmin,tvmax,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV);
-    
+
     hHOM_modUeta3_Eta3U  = new TH2F("hHOM_modUeta3_Eta3U","mod Eta3U vs Eta3U",H_Nbinhu/2,humin,humax,(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU);
     hHOM_modVeta3_Eta3V  = new TH2F("hHOM_modVeta3_Eta3V","mod Eta3V vs Eta3V",H_Nbinhv/2,hvmin,hvmax,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV);
-    
+
     hHOM_modUeta3_modVeta3  = new TH2F("hHOM_modUeta3_modVeta3","mod Eta3U vs mod Eta3V",(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSize,PixelSize,(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU);
     hHOM_modUCG_modVCG  = new TH2F("hHOM_modUCG_modVCG","mod UCG vs mod VCG ",(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV);
-    
+
     hHOM_modUeta3_modUCG  = new TH2F("hHOM_modUeta3_modUCG","mod Eta3U vs mod UCG",(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU,(Int_t)PixelSizeU*2/sizeReducingFactor,-PixelSizeU,PixelSizeU);
     hHOM_modVeta3_modVCG  = new TH2F("hHOM_modVeta3_modVCG","mod Eta3V vs mod VCG",(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV,(Int_t)PixelSizeV*2/sizeReducingFactor,-PixelSizeV,PixelSizeV);
-    
+
     //---- charge vs diode distance:
     hHOM_Charge_diodedist_alg= new TH2F("hHOM_Charge_diodedist_alg","Charge vs diode distance to track",int(PixelSize*8)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),50,0,500); // JB 2010/03/19
     hHOM_Charge_diodedist_alg_u= new TH2F("hHOM_Charge_diodedist_alg_u","Charge vs diode distance to track in U",int(PixelSize*8)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),1000,0,10000); // CLM 2013/01/23
@@ -1740,47 +1752,47 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hHOM_Charge9_diodedist   = new TH2F("hHOM_Charge9_diodedist"," 9 pixels Charge vs diode distance",int(PixelSize*2)/sizeReducingFactor,0,PixelSize*2,200,0,5000);
     hHOM_Charge25_diodedist   = new TH2F("hHOM_Charge25_diodedist"," 25 pixels  Charge vs diode distance",int(PixelSize*2)/sizeReducingFactor,0,PixelSize*2,200,0,6000);
     hHOM_Noise_diodedist  = new TH2F("hHOM_Noise_diodedist"," Seed pixel Noise vs diode distance",int(PixelSize*2)/sizeReducingFactor,0,PixelSize*2,NoiseNbins,0,NoiseRange);
-    
-    
+
+
     // start CLM 2013/01/23
     ProfhGOODCharge_Charge_DiodePosition            = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.1);
     ProfhGOODCharge_Charge_DiodePositionSeedQLT300   = new TProfile2D("ProfhGOODCharge_Charge_DiodePositionSeedQLT300","Profile All Pixel Charge vs impact position",int(PixelSize*8)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*8)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.1);
     ProfhGOODCharge_Charge_DiodePositionSeedQGT2000 = new TProfile2D("ProfhGOODCharge_Charge_DiodePositionSeedQGT2000","Profile All Pixel Charge vs impact position",int(PixelSize*8)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*8)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.1);
-    
+
     ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
-    
+
     ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_seed = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_seed","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_seed = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_seed","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_seed = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_seed","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_seed = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_seed","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
-    
+
     ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_1stcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_1stcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
-    
+
     ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_2ndcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_2ndcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
     ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown = new TProfile2D("ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
-    
+
     hDistVSeedOtherOldCalc = new TH2F("hDistVSeedOtherOldCalc","Seed - other pixel distance in V old calc;distance in V (um);Entries",600,-300,300,20,-10,10);
     hDistVSeedOtherNewCalc = new TH2F("hDistVSeedOtherNewCalc","Seed - other pixel distance in V new calc;distance in V (um);Entries",600,-300,300,20,-10,10);
-    
+
     h2dCharge_Charge_DiodePosition_Track = new TH2F("h2dCharge_Charge_DiodePosition_Track","DiodeTrackPosition Track weight = 1;U;V",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4));
     h2dCharge_Charge_DiodePosition_CluSize = new TH2F("h2dCharge_Charge_DiodePosition_CluSize","DiodeTrackPosition ClusterSizel;U;V",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4));
-    
+
     hNpixInClu = new TH1F("hNpixInClu","Number of pixels in Clu;# pixels;Entries",100,0,100);
     hNpixInClu->Sumw2();
-    
+
     hQpixInClu = new TH1F("hQpixInClu","Pixel-by-pixel charge in Clu;# pixels;Entries",10000,0,10000);
     hQpixInClu->Sumw2();
-    
+
     ProfhGOODCharge_Charge_DiodePositionSimpDist = new TProfile2D("ProfhGOODCharge_Charge_DiodePositionSimpDist","Profile All Pixel Charge vs impact position",int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),int(PixelSize*32)/sizeReducingFactor,-int(PixelSize*4),int(PixelSize*4),-0.01,1.);
-    
+
     sizeReducingFactor = 5;
     hHOM_Charge_diodedist3D      = new TH3F("hHOM_Charge_diodedist3D"," Charge vs diode distance 3D",int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),2000/sizeReducingFactor,0,20000);
     hHOM_Charge2_diodedist3D     = new TH3F("hHOM_Charge2_diodedist3D","2 pixel  Charge vs diode distance 3D",int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),2000/sizeReducingFactor,0,20000);
@@ -1788,7 +1800,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hHOM_Charge9_diodedist3D     = new TH3F("hHOM_Charge9_diodedist3D","9 pixel Charge vs diode distance 3D",int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),2000/sizeReducingFactor,0,20000);
     hHOM_Charge25_diodedist3D    = new TH3F("hHOM_Charge25_diodedist3D","25 pixel Charge vs diode distance 3D",int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),int(PixelSize*8/sizeReducingFactor),-int(PixelSize*4),int(PixelSize*4),2000/sizeReducingFactor,0,20000);
     // end CLM 2013/01/23
-    
+
     ProfHOM_Charge_diodedist_alg = new TProfile("ProfHOM_Charge_diodedist_alg","Charge vs diode distance to track",50,-int(PixelSize*4),int(PixelSize*4),0,2000); // JB 2010/03/11
     ProfHOM_Charge_diodedist_alg_u = new TProfile("ProfHOM_Charge_diodedist_alg_u","Charge vs diode distance to track in u",int(PixelSize*8),-int(PixelSize*4),int(PixelSize*4),0,20000); // clm 2013/01/23
     ProfHOM_Charge_diodedist_alg_v = new TProfile("ProfHOM_Charge_diodedist_alg_v","Charge vs diode distance to track in v",int(PixelSize*8),-int(PixelSize*4),int(PixelSize*4),0,20000); // clm 2013/01/23
@@ -1797,10 +1809,10 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     ProfHOM_Charge4_diodedist = new TProfile("ProfHOM_Charge4_diodedist"," 4 pixels Charge vs diode distance",160,0,int(PixelSize*2),0,4000);
     ProfHOM_Charge9_diodedist = new TProfile("ProfHOM_Charge9_diodedist"," 9 pixels Charge vs diode distance",160,0,int(PixelSize*2),0,5000);
     ProfHOM_Charge25_diodedist = new TProfile("ProfHOM_Charge25_diodedist"," 25 pixels Charge vs diode distance",160,0,int(PixelSize*2),0,6000);
-    
+
     hHOM_SNseed_diodedist  = new TH2F("hHOM_SNseed_diodedist","Seed S/N  vs diode distance",160,0,PixelSize*2,300,0,300);
     ProfHOM_SNseed_diodedist = new TProfile("ProfhHOM_SNseed_diodedist","Seed S/N  vs diode distance",160,0,PixelSize*2,0,300);
-    
+
     hHOM_Charge_diodedist_00_10 = new TH1F("hHOM_Charge_diodedist_00_10","Seed Charge for diode dist 00-10% * pitch/sqrt(2)",200,0,2000);
     hHOM_Charge_diodedist_10_20 = new TH1F("hHOM_Charge_diodedist_10_20","Seed Charge for diode dist 10-20% * pitch/sqrt(2)",200,0,2000);
     hHOM_Charge_diodedist_20_30 = new TH1F("hHOM_Charge_diodedist_20_30","Seed Charge for diode dist 20-30% * pitch/sqrt(2)",200,0,2000);
@@ -1811,20 +1823,20 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hHOM_Charge_diodedist_70_80 = new TH1F("hHOM_Charge_diodedist_70_80","Seed Charge for diode dist 70-80% * pitch/sqrt(2)",200,0,2000);
     hHOM_Charge_diodedist_80_90 = new TH1F("hHOM_Charge_diodedist_80_90","Seed Charge for diode dist 80-90% * pitch/sqrt(2)",200,0,2000);
     hHOM_Charge_diodedist_90_inf = new TH1F("hHOM_Charge_diodedist_90_inf","Seed Charge for diode dist 90-inf% * pitch/sqrt(2)",200,0,2000);
-    
+
     hHOM_DU_Nevent  = new TH2F("hHOM_DU_Nevent","Residue U vs Nevent",500,0,500000,160,-PixelSize*2,PixelSize*2);
     hHOM_DV_Nevent  = new TH2F("hHOM_DV_Nevent","Residue V vs Nevent",500,0,500000,160,-PixelSize*2,PixelSize*2);
-    
+
     hHOM_modtu_Nevent  = new TH2F("hHOM_modtu_Nevent","mod tu vs Nevent",500,0,500000,160,-PixelSize*2,PixelSize*2);
     hHOM_modtv_Nevent  = new TH2F("hHOM_modtv_Nevent","mod tv vs Nevent",500,0,500000,160,-PixelSize*2,PixelSize*2);
-    
+
     hHOM_modUCG_Nevent  = new TH2F("hHOM_modUCG_Nevent","mod UCG vs Nevent",500,0,500000,160,-PixelSize*2,PixelSize*2);
     hHOM_modVCG_Nevent  = new TH2F("hHOM_modVCG_Nevent","mod VCG vs Nevent",500,0,500000,160,-PixelSize*2,PixelSize*2);
-    
+
     hHOM_ResEta25_U = new TH1F("hHOM_ResEta25_U","Residue U (Eta25)",480,-ResRange-20,ResRange+20);
     hHOM_ResEta25_V = new TH1F("hHOM_ResEta25_V","Residue V (Eta25)",480,-ResRange-20,ResRange+20);
-    
-    
+
+
     hHOM_modUeta2x2_modVeta2x2  = new TH2F("hHOM_modUeta2x2_modVeta2x2","mod Eta2x2U vs mod Eta2x2V",160,-PixelSize,PixelSize,160,-PixelSize,PixelSize);
     hHOM_modUCG2x2_modVCG2x2  = new TH2F("hHOM_modUCG2x2_modVCG2x2","mod UCG2x2 vs mod VCG2x2 ",160,-PixelSize,PixelSize,160,-PixelSize,PixelSize);
     hHOM_modUeta5x5_modVeta5x5  = new TH2F("hHOM_modUeta5x5_modVeta5x5","mod Eta5x5U vs mod Eta5x5V",160,-PixelSize,PixelSize,160,-PixelSize,PixelSize);
@@ -1833,14 +1845,14 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     //****************************************************
   } // end if RefTrack option on
   //****************************************************
-  
+
 
   //------------------------------------------------------------------------------
   //----- Fake rate histos.
   //------------------------------------------------------------------------------
   if( ifFake ) { // If Fake histograms required
     if( HistDebug) cout << "HistoBooking: fake hits" << endl;
-    
+
     hNhitperpixel = new TH1F("hNhitperpixel","Number of hits per pixel",5000,-0.5,4999.5);
     hNhitperpixel->SetXTitle("# hits");
     hNhitperpixel->SetYTitle("# pixels/total");
@@ -1859,40 +1871,40 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hNhitRateperpixel = new TH1F("hNhitRateperpixel","Hit rate per pixel",1000,-0.000005,0.099995); //, nbins, lowBinEdge
     hNhitRateperpixel->SetXTitle("Fake rate per pixel");
     hNhitRateperpixel->SetYTitle("# pixels");
-    
+
     hPixelsPerFakeRate = new TH1F( "hPixelsPerFakeRate", "Proportion of pixels above a given fake rate",1000,-0.000005,0.099995); //, nbins, lowBinEdge);
     hPixelsPerFakeRate->SetXTitle("Fake rate per pixel");
     hPixelsPerFakeRate->SetYTitle("# pixels/total");
-  
+
   } // end If Fake histograms required
 
-  
+
   //------------------------------------------------------------------------------
   //-----  MiniVectors Histograms ; NCS , 2010/01/21
   //------------------------------------------------------------------------------
   if( ifMiniVector ) { // If mimivector histograms required
   if( HistDebug) cout << "HistoBooking: minivectors" << endl;
-  
+
     hDiffPosX   = new TH1F("hDiffPosX","Tx-Hx",121,-60.5,60.5);
     hDiffPosX->SetLineColor(2);hDiffPosX->SetLineWidth(2);
     hDiffPosX->GetXaxis()->SetTitle("Tx_{m} - Hx_{m} (#mum)");
     hDiffPosX->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffPosY   = new TH1F("hDiffPosY","Ty-Hy",121,-60.5,60.5);
     hDiffPosY->SetLineColor(2);hDiffPosY->SetLineWidth(2);
     hDiffPosY->GetXaxis()->SetTitle("Ty_{m} - Hy_{m} (#mum)");
     hDiffPosY->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffAngleX = new TH1F("hDiffAngleX","ThetaTx -ThetaHx (degrees)",100,-2.0,2.0);
     hDiffAngleX->SetLineColor(2);hDiffAngleX->SetLineWidth(2);
     hDiffAngleX->GetXaxis()->SetTitle("#thetatx - #thetahx (degrees)");
     hDiffAngleX->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffAngleY = new TH1F("hDiffAngleY","ThetaTy - ThetaHy(degrees)",100,-2.0,2.0);
     hDiffAngleY->SetLineColor(2);hDiffAngleY->SetLineWidth(2);
     hDiffAngleY->GetXaxis()->SetTitle("#thetaty - #thetahy (degrees)");
     hDiffAngleY->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffAngleX11 = new TH1F("hDiffAngleX11","ThetaTx -ThetaHx (degrees), 1 pix - 1 pix",100,-2.0,2.0);
     hDiffAngleX11->SetLineColor(2);hDiffAngleX->SetLineWidth(2);
     hDiffAngleX11->GetXaxis()->SetTitle("#thetatx - #thetahx (degrees)");
@@ -1901,7 +1913,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hDiffAngleY11->SetLineColor(2);hDiffAngleY->SetLineWidth(2);
     hDiffAngleY11->GetXaxis()->SetTitle("#thetaty - #thetahy (degrees)");
     hDiffAngleY11->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffAngleX12 = new TH1F("hDiffAngleX12","ThetaTx -ThetaHx (degrees), 1 pix - 2 pix",100,-2.0,2.0);
     hDiffAngleX12->SetLineColor(2);hDiffAngleX->SetLineWidth(2);
     hDiffAngleX12->GetXaxis()->SetTitle("#thetatx - #thetahx (degrees)");
@@ -1910,7 +1922,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hDiffAngleY12->SetLineColor(2);hDiffAngleY->SetLineWidth(2);
     hDiffAngleY12->GetXaxis()->SetTitle("#thetaty - #thetahy (degrees)");
     hDiffAngleY12->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffAngleX21 = new TH1F("hDiffAngleX21","ThetaTx -ThetaHx (degrees), 2 pix - 1 pix",100,-2.0,2.0);
     hDiffAngleX21->SetLineColor(2);hDiffAngleX->SetLineWidth(2);
     hDiffAngleX21->GetXaxis()->SetTitle("#thetatx - #thetahx (degrees)");
@@ -1919,7 +1931,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hDiffAngleY21->SetLineColor(2);hDiffAngleY->SetLineWidth(2);
     hDiffAngleY21->GetXaxis()->SetTitle("#thetaty - #thetahy (degrees)");
     hDiffAngleY21->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffAngleX22 = new TH1F("hDiffAngleX22","ThetaTx -ThetaHx (degrees), 2 pix - 2 pix",100,-2.0,2.0);
     hDiffAngleX22->SetLineColor(2);hDiffAngleX->SetLineWidth(2);
     hDiffAngleX22->GetXaxis()->SetTitle("#thetatx - #thetahx (degrees)");
@@ -1928,7 +1940,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hDiffAngleY22->SetLineColor(2);hDiffAngleY->SetLineWidth(2);
     hDiffAngleY22->GetXaxis()->SetTitle("#thetaty - #thetahy (degrees)");
     hDiffAngleY22->GetYaxis()->SetTitle("Counts");
-    
+
     hDiffAngleXg1g1 = new TH1F("hDiffAngleXg1g1","ThetaTx -ThetaHx (degrees), >1 pix - >1 pix",100,-2.0,2.0);
     hDiffAngleXg1g1->SetLineColor(2);hDiffAngleX->SetLineWidth(2);
     hDiffAngleXg1g1->GetXaxis()->SetTitle("#thetatx - #thetahx (degrees)");
@@ -1937,16 +1949,16 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hDiffAngleYg1g1->SetLineColor(2);hDiffAngleY->SetLineWidth(2);
     hDiffAngleYg1g1->GetXaxis()->SetTitle("#thetaty - #thetahy (degrees)");
     hDiffAngleYg1g1->GetYaxis()->SetTitle("Counts");
-    
+
     hxtxPL3     = new TH1F("hxtxPL3","tx-hx PL3",121,-60.5,60.5); // NCS 260110 to have the resolution of PL3 & PL4 with only Hu and not HuCG
     hxtxPL3->GetXaxis()->SetTitle("Tx_{m} - Hx_{m} (#mum)");
     hxtxPL3->GetYaxis()->SetTitle("Counts");
     hxtxPL3->SetLineColor(1);hxtxPL3->SetLineWidth(2);
-    hytyPL3     = new TH1F("hytyPL3","ty-hy PL3",121,-60.5,60.5); // almost the same as huCGtu1 but same range as hDiffPosX 
+    hytyPL3     = new TH1F("hytyPL3","ty-hy PL3",121,-60.5,60.5); // almost the same as huCGtu1 but same range as hDiffPosX
     hytyPL3->SetLineColor(1);hytyPL3->SetLineWidth(2);                                                               // and there must a nearest hit to the track in both PL3 and PL4 => less entries than a plane alone
     hytyPL3->GetXaxis()->SetTitle("Ty_{m} - Hy_{m} (#mum)");
     hytyPL3->GetYaxis()->SetTitle("Counts");
-    
+
     hxtxPL4     = new TH1F("hxtxPL4","tx-hx PL4",121,-60.5,60.5);
     hxtxPL4->GetXaxis()->SetTitle("Tx_{m} - Hx_{m} (#mum)");
     hxtxPL4->GetYaxis()->SetTitle("Counts");
@@ -1955,7 +1967,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hytyPL4->GetXaxis()->SetTitle("Ty_{m} - Hy_{m} (#mum)");
     hytyPL4->GetYaxis()->SetTitle("Counts");
     hytyPL4->SetLineColor(4);hytyPL4->SetLineWidth(2);
-    
+
     hutuPL3     = new TH1F("hutuPL3","tu-hu PL3",121,-60.5,60.5);
     hutuPL3->GetXaxis()->SetTitle("Tx_{m} - Hx_{m} (#mum)");
     hutuPL3->GetYaxis()->SetTitle("Counts");
@@ -1964,7 +1976,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hvtvPL3->SetLineColor(1);hvtvPL3->SetLineWidth(2);
     hvtvPL3->GetXaxis()->SetTitle("Ty_{m} - Hy_{m} (#mum)");
     hvtvPL3->GetYaxis()->SetTitle("Counts");
-    
+
     hutuPL4     = new TH1F("hutuPL4","tu-hu PL4",121,-60.5,60.5);
     hutuPL4->GetXaxis()->SetTitle("Tx_{m} - Hx_{m} (#mum)");
     hutuPL4->GetYaxis()->SetTitle("Counts");
@@ -1973,7 +1985,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hvtvPL4->SetLineColor(4);hvtvPL4->SetLineWidth(2);
     hvtvPL4->GetXaxis()->SetTitle("Ty_{m} - Hy_{m} (#mum)");
     hvtvPL4->GetYaxis()->SetTitle("Counts");
-    
+
     hdiffydiffx = new TH2F("hdiffydiffx", "Position differences between sides in 2D", 100, -25, 25, 100, -25, 25);
     hdiffydiffx->GetXaxis()->SetTitle("X(side2)-X(side1) (#mum)");
     hdiffydiffx->GetYaxis()->SetTitle("Y(side2)-Y(side1) (#mum)");
@@ -1992,47 +2004,47 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hdiffydiffxg1g1 = new TH2F("hdiffydiffxg1g1", "Position differences between sides in 2D, >1 pix - >1 pix", 100, -25, 25, 100, -25, 25);
     hdiffydiffxg1g1->GetXaxis()->SetTitle("X(side2)-X(side1) (#mum)");
     hdiffydiffxg1g1->GetYaxis()->SetTitle("Y(side2)-Y(side1) (#mum)");
- 
+
   } // end If mimivector histograms required
 
-  
-  //------------------------------------------------------------------------------ 
+
+  //------------------------------------------------------------------------------
   // MimosaVertexFinder Histograms ; LC , 2012/09/06
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   if( ifVertex ) { // If vertex histograms required
     if( HistDebug) cout << "HistoBooking: vertices" << endl;
-    
+
     hVertexPosX = new TH1F("hVertexPosX","Vertex position in X",100,-50,50);
     hVertexPosX->GetXaxis()->SetTitle("X");
-    
+
     hVertexPosY = new TH1F("hVertexPosY","Position in Y of tracks in plane z=0 (Plane of the vertex)",400,-200,200);
     hVertexPosY->GetXaxis()->SetTitle("Y");
-    
+
     hVertexPosZ = new TH1F("hVertexPosZ","Vertex position in Z",100,-50,50);
     hVertexPosZ->GetXaxis()->SetTitle("Z");
-    
+
     hVertexTrackDistance = new TH1F("hVertexTrackDistance","Tracks distance to the point (0,0,0)",100,0,50);
     hVertexTrackDistance->GetXaxis()->SetTitle("Distance of tracks to the point (0,0,0)");
-    
+
     /* Difference with histo below not investigated...JB 2013/08/20
      hVertexPosXY = new TH2F("hVertexPosXY","Position in X&Y of a track in plane z=0 (Plane of the vertex)",2000,-300,300,2000,-300,300);
      hVertexPosXY->GetXaxis()->SetTitle("X position for the intersection track/plane z=0");
      hVertexPosXY->GetYaxis()->SetTitle("Y position for the intersection track/plane z=0");
      */
-    
+
     hVertexPosXY = new TH2F("hVertexPosXY","Vertex position in X&Y",500,-50,50,500,-50,50);
     hVertexPosXY->GetXaxis()->SetTitle("Vertex position in X");
     hVertexPosXY->GetYaxis()->SetTitle("Vertex position in Y");
-    
+
     hVertexTrackChi2 = new TH1F("hVertexTrackChi2","Track Chi2",200,0,25);
     hVertexTrackChi2->GetXaxis()->SetTitle("Track Chi2");
 
   } // end If vertex histograms required
-  
+
   //------------------------------------------------------------------------------
   //----- Histograms not used !!!
   //------------------------------------------------------------------------------
-    
+
   /*
   hChargeOrder1 =  new TH1F("hChargeOrder1"," Charge of the 1st (no order) pixel (e-)",ChargePixNbins,.0,ChargePixRange);
   hChargeOrder2 =  new TH1F("hChargeOrder2"," Charge of the 2nd (no order) pixel (e-)",ChargePixNbins,.0,ChargePixRange);
@@ -2053,37 +2065,37 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hGOODChargeOrder7 =  new TH1F("hGOODChargeOrder7","GOOD Ch of the 7th highest pixel (e-)",ChargeNbins,-0.05*ChargeRange,ChargeRange);
   hGOODChargeOrder8 =  new TH1F("hGOODChargeOrder8","GOOD Ch of the 8th highest pixel (e-)",ChargeNbins,-0.05*ChargeRange,ChargeRange);
   hGOODChargeOrder9 =  new TH1F("hGOODChargeOrder9","GOOD Ch of the 9th highest pixel (e-)",ChargeNbins,-0.05*ChargeRange,ChargeRange);
-  
+
   hGOODChargeCor_1_2 = new TH2F("hGOODChargeCor_1_2","GOOD Ch pixel 1 vs pixel 2 (e-)",ChargeNbins/4,0.0,ChargeRange,ChargeNbins/4,0.0,ChargeRange);
   hGOODChargeCor_1_3 = new TH2F("hGOODChargeCor_1_3","GOOD Ch pixel 1 vs pixel 3 (e-)",ChargeNbins/4,0.0,ChargeRange,ChargeNbins/4,0.0,ChargeRange);
   hGOODChargeCor_1_4 = new TH2F("hGOODChargeCor_1_4","GOOD Ch pixel 1 vs pixel 4 (e-)",ChargeNbins/4,0.0,ChargeRange,ChargeNbins/4,0.0,ChargeRange);
   hGOODChargeCor_2_3 = new TH2F("hGOODChargeCor_2_3","GOOD Ch pixel 2 vs pixel 3 (e-)",ChargeNbins/4,0.0,ChargeRange,ChargeNbins/4,0.0,ChargeRange);
-  
+
   hGOODChargeSum_4 = new TH1F("hGOODChargeSum_4","GOOD Sum of the 4 highest pixel (e-)",ChargeNbins,0.0,ChargeRange);
-  
+
   hGOODChargeRap_1_over_2 = new TH1F("hGOODChargeRap_1_over_2","GOOD Ratio of 1st over 2nd pixel",100,0.0,10.0);
   hGOODChargeRap_1_over_3 = new TH1F("hGOODChargeRap_1_over_3","GOOD Ratio of 1st over 3rd pixel",100,0.0,10.0);
   hGOODChargeRap_1_over_4 = new TH1F("hGOODChargeRap_1_over_4","GOOD Ratio of 1st over 4th pixel",100,0.0,10.0);
   hGOODChargeRap_2_over_3 = new TH1F("hGOODChargeRap_2_over_3","GOOD Ratio of 2nd over 3rd pixel",100,0.0,10.0);
   */
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MC Geneation for telescope resolution evaluation
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
 
-  
+
   //------------------------------------------------------------------------------
   //----- User histograms
   // JB 2009/09/07
   //------------------------------------------------------------------------------
   if( HistDebug) cout << "HistoBooking: user" << endl;
-  
+
   hUserHitCorrelationLine = new TH1F("hUserhitCorrelationLine", "Line correlation between hits", 300, humin, humax);
   hUserHitCorrelationLine->SetXTitle("Horizontal distance (#mum)");
   hUserHitCorrelationCol = new TH1F("hUserhitCorrelationCol", "Column correlation between hits", 300, hvmin, hvmax);
   hUserHitCorrelationCol->SetXTitle("Vertical distance (#mum)");
 
-  
+
   if( ifImaging ) { // If imaging histograms required
     if(HistDebug) cout << "HistoBooking: imaging" << endl;
 
@@ -2092,14 +2104,14 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
      h1RmsOnTheta->GetYaxis()->SetTitle("RMS");
      h1RmsOnTheta->SetLineColor(kBlue);
      h1RmsOnTheta->SetLineWidth(2);
-     
+
      Int_t NstepOnX = int((geomUmax-geomUmin)/PixelSize)/1.0;
      Int_t NstepOnY = int((geomVmax-geomVmin)/PixelSize)/1.0;
-    
+
      h1ProjectionOnX = new TH1F("h1ProjectionOnX", "Data projection on the x'-axis of the chart reference frame", NstepOnX, geomUmin, geomUmax);
      h1ProjectionOnX->GetXaxis()->SetTitle("x' (#mum)");
      h1ProjectionOnX->GetYaxis()->SetTitle("Number of hits");
-    
+
      h1ProjectionOnY = new TH1F("h1ProjectionOnY", "Data projection on the y'-axis of the chart reference frame", NstepOnY, geomVmin, geomVmax);
      h1ProjectionOnY->GetXaxis()->SetTitle("y' (#mum)");
      h1ProjectionOnY->GetYaxis()->SetTitle("Number of hits");
@@ -2108,27 +2120,27 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
      Int_t NstepOnXMult = int((humax-humin)/PixelSize)/1.0;
      Int_t NstepOnYMult = int((hvmax-hvmin)/PixelSize)/1.0;
 
-     
+
      for (Int_t i=0; i<4; i++) {
-     
+
        namehist = TString("h1ProjectionOnXMult") + long(i+1);
        if (i<3)  titlehist = TString("Data projection on the x'-axis of the chart reference frame with the clusters multiplicity set to ") + long(i+1);
        else      titlehist = TString("Data projection on the x'-axis of the chart reference frame with the clusters multiplicity up to ") + long(i+1);
-       
+
        h1ProjectionOnXMult[i] = new TH1F(namehist.Data(), titlehist.Data(), NstepOnX, geomUmin, geomUmax);
        h1ProjectionOnXMult[i]->GetXaxis()->SetTitle("x' (#mum)");
        h1ProjectionOnXMult[i]->GetYaxis()->SetTitle("Number of hits");
 
-       
+
        namehist = TString("h1ProjectionOnYMult") + long(i+1);
        if (i<3)  titlehist = TString("Data projection on the y'-axis of the chart reference frame with the clusters multiplicity set to ") + long(i+1);
        else      titlehist = TString("Data projection on the y'-axis of the chart reference frame with the clusters multiplicity up to ") + long(i+1);
-       
+
        h1ProjectionOnYMult[i] = new TH1F(namehist.Data(), titlehist.Data(), NstepOnY, geomVmin, geomVmax);
        h1ProjectionOnYMult[i]->GetXaxis()->SetTitle("y' (#mum)");
        h1ProjectionOnYMult[i]->GetYaxis()->SetTitle("Number of hits");
 
-       
+
        namehist = TString("h2GoodHitsMult") + long(i+1);
        if (i<3)  titlehist = TString("Good hits map of the region of interest with the clusters multiplicity set to ") + long(i+1);
        else      titlehist = TString("Good hits map of the region of interest with the clusters multiplicity up to ") + long(i+1);
@@ -2137,43 +2149,43 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
        h2GoodHitsMult[i]->GetXaxis()->SetTitle("x (#mum)");
        h2GoodHitsMult[i]->GetYaxis()->SetTitle("y (#mum)");
        h2GoodHitsMult[i]->GetZaxis()->SetTitle("Number of hits");
-     
+
        namehist = TString("hdCGDigUVMult") + long(i+1);
        titlehist = TString("MATCHED hits CoG-digital V vs U - Multiplicity = ") + long(i+1);
        hdCGDigUVMult[i] = new TH2F(namehist.Data(), titlehist.Data(), int(PixelSize*4),-PixelSize*2,PixelSize*2,int(PixelSize*4),-PixelSize*2,PixelSize*2);
        hdCGDigUV->SetXTitle("(#mum)");
        hdCGDigUV->SetYTitle("(#mum)");
-       
+
      }
 
      hdCGDigUVMult[4] = new TH2F("hdCGDigUVMult5", "MATCHED hits CoG-digital V vs U - Multiplicity = 5 ", int(PixelSize*4),-PixelSize*2,PixelSize*2,int(PixelSize*4),-PixelSize*2,PixelSize*2);
      hdCGDigUV->SetXTitle("(#mum)");
      hdCGDigUV->SetYTitle("(#mum)");
-     
+
      hdCGDigUVMult[5] = new TH2F("hdCGDigUVMult6", "MATCHED hits CoG-digital V vs U - Multiplicity #geq 6 ", int(PixelSize*4),-PixelSize*2,PixelSize*2,int(PixelSize*4),-PixelSize*2,PixelSize*2);
      hdCGDigUV->SetXTitle("(#mum)");
      hdCGDigUV->SetYTitle("(#mum)");
 
-     
+
      h1Sigma = new TH1F("h1Sigma", "Sensor spatial resolution according to clusters multiplicity", 5, 0, 1);
      h1Sigma->GetXaxis()->SetBinLabel(1, "Global");
      for (Int_t i=1; i<=3; i++) h1Sigma->GetXaxis()->SetBinLabel(i+1, Form("Multiplicity = %d", i));
      h1Sigma->GetXaxis()->SetBinLabel(5, "Multiplicity #geq 4");
      h1Sigma->GetYaxis()->SetTitle("Spatial resolution #sigma (#mum)");
-    
-     
+
+
      h1NumberOfHitsMult = new TH1F("h1NumberOfHitsMult", "Hits rate in the region of interest", 5, 0, 1);
      for (Int_t i=1; i<=4; i++) h1NumberOfHitsMult->GetXaxis()->SetBinLabel(i, Form("Multiplicity = %d", i));
      h1NumberOfHitsMult->GetXaxis()->SetBinLabel(5, "Multiplicity #geq 4");
      h1NumberOfHitsMult->GetYaxis()->SetTitle("N_{Hits} / N_{Hits total} (%)");
-     
-  } // end If imaging histograms required    
-  
+
+  } // end If imaging histograms required
+
   //------------------------------------------------------------------------------
   //----- Done
   //------------------------------------------------------------------------------
-  
-  Info("MHist","All histograms booked."); 
+
+  Info("MHist","All histograms booked.");
 
 }
 
@@ -2197,21 +2209,21 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hdummy=Zero(hdummy);
   hChargeInSeed=Zero(hChargeInSeed);
   hRealTrackNoise_time=Zero(hRealTrackNoise_time) ;
-  hRealTrackNoise=Zero(hRealTrackNoise); 
+  hRealTrackNoise=Zero(hRealTrackNoise);
   hsn=Zero(hsn);
   hSNReal=Zero(hSNReal);
 
   hind=Zero(hind);
 
 
-  hS2N2All=Zero(hS2N2All); 
+  hS2N2All=Zero(hS2N2All);
   hS2N2nd=Zero(hS2N2nd);
   hS2N2RH=Zero(hS2N2RH);
   hS2N2ndRH=Zero(hS2N2ndRH);
 
   hChargeIntegral1=Zero(hChargeIntegral1);
   hChargeNorm1=Zero(hChargeNorm1);
-  hChargeIntegral2=Zero(hChargeIntegral2); 
+  hChargeIntegral2=Zero(hChargeIntegral2);
   hChargeNorm2=Zero(hChargeNorm2);
   hChargeIntegral3=Zero(hChargeIntegral3);
   hChargeNorm3=Zero(hChargeNorm3);
@@ -2262,7 +2274,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   }
 
   hQofPix3x3=Zero(hQofPix3x3);
-  hChargeInCluster=Zero(hChargeInCluster); 
+  hChargeInCluster=Zero(hChargeInCluster);
 
   hseedQvsS2NAll=Zero(hseedQvsS2NAll);
   hseedQvsS2NGood=Zero(hseedQvsS2NGood);
@@ -2286,7 +2298,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   //--- INITIALISATION OF ALL HISTOGRAM/CANVAS POINTERS TO NULL
   //------------------------------------------------------------------------------
   //------------------------------------------------------------------------------
-  
+
   cCalibration=Zero(cCalibration);
   Calib_distr1=Zero(Calib_distr1);
   Calib_distr2=Zero(Calib_distr2);
@@ -2327,7 +2339,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hVcorTvInPix=Zero(hVcorTvInPix);
   huCGtuInPix4=Zero(huCGtuInPix4);
   huCG2x2tuInPix=Zero(huCG2x2tuInPix);
-  hvCG2x2tvInPix=Zero(hvCG2x2tvInPix); 
+  hvCG2x2tvInPix=Zero(hvCG2x2tvInPix);
   hEta2x2tu1L=Zero(hEta2x2tu1L);
   hEta2x2tv1L=Zero(hEta2x2tv1L);
   hEta2x2tu2L=Zero(hEta2x2tu2L);
@@ -2372,7 +2384,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hEtaVRes=Zero(hEtaVRes);
   hDifCorU=Zero(hDifCorU);
   hDifCorV=Zero(hDifCorV);
-  hAllHuvsAllTu1=Zero(hAllHuvsAllTu1);  
+  hAllHuvsAllTu1=Zero(hAllHuvsAllTu1);
   hAllHvvsAllTv1=Zero(hAllHvvsAllTv1);
   hAllHuvsAllTu2=Zero(hAllHuvsAllTu2);
   hAllHvvsAllTv2=Zero(hAllHvvsAllTv2);
@@ -2380,11 +2392,11 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   h2dgoodhits=Zero(h2dgoodhits);
   h2dmatchedhits=Zero(h2dmatchedhits);
   h2DpictureMatched=Zero(h2DpictureMatched); // JB 2014/01/10
-  hEta2x2vsInd=Zero(hEta2x2vsInd);  
-  hChargeVsPosition=Zero(hChargeVsPosition); 
+  hEta2x2vsInd=Zero(hEta2x2vsInd);
+  hChargeVsPosition=Zero(hChargeVsPosition);
   hChargeVsDistance=Zero(hChargeVsDistance); // clm 2013/07/16
   hNorm=Zero(hNorm);
-  hAllHitsInPixel=Zero(hAllHitsInPixel); 
+  hAllHitsInPixel=Zero(hAllHitsInPixel);
 
   hAlignHuTu=Zero(hAlignHuTu);
   hAlignHvTv=Zero(hAlignHvTv);
@@ -2394,7 +2406,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hAlignHvTvvsTu=Zero(hAlignHvTvvsTu);
   hAlignHuTuvsTu=Zero(hAlignHuTuvsTu);
   hAlignHvTvvsTv=Zero(hAlignHvTvvsTv);
-  
+
   huv=Zero(huv);
   huvBad=Zero(huvBad);
   hxy=Zero(hxy);
@@ -2402,19 +2414,19 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   tuv=Zero(tuv);
   tuv1=Zero(tuv1);
 
-  hhu=Zero(hhu);   
+  hhu=Zero(hhu);
   hhv=Zero(hhv);
   hhuS=Zero(hhuS);
-  hhvS=Zero(hhvS);  
+  hhvS=Zero(hhvS);
   hAllTu=Zero(hAllTu);
   hAllTv=Zero(hAllTv);
-  hGoodChi2Tu=Zero(hGoodChi2Tu); 
+  hGoodChi2Tu=Zero(hGoodChi2Tu);
   hGoodChi2Tv=Zero(hGoodChi2Tv);
   hGoodChi2Tx=Zero(hGoodChi2Tx);
   hGoodChi2Ty=Zero(hGoodChi2Ty);
   hGoodChi2AngleXZ=Zero(hGoodChi2AngleXZ);
   hGoodChi2AngleYZ=Zero(hGoodChi2AngleYZ);
-  htu=Zero(htu);    
+  htu=Zero(htu);
   htv=Zero(htv);
 
   htuhtv=Zero(htuhtv);
@@ -2436,7 +2448,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hnpixCumul_c=Zero(hnpixCumul_c);
   hnpix_nc=Zero(hnpix_nc);
 
-  FalseHitMap=Zero(FalseHitMap); 
+  FalseHitMap=Zero(FalseHitMap);
   hClusterChargeProfile=Zero(hClusterChargeProfile);
   hClusterChargeNorm=Zero(hClusterChargeNorm);
   /*
@@ -2448,20 +2460,20 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   */
   DuvCG=Zero(DuvCG);
   duvall=Zero(duvall);
-  hTrackToClusterMinDistance=Zero(hTrackToClusterMinDistance); 
-  hMinDistance_vs_2ndDistance=Zero(hMinDistance_vs_2ndDistance); 
+  hTrackToClusterMinDistance=Zero(hTrackToClusterMinDistance);
+  hMinDistance_vs_2ndDistance=Zero(hMinDistance_vs_2ndDistance);
 
   hCDSvar=Zero(hCDSvar);
-  CDSVarvsTime=Zero(CDSVarvsTime); 
+  CDSVarvsTime=Zero(CDSVarvsTime);
   dtime=Zero(dtime);
 
-  //----ADC 
+  //----ADC
   hPedestal=Zero(hPedestal);
   //---ADC
 
   /*
-    titre=Zero((TObject**)titre,50); 
-    nom=Zero((TObject**)nom,50);  
+    titre=Zero((TObject**)titre,50);
+    nom=Zero((TObject**)nom,50);
   */
 
   hsnc=Zero(hsnc);
@@ -2483,7 +2495,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hNGoodGeomTracksPerEvent=Zero(hNGoodGeomTracksPerEvent);
   hAllTvTu=Zero(hAllTvTu);
   hGoodChi2TvTu=Zero(hGoodChi2TvTu);
-  hchi2_c=Zero(hchi2_c);  
+  hchi2_c=Zero(hchi2_c);
   hchi2_nc=Zero(hchi2_nc);
   hchi2=Zero(hchi2);
 
@@ -2508,8 +2520,8 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
 
   hAllS2N=Zero(hAllS2N);
   hallhitSN=Zero(hallhitSN);
-  hallSNneighbour=Zero(hallSNneighbour); 
-  hgoodSNneighbour=Zero(hgoodSNneighbour); 
+  hallSNneighbour=Zero(hallSNneighbour);
+  hgoodSNneighbour=Zero(hgoodSNneighbour);
   hSNneighbour=Zero(hSNneighbour);
   hSNseedvsSNneighbour=Zero(hSNseedvsSNneighbour);
   hQseedvsQcluster=Zero(hQseedvsQcluster);
@@ -2524,7 +2536,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hSNNReal=Zero(hSNNReal);
   hSN_vs_SNNReal=Zero(hSN_vs_SNNReal);
 
-  hChargeCor_1_2=Zero(hChargeCor_1_2); 
+  hChargeCor_1_2=Zero(hChargeCor_1_2);
   hChargeCor_1_3=Zero(hChargeCor_1_3);
   hChargeCor_1_4=Zero(hChargeCor_1_4);
   hChargeCor_2_3=Zero(hChargeCor_2_3);
@@ -2565,38 +2577,38 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   ProfhGOODCharge_Charge_DiodePosition = Zero(ProfhGOODCharge_Charge_DiodePosition);
   ProfhGOODCharge_Charge_DiodePositionSeedQLT300 = Zero(ProfhGOODCharge_Charge_DiodePositionSeedQLT300);
   ProfhGOODCharge_Charge_DiodePositionSeedQGT2000 = Zero(ProfhGOODCharge_Charge_DiodePositionSeedQGT2000);
-  
+
   ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow);
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow);
-  
+
   ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_seed = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_seed);
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_seed = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_seed);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_seed = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_seed);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_seed = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_seed);
-  
+
   ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_1stcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_1stcrown);
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown);
-  
+
   ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_2ndcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_2ndcrown);
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown);
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown = Zero(ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown);
-  
+
   hDistVSeedOtherOldCalc = Zero(hDistVSeedOtherOldCalc);
-  hDistVSeedOtherNewCalc = Zero(hDistVSeedOtherNewCalc);  
-  
+  hDistVSeedOtherNewCalc = Zero(hDistVSeedOtherNewCalc);
+
   h2dCharge_Charge_DiodePosition_Track = Zero(h2dCharge_Charge_DiodePosition_Track);
   h2dCharge_Charge_DiodePosition_CluSize = Zero(h2dCharge_Charge_DiodePosition_CluSize);
-  
+
   hNpixInClu = Zero(hNpixInClu);
   hQpixInClu = Zero(hQpixInClu);
 
   ProfhGOODCharge_Charge_DiodePositionSimpDist = Zero(ProfhGOODCharge_Charge_DiodePositionSimpDist);
-  
+
    hHOM_Charge_diodedist3D = Zero( hHOM_Charge_diodedist3D );
    hHOM_Charge2_diodedist3D = Zero( hHOM_Charge2_diodedist3D );
    hHOM_Charge4_diodedist3D = Zero( hHOM_Charge4_diodedist3D );
@@ -2627,11 +2639,11 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hHOM_Charge_diodedist_90_inf = Zero(hHOM_Charge_diodedist_90_inf);
 
   hHOM_modUCG_modtu    = Zero(hHOM_modUCG_modtu);
-  hHOM_modVCG_modtv    = Zero(hHOM_modVCG_modtv); 
+  hHOM_modVCG_modtv    = Zero(hHOM_modVCG_modtv);
   hHOM_modUeta3_modtu  = Zero(hHOM_modUeta3_modtu);
   hHOM_modVeta3_modtv  = Zero(hHOM_modVeta3_modtv);
   hHOM_modUeta3_realtu = Zero(hHOM_modUeta3_realtu);
-  hHOM_modVeta3_realtv = Zero(hHOM_modVeta3_realtv); 
+  hHOM_modVeta3_realtv = Zero(hHOM_modVeta3_realtv);
   hHOM_modUCG_realtu  = Zero(hHOM_modUCG_realtu);
   hHOM_modVCG_realtv  = Zero(hHOM_modVCG_realtv);
   hHOM_modUeta3_Eta3U    = Zero(hHOM_modUeta3_Eta3U);
@@ -2663,7 +2675,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hHOM_modUeta5x5_modVeta5x5 = Zero(hHOM_modUeta5x5_modVeta5x5);
   hHOM_modUCG5x5_modVCG5x5 = Zero(hHOM_modUCG5x5_modVCG5x5);
 
-  // Histos for cluster shape study, JB 2010/04/13				
+  // Histos for cluster shape study, JB 2010/04/13
   hClusterMeanForm = Zero(hClusterMeanForm);
   for( Int_t i=0; i<10; i++) {
     hCountPixels[i] = Zero(hCountPixels[i]);
@@ -2690,7 +2702,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hChargeDistrIn1stRightNeigh = Zero(hChargeDistrIn1stRightNeigh);
   hClusterTypes = Zero(hClusterTypes);
   hClusterTypesBeyond4 = Zero(hClusterTypesBeyond4);
-  
+
   // Histos not used
   /*
    hChargeOrder1=Zero(hChargeOrder1);
@@ -2702,7 +2714,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
    hChargeOrder7=Zero(hChargeOrder7);
    hChargeOrder8=Zero(hChargeOrder8);
    hChargeOrder9=Zero(hChargeOrder9);
-   
+
    hGOODChargeOrder1=Zero(hGOODChargeOrder1);
    hGOODChargeOrder2=Zero(hGOODChargeOrder2);
    hGOODChargeOrder3=Zero(hGOODChargeOrder3);
@@ -2717,7 +2729,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
    hGOODChargeCor_1_4=Zero(hGOODChargeCor_1_4);
    hGOODChargeCor_2_3=Zero(hGOODChargeCor_2_3);
    hGOODChargeSum_4=Zero(hGOODChargeSum_4);
-   hGOODChargeRap_1_over_2=Zero(hGOODChargeRap_1_over_2); 
+   hGOODChargeRap_1_over_2=Zero(hGOODChargeRap_1_over_2);
    hGOODChargeRap_1_over_3=Zero(hGOODChargeRap_1_over_3);
    hGOODChargeRap_1_over_4=Zero(hGOODChargeRap_1_over_4);
    hGOODChargeRap_2_over_3=Zero(hGOODChargeRap_2_over_3);
@@ -2726,8 +2738,11 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   effimap=Zero(effimap);
   goodtracks=Zero(goodtracks);
   TrkInMimo=Zero(TrkInMimo);
-  
-  
+  effinpixel=Zero(effinpixel);
+  HitInPixel=Zero(HitInPixel);
+  TrkInPixel=Zero(TrkInPixel);
+
+
   MainCanvas=Zero(MainCanvas);
   cres=Zero(cres);
   c2=Zero(c2);
@@ -2759,10 +2774,10 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   grnum=Zero(grnum);
   grevt=Zero(grevt);
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MiniVectors Histograms ; NCS , 2010/01/21
   //  modified JB 2011/11/01
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   hDiffPosX=Zero(hDiffPosX);
   hDiffPosY=Zero(hDiffPosY);
   hDiffAngleX=Zero(hDiffAngleX);
@@ -2793,12 +2808,12 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   hdiffydiffxg1g1=Zero(hdiffydiffxg1g1);
 
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MimosaVertexFinder histograms
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
 
 
-  hVertexPosX = Zero(hVertexPosX); 
+  hVertexPosX = Zero(hVertexPosX);
   hVertexPosY = Zero(hVertexPosY);
   hVertexPosZ = Zero(hVertexPosZ);
   hVertexTrackDistance = Zero(hVertexTrackDistance);
@@ -2807,9 +2822,9 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   cVertexFinder = Zero(cVertexFinder);
 
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // User histograms
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
 
   cUser=Zero(cUser);
   hUserHitCorrelationLine=Zero(hUserHitCorrelationLine);
@@ -2818,8 +2833,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
   saved->cd();
   dir->Close();
   if(dir) { delete dir; dir = 0; }
- 
+
   if(bar2) {bar2->Hide(); delete bar2 ; bar2=0;}
 
 }
-
