@@ -1295,11 +1295,11 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
             break;
             
         case 1 :
-           // printf("Number of total Frames in Trigger : %d \n", fFramesPerTrigger);
+          
             if (fCurrentTriggerNumber ==  fnbTrg) {
-           // if (fFramesCounterInTrigger ==  fnbTrg*fFramesPerTrigger) {
+          
                 if (fisfirstAcq == true) {
-                  //   printf(" Getting Pointer for first Acq \n");
+                  
                     if(fDebugLevel>1) cout << "BoardReaderMIMOSIS  Getting the pointer for the first acquisition " << endl;
                     
                     VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */ );
