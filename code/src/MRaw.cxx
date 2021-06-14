@@ -229,10 +229,12 @@ void  MRaw::PrepareRaw()
 //      bar3->AddButton("JUMP EVENTS","gTAF->GetRaw()->MimosaJump()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("RAW CHANNELS", "gTAF->GetRaw()->DisplayRawData(1.)", "Display raw channels per plane and event");
       bar3->AddButton("RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayRawData2D()", "Display raw channels per plane and event in 2D");
-      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(500)", "Display raw data per plane cumulated over 500 events in 2D");
+      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(5000)", "Display raw data per plane cumulated over 500 events in 2D");
       bar3->AddButton("HITS 2D", "gTAF->GetRaw()->DisplayHits2D(2,1,0)", "Display hits per plane and event in 2D");
-      bar3->AddButton("CUMULATE HITS 2D", "gTAF->GetRaw()->DisplayCumulatedHits2D(500)", "Display hits per plane cumulated over 500 events in 2D");
-      bar3->AddButton("CUMUL HITS 2D LADDER (exp)", "gTAF->GetRaw()->DisplayLadderCumulatedHits2D(500)", "Display hits per ladder cumulated over 500 events in 2D");
+      bar3->AddButton("CUMULATE HITS 2D", "gTAF->GetRaw()->DisplayCumulatedHits2D(5000)", "Display hits per plane cumulated over 500 events in 2D");
+      if( fSession->GetTracker()->GetNumberOfLadders()>0 ) {
+        bar3->AddButton("CUMUL HITS 2D LADDER (exp)", "gTAF->GetRaw()->DisplayLadderCumulatedHits2D(5000)", "Display hits per ladder cumulated over 500 events in 2D");
+      }
       bar3->AddButton("NOISE MAP", "gTAF->GetRaw()->DisplayNoise()", "Display noise per pixel for each plane");
 
       bar3->AddButton("BINARY FAKE", "gTAF->GetRaw()->FakeRateBinaryFromRawData(100000, 100, 0.01)", "Compute the fake rate for binary output sensors");
@@ -588,7 +590,7 @@ void MRaw::RSDisplay()
     fSession->NextRawEvent();
     tTracker->Update();
     cout << "\n Event number : " << fSession->GetCurrentEventNumber()-1<<" ";
-
+    
     showit = kTRUE ;
   }
   Char_t name[100];
@@ -2129,7 +2131,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
 
 
   } //end loop on planes
-  cout << "\n Event number : " << fSession->GetCurrentEventNumber()-1<<" " << endl;
+  cout << "\n Event number : " << fSession->GetCurrentEventNumber() <<" " << endl;
 
   //if(MultiFramePlane>0) cdisplaymultiframe->Update();
   //cdisplayraw->Update();

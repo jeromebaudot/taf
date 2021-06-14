@@ -53,7 +53,9 @@
 
 #include "DAcq.h"
 
-#include "pxi_daq_lib_config.h" // PXI DAQ Library version configuration is made in this file
+#define MIMO_DAQ_LIB_VERSION_1_1 // (MIMOSIS1)
+/*
+#Include "pxi_daq_lib_config.h" // PXI DAQ Library version configuration is made in this file
 #ifdef PXI_DAQ_LIB_VERSION_1_1
   #include "pxi_daq_lib_v.1.1/sync_index_rec.typ"
   #include "pxi_daq_lib_v.1.1/sync_index_rec.c"
@@ -70,8 +72,11 @@
   #include "pxi_daq_lib_v.3.1/sync_index_rec.typ"
   #include "pxi_daq_lib_v.3.1/sync_index_rec.c"
 #endif
-
-
+ */
+#ifdef MIMO_DAQ_LIB_VERSION_1_1
+  #include "mimo_daq_lib/sync_index_rec.typ"
+  #include "mimo_daq_lib/sync_index_rec.c"
+#endif
     /////////////////////////////////////////////////////////////////////////////
     // Class Description of DAcq (DataAcquisition)                             //
     //                                                                         //
@@ -89,6 +94,7 @@
   DAcq::DAcq()
 {
   // Default DAcq ctor.
+    cout << "Default DAcq Constructor " << endl;
 }
 
 //______________________________________________________________________________
@@ -135,6 +141,7 @@ DAcq::DAcq(DSetup& c)
   fEventsModuleNotOK = 0;// JB 2014/12/16
   Int_t          mdt, mdl;
   fModuleTypes  = fc->GetAcqPar().ModuleTypes;
+    
   fMaxSegments = 50; // JB 2013/08/14
 
   // Timing information, 0 is the default which could be updated from data
@@ -190,7 +197,8 @@ DAcq::DAcq(DSetup& c)
   // Create as many pointer as modules for each type even if some of them will not be used
   fTNT   = new TNTBoardReader*[totalNmodules];
   fPXI   = new PXIBoardReader*[totalNmodules];
-  fPXIe  = new PXIeBoardReader*[totalNmodules];
+   // Ziad EL BITAR 2021/05/25 disregard PXIeModule when using MimosisBoardReader
+  //fPXIe  = new PXIeBoardReader*[totalNmodules];
   fGIG   = new GIGBoardReader*[totalNmodules];
   fIMG   = new IMGBoardReader*[totalNmodules];
   fVME   = new VMEBoardReader*[totalNmodules];
@@ -241,8 +249,9 @@ DAcq::DAcq(DSetup& c)
 
       // The real module type is defined by Type/10
       // JB 2010/08/23
+                
       switch ( (fc->GetModulePar(mdt).Type)/10 ) {
-
+        
         // -+-+- IMG modules
         case 1:
 
@@ -324,6 +333,8 @@ DAcq::DAcq(DSetup& c)
 
         // -+-+- PXIe modules
         // JB 2011/03/14
+        // Ziad EL BITAR 2021/05/25 disregard PXIeModule when using MimosisBoardReader
+              /*
         case 5:
 
         fUseTimestamp[mdt-1][mdl-1] = kTRUE; // JB 2015/05/26
@@ -333,11 +344,16 @@ DAcq::DAcq(DSetup& c)
           aFileName,
           fRunNumber,
           fc->GetAcqPar().TriggerMode,
-          fc->GetModulePar(mdt).EventBuildingBoardMode /*fc->GetAcqPar().EventBuildingMode*/,
-          0,
+          fc->GetModulePar(mdt).EventBuildingBoardMode /*fc->GetAcqPar().EventBuildingMode*/
+          /*    ,0,
           fc->GetAcqPar().BinaryCoding,
           fc->GetPlanePar(1).Strips(1),
           fc->GetPlanePar(1).MimosaType); //SS 2011.11.14 - EventBuildingMode can be loaded externally
+              cout << "Ziad : fileName : " << aFileName << endl;
+              cout << "Ziad : fRunNumber " << fRunNumber << endl;
+              cout << "Ziad : fc->GetPlanePar(1).Strips(1) " << fc->GetPlanePar(1).Strips(1) << endl;
+              cout << "Ziad : fc->GetAcqPar().BinaryCoding " <<  fc->GetAcqPar().BinaryCoding << endl;
+                           
         fPXIe[iModule]->SetDebugLevel( fDebugAcq);
         fPXIe[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);
         fPXIe[iModule]->SetFlag(((fc->GetModulePar(mdt).Type)%10));
@@ -345,7 +361,7 @@ DAcq::DAcq(DSetup& c)
 
         break;
 
-
+*/
         // -+-+- GIG modules (GEANT4 - DIGMaps)
         // JB 2011/03/14
         case 6:
@@ -462,16 +478,17 @@ DAcq::DAcq(DSetup& c)
 
         // -+-+- MIMOSIS modules
         case 13:
-
         fUseTimestamp[mdt-1][mdl-1] = kFALSE;
         fMSIS[iModule] = new BoardReaderMIMOSIS( iModule,
+        fc->GetRunPar().DataPath, // ZE 2021/06/01
+        fRunNumber, //ZE 2021/05/28
 	    fc->GetModulePar(mdt).Inputs,
             fc->GetAcqPar().TriggerMode,
             fc->GetModulePar(mdt).EventBuildingBoardMode,
-            fc->GetAcqPar().EventHeaderSize,
-            fc->GetAcqPar().EventTrailerSize,
             fc->GetAcqPar().BinaryCoding);
+        
         fMSIS[iModule]->SetDebugLevel( fDebugAcq);
+        /*
         fMSIS[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
           if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
@@ -500,6 +517,7 @@ DAcq::DAcq(DSetup& c)
         } else {
           initOK &= kTRUE;
         }
+         */
         break;
 
 
@@ -527,6 +545,7 @@ DAcq::DAcq(DSetup& c)
 
   Int_t aModuleType, aModuleNumber, aInput, aChannel, aOffset, aSegment;
   //Int_t aChannelNumber;
+  cout << "Number of Planes: " << fc->GetTrackerPar().Planes << endl;
   for ( Int_t iPlane = 1; iPlane <= fc->GetTrackerPar().Planes; iPlane++){ // loop on planes
     for ( Int_t iInp = 0; iInp < fc->GetPlanePar(iPlane).Inputs; iInp++) { // loop on inputs for this plane
       if (fc->GetPlanePar(iPlane).ModuleType[iInp] == 0) {
@@ -583,8 +602,13 @@ for (mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modu
             if (fDebugAcq) cout << "Declaring plane " << aPlaneNumber << " as DUT to module " << mdl << " of type " << fc->GetModulePar(mdt).Type << " linked to input(from 0) " << fc->GetPlanePar(aPlaneNumber).InputNumber[0]-1 << endl;
             switch ( (fc->GetModulePar(mdt).Type)/10 ) {
                 // -+-+- PXIe modules
-              case 5:
-                fPXIe[iModule]->AddDUTSensor( fc->GetPlanePar(aPlaneNumber).InputNumber[0]-1 );
+          // Comment added by Ziad EL BITAR on May 25, 2021, disregard PXIeModule when using MimosisBoardReader
+          //    case 5:
+          //      fPXIe[iModule]->AddDUTSensor( fc->GetPlanePar(aPlaneNumber).InputNumber[0]-1 );
+        
+          // ZE on May 31, 2021
+       //         case 13:
+        //          fMSIS[iModule]->AddDUTSensor( fc->GetPlanePar(aPlaneNumber).InputNumber[0]-1 );
             };
           }
 
@@ -647,7 +671,7 @@ void DAcq::SetDebug(Int_t aDebug)
   if( aDebug<=0 ) { // if negative level, set acquisition module level
 
     for ( Int_t mdt = 1; mdt <= fModuleTypes; mdt++){ // loop on module types
-
+        
       switch ( (fc->GetModulePar(mdt).Type)/10 ) {
 
           // -+-+- IMG modules
@@ -675,13 +699,15 @@ void DAcq::SetDebug(Int_t aDebug)
           break;
 
           // -+-+- PXIe modules
+        // Ziad EL BITAR, 2021/05/25 comment PXIe module when using Mimosis1
+        /*
         case 5:
           for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
             fPXIe[iModule]->SetDebugLevel( abs(aDebug) );
             iModule++;
           } // end loop on each module of this type
           break;
-
+*/
           // -+-+- GIG modules
         case 6:
           for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
@@ -852,6 +878,9 @@ Bool_t DAcq::InitSynchroInfo( )
   } // loop on module types
 
   //===================
+    
+  // Ziad EL BITAR 2021/05/25 disregard PXIeModule when using MimosisBoardReader
+    /*
   if (nIMGBoard>0 && nPXIeBoard>0 ) { // if synchro IMG, PXIe
 
     // Set the file name
@@ -880,7 +909,7 @@ Bool_t DAcq::InitSynchroInfo( )
 
   } // end if synchro IMG, PXIe
 
-
+*/
   //===================
   if ( nM18Decoder>=2 ) {
     cout << endl << "Synchronization of M18Decoders requires passing OMKDTransition information from one file to the other." << endl;
@@ -1108,11 +1137,12 @@ void DAcq::Reset()
     switch ( (fc->GetModulePar(mdt).Type)/10 ) {
 
       // -+-+- PXIe modules
-      case 5:
+/*
+    case 5:
         fPXIe[iModule]->ResetReading();
         iModule++;
         break;
-
+*/
       // No other case implemented
       default:
         cout << " RESET DAQ not yet implemented for this module type -> nop." << endl << endl;
@@ -1231,7 +1261,8 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
   //====================
   if (fDebugAcq)  cout << " DAcq: getting raw data:" << endl;
   Int_t iModule=0; // module index, from 0 to totalNmodules
-  for ( Int_t mdt = 1; mdt <= fModuleTypes; mdt++){ // loop on module types
+
+    for ( Int_t mdt = 1; mdt <= fModuleTypes; mdt++){ // loop on module types
 
     switch ( (fc->GetModulePar(mdt).Type)/10 ) {
 
@@ -1481,7 +1512,10 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
 
         // -+-+- PXIe modules
         // JB 2011/06/19
+            /*
+        // ZE 2021/05/25
       case 5:
+        cout << "Ziad --> Reading Data in PXIe module" << endl;
         // This is the place for the snchronization
         int acqId, frId;
         acqId=-1;
@@ -1600,7 +1634,7 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
         } // end check event is not missed
         break;
 
-
+*/
         // -+-+- GIG modules
         // JB 2012/04/25
       case 6:
@@ -2037,8 +2071,8 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
         // -+-+- MIMOSIS modules
         // JB 2021/05/01
       case 13:
+            
         for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
-
           moduleOK = fMSIS[iModule]->HasData(); // ask for an event
           eventOK &= moduleOK;
           if (fDebugAcq)  cout << " DAcq: getting raw data for module " << iModule << " or " << mdl << " of type " << fc->GetModulePar(mdt).Type << ", OK? " << moduleOK << endl;
@@ -2076,8 +2110,9 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
             // Set values for hit pixels
             for( Int_t iPix=0; iPix<readerEvent->GetNumberOfPixels(); iPix++) { // loop on Pixels
               readerPixel = (BoardReaderPixel*)readerEvent->GetPixelAt( iPix);
-	              cout << " Got pixel " << iPix << " for input " << readerPixel->GetInput() << endl;
+              //    cout << " Got pixel " << iPix << " for input " << readerPixel->GetInput() << endl;
               aPlaneNumber = fMatchingPlane[mdt-1][mdl-1][readerPixel->GetInput()-1][0];
+                
               if(fDebugAcq>2) cout << "  pixel " << iPix << " line " << readerPixel->GetLineNumber() << " column " << readerPixel->GetColumnNumber() << " at timestamp " << readerPixel->GetTimeStamp() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << endl;
               DPixel* APixel = new DPixel( aPlaneNumber, readerPixel->GetLineNumber(), readerPixel->GetColumnNumber(), (Double_t)readerPixel->GetValue(), readerPixel->GetTimeStamp());
               // if(readerPixel->GetInput()!=5 && readerPixel->GetInput()!=6 && readerPixel->GetTimeStamp()==1)
@@ -2274,6 +2309,8 @@ void DAcq::PrintStatistics(ostream &stream)
 
       // -+-+- PXIe modules
       // JB 2011/06/21
+      // ZE 2021/05/25
+            /*
       case 5:
 
       for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
@@ -2282,7 +2319,7 @@ void DAcq::PrintStatistics(ostream &stream)
       } // end loop on each modules of this type
       break;
 
-
+*/
 
       // -+-+- GIG modules
       case 6:

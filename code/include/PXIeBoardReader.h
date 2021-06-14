@@ -165,8 +165,9 @@ class PXIeBoardReader : public TObject {
   
   FILE             *ConfigFile;
   char              ConfigFileName[300];
-  int               CurrentFileNumber;
+  int               CurrentFileNumber
   int               NumberOfFiles;
+    
 
   size_t            SizeOfDaqEvent;
   unsigned int     *Data;

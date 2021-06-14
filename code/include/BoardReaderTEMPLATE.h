@@ -16,10 +16,20 @@
 #include <time.h>
 #include <climits>
 
+#include "TH1.h"
+#include "TH1F.h"
+
+#include "TTree.h"
+#include "TFile.h"
+
 #include "BoardReader.h"
 #include "Riostream.h"
 #include "TObject.h"
 #include "DGlobalTools.h" // to have fTool has a data member
+
+//#include "mimo_daq_lib/mimo_daq_lib.h"
+//#include "mimo_daq_lib/mimo_daq_lib.c"
+
 //using namespace std;
 
 //##############################################################################
@@ -31,46 +41,58 @@ private:
   DGlobalTools    fTool;
 
   int             fBoardNumber;
+  int             fRunNumber;
   int             fNSensors;
   int             fTriggerMode;
   int             fEventBuildingMode;
   bool            fVetoOverflow;
   int             fEndianness;       // 0= do not swap bytes, 1= swap bytes
 
-  int             fSizeOfHeader;
-  int             fSizeOfTrailer;
   std::ifstream   fRawFileStream;
   std::vector<string> fListInputFileNames;
   size_t          fCurrentFileNumber;
   bool            fNoMoreFile;
+  bool            fisfirstAcq;
+  int             fnbFrPerAcq;
 
   int             fCurrentTriggerNumber;
   int             fCurrentEventNumber;
+  
+  int             fReachEndOfRun;
+  
+  int             fCurrentAcqNumber;
+  int             fCurrentFrameNumber;
   int             fTriggerCount;
   int             fFrameCount;
+  int             fBadDecFrameCounter ; // ZE 2021/06/04 - Counter for bad decoded frames
   int             fNEventsWithOverflow;
-  BoardReaderEvent *fCurrentEvent;
+  BoardReaderEvent   *fCurrentEvent;
+    
   std::vector<BoardReaderPixel> fListOfPixels;
   std::vector<int>       fListOfTriggers;
   std::vector<int>       fListOfTimestamps;
   std::vector<int>       fListOfFrames;
+    
+  std::vector<int>       fListOfTriggerPos; //JB 2010/06/16
+  std::vector<int>       fListOfNextTriggerPos; //JB 2011/07/18
+  std::vector<int>       *fListOfLineOverflow; // MG 2012/02/15
+  std::vector<int>       fListOfNextTimestamps; // JB 2012/05/04
 
 
-  bool  LookUpRawFile();
-  bool  CloseRawFile();
-  bool  OpenRawFile();
   bool  DecodeNextEvent();
+  bool  DecodeFrame();
+//  bool  DecodeFrame(MIS1__BT_FBtAcqW16AAlloc*, MIS1__TBtAcqRawRec*, int moduleID, int frameID,
+//  UInt8 MeasExecTime, UInt8 PrintLvl); // ZE 2021/06/02
   void  AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime=0);
 
-  // ==> PROBABLY MORE PRIVATE METHODS are needed <==
 
 public:
 
-  BoardReaderMIMOSIS(int boardNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int headerSize=0, int trailerSize=0, int endianness=0);
+    int test();
+    BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int endianness=0);
   ~BoardReaderMIMOSIS();
 
   void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderMIMOSIS " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }
-  bool  AddFileList(std::string prefixFileName, int startIndex, int endIndex, std::string suffixFileName);
   void  SetVetoPixel( int noiseRun=0);
   bool  HasData();
   void  SkipNextEvent();
