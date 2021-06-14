@@ -478,18 +478,16 @@ DAcq::DAcq(DSetup& c)
 
         // -+-+- MIMOSIS modules
         case 13:
-        //cout << "ZIAD --> Module Type : " << 13 << endl;
         fUseTimestamp[mdt-1][mdl-1] = kFALSE;
         fMSIS[iModule] = new BoardReaderMIMOSIS( iModule,
         fc->GetRunPar().DataPath,
         fRunNumber,
         fc->GetModulePar(mdt).Inputs,
         fc->GetAcqPar().TriggerMode,
+        fc->GetAcqPar().TriggerOffset,
+        fc->GetAcqPar().FramesPerTrigger,
         fc->GetModulePar(mdt).EventBuildingBoardMode,
-   //     fc->GetAcqPar().EventHeaderSize,
-   //     fc->GetAcqPar().EventTrailerSize,
         fc->GetAcqPar().BinaryCoding);
-        
         fMSIS[iModule]->SetDebugLevel( fDebugAcq);
         /*
         fMSIS[iModule]->SetVetoPixel( fc->GetRunPar().NoiseRun);

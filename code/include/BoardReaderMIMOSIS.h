@@ -44,6 +44,8 @@ private:
   int             fRunNumber;
   int             fNSensors;
   int             fTriggerMode;
+  int             fTriggerOffset;
+  int             fFramesPerTrigger;
   int             fEventBuildingMode;
   bool            fVetoOverflow;
   int             fEndianness;       // 0= do not swap bytes, 1= swap bytes
@@ -53,7 +55,7 @@ private:
   size_t          fCurrentFileNumber;
   bool            fNoMoreFile;
   bool            fisfirstAcq;
-  bool            fisTruncatedAcq; // Boolean variable to test whether the acquisition is truncated
+  bool            fisAcqSafe;     // Boolean variable to test whether the acquisition is safe (i.e not truncated)
                                    // Acquisition is truncated if the number of frames/Acq is not the same
                                    // in all the sensors for a giving acquisition.
                                    
@@ -62,6 +64,7 @@ private:
   int             fendTrg;
 
   int             fCurrentTriggerNumber;
+  int             fFramesCounterInTrigger;
   int             fCurrentEventNumber;
   
   int             fReachEndOfRun;
@@ -88,7 +91,8 @@ private:
 
   bool  DecodeNextEvent();
   bool  DecodeFrame();
-  //bool  DecodeFrame();
+  bool  isAcqSafe();
+    
   
 //  bool  DecodeFrame(MIS1__BT_FBtAcqW16AAlloc*, MIS1__TBtAcqRawRec*, int moduleID, int frameID,
 //  UInt8 MeasExecTime, UInt8 PrintLvl); // ZE 2021/06/02
@@ -98,7 +102,7 @@ private:
 public:
 
     int test();
-    BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int endianness=0);
+    BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int triggeroffset=0, int framesPerTrigger = 1, int eventBuildingMode=0, int endianness=0);
   ~BoardReaderMIMOSIS();
 
   void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderMIMOSIS " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }

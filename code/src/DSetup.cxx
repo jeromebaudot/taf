@@ -540,8 +540,8 @@
 // EventHeaderSize    = [MANDATORY] (int) {0} event header size in Bytes
 // EventTrailerSize   = [MANDATORY] (int) {4} event trailer size in Bytes
 // TriggerMode        = [MANDATORY] (int) method to deal with trigger info
-//
-//
+// TriggerOffset      = [MANDATORY] (int) number of frames after the trigger where to start decoding. If (0) then start reading from the trigger
+// FramesPerTrigger   = [MANDATORY] (int) number of frames to be considered for decoding per trigger
 
 // #############################################################################
 //                      Parameter for Final Analysis
@@ -2266,6 +2266,8 @@ void DSetup::ReadDAQParameters()
   AcqParameter.ModuleTypes       = -1;
   AcqParameter.BinaryCoding      = -1;
   AcqParameter.TriggerMode       =  0;
+  AcqParameter.TriggerOffset     =  0;
+  AcqParameter.FramesPerTrigger  =  0;
   AcqParameter.EventBuildingMode =  1; //SS 2011.11.14. Setting EventBuildingMode=1 by default. It can be changed during initialisation of the session or from the config file
   sprintf(AcqParameter.TimeRefFile, ""); // JB 2018/02/11
   AcqParameter.IfExternalTimeRef = 0;
@@ -2295,7 +2297,13 @@ void DSetup::ReadDAQParameters()
     else if( ! strcmp( fFieldName, "TriggerMode" ) ) {
       read_item(AcqParameter.TriggerMode);
     }
-    else if( ! strcmp( fFieldName, "EventBuildingMode" ) ) {
+    else if( ! strcmp( fFieldName, "TriggerOffset" ) ) {
+        read_item(AcqParameter.TriggerOffset);
+      }
+    else if( ! strcmp( fFieldName, "FramesPerTrigger" ) ) {
+        read_item(AcqParameter.FramesPerTrigger);
+      }
+   else if( ! strcmp( fFieldName, "EventBuildingMode" ) ) {
       read_item(AcqParameter.EventBuildingMode);
     }
     else if( ! strcmp( fFieldName, "TimeRefFile" ) || ! strcmp( fFieldName, "timereffile" ) ) {
@@ -2323,6 +2331,8 @@ void DSetup::ReadDAQParameters()
     cout << "   nb of mod types " << AcqParameter.ModuleTypes << endl;
     cout << "   endian coding " << AcqParameter.BinaryCoding << endl;
     cout << "   trigger mode " << AcqParameter.TriggerMode << endl;
+    cout << "   trigger offset " << AcqParameter.TriggerOffset << endl;
+    cout << "   decoded frames per trigger " << AcqParameter.FramesPerTrigger << endl;
     cout << "   event building mode " << AcqParameter.EventBuildingMode << endl;
     if( AcqParameter.IfExternalTimeRef ) cout << "   file for external time ref " << AcqParameter.TimeRefFile << endl;
   }
