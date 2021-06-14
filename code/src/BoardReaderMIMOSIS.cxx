@@ -1396,7 +1396,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
         fnbTrg = VPtAcqHead->Trigs.TrigNb;
         
         fCurrentFrameNumber = (VGPtTrig->ATrig[fCurrentTriggerNumber])/100 + fFramesCounterInTrigger + fTriggerOffset;
-     //   if (fDebugLevel > 1)
+        if (fDebugLevel > 1)
         VRet = MIS1__BT_FTrigRecPrint ( fnbTrg, VGPtTrig); // Function described in line file msis1_data.c, line 1531
      
         DecodeFrame();
@@ -1420,7 +1420,7 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
       
       MIS1__TPixXY VPix;
       
-   //   if (fDebugLevel > 1)
+      if (fDebugLevel > 1)
        printf("Decoding Frame %d in Acquisition %d associated to trigger number %d from %d triggers\n", fCurrentFrameNumber, fCurrentAcqNumber, fCurrentTriggerNumber, fnbTrg);
        for ( int MSisId = 0; MSisId < fNSensors; MSisId++ ) {
               
