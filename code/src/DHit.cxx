@@ -27,7 +27,7 @@
 // Last Modified: LC, 2014/12/08 add copy operator to save mini-vectors Hits. (See DLadder::MakeMiniVectors)
 // Last Modified: LC, 2014/12/15 class DHitMonteCarlo included in class DHit
 // Last Modified: LC, 2014/12/15 Now, DHit contains a new vector of MC Info : std::vector<Double_t> _monteCarloInfo
-// Last Modified: AP, 2015/05/21 The iterative clustering algorithm (Analyse_Iterative), now identifies big clusters 
+// Last Modified: AP, 2015/05/21 The iterative clustering algorithm (Analyse_Iterative), now identifies big clusters
 //                               with high pixel multiplicity (> 100) which are caused maybe by nuclear interactions.
 //                               The pixels in these big clusters are excluded from futher analysis.
 // Last Modified: JB, 2015/05/25 Hit timestamp added
@@ -41,7 +41,7 @@
   ////////////////////////////////////////////////////////////
   //                                                        //
   // Class Description of DHit                              //
-  //              
+  //
   // When Plane readout mode is < 100 (no zero suppression)
   //   call Analyse( GetStrip( stPhys))
   // When Plane readout mode is >= 100 (zero suppression)
@@ -67,7 +67,7 @@
 ClassImp(DHit) // Description of a Hit
 
 //______________________________________________________________________________
-//  
+//
 DHit::DHit()
 {
   // DHit default ctr
@@ -81,16 +81,16 @@ DHit::DHit()
   fMainAxisPhi          = -1000; // AP 2017/05/09
 }
 //______________________________________________________________________________
-//  
+//
 DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber)
 {
   // DHit constructor
   //
   // Last Modified: JB 2009/05/22
- 
+
   fHitNumber          = aHitNumber;
   fFound              = kFALSE; // JB 2009/05/22
-  
+
   if(fHitNumber>0) {
     fPositionHit        = new DR3(aPosition);
     fPositionHitCG      = new DR3(aPosition);
@@ -106,7 +106,7 @@ DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber)
     fClusterPulseSum    =  0.0;
     fClusterLimit       =  new DR3(fCut->GetClusterLimit());
     fClusterLimitRadius = fCut->GetClusterLimitRadius();
-  
+
     fStripPitch         = &fPlane->GetStripPitch();
     fStripsInClusterArea = fCut->GetStripsInClusterArea();
 
@@ -115,7 +115,7 @@ DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber)
 
     //fTableSize = 700;// VR 2014.08.28
     fTableSize = (fPlane->GetSetup()).GetPlanePar(fPlane->GetPlaneNumber()).MaxNStrips;
-  
+
     tPixelIndexList        = new Int_t[fTableSize];   //AP 2016/07/28
     fStripIndexArray       = new Int_t[fTableSize];   // sufficient big, [fStripsInClusterArea];
     fStripIndex            = new Int_t[fTableSize];   // JB 2009/05/12
@@ -124,35 +124,35 @@ DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber)
     fStripDistanceU        = new Float_t[fTableSize]; // [fStripsInClusterArea];
     fStripDistanceV        = new Float_t[fTableSize]; // [fStripsInClusterArea];
     fSNneighbour = -1.0;
-  
-    fStoNover2 = 0; // MB/12/11/2010 
+
+    fStoNover2 = 0; // MB/12/11/2010
     fIsFromPreviousEvent = 0;// VR 2014.08.28
     fTimestamp = 0; // JB 2015/05/25
  }
-  
+
   // Hit Monte Carlo
   fIfMonteCarlo       = 0;
 
   fMCHitID              = -1; // AP 2015/07/30
   fStripsFromMCHitID    =  0; // AP 2016/07/28
   fStripsInClusterFound =  0;
-  
+
   fNormMaxStd           = -1000; // AP 2017/05/09
   fNormMinStd           = -1000; // AP 2017/05/09
   fMainAxisPhi          = -1000; // AP 2017/05/09
-  
+
 }
 //______________________________________________________________________________
-//  
+//
 DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber, std::vector<Double_t>& monteCarloVector)
 {
   // DHit constructor
   //
   // Last Modified: JB 2009/05/22
- 
+
   fHitNumber          = aHitNumber;
   fFound              = kFALSE; // JB 2009/05/22
-  
+
   if(fHitNumber>0) {
     fPositionHit        = new DR3(aPosition);
     fPositionHitCG      = new DR3(aPosition);
@@ -168,7 +168,7 @@ DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber, std::vector<Double_
     fClusterPulseSum    =  0.0;
     fClusterLimit       =  new DR3(fCut->GetClusterLimit());
     fClusterLimitRadius = fCut->GetClusterLimitRadius();
-  
+
     fStripPitch         = &fPlane->GetStripPitch();
     fStripsInClusterArea = fCut->GetStripsInClusterArea();
 
@@ -177,7 +177,7 @@ DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber, std::vector<Double_
 
     //fTableSize = 500;// VR 2014.08.28
     fTableSize = (fPlane->GetSetup()).GetPlanePar(fPlane->GetPlaneNumber()).MaxNStrips;
-  
+
     tPixelIndexList        = new Int_t[fTableSize];   //AP 2016/07/28
     fStripIndexArray       = new Int_t[fTableSize];   // sufficient big, [fStripsInClusterArea];
     fStripIndex            = new Int_t[fTableSize]; // JB 2009/05/12
@@ -186,20 +186,20 @@ DHit::DHit(DR3 &aPosition, DPlane& aPlane, Int_t aHitNumber, std::vector<Double_
     fStripDistanceU        = new Float_t[fTableSize]; // [fStripsInClusterArea];
     fStripDistanceV        = new Float_t[fTableSize]; // [fStripsInClusterArea];
     fSNneighbour = -1.0;
-  
-    fStoNover2 = 0; // MB/12/11/2010 
+
+    fStoNover2 = 0; // MB/12/11/2010
     fIsFromPreviousEvent = 0;// VR 2014.08.28
     fTimestamp = 0; // JB 2015/05/25
   }
-  
+
   // Hit Monte Carlo
   fIfMonteCarlo       = 1;
   _monteCarloInfo = monteCarloVector; // LC 2014/12/15
-  
+
   fMCHitID              = -1;  // AP 2015/07/30
   fStripsFromMCHitID    =  0;  // AP 2016/07/28
   fStripsInClusterFound =  0;
-  
+
   fNormMaxStd           = -1000; // AP 2017/05/09
   fNormMinStd           = -1000; // AP 2017/05/09
   fMainAxisPhi          = -1000; // AP 2017/05/09
@@ -221,7 +221,7 @@ void DHit::copy(DHit* aHit, DPlane* aPlane)  // Copy with minimal information (F
   fDebugHit           = fPlane->GetDebug();
   fIfMonteCarlo       = 0;
   //Next : Commented to reduce memory consumption
-  /* 
+  /*
   fCut                =  fPlane->GetCut();
   fClusterPulseSum    =  0.0;
   fClusterLimit       =  new DR3(fCut->GetClusterLimit());
@@ -230,7 +230,7 @@ void DHit::copy(DHit* aHit, DPlane* aPlane)  // Copy with minimal information (F
   fStripsInClusterArea = fCut->GetStripsInClusterArea();
 
   fPositionAlgorithm = fPlane->GetSetup().GetPlanePar(fPlane->GetPlaneNumber()).HitPositionAlgorithm;
-  fStripsInClusterDemanded = 0; 
+  fStripsInClusterDemanded = 0;
   */
   /*
   tPixelIndexList        = new Int_t[fTableSize];   //AP 2016/07/28
@@ -241,17 +241,17 @@ void DHit::copy(DHit* aHit, DPlane* aPlane)  // Copy with minimal information (F
   fStripDistanceU        = new Float_t[500]; // [fStripsInClusterArea];
   fStripDistanceV        = new Float_t[500]; // [fStripsInClusterArea];
   fSNneighbour = -1.0;
-  */  
+  */
   //fStoNover2 = 0; // MB/12/11/2010
-  
+
   fMCHitID              = -1;  // AP 2015/07/30
   fStripsFromMCHitID    =  0;  // AP 2016/07/28
   fStripsInClusterFound =  0;
-  
+
   fNormMaxStd           = -1000; // AP 2017/05/09
   fNormMinStd           = -1000; // AP 2017/05/09
   fMainAxisPhi          = -1000; // AP 2017/05/09
-  
+
 }
 //______________________________________________________________________________
 //
@@ -310,12 +310,12 @@ void DHit::clone(DHit *original, Bool_t fullCopy)// VR 2014.08.28
   _monteCarloInfo               = original->_monteCarloInfo; // LC 2014/12/15
   fMCHitID                      = original->fMCHitID;            // AP 2016/07/28
   fStripsFromMCHitID            = original->fStripsFromMCHitID;  // AP 2016/07/28
-  
+
   fNormMaxStd                   = original->fNormMaxStd;         // AP 2017/05/09
   fNormMinStd                   = original->fNormMinStd;         // AP 2017/05/09
   fMainAxisPhi                  = original->fMainAxisPhi;        // AP 2017/05/09
-  
-   
+
+
   if(fullCopy)
   {
     for (Int_t i=0 ; i<fTableSize ; i++)
@@ -330,14 +330,14 @@ void DHit::clone(DHit *original, Bool_t fullCopy)// VR 2014.08.28
     }
   }
 }
- 
-//______________________________________________________________________________
-//  
-DHit::~DHit()
-{ 
 
-  // DHit default destructor 
-  
+//______________________________________________________________________________
+//
+DHit::~DHit()
+{
+
+  // DHit default destructor
+
   delete fPositionHit;
   delete fPositionHitCG;
   delete fPositionHitEta;
@@ -367,8 +367,8 @@ DHit::~DHit()
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionUhitCG() const 
+//
+Float_t DHit::GetPositionUhitCG() const
 {
   Float_t tUhitPos;
   tUhitPos = (*fPositionHitCG)(0);
@@ -376,8 +376,8 @@ Float_t DHit::GetPositionUhitCG() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionVhitCG() const 
+//
+Float_t DHit::GetPositionVhitCG() const
 {
   Float_t tVhitPos;
   tVhitPos = (*fPositionHitCG)(1);
@@ -385,8 +385,8 @@ Float_t DHit::GetPositionVhitCG() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionWhitCG() const 
+//
+Float_t DHit::GetPositionWhitCG() const
 {
   Float_t tWhitPos;
   tWhitPos = (*fPositionHitCG)(2);
@@ -395,8 +395,8 @@ Float_t DHit::GetPositionWhitCG() const
 
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionUhitEta() const 
+//
+Float_t DHit::GetPositionUhitEta() const
 {
   Float_t tUhitPos;
   tUhitPos = (*fPositionHitEta)(0);
@@ -404,8 +404,8 @@ Float_t DHit::GetPositionUhitEta() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionVhitEta() const 
+//
+Float_t DHit::GetPositionVhitEta() const
 {
   Float_t tVhitPos;
   tVhitPos = (*fPositionHitEta)(1);
@@ -413,8 +413,8 @@ Float_t DHit::GetPositionVhitEta() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionUhitCG33() const 
+//
+Float_t DHit::GetPositionUhitCG33() const
 {
   Float_t tUhitPos;
   tUhitPos = (*fPositionHitCG33)(0);
@@ -422,8 +422,8 @@ Float_t DHit::GetPositionUhitCG33() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionVhitCG33() const 
+//
+Float_t DHit::GetPositionVhitCG33() const
 {
   Float_t tVhitPos;
   tVhitPos = (*fPositionHitCG33)(1);
@@ -431,8 +431,8 @@ Float_t DHit::GetPositionVhitCG33() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionUhitCG22() const 
+//
+Float_t DHit::GetPositionUhitCG22() const
 {
   Float_t tUhitPos;
   tUhitPos = (*fPositionHitCG22)(0);
@@ -440,8 +440,8 @@ Float_t DHit::GetPositionUhitCG22() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionVhitCG22() const 
+//
+Float_t DHit::GetPositionVhitCG22() const
 {
   Float_t tVhitPos;
   tVhitPos = (*fPositionHitCG22)(1);
@@ -449,8 +449,8 @@ Float_t DHit::GetPositionVhitCG22() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionUhitEta22() const 
+//
+Float_t DHit::GetPositionUhitEta22() const
 {
   Float_t tUhitPos;
   tUhitPos = (*fPositionHitEta22)(0);
@@ -458,16 +458,16 @@ Float_t DHit::GetPositionUhitEta22() const
 }
 
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionVhitEta22() const 
+//
+Float_t DHit::GetPositionVhitEta22() const
 {
   Float_t tVhitPos;
   tVhitPos = (*fPositionHitEta22)(1);
   return tVhitPos;
 }
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionUhit() const 
+//
+Float_t DHit::GetPositionUhit() const
 {
   Float_t tUhitPos;
 
@@ -476,8 +476,8 @@ Float_t DHit::GetPositionUhit() const
   return tUhitPos;
 }
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionVhit() const 
+//
+Float_t DHit::GetPositionVhit() const
 {
   Float_t tVhitPos;
 
@@ -487,7 +487,7 @@ Float_t DHit::GetPositionVhit() const
 }
 //______________________________________________________________________________
 //
-Float_t DHit::GetResolutionUhit() const 
+Float_t DHit::GetResolutionUhit() const
 {
   Float_t tUhitRes;
 
@@ -496,8 +496,8 @@ Float_t DHit::GetResolutionUhit() const
   return tUhitRes;
 }
 //______________________________________________________________________________
-//  
-Float_t DHit::GetResolutionVhit() const 
+//
+Float_t DHit::GetResolutionVhit() const
 {
   Float_t tVhitRes;
 
@@ -515,8 +515,8 @@ void DHit::SetResolutionUVhit(Float_t resolutionU,
   return;
 }
 //______________________________________________________________________________
-//  
-Float_t DHit::GetPositionWhit() const 
+//
+Float_t DHit::GetPositionWhit() const
 {
   Float_t tWhitPos;
 
@@ -528,9 +528,9 @@ Float_t DHit::GetPositionWhit() const
 
 
 // //______________________________________________________________________________
-// //  
+// //
 // Removed bu JB, 2009/05/12
-// Float_t DHit::GetPulseHeight(Int_t tStripIndex) 
+// Float_t DHit::GetPulseHeight(Int_t tStripIndex)
 // {
 //   if (tStripIndex < fSeed->GetNeighbourCount() && tStripIndex >= 0)
 //     return fSeed->GetNeighbour(tStripIndex)->GetPulseHeight();
@@ -541,11 +541,11 @@ Float_t DHit::GetPositionWhit() const
 // }
 
 //______________________________________________________________________________
-//  
+//
 Float_t DHit::Distance( DHit *aHit) {
   // Return the distance between this hit and the pointed hit
   // the pointed hit position (from another plane) is extrapolated to the plane of this hit
-  // assuming a flat slope 
+  // assuming a flat slope
   //
   // JB, 2009/05/21
   // Modified: JB, 2010/11/25, use new method to transform from one plane to the other
@@ -566,16 +566,16 @@ Float_t DHit::Distance( DHit *aHit) {
   // Insure that z position is 0 for 2D length computation
   hitPosition.SetValue( hitPosition(0), hitPosition(1), (Float_t)0.);
   //printf("  dist = %f,  %f, %f = %f\n", hitPosition(0), hitPosition(1), hitPosition(2), hitPosition.Length());
-  
+
   return hitPosition.Length();
 }
 
 //______________________________________________________________________________
-//  
+//
 Float_t DHit::DistanceMC( DHit *aHit) {
   // Return the distance between this hit and the pointed hit
   // the pointed hit position (from another plane) is extrapolated to the plane of this hit
-  // assuming a flat slope 
+  // assuming a flat slope
   //
   // JB, 2009/05/21
   // Modified: JB, 2010/11/25, use new method to transform from one plane to the other
@@ -596,12 +596,12 @@ Float_t DHit::DistanceMC( DHit *aHit) {
   // Insure that z position is 0 for 2D length computation
   hitPosition.SetValue( hitPosition(0), hitPosition(1), (Float_t)0.);
   //printf("  dist = %f,  %f, %f = %f\n", hitPosition(0), hitPosition(1), hitPosition(2), hitPosition.Length());
-  
+
   return hitPosition.Length();
 }
 
 //______________________________________________________________________________
-//  
+//
 Float_t DHit::Distance( DTrack *aTrack) {
   // Return the distance between this hit and the pointed track impact in the plane
   //
@@ -613,12 +613,12 @@ Float_t DHit::Distance( DTrack *aTrack) {
   // Insure that z position is 0 for 2D length computation
   impactPosition.SetValue( impactPosition(0), impactPosition(1), (Float_t)0.);
   //printf("  dist = %f,  %f, %f = %f\n", hitPosition(0), hitPosition(1), hitPosition(2), hitPosition.Length());
-  
+
   return impactPosition.Length();
 }
 
 //______________________________________________________________________________
-//  
+//
 Float_t DHit::DistanceMC( DTrack *aTrack) {
   // Return the distance between this hit and the pointed track impact in the plane
   //
@@ -630,48 +630,48 @@ Float_t DHit::DistanceMC( DTrack *aTrack) {
   // Insure that z position is 0 for 2D length computation
   impactPosition.SetValue( impactPosition(0), impactPosition(1), (Float_t)0.);
   //printf("  dist = %f,  %f, %f = %f\n", hitPosition(0), hitPosition(1), hitPosition(2), hitPosition.Length());
-  
+
   return impactPosition.Length();
 }
 
 //______________________________________________________________________________
-//  
+//
 Float_t DHit::Distance( DR3 *aPoint) {
   // Return the distance between this hit and the point
   // which coordinates are assumed to be given in the frame of the hit plane.
   //
   // JB, 2011/07/25
-  
+
   DR3 aPosition( *aPoint );
   aPosition -= *(GetPosition());
-  
+
   // Insure that z position is 0 for 2D length computation
   aPosition.SetValue( aPosition(0), aPosition(1), (Float_t)0.);
   //printf("  dist = %f,  %f, %f = %f\n", hitPosition(0), hitPosition(1), hitPosition(2), hitPosition.Length());
-  
+
   return aPosition.Length();
 }
 
 //______________________________________________________________________________
-//  
+//
 Float_t DHit::DistanceMC( DR3 *aPoint) {
   // Return the distance between this hit and the point
   // which coordinates are assumed to be given in the frame of the hit plane.
   //
   // JB, 2011/07/25
-  
+
   DR3 aPosition( *aPoint );
   aPosition -= GetMonteCarloPosition();
-  
+
   // Insure that z position is 0 for 2D length computation
   aPosition.SetValue( aPosition(0), aPosition(1), (Float_t)0.);
   //printf("  dist = %f,  %f, %f = %f\n", hitPosition(0), hitPosition(1), hitPosition(2), hitPosition.Length());
-  
+
   return aPosition.Length();
 }
 
 //______________________________________________________________________________
-//  
+//
 Bool_t DHit::Analyse(DStrip* aStrip)
 {
   // Construct a hit (or cluster) from a seed strip:
@@ -686,7 +686,7 @@ Bool_t DHit::Analyse(DStrip* aStrip)
   // Different CoGs and Etas added by JB, 2007 Nov
   // Realeasing (Found=false) neighbour strips for rejected hit, JB 2012/08/18
   // Storing noise of strips, JB 2012/08/19
-  
+
   fFound      = kFALSE; // JB 2009/05/22
   fSeed       = aStrip;
   fPSeed      = NULL;
@@ -695,7 +695,7 @@ Bool_t DHit::Analyse(DStrip* aStrip)
   Bool_t    valid    = kFALSE; // default return value
   Bool_t    tDigital = fPlane->GetStripResponseSetting();
   Int_t     tStripIndex;
-  Int_t     tStripsInClusterPossible = 0; // remove a warning 
+  Int_t     tStripsInClusterPossible = 0; // remove a warning
 
   fPositionHitCG->Zero();           // clear the position
   fPositionHitEta->Zero();
@@ -708,25 +708,25 @@ Bool_t DHit::Analyse(DStrip* aStrip)
   fSeedNoise           = fSeed->GetNoise();
 
   fSeedU      = fSeed->GetPosition()(0);
-  fSeedV      = fSeed->GetPosition()(1); 
+  fSeedV      = fSeed->GetPosition()(1);
   fIndexSeed  = fSeed->GetStripIndex();
-  
-  // here, the neighbourhood of strips is assumed to be ordered, 
+
+  // here, the neighbourhood of strips is assumed to be ordered,
   // at index 0 is the seed, to higher indices
   // the neighbourstrips are further away from the seed.
 
   Float_t tClusterAreaNoise = 0.;
   fClusterAreaPulseSum      = 0.; // area means the cluster except the seed
-  fClusterPulseSum        = fSeed->GetPulseHeight(); 
+  fClusterPulseSum        = fSeed->GetPulseHeight();
   fClusterNoiseAverage    = (fSeed->GetNoise())*(fSeed->GetNoise());  // => so it's only a seed  strip in the beginning
-  fStripsInClusterFound   = 1;                       
-  fSeed->SetFound(kTRUE);                            
-  
+  fStripsInClusterFound   = 1;
+  fSeed->SetFound(kTRUE);
+
   if (fStripsInClusterDemanded >0)     // exact number demanded
     tStripsInClusterPossible = fStripsInClusterDemanded;
   if (fStripsInClusterDemanded == 0)     // free number allowed
     tStripsInClusterPossible = fSeed->GetNeighbourCount();
-  
+
   fStripIndexArray[0]  = 0;                            // store seed index
   //fStripIndex[0]       = fPSeed->GetPixelIndex();      // store seed index, JB 2009/05/12
   fStripIndex[0] = fSeed->GetStripIndex();              // store seed index,changing the previous line YV 27/11/09
@@ -739,19 +739,19 @@ Bool_t DHit::Analyse(DStrip* aStrip)
   // associate neighbouring strip
   //===============
   tStripIndex = 1; // start with the first neighbour, in the geometric ordered neighbourhood, avoid 0 because it is the strip itself!
- 
+
   if(fDebugHit>1) printf("  DHit: analyse seed strip %d (pixel %d) (q=%f) with possibly %d neighbours\n", fIndexSeed, fSeed->GetPixelIndex(), fSeed->GetPulseHeight(), tStripsInClusterPossible);
 
   while ( tStripIndex < tStripsInClusterPossible ) { // Loop on all possible neighbouring strips
     // get the neighbour
-    aNeighbour = fSeed->GetNeighbour(tStripIndex);  
+    aNeighbour = fSeed->GetNeighbour(tStripIndex);
     if(fDebugHit>2) printf( "  testing neighbour %d (strip index %d), found=%d\n", tStripIndex, aNeighbour->GetStripIndex(), aNeighbour->Found());
     //--------------------------------------------------
     if(!(aNeighbour->Found())){ // to avoid doublecounting of the same pixels
 
       fClusterAreaPulseSum     += aNeighbour->GetPulseHeight();
       tClusterAreaNoise +=(aNeighbour->GetNoise())*(aNeighbour->GetNoise());
-      // clear 
+      // clear
       fStripIndexArray[tStripIndex]  = tStripIndex; // put strip index in array
       fStripIndex[tStripIndex]       = aNeighbour->GetStripIndex(); // this is the index in the matrix, JB 2009/05/12
       fStripPulseHeight[tStripIndex] = aNeighbour->GetPulseHeight();
@@ -760,7 +760,7 @@ Bool_t DHit::Analyse(DStrip* aStrip)
       fStripDistanceV[tStripIndex] = fSeed->DistanceV(aNeighbour->GetPosition());
       // check whether strip has sufficient pulsheight-to-noise ratio
       // and whether it is inside the geometrical cluster limits.
-      
+
       fStripsInClusterFound++;
       // increment counter of continous adjacent strips
       aNeighbour->SetFound(kTRUE);
@@ -792,73 +792,73 @@ Bool_t DHit::Analyse(DStrip* aStrip)
     if( fDebugHit>1) {
       printf("DHit: Analyse after %d strips ordering by pulseheight:\n", fStripsInClusterFound);
       for( Int_t iStripIndex=0; iStripIndex < fStripsInClusterFound; iStripIndex++ ) {
-        printf("    neighbour %d/%d/%d at strip index %d found with noise %.1f and pulseheight %.1f!\n", iStripIndex, fStripIndex[iStripIndex], fStripIndexArray[iStripIndex], fSeed->GetNeighbour(fStripIndexArray[iStripIndex])->GetStripIndex(), fStripNoise[fStripIndexArray[iStripIndex]], fStripPulseHeight[fStripIndexArray[iStripIndex]]); 
+        printf("    neighbour %d/%d/%d at strip index %d found with noise %.1f and pulseheight %.1f!\n", iStripIndex, fStripIndex[iStripIndex], fStripIndexArray[iStripIndex], fSeed->GetNeighbour(fStripIndexArray[iStripIndex])->GetStripIndex(), fStripNoise[fStripIndexArray[iStripIndex]], fStripPulseHeight[fStripIndexArray[iStripIndex]]);
       }
     }
   } // end skip for binary pixel output
-  
+
   //==============
   // Additional properties
-  //==============  
+  //==============
   // The number of strips in the cluster and the cluster charge sum are now known
-  // Depending wether the noise is calculated or not, 
+  // Depending wether the noise is calculated or not,
   //  the SN ratio is a real ratio or simply the charge
   // JB 2010/10/05 and 2010/10/15 to separately compute Cluster and Area values
-  
+
   tClusterAreaNoise  = sqrt(tClusterAreaNoise);
-  
+
   if (fClusterNoiseAverage > 0.5) {
     fClusterSignalToNoise  = fClusterPulseSum / sqrt(fClusterNoiseAverage);
   }
   else {
     fClusterSignalToNoise  = fClusterPulseSum;
   }
-  
+
   if (tClusterAreaNoise > 0.5) {
     fSNneighbour           = fClusterAreaPulseSum / tClusterAreaNoise;
   }
   else {
     fSNneighbour           = fClusterAreaPulseSum;
   }
-  
+
   if(fDebugHit>1) printf("  DHit:Analyse  potential hit has : PulseSum=%f, areaPulseSum=%f, noise=%f, areaNoise=%f, clusterSignalToNoise=%f, areaSignalToNoise=%f <?> cut %f, # pixels=%d within? [%d, %d]\n", fClusterPulseSum, fClusterAreaPulseSum, fClusterNoiseAverage, tClusterAreaNoise, fClusterSignalToNoise, fSNneighbour, fCut->GetNeighbourPulseHeightToNoise(), fStripsInClusterFound, fCut->GetStripsInClusterMin(), fCut->GetStripsInClusterMax());
-  
-  
+
+
   //==============
   // Select or not the hit
-  //==============  
-  
-  if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise() 
+  //==============
+
+  if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise()
      && fCut->GetStripsInClusterMin() <= fStripsInClusterFound
      && fStripsInClusterFound <= fCut->GetStripsInClusterMax()
      ){
     valid = kTRUE;
-  
+
     fTimestamp = 0.; // JB 2017/10/13
 
     //===============
     // Compute hit position
     //===============
-    
-    // start to  calculate the exact hit position, which is in first order the seed strip position  
+
+    // start to  calculate the exact hit position, which is in first order the seed strip position
     (*fPositionHit)(0)    = (fSeed->GetPosition())(0);
     (*fPositionHit)(1)    = (fSeed->GetPosition())(1);
     (*fPositionHit)(2)    = (fSeed->GetPosition())(2);
-    
+
     // This is the container (3D distance) for the correction to be computed with different algorithm
     DR3 tCorrection ; tCorrection.SetValue(0.,0.,0.);
     DR3 tCorTemp ;
-    
-    
+
+
     //===============
     //---- for planes using STRIPS:
     //
     // ref plane condition removed by JB, 2007 June
     //if(fPlane->GetStatus()<3 && fPlane->GetAnalysisMode()<2){ // select reference planes only
     if(fPlane->GetAnalysisMode()<2){ // select STRIP planes
-      
+
       fPhSeed       =  fSeed->GetPulseHeight();
-      fPosSeed      =  fSeedU;              
+      fPosSeed      =  fSeedU;
       fPhRofSeed    =  fSeed->GetNeighbour(1)->GetPulseHeight();
       fPhLofSeed    =  fSeed->GetNeighbour(2)->GetPulseHeight();
       fPosRofSeed   = (fSeed->GetNeighbour(1)->GetPosition())(0);
@@ -866,15 +866,15 @@ Bool_t DHit::Analyse(DStrip* aStrip)
       fIndexRofSeed =  fSeed->GetNeighbour(1)->GetStripIndex();
       fIndexLofSeed =  fSeed->GetNeighbour(2)->GetStripIndex();
       fIndexSeed    =  fSeed->GetStripIndex();
-      
+
       Float_t tSeedSign = fPhSeed/fabs(fPhSeed);
-      
+
       if ( tSeedSign*fPhLofSeed > tSeedSign*fPhRofSeed ) {
         fPhLeft     = fPhLofSeed;
         fPhRight    = fPhSeed;
         fPosLeft    = fPosLofSeed;
         fPosRight   = fPosSeed;
-        fIndexLeft  = fIndexLofSeed; 
+        fIndexLeft  = fIndexLofSeed;
         fIndexRight = fIndexSeed;
       } else {
         fPhLeft     = fPhSeed;
@@ -884,64 +884,64 @@ Bool_t DHit::Analyse(DStrip* aStrip)
         fIndexLeft  = fIndexSeed;
         fIndexRight = fIndexRofSeed;
       }
-      
-      
+
+
       // Charge Fraction algorithm optimizes hit position, comprises other known algorithms like
       // center of gravitiy           : weight_k = charge fraction
       // 2 strip linear eta algorithm : center of gravity with 2 strips in cluster
       // 2 strip non-linear eta       : 2 strips, weights calculated from charge fraction distribution on strips
-      
+
       Float_t tChargeFraction, aWeight ;
-      
+
       TH1F   *tChargeFractionDensityData;
       Int_t   tDensityBinsN, tBin;
       Float_t tLL, tUL;
-      
-      Int_t   tClusterType; 
+
+      Int_t   tClusterType;
       Int_t   tHk;
-      
+
       tClusterType = 2;
       Float_t tDistU;
       if(fPositionAlgorithm==1){
         if(fPhLeft < fPhRight){
           tChargeFraction  = fPhLeft / (fPhLeft+fPhRight); // seed is on right
           aWeight          = tChargeFraction;              // this is C.o.G. Method
-          tDistU           = fPosRight-fPosLeft;  
+          tDistU           = fPosRight-fPosLeft;
         }else {
           tChargeFraction  = fPhRight / (fPhLeft+fPhRight); // seed is right
           aWeight          = tChargeFraction;               // this is C.o.G. Method
-          tDistU           = -fPosRight+fPosLeft;  
+          tDistU           = -fPosRight+fPosLeft;
         }
         tCorTemp.SetValue(tDistU,(Float_t)0.,(Float_t)0.) ;
         tCorTemp *= aWeight ;
-        
+
         tCorrection += tCorTemp ;
-        
+
         // assign the digital strip position
         *fPositionHitCG    = *fPositionHit     ;
         // and now change u-value with CoG correction
-        (*fPositionHitCG) -= tCorrection       ; 
+        (*fPositionHitCG) -= tCorrection       ;
         (*fPositionHit)    = (*fPositionHitCG) ; // needed if CoG is used
       }
-      
+
       if ( tDigital ){
         if(fDebugHit>1) {
           printf("DHit.cxx:evaluateHitCluster = Digital response only set (forgot about etaXXX.root file?) for plane %d \n",fPlane->GetPlaneNumber());
         }
-        
+
       }
-      
+
       else if ( fPositionAlgorithm==2){
-        
+
         tCorrection.SetValue(0.,0.,0.);
         // treat seed and strip with next highest pulse (2 strips):
         if(fPhLeft < fPhRight){
           tChargeFraction  = fPhLeft / (fPhLeft+fPhRight); // seed is right
-          tDistU           = fPosRight-fPosLeft;  
-          
+          tDistU           = fPosRight-fPosLeft;
+
         }else {
           tChargeFraction  = fPhRight / (fPhLeft+fPhRight); // seed is right
-          tDistU           = -fPosRight+fPosLeft;  
+          tDistU           = -fPosRight+fPosLeft;
         }
         tHk = 1 + (tClusterType-2)*2; // so tHk = 1??
         tChargeFractionDensityData = fPlane->GetChargeFractionDensity(tHk);
@@ -949,30 +949,30 @@ Bool_t DHit::Analyse(DStrip* aStrip)
         tLL           = tChargeFractionDensityData->GetXaxis()->GetXmin();
         tUL           = tChargeFractionDensityData->GetXaxis()->GetXmax();
         tBin = (Int_t)( (tChargeFraction-tLL) * tDensityBinsN/(tUL-tLL) );
-        
+
         if (tBin>tDensityBinsN) tBin = tDensityBinsN - 50;
         if (tBin<0) tBin = 50;
-        
-        aWeight = tChargeFractionDensityData->GetBinContent(tBin);       
+
+        aWeight = tChargeFractionDensityData->GetBinContent(tBin);
         tCorTemp.SetValue(tDistU,(Float_t)0.,(Float_t)0.) ;
         tCorTemp *= aWeight ;
-        
+
         tCorrection += tCorTemp ;
         (*fPositionHit) -= tCorrection;
-        
-      } //end of if PositionAlgorithm ==2 
+
+      } //end of if PositionAlgorithm ==2
     } // end select STRIP planes
-    
-    
+
+
     //===============
     //--- for PIXEL planes
     //
     else {
-      
+
       //==================
       //Center of gravity with all the neighbours
       // pay attention that pixels are ordered geometricaly from one corner to the other in the fStripDistanceU/V arrays
-      
+
       tCorrection.SetValue( 0., 0., 0.);
       Float_t tClusterPulseSum = 0.;
       for( Int_t iStripIndex=0; iStripIndex < fStripsInClusterFound; iStripIndex++ ) {
@@ -983,12 +983,12 @@ Bool_t DHit::Analyse(DStrip* aStrip)
         tClusterPulseSum += fStripPulseHeight[iStripIndex];
         //printf("DHit::Analyse plane %d, hit %2d, strip %2d, corr(%.2f, %.2f)=dist(%.2f, %.2f)*%.0f/%.0f\n", fPlane->GetPlaneNumber(), fHitNumber, iStripIndex, tCorrection(0), tCorrection(1), fStripDistanceU[iStripIndex], fStripDistanceV[iStripIndex], fStripPulseHeight[iStripIndex], tClusterPulseSum);
       }
-      
+
       *fPositionHitCG = tCorrection/tClusterPulseSum;
-      
+
       //==================
       //Center of gravity restricted to a 3x3 cluster
-      
+
       tCorrection.SetValue( 0., 0., 0.);
       Float_t tCluster33PulseSum = 0.;
       for( Int_t iStripIndex=0; iStripIndex < fStripsInClusterFound; iStripIndex++ ) {
@@ -1004,14 +1004,14 @@ Bool_t DHit::Analyse(DStrip* aStrip)
         }
       }
       *fPositionHitCG33 = tCorrection/tCluster33PulseSum;
-      
-      
+
+
       //==================
       //Center of gravity restricted 2x2 neighbours with the highest charge, JB Nov 2007
       // 2x2 includes the seed
-      
+
       // The index of the neighbours with the highest charges are ordered in fStripIndexArray
-      
+
       tCorrection.SetValue( 0., 0., 0.);
       Float_t tCluster22PulseSum = 0.;
       Int_t tOrderedIndex;
@@ -1023,70 +1023,70 @@ Bool_t DHit::Analyse(DStrip* aStrip)
         tCorrection += tCorTemp;
         tCluster22PulseSum += fStripPulseHeight[tOrderedIndex];
       }
-      *fPositionHitCG22 = tCorrection/tCluster22PulseSum; 
-      
-      
+      *fPositionHitCG22 = tCorrection/tCluster22PulseSum;
+
+
       //==================
       //Eta algorithm 3x3
       // correct the 3x3 center of gravity (tCorrection) using the integral histogram of the charge density
       // the eta position is the Y value of the bin with X value = tCorrection
       // if the tCorrection from CoG is out of the X axis range, do not correct
-      
+
       if ( tDigital ){ // check info file was there and Eta is available
         if(fDebugHit>1) {
           printf("  DHit.cxx:evaluateHitCluster = Digital or CoG response only set for plane %d (forgot about etaXXX.root file?)\n",fPlane->GetPlaneNumber());
         }
       }
       else {
-        
+
         TH1  *tEtaIntU = fPlane->GetEtaIntU();
         TH1  *tEtaIntV = fPlane->GetEtaIntV();
         Int_t iBinU    = tEtaIntU->FindBin( (*fPositionHitCG33-*fPositionHit)(0) );
         Int_t iBinV    = tEtaIntV->FindBin( (*fPositionHitCG33-*fPositionHit)(1) );
         Double_t corrU=0., corrV=0.;
-        
+
         // correct wrt CoG if possible
         if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
         if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
         tCorrection.SetValue( corrU, corrV, 0.);
-        
+
         *fPositionHitEta = *fPositionHit + tCorrection;
       }
-      
+
       //==================
       //Eta algorithm 2x2
       // correct the 2x2 center of gravity (tCorrection) using the integral histogram of the charge density
       // the eta position is the Y value of the bin with X value = tCorrection
       // if the tCorrection from CoG is out of the X axis range, do not correct
-      
+
       if ( tDigital ){ // check info file was there and Eta is available
         if(fDebugHit>1) {
           printf("  DHit.cxx:evaluateHitCluster = Digital or CoG response only set for plane %d (forgot about etaXXX.root file?)\n",fPlane->GetPlaneNumber());
         }
       }
       else {
-        
+
         TH1  *tEtaIntU2 = fPlane->GetEtaIntU2();
         TH1  *tEtaIntV2 = fPlane->GetEtaIntV2();
         Int_t iBinU    = tEtaIntU2->FindBin( (*fPositionHitCG22-*fPositionHit)(0) );
         Int_t iBinV    = tEtaIntV2->FindBin( (*fPositionHitCG22-*fPositionHit)(1) );
         Double_t corrU=0., corrV=0.;
-        
+
         // correct wrt CoG if possible
         if( 1<=iBinU && iBinU<=tEtaIntU2->GetNbinsX() ) corrU = tEtaIntU2->GetBinContent( iBinU);
         if( 1<=iBinV && iBinV<=tEtaIntV2->GetNbinsX() ) corrV = tEtaIntV2->GetBinContent( iBinV);
         tCorrection.SetValue( corrU, corrV, 0.);
-        
+
         *fPositionHitEta22 = *fPositionHit + tCorrection;
       }
-      
+
       //==================
       //Analog head-tail algorithm
       // Algorithm used for large incident angle when seed contains little info on position
       // Relies on the extreme pixels on the left and right
       // tCorrection.SetValue( (fStripDistanceU[iLeft]+fStripDistanceU[iRight])/2., , 0.);
       // *fPositionhitAHT = *fPositionHit - tCorrection;
-      
+
       //==================
       // Now choose which position is stored
       if( fPositionAlgorithm==1 ) { // Center of Gravity
@@ -1107,18 +1107,18 @@ Bool_t DHit::Analyse(DStrip* aStrip)
       else {
         printf("-*-*- WARNING: algorithm %d for position unknown, taking digital position\n", fPositionAlgorithm);
       }
-      
+
     } // end of PIXEL planes
-    
+
     if(fDebugHit>1) printf("        hit selected with %d pixels\n", fStripsInClusterFound);
-    
+
   } // end if hit selected
 
   // ========================
   else{ // hit rejected
     valid = kFALSE;
     if(fDebugHit>1) printf("        hit rejected, releasing %d pixels\n", fStripsInClusterFound-1);
-    
+
     // Release the neighbouring Strips associated to the seed
     // only the tested seed (Index=0) is not released
     // JB 2012/08/18
@@ -1133,7 +1133,7 @@ Bool_t DHit::Analyse(DStrip* aStrip)
 }
 
 //______________________________________________________________________________
-//  
+//
 Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxClusterSize)
 {
   // Construct a hit (or cluster) from a seed strip:
@@ -1157,7 +1157,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
   Bool_t    valid    = kFALSE; // default return value
   Bool_t    tDigital = fPlane->GetStripResponseSetting();
   Int_t     tStripIndex;
-  Int_t     tStripsInClusterPossible = 0; // remove a warning 
+  Int_t     tStripsInClusterPossible = 0; // remove a warning
 
   fPositionHitCG->Zero();           // clear the position
   fPositionHitEta->Zero();
@@ -1170,25 +1170,25 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
   fSeedNoise           = fSeed->GetNoise();
 
   fSeedU      = fSeed->GetPosition()(0);
-  fSeedV      = fSeed->GetPosition()(1); 
+  fSeedV      = fSeed->GetPosition()(1);
   fIndexSeed  = fSeed->GetStripIndex();
-  
-  // here, the neighbourhood of strips is assumed to be ordered, 
+
+  // here, the neighbourhood of strips is assumed to be ordered,
   // at index 0 is the seed, to higher indices
   // the neighbourstrips are further away from the seed.
 
   Float_t tClusterAreaNoise = 0.;
   fClusterAreaPulseSum      = 0.; // area means the cluster except the seed
-  fClusterPulseSum          = fSeed->GetPulseHeight(); 
+  fClusterPulseSum          = fSeed->GetPulseHeight();
   fClusterNoiseAverage      = (fSeed->GetNoise())*(fSeed->GetNoise());  // => so it's only a seed  strip in the beginning
-  fStripsInClusterFound     = 1;                       
+  fStripsInClusterFound     = 1;
   fSeed->SetFound(kTRUE);
-  
+
   if (fStripsInClusterDemanded >0)     // exact number demanded
     tStripsInClusterPossible = fStripsInClusterDemanded;
   if (fStripsInClusterDemanded == 0)     // free number allowed
     tStripsInClusterPossible = fSeed->GetNeighbourCount();
-  
+
   fStripIndexArray[0]  = 0;                            // store seed index
   fStripIndex[0]       = fSeed->GetStripIndex();       // store seed index,changing the previous line YV 27/11/09
   fStripPulseHeight[0] = fSeed->GetPulseHeight();      // store seed pulseheight
@@ -1200,20 +1200,20 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
   // associate neighbouring strip
   //===============
   tStripIndex = 1; // start with the first neighbour, in the geometric ordered neighbourhood, avoid 0 because it is the strip itself!
- 
+
   if(fDebugHit>1) printf("  DHit: analyse seed strip %d (pixel %d) (q=%f) with possibly %d neighbours\n", fIndexSeed, fSeed->GetPixelIndex(), fSeed->GetPulseHeight(), tStripsInClusterPossible);
 
   if( fPlane->GetAnalysisMode() < 2) { // if analog strip readout
     while ( tStripIndex < tStripsInClusterPossible ) { // Loop on all possible neighbouring strips
       // get the neighbour
-      aNeighbour = fSeed->GetNeighbour(tStripIndex);  
+      aNeighbour = fSeed->GetNeighbour(tStripIndex);
       if(fDebugHit>2) printf( "  testing neighbour %d (strip index %d), found=%d\n", tStripIndex, aNeighbour->GetStripIndex(), aNeighbour->Found());
       //--------------------------------------------------
       if(!(aNeighbour->Found())){ // to avoid doublecounting of the same pixels
 
         fClusterAreaPulseSum     += aNeighbour->GetPulseHeight();
         tClusterAreaNoise +=(aNeighbour->GetNoise())*(aNeighbour->GetNoise());
-        // clear 
+        // clear
         fStripIndexArray[tStripIndex]  = tStripIndex; // put strip index in array
         fStripIndex[tStripIndex]       = aNeighbour->GetStripIndex(); // this is the index in the matrix, JB 2009/05/12
         fStripPulseHeight[tStripIndex] = aNeighbour->GetPulseHeight();
@@ -1222,7 +1222,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
         fStripDistanceV[tStripIndex] = fSeed->DistanceV(aNeighbour->GetPosition());
         // check whether strip has sufficient pulsheight-to-noise ratio
         // and whether it is inside the geometrical cluster limits.
-      
+
         fStripsInClusterFound++;
         // increment counter of continous adjacent strips
         aNeighbour->SetFound(kTRUE);
@@ -1245,20 +1245,20 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
   } // end if analog strip readout
   else { //if pixel analog or binary readout
     //Doing a different cultering for binary readout using a iterative algorithm (most likely not optimal)
-    
+
     int seedIdx = fSeed->GetStripIndex();
     int seedCol = seedIdx%fPlane->GetStripsNu();
     int seedRow = seedIdx/fPlane->GetStripsNu();
-    
+
     if(fPlane->GetAnalysisMode() == 2 && (seedCol == 0 && seedRow == 0)) return kFALSE;
-    
+
     std::vector<int> _TheClusterPixelsList;
     _TheClusterPixelsList.clear();
     _TheClusterPixelsList.push_back(seedIdx);
 
     if(fDebugHit>1) {
       cout << endl;
-      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Seed pixel = " << fSeed->GetStripIndex() << " at (col,lin) = (" << seedCol << "," << seedRow << ")"; 
+      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Seed pixel = " << fSeed->GetStripIndex() << " at (col,lin) = (" << seedCol << "," << seedRow << ")";
       if(fPlane->GetAnalysisMode() == 2) cout << ", charge = " << fSeed->GetPulseHeight() << ", S/N = " << fSeed->GetPulseHeightToNoise();
       cout << ". Initial cluster size  = " << _TheClusterPixelsList.size() << endl;
       cout << endl;
@@ -1266,7 +1266,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
 
     //SON cut for pixels in case of analog output
     float SON_cut = 3.5;
-    
+
     //Define a region of interest (ROI) to look for pixels to add to the seed pixel
     int delta_col_ROI = 50;
     int delta_row_ROI = delta_col_ROI;
@@ -1275,16 +1275,16 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
     for(int icol=0;icol<delta_col_ROI+1;icol++) {
       int testCol = seedCol + (-(delta_col_ROI/2) + icol);
       if(testCol < 0 || testCol > fPlane->GetStripsNu()) continue;
-      
+
       for(int irow=0;irow<delta_row_ROI+1;irow++) {
 	int testRow = seedRow + (-(delta_row_ROI/2) + irow);
 	if(testRow < 0 || testRow > fPlane->GetStripsNv()) continue;
-	
+
 	if(testRow == seedRow && testCol == seedRow) continue;
-	
+
 	int testIdx = testCol + testRow*fPlane->GetStripsNu();
 	aNeighbour = fPlane->GetStrip(testIdx);
-	
+
 	if(aNeighbour == NULL) {
 	  cout << "WARNING:: Index " << testIdx << " is out of bounds!!!" << endl;
 	  continue;
@@ -1292,7 +1292,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
 	if(aNeighbour->Found()) continue;
 	//Only consider pixels with a minimum S/N in case of analog output sensors
 	if(fPlane->GetAnalysisMode() == 2 && aNeighbour->GetPulseHeightToNoise() < SON_cut) continue;
-	
+
 	_ROIlist.push_back(testIdx);
       }
     }
@@ -1309,31 +1309,31 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
     std::vector<int> _FiredPixelsList;
     do {
       _FiredPixelsList.clear();
-     
-      //Check for pixels neighbour to already included pixels 
+
+      //Check for pixels neighbour to already included pixels
       for(Int_t iPix = 0; iPix < int(_ROIlist.size()); iPix++) { // being loop over ROI pixels
 	aNeighbour = fPlane->GetStrip(_ROIlist[iPix]);
-	
+
 	int testIdx = aNeighbour->GetStripIndex();
 	int testCol = testIdx%fPlane->GetStripsNu();
         int testRow = testIdx/fPlane->GetStripsNu();
-	
+
 	//Now check if test pixel is neighbour to any pixel already included in cluster
 	for(int iPixClus=0; iPixClus < int(_TheClusterPixelsList.size()); iPixClus++) { // begin loop over pixel already included to cluster
 	  if(_ROIlist[iPix] == _TheClusterPixelsList[iPixClus]) continue;
 	  aPixel = fPlane->GetStrip(_TheClusterPixelsList[iPixClus]);
-	
+
 	  int clusIdx = aPixel->GetStripIndex();
 	  int clusCol = clusIdx%fPlane->GetStripsNu();
           int clusRow = clusIdx/fPlane->GetStripsNu();
-	  
+
 	  int deltaRow = abs(clusRow - testRow);
           int deltaCol = abs(clusCol - testCol);
-	  if((deltaRow ==  1 && deltaCol ==  0) || //pixel to the right/left 
+	  if((deltaRow ==  1 && deltaCol ==  0) || //pixel to the right/left
 	     (deltaRow ==  0 && deltaCol ==  1) || //pixel at the top/bottom
 	     (deltaRow ==  1 && deltaCol ==  1)    //pixel at diagonal
             ) {
-	    
+
 	    //Check if this pixel has been already added to the list of fired pixels
 	    bool IsNotAlreadyIn = true;
 	    for(int iNewPix=0; iNewPix < int(_FiredPixelsList.size()); iNewPix++) {
@@ -1351,7 +1351,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       if(fDebugHit>1) cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Found " << _FiredPixelsList.size() << " new pixels around seed pixel at iteration " << iteration_counter+1 << "!!!" << endl;
       for(int iNewPix=0; iNewPix < int(_FiredPixelsList.size()); iNewPix++) { //begin loop over new cluster pixels
 	_TheClusterPixelsList.push_back(_FiredPixelsList[iNewPix]);
-	
+
 	if(fDebugHit>1) {
 	  aPixel = fPlane->GetStrip(_FiredPixelsList[iNewPix]);
 	  int clusIdx = aPixel->GetStripIndex();
@@ -1361,14 +1361,14 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
 	  if(fPlane->GetAnalysisMode() == 2) cout << ", charge = " << aPixel->GetPulseHeight() << ", S/N = " << aPixel->GetPulseHeightToNoise();
 	  cout << endl;
 	}
-	
+
 	for(Int_t iPix = 0; iPix < int(_ROIlist.size()); iPix++) { // being loop over ROI pixels
 	  if(_FiredPixelsList[iNewPix] == _ROIlist[iPix]) {
 	    _ROIlist.erase(_ROIlist.begin() + iPix);
 	    break;
 	  }
 	} //end loop over ROI pixels
-	
+
       } //end loop over new cluster pixels
       if(fDebugHit>1 && int(_FiredPixelsList.size()) > 0) {
 	cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Cluster size increased to " << _TheClusterPixelsList.size() << " at iteration " << iteration_counter+1 << endl;
@@ -1381,13 +1381,13 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
     while(int(_FiredPixelsList.size()) > 0);
     _FiredPixelsList.clear();
     _ROIlist.clear();
-    
+
     if(fDebugHit>1) {
       cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Final cluster size is " << _TheClusterPixelsList.size() << " after " << iteration_counter << " iterations!" << endl;
       cout << endl;
     }
 
-    
+
     //Excluding repeated pixel. Only keeping the ones with the lowest time-stamp:
     std::vector<int> _TheClusterPixelsList_NotRepeated;
     _TheClusterPixelsList_NotRepeated.clear();
@@ -1407,11 +1407,11 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
 	int clusIdx2 = (fPlane->GetStrip(_TheClusterPixelsList[iPixClus2]))->GetStripIndex();
 	int theRow2  = clusIdx2%fPlane->GetStripsNu();
 	int theCol2  = clusIdx2/fPlane->GetStripsNu();
-	
+
 	if(theRow == theRow2 && theCol == theCol2) {
 	  if(fDebugHit>1) {
-	    cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Pixel " << iPixClus1+1 
-	         << " in list at (col,lin) = (" << theCol << "," << theRow << ") is repated, the other pixel is at (col,lin) = (" 
+	    cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Pixel " << iPixClus1+1
+	         << " in list at (col,lin) = (" << theCol << "," << theRow << ") is repated, the other pixel is at (col,lin) = ("
 	         << theCol2 << "," << theRow2 << ")"
 	         << endl;
 	  }
@@ -1423,7 +1423,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       //If the pixel is not already in list inclue it
       if(IsNotRepeated) _TheClusterPixelsList_NotRepeated.push_back(_TheClusterPixelsList[iPixClus1]);
     }
-    
+
     //Fill list with the removed pixes
     for(int iPixClus1=0; iPixClus1 < int(_TheClusterPixelsList.size()); iPixClus1++) {
       bool IsRepeated = true;
@@ -1438,12 +1438,12 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       aNeighbour->SetFound(kTRUE);
     }
     _TheClusterPixelsList_Repeated.clear();
-    
+
     if(_TheClusterPixelsList.size() != _TheClusterPixelsList_NotRepeated.size()
        && fDebugHit>1
       ) {
       cout << endl;
-      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Cluster size previous to removing repeated pixels: " << _TheClusterPixelsList.size() 
+      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Cluster size previous to removing repeated pixels: " << _TheClusterPixelsList.size()
            << ". Cluster size after removing repeated pixels: " << _TheClusterPixelsList_NotRepeated.size()
            << ". Removed " << _TheClusterPixelsList.size() - _TheClusterPixelsList_NotRepeated.size() << " repated pixels!!!"
            << endl;
@@ -1464,11 +1464,11 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       int clusIdx = aNeighbour->GetStripIndex();
       int clusRow  = clusIdx%fPlane->GetStripsNu();
       int clusCol  = clusIdx/fPlane->GetStripsNu();
-      
+
       double PixelU,PixelV,w,height;
       fPlane->ComputeStripPosition(clusCol,clusRow, PixelU, PixelV, w);
       height  = aNeighbour->GetPulseHeight();
-      
+
       COG_U += PixelU*height;
       COG_V += PixelV*height;
       TotH  += height;
@@ -1479,11 +1479,11 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
     //Order the pixels depending of analog or digital output
     for(int iii=2;iii<=int(_TheClusterPixelsList.size());iii++) {
       for(int jjj=0;jjj<=int(_TheClusterPixelsList.size())-iii;jjj++) {
-	
+
 	if(fPlane->GetAnalysisMode() == 2) {
 	  //In case of analog output arrange the pixels according to charge,
 	  //from highest (seed pixels) to lowest
-	  
+
 	  double charge_jjj   = (fPlane->GetStrip(_TheClusterPixelsList[jjj]))->GetPulseHeight();
 	  double charge_jjjp1 = (fPlane->GetStrip(_TheClusterPixelsList[jjj]))->GetPulseHeight();
 	  if(charge_jjj < charge_jjjp1) {
@@ -1491,36 +1491,36 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
 	    _TheClusterPixelsList[jjj]   = _TheClusterPixelsList[jjj+1];
 	    _TheClusterPixelsList[jjj+1] = aux_idx;
 	  }
-	  
+
 	}
 	else if(fPlane->GetAnalysisMode() == 3) {
-	  //In case of digital output arrange the pixels according to their distance to the 
+	  //In case of digital output arrange the pixels according to their distance to the
 	  //center of gravitiy, from closest (seed pixels) to farest
-	  
+
 	  double PixelU,PixelV,w;
 	  int clusIdx, clusCol, clusRow;
-	  
+
 	  aNeighbour = fPlane->GetStrip(_TheClusterPixelsList[jjj]);
 	  clusIdx = aNeighbour->GetStripIndex();
 	  clusRow  = clusIdx%fPlane->GetStripsNu();
 	  clusCol  = clusIdx/fPlane->GetStripsNu();
 	  fPlane->ComputeStripPosition(clusCol,clusRow, PixelU, PixelV, w);
           double dist_jjj   = sqrt(pow(COG_U - PixelU,2) + pow(COG_V - PixelV,2));
-	  
+
 	  aNeighbour = fPlane->GetStrip(_TheClusterPixelsList[jjj+1]);
 	  clusIdx = aNeighbour->GetStripIndex();
 	  clusRow  = clusIdx%fPlane->GetStripsNu();
 	  clusCol  = clusIdx/fPlane->GetStripsNu();
 	  fPlane->ComputeStripPosition(clusCol,clusRow, PixelU, PixelV, w);
           double dist_jjjp1 = sqrt(pow(COG_U - PixelU,2) + pow(COG_V - PixelV,2));
-	  
+
 	  if(dist_jjj > dist_jjjp1) {
 	    int aux_idx                  = _TheClusterPixelsList[jjj];
 	    _TheClusterPixelsList[jjj]   = _TheClusterPixelsList[jjj+1];
 	    _TheClusterPixelsList[jjj+1] = aux_idx;
 	  }
 	}
-        
+
       }
     }
 
@@ -1529,7 +1529,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
     //cout << "i = " << 0 << ", index = " << aList->at(0)->GetPixelIndex() << ", diff = " << diff << endl;
     //Hard-coded limit in the number of pixel in a cluster
     //This is a way to identify cluster due to low-momentum heavy ions from fragmentation
-    //This should avoid crash of the code when such an event happends. This happends mainly 
+    //This should avoid crash of the code when such an event happends. This happends mainly
     //for high fluxes (high trigger rates > 20kHz).
     //int TheNpixelsLimit = 100;
     int TheNpixelsLimit = MaxClusterSize;
@@ -1538,18 +1538,18 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       cout << endl;
       double TheCol,TheLin;
       fPlane->ComputeStripPosition_UVToColRow(COG_U,COG_V,TheCol,TheLin);
-      cout << "  DHit: Analyse method found too many pixels in cluster, N-pixels = " << _TheClusterPixelsList.size() << " (Limit is set to config file value MaxNStrips " << TheNpixelsLimit 
+      cout << "  DHit: Analyse method found too many pixels in cluster, N-pixels = " << _TheClusterPixelsList.size() << " (Limit is set to config file value MaxNStrips " << TheNpixelsLimit
 	   << "), for plane " << fPlane->GetPlaneNumber() << ". Seed pixel location is (col,lin) = (" << TheCol << "," << TheLin << ")" << endl;
       cout << "  DHit: It is likely a cluster of low-momentum heavy ion from fragmentation. Excluding pixels from further analysis" << endl;
 
       for(int iPix=0;iPix<int(_TheClusterPixelsList_All.size());iPix++) {
 	aNeighbour = fPlane->GetStrip(_TheClusterPixelsList_All[iPix]);
-	  
+
 	if( fDebugHit>1) {
 	  int clusIdx = aNeighbour->GetStripIndex();
 	  int clusRow  = clusIdx%fPlane->GetStripsNu();
 	  int clusCol  = clusIdx/fPlane->GetStripsNu();
-	
+
 	  cout << "  DHit:: idx = " << _TheClusterPixelsList_All[iPix] << ", (col,lin) = ("
 	       << clusCol << "," << clusRow << ")"
 	       << endl;
@@ -1559,19 +1559,19 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       }
       _TheClusterPixelsList.clear();
       _TheClusterPixelsList_All.clear();
-      
+
       return false;
     }
     _TheClusterPixelsList_All.clear();
-    
-    
+
+
     //Now fillup  the cluster
     tClusterAreaNoise = 0.;
     fClusterAreaPulseSum      = 0.0;
     fClusterPulseSum          = 0.0;
     fClusterNoiseAverage      = 0.0;
     fStripsInClusterFound     = 0;
-    
+
     fStripIndexArray[0]       = 0;
     fStripIndex[0]            = 0.0;
     fStripPulseHeight[0]      = 0.0;
@@ -1582,12 +1582,12 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       aNeighbour = fPlane->GetStrip(_TheClusterPixelsList[iPix]);
       aNeighbour->SetFound(kTRUE);
       aList->at(_TheClusterPixelsList[iPix] + diff)->SetFound(kTRUE);
-      
+
       if(iPix >= fTableSize) continue;
 
       fClusterAreaPulseSum     += aNeighbour->GetPulseHeight();
       tClusterAreaNoise        +=(aNeighbour->GetNoise())*(aNeighbour->GetNoise());
-      
+
       // clear
       fStripIndexArray[iPix]  = iPix;
       fStripIndex[iPix]       = aNeighbour->GetStripIndex();
@@ -1597,7 +1597,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       fStripDistanceV[iPix]   = fSeed->DistanceV(aNeighbour->GetPosition());
       // check whether strip has sufficient pulsheight-to-noise ratio
       // and whether it is inside the geometrical cluster limits.
-      
+
       fStripsInClusterFound++;
       // increment counter of continous adjacent strips
       if( fDebugHit>1) printf("  neighbour %d at index %d added as %dth pixel with noise %.1f and pulseheight %.1f!\n",
@@ -1606,13 +1606,13 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
 			      fStripsInClusterFound-1,
 			      fStripNoise[iPix],
 			      fStripPulseHeight[iPix]);
-      
+
       fClusterNoiseAverage   += (aNeighbour->GetNoise())*(aNeighbour->GetNoise());
       fClusterPulseSum       += aNeighbour->GetPulseHeight();
-      
+
     } // end loop over cluster pixels
     _TheClusterPixelsList.clear();
-    
+
   } // end if pixel analog or binary readout
 
 
@@ -1625,74 +1625,74 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
     if( fDebugHit>1) {
       printf("DHit: Analyse after %d strips ordering by pulseheight:\n", fStripsInClusterFound);
       for( Int_t iStripIndex=0; iStripIndex < fStripsInClusterFound; iStripIndex++ ) {
-        printf("    neighbour %d/%d/%d at strip index %d found with noise %.1f and pulseheight %.1f!\n", iStripIndex, fStripIndex[iStripIndex], fStripIndexArray[iStripIndex], fSeed->GetNeighbour(fStripIndexArray[iStripIndex])->GetStripIndex(), fStripNoise[fStripIndexArray[iStripIndex]], fStripPulseHeight[fStripIndexArray[iStripIndex]]); 
+        printf("    neighbour %d/%d/%d at strip index %d found with noise %.1f and pulseheight %.1f!\n", iStripIndex, fStripIndex[iStripIndex], fStripIndexArray[iStripIndex], fSeed->GetNeighbour(fStripIndexArray[iStripIndex])->GetStripIndex(), fStripNoise[fStripIndexArray[iStripIndex]], fStripPulseHeight[fStripIndexArray[iStripIndex]]);
       }
     }
   } // end skip for binary pixel output
 
   //==============
   // Additional properties
-  //==============  
+  //==============
   // The number of strips in the cluster and the cluster charge sum are now known
-  // Depending wether the noise is calculated or not, 
+  // Depending wether the noise is calculated or not,
   //  the SN ratio is a real ratio or simply the charge
   // JB 2010/10/05 and 2010/10/15 to separately compute Cluster and Area values
-  
+
   tClusterAreaNoise  = sqrt(tClusterAreaNoise);
-  
+
   if(fClusterNoiseAverage > 0.5) fClusterSignalToNoise  = fClusterPulseSum / sqrt(fClusterNoiseAverage);
   else                           fClusterSignalToNoise  = fClusterPulseSum;
-  
+
   if (tClusterAreaNoise > 0.5)   fSNneighbour           = fClusterAreaPulseSum / tClusterAreaNoise;
   else                           fSNneighbour           = fClusterAreaPulseSum;
-  
-  if(fDebugHit>1) printf("  DHit:Analyse  potential hit has : PulseSum=%f, areaPulseSum=%f, noise=%f, areaNoise=%f, clusterSignalToNoise=%f, areaSignalToNoise=%f <?> cut %f, # pixels=%d within? [%d, %d]\n", 
-                         fClusterPulseSum, 
-			 fClusterAreaPulseSum, 
-			 fClusterNoiseAverage, 
-			 tClusterAreaNoise, 
-			 fClusterSignalToNoise, 
-			 fSNneighbour, 
-			 fCut->GetNeighbourPulseHeightToNoise(), 
+
+  if(fDebugHit>1) printf("  DHit:Analyse  potential hit has : PulseSum=%f, areaPulseSum=%f, noise=%f, areaNoise=%f, clusterSignalToNoise=%f, areaSignalToNoise=%f <?> cut %f, # pixels=%d within? [%d, %d]\n",
+                         fClusterPulseSum,
+			 fClusterAreaPulseSum,
+			 fClusterNoiseAverage,
+			 tClusterAreaNoise,
+			 fClusterSignalToNoise,
+			 fSNneighbour,
+			 fCut->GetNeighbourPulseHeightToNoise(),
 			 fStripsInClusterFound,
 			 fCut->GetStripsInClusterMin(),
 			 fCut->GetStripsInClusterMax());
-  
+
 
   //==============
   // Select or not the hit
-  //==============  
+  //==============
 
   if(fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise()){
     valid = kTRUE;
-  
+
     if(fPlane->GetAnalysisMode() < 2) {
       if(not(fStripsInClusterFound >= fCut->GetStripsInClusterMin() && fStripsInClusterFound <= fCut->GetStripsInClusterMax())) return kFALSE;
     }
-    
+
     //===============
     // Compute hit position
     //===============
-    
-    // start to  calculate the exact hit position, which is in first order the seed strip position  
+
+    // start to  calculate the exact hit position, which is in first order the seed strip position
     (*fPositionHit)(0)    = (fSeed->GetPosition())(0);
     (*fPositionHit)(1)    = (fSeed->GetPosition())(1);
     (*fPositionHit)(2)    = (fSeed->GetPosition())(2);
-    
+
     // This is the container (3D distance) for the correction to be computed with different algorithm
     DR3 tCorrection ; tCorrection.SetValue(0.,0.,0.);
     DR3 tCorTemp ;
-    
-    
+
+
     //===============
     //---- for planes using STRIPS:
     //
     // ref plane condition removed by JB, 2007 June
     //if(fPlane->GetStatus()<3 && fPlane->GetAnalysisMode()<2){ // select reference planes only
     if(fPlane->GetAnalysisMode() < 2) { // select STRIP planes
-      
+
       fPhSeed       =  fSeed->GetPulseHeight();
-      fPosSeed      =  fSeedU;              
+      fPosSeed      =  fSeedU;
       fPhRofSeed    =  fSeed->GetNeighbour(1)->GetPulseHeight();
       fPhLofSeed    =  fSeed->GetNeighbour(2)->GetPulseHeight();
       fPosRofSeed   = (fSeed->GetNeighbour(1)->GetPosition())(0);
@@ -1700,15 +1700,15 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       fIndexRofSeed =  fSeed->GetNeighbour(1)->GetStripIndex();
       fIndexLofSeed =  fSeed->GetNeighbour(2)->GetStripIndex();
       fIndexSeed    =  fSeed->GetStripIndex();
-      
+
       Float_t tSeedSign = fPhSeed/fabs(fPhSeed);
-      
+
       if(tSeedSign*fPhLofSeed > tSeedSign*fPhRofSeed ) {
         fPhLeft     = fPhLofSeed;
         fPhRight    = fPhSeed;
         fPosLeft    = fPosLofSeed;
         fPosRight   = fPosSeed;
-        fIndexLeft  = fIndexLofSeed; 
+        fIndexLeft  = fIndexLofSeed;
         fIndexRight = fIndexSeed;
       }
       else {
@@ -1719,65 +1719,65 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
         fIndexLeft  = fIndexSeed;
         fIndexRight = fIndexRofSeed;
       }
-      
-      
+
+
       // Charge Fraction algorithm optimizes hit position, comprises other known algorithms like
       // center of gravitiy           : weight_k = charge fraction
       // 2 strip linear eta algorithm : center of gravity with 2 strips in cluster
       // 2 strip non-linear eta       : 2 strips, weights calculated from charge fraction distribution on strips
-      
+
       Float_t tChargeFraction, aWeight ;
-      
+
       TH1F   *tChargeFractionDensityData;
       Int_t   tDensityBinsN, tBin;
       Float_t tLL, tUL;
-      
-      Int_t   tClusterType; 
+
+      Int_t   tClusterType;
       Int_t   tHk;
-      
+
       tClusterType = 2;
       Float_t tDistU;
       if(fPositionAlgorithm==1) {
         if(fPhLeft < fPhRight) {
           tChargeFraction  = fPhLeft / (fPhLeft+fPhRight); // seed is on right
           aWeight          = tChargeFraction;              // this is C.o.G. Method
-          tDistU           = fPosRight-fPosLeft;  
+          tDistU           = fPosRight-fPosLeft;
         }
         else {
           tChargeFraction  = fPhRight / (fPhLeft+fPhRight); // seed is right
           aWeight          = tChargeFraction;               // this is C.o.G. Method
-          tDistU           = -fPosRight+fPosLeft;  
+          tDistU           = -fPosRight+fPosLeft;
         }
         tCorTemp.SetValue(tDistU,(Float_t)0.,(Float_t)0.) ;
         tCorTemp *= aWeight ;
-        
+
         tCorrection += tCorTemp ;
-        
+
         // assign the digital strip position
         *fPositionHitCG    = *fPositionHit     ;
         // and now change u-value with CoG correction
-        (*fPositionHitCG) -= tCorrection       ; 
+        (*fPositionHitCG) -= tCorrection       ;
         (*fPositionHit)    = (*fPositionHitCG) ; // needed if CoG is used
       }
-      
+
       if ( tDigital ){
         if(fDebugHit>1) {
           printf("DHit.cxx:evaluateHitCluster = Digital response only set (forgot about etaXXX.root file?) for plane %d \n",fPlane->GetPlaneNumber());
         }
-        
+
       }
-      
+
       else if(fPositionAlgorithm == 2) {
-        
+
         tCorrection.SetValue(0.,0.,0.);
         // treat seed and strip with next highest pulse (2 strips):
         if(fPhLeft < fPhRight){
           tChargeFraction  = fPhLeft / (fPhLeft+fPhRight); // seed is right
-          tDistU           = fPosRight-fPosLeft;  
-          
+          tDistU           = fPosRight-fPosLeft;
+
         }else {
           tChargeFraction  = fPhRight / (fPhLeft+fPhRight); // seed is right
-          tDistU           = -fPosRight+fPosLeft;  
+          tDistU           = -fPosRight+fPosLeft;
         }
         tHk = 1 + (tClusterType-2)*2; // so tHk = 1??
         tChargeFractionDensityData = fPlane->GetChargeFractionDensity(tHk);
@@ -1785,21 +1785,21 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
         tLL           = tChargeFractionDensityData->GetXaxis()->GetXmin();
         tUL           = tChargeFractionDensityData->GetXaxis()->GetXmax();
         tBin = (Int_t)( (tChargeFraction-tLL) * tDensityBinsN/(tUL-tLL) );
-        
+
         if (tBin>tDensityBinsN) tBin = tDensityBinsN - 50;
         if (tBin<0) tBin = 50;
-        
-        aWeight = tChargeFractionDensityData->GetBinContent(tBin);       
+
+        aWeight = tChargeFractionDensityData->GetBinContent(tBin);
         tCorTemp.SetValue(tDistU,(Float_t)0.,(Float_t)0.) ;
         tCorTemp *= aWeight ;
-        
+
         tCorrection += tCorTemp ;
         (*fPositionHit) -= tCorrection;
-        
-      } //end of if PositionAlgorithm ==2 
+
+      } //end of if PositionAlgorithm ==2
     } // end select STRIP planes
-    
-    
+
+
     //===============
     //--- for PIXEL planes
     //
@@ -1815,15 +1815,15 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
                           0);
         tCorrection      += tCorTemp;
         tClusterPulseSum += fStripPulseHeight[iStripIndex];
-      }      
+      }
       *fPositionHitCG = tCorrection/tClusterPulseSum;
 
       //==================
-      //Center of gravity restricted to a 3x3 cluster      
+      //Center of gravity restricted to a 3x3 cluster
       tCorrection.SetValue( 0., 0., 0.);
       Float_t tCluster33PulseSum = 0.;
       for(Int_t iStripIndex=0; iStripIndex < fStripsInClusterFound; iStripIndex++ ) {
-        if(fabs(fStripDistanceU[iStripIndex]) <= fSeed->GetPlane()->GetStripPitch()(0) && 
+        if(fabs(fStripDistanceU[iStripIndex]) <= fSeed->GetPlane()->GetStripPitch()(0) &&
            fabs(fStripDistanceV[iStripIndex]) <= fSeed->GetPlane()->GetStripPitch()(1)) {
 	  // check neighbours is at most at 1 pitch from seed
           tCorTemp.SetValue(((fSeed->GetPosition())(0)-fStripDistanceU[iStripIndex])*fStripPulseHeight[iStripIndex],
@@ -1835,7 +1835,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
         }
       }
       *fPositionHitCG33 = tCorrection/tCluster33PulseSum;
-      
+
       //==================
       //Center of gravity restricted 2x2 neighbours with the highest charge, JB Nov 2007
       // 2x2 includes the seed
@@ -1867,12 +1867,12 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
         Int_t iBinU    = tEtaIntU->FindBin( (*fPositionHitCG33-*fPositionHit)(0) );
         Int_t iBinV    = tEtaIntV->FindBin( (*fPositionHitCG33-*fPositionHit)(1) );
         Double_t corrU=0., corrV=0.;
-        
+
         // correct wrt CoG if possible
         if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
         if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
         tCorrection.SetValue( corrU, corrV, 0.);
-        
+
         *fPositionHitEta = *fPositionHit + tCorrection;
       }
 
@@ -1881,7 +1881,7 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       // correct the 2x2 center of gravity (tCorrection) using the integral histogram of the charge density
       // the eta position is the Y value of the bin with X value = tCorrection
       // if the tCorrection from CoG is out of the X axis range, do not correct
-      
+
       if(tDigital) { // check info file was there and Eta is available
         if(fDebugHit>1) printf("  DHit.cxx:evaluateHitCluster = Digital or CoG response only set for plane %d (forgot about etaXXX.root file?)\n",fPlane->GetPlaneNumber());
       }
@@ -1891,15 +1891,15 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
         Int_t iBinU    = tEtaIntU2->FindBin( (*fPositionHitCG22-*fPositionHit)(0) );
         Int_t iBinV    = tEtaIntV2->FindBin( (*fPositionHitCG22-*fPositionHit)(1) );
         Double_t corrU=0., corrV=0.;
-        
+
         // correct wrt CoG if possible
         if( 1<=iBinU && iBinU<=tEtaIntU2->GetNbinsX() ) corrU = tEtaIntU2->GetBinContent( iBinU);
         if( 1<=iBinV && iBinV<=tEtaIntV2->GetNbinsX() ) corrV = tEtaIntV2->GetBinContent( iBinV);
         tCorrection.SetValue( corrU, corrV, 0.);
-        
+
         *fPositionHitEta22 = *fPositionHit + tCorrection;
       }
-      
+
       //==================
       //Analog head-tail algorithm
       // Algorithm used for large incident angle when seed contains little info on position
@@ -1919,16 +1919,16 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
       }
 
     } // end of PIXEL planes
-    
+
     if(fDebugHit>1) printf("        hit selected with %d pixels\n", fStripsInClusterFound);
-    
+
   } // end if hit selected
 
   // ========================
   else{ // hit rejected
     valid = kFALSE;
     if(fDebugHit>1) printf("        hit rejected, releasing %d pixels\n", fStripsInClusterFound-1);
-    
+
     // Release the neighbouring Strips associated to the seed
     // only the tested seed (Index=0) is not released
     // JB 2012/08/18
@@ -1940,10 +1940,10 @@ Bool_t DHit::Analyse_Iterative(DStrip* aStrip, bool &IsBigCluster, int MaxCluste
   }
 
   return valid;
-  
+
 }
 //______________________________________________________________________________
-//  
+//
 Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels)
 {
   // Valid for sparse data acquisition
@@ -1961,7 +1961,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   // Constructed from the original Analyse( DStrip*) by JB, 2009 April 29
   // Last modified, JB 2009/05/12
   // Last Modified, RDM 2009/08/05 for Mimosa25
-  // Last Modified, JB 2009/08/21 for binary output 
+  // Last Modified, JB 2009/08/21 for binary output
   // Last Modified, JB 2009/08/30 for cut on #strips in cluster
   // Last Modified, JB 2009/09/01 for CoG 2x2
   // Last Modified, YV 2009/11/27 for estimation of noise
@@ -1975,7 +1975,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   // Last Modified, JB 2013/11/08 store initial seed information
   // Last Modified, VR 2014/07/12 Condition to look for a new seed change : cogRow type Int_t -> Double_t
   // Modified: JB 2015/05/26 to introduce timestamps and TimeLimit
- 
+
   if(fDebugHit>2)  cout << "DHit:: Starting Analyze of potential hit nb " << fHitNumber << endl;
   fFound      = kFALSE; // JB 2009/05/22
   fPSeed      = aListOfPixels->at( aPixelIndexInList);
@@ -1985,10 +1985,10 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   Bool_t    valid    = kFALSE; // default return value
   Bool_t    tDigital = fPlane->GetStripResponseSetting();
   Int_t     tStripIndex;
-  Int_t     tStripsInClusterPossible = 0; // remove a warning 
+  Int_t     tStripsInClusterPossible = 0; // remove a warning
   //Int_t     tPixelIndexList[500];
   Int_t     tTimeLimit = fPlane->GetTimeLimit(); // 2015/05/26
- 
+
   fPositionHitCG->Zero();           // clear the position
   fPositionHitEta->Zero();
   fPositionHitEta22->Zero(); // JB 2010/12/8
@@ -1996,30 +1996,30 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   fClusterSignalToNoise   = 0.0;
 
   fSeedU      = fPSeed->GetPosition()(0);
-  fSeedV      = fPSeed->GetPosition()(1); 
+  fSeedV      = fPSeed->GetPosition()(1);
   fIndexSeed  = fPSeed->GetPixelIndex();
 
-  Int_t seedRow = fPSeed->GetPixelLine(); 
-  Int_t seedCol = fPSeed->GetPixelColumn(); 
+  Int_t seedRow = fPSeed->GetPixelLine();
+  Int_t seedCol = fPSeed->GetPixelColumn();
   Double_t cogRow = fPSeed->GetPixelLine(); //VR 2014/07/12
-  Double_t cogCol = fPSeed->GetPixelColumn(); 
+  Double_t cogCol = fPSeed->GetPixelColumn();
   Int_t rowDiffMax = (Int_t)((*fClusterLimit)(0)/fPSeed->GetSize()(0))/2;
   Int_t colDiffMax = (Int_t)((*fClusterLimit)(1)/fPSeed->GetSize()(1))/2;
-  
+
   Int_t iSeed = 0;
 
-  // here, the neighbourhood of strips is assumed to be ordered, 
+  // here, the neighbourhood of strips is assumed to be ordered,
   // at index 0 is the seed, to higher indices
   // the neighbourstrips are further away from the seed.
 
   Float_t tClusterAreaNoise = 0.;
   fClusterAreaPulseSum      = 0.; // area means the cluster except the seed
-  fClusterPulseSum        = fPSeed->GetPulseHeight(); 
+  fClusterPulseSum        = fPSeed->GetPulseHeight();
   fClusterNoiseAverage    = (fPSeed->GetNoise())*(fPSeed->GetNoise());  // => so it's only a seed  strip in the beginning
-  fStripsInClusterFound   = 1;                       
-  fPSeed->SetFound(kTRUE);                            
+  fStripsInClusterFound   = 1;
+  fPSeed->SetFound(kTRUE);
 
-  
+
   if (fStripsInClusterDemanded >0) {        // exact number demanded
     tStripsInClusterPossible = fStripsInClusterDemanded;
   }
@@ -2041,8 +2041,8 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   fSeedNoise           = fPSeed->GetNoise();
   fStripDistanceU[0] = 0.;                             // distance seed to seed = 0.
   fStripDistanceV[0] = 0.;                             // distance seed to seed = 0.
-  fStoNover2 = 0;                                      // MB/12/11/2010 
- 
+  fStoNover2 = 0;                                      // MB/12/11/2010
+
 
   //===============
   // associate neighbouring pixels to seed one
@@ -2051,7 +2051,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 
   tStripIndex = 1; // start with the first neighbour, in the geometric ordered neighbourhood, avoid 0 because it is the seed itself!
   for (Int_t iPix = 0; iPix < (Int_t)aListOfPixels->size(); iPix++){ // loop over hit pixels
-    
+
     aNeighbour = aListOfPixels->at(iPix);
 
     // Test that the pixel is actually different from the seed
@@ -2062,22 +2062,22 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
         if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) is identical as seed at index %d => set as found and ignore!\n", tStripIndex, aNeighbour->GetPixelIndex(), aNeighbour->GetPixelLine(), aNeighbour->GetPixelColumn(), fPSeed->GetPixelIndex());
     }
 
-    // Test if the pixel can be associated to the seed 
+    // Test if the pixel can be associated to the seed
     //   inside the geometrical cluster limits
     // and also in the time limit using the timestamp (which are all 0 if unavailable).
     //   JB+SS 2013/06/23
     // Geometrical limit test changed from a single 2D distance test
     //  to two 1D distance test.
     //  to JB 2013/08/29 to match really a rectangle
-    if ( !aNeighbour->Found() 
+    if ( !aNeighbour->Found()
         //&& fPSeed->Distance( *aNeighbour) < fClusterLimit->Length()
         && fabs(fPSeed->DistanceU(aNeighbour->GetPosition())) <= (*fClusterLimit)(0)
         && fabs(fPSeed->DistanceV(aNeighbour->GetPosition())) <= (*fClusterLimit)(1)
         //&& fPSeed->GetTimestamp() == aNeighbour->GetTimestamp()
         && abs(fPSeed->GetTimestamp()-aNeighbour->GetTimestamp())<=tTimeLimit
-        ) 
+        )
     { // if neighbour pixel within limits
-      
+
       // Additional test to avoid counting the same pixel twice
       // JB 2011/11/07
       pixelTwice = kFALSE;
@@ -2089,9 +2089,9 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 	//}
 	pixelTwice |= aNeighbour->GetPixelIndex() == aPixel->GetPixelIndex();
       } // end loop on currently found pixels
-      
+
       if( !pixelTwice ) { // if pixel is not counted twice
-        
+
         fClusterAreaPulseSum     += aNeighbour->GetPulseHeight();
         tClusterAreaNoise +=(aNeighbour->GetNoise())*(aNeighbour->GetNoise());
         fClusterNoiseAverage   += (aNeighbour->GetNoise())*(aNeighbour->GetNoise());
@@ -2119,24 +2119,24 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 				(*fClusterLimit)(1));
         tStripIndex++;    // increment the strip index counter
         fStripsInClusterFound++;
-        
-        // For binary ouput, dynamically change the seed pixel if 
+
+        // For binary ouput, dynamically change the seed pixel if
         //   there are more than 4 pixels found already,
         //   and the current seed is distant by more than half of the defined cluster limit
         // If so, then choose the seed as the pixel nearest to the center of gravity of all pixels
-        // JB 2011/07/21     
+        // JB 2011/07/21
         if( fPlane->GetAnalysisMode() == 3) { // if binary readout
           aPixel=NULL;
           Int_t iNewSeed = iSeed;
-          
+
           //VR 2014/07/12 calcul in Double_t
-          cogRow = (Double_t(aNeighbour->GetPixelLine())   + cogRow * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound); 
-          cogCol = (Double_t(aNeighbour->GetPixelColumn()) + cogCol * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound); 
-          
+          cogRow = (Double_t(aNeighbour->GetPixelLine())   + cogRow * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound);
+          cogCol = (Double_t(aNeighbour->GetPixelColumn()) + cogCol * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound);
+
           if(fDebugHit>1) printf( "DHit::Analyze updating cog(%1.2f,%1.2f) / seed(%d,%d)\n", cogRow, cogCol, seedRow, seedCol);
-          
+
           if( fStripsInClusterFound>4 && (abs(cogRow-Double_t(seedRow))>rowDiffMax || abs(cogCol-Double_t(seedCol))>colDiffMax) ) { // if condition to update seed
-            
+
             if(fDebugHit>1) printf( "DHit::Analyze need to update the seed pixel cog(%1.2f,%1.2f) - seed(%d,%d) > max(%d,%d)\n", cogRow, cogCol, seedRow, seedCol, rowDiffMax, colDiffMax);
             for( Int_t jPix=0; jPix<fStripsInClusterFound; jPix++) { // loop on currently found pixels
               aPixel = aListOfPixels->at( tPixelIndexList[ jPix] );
@@ -2148,31 +2148,31 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
                 if(fDebugHit) printf( "          new seed pixel %d at index %d (r%d,c%d)\n", iNewSeed, fPSeed->GetPixelIndex(), seedRow, seedCol);
               }
             }  // end loop on currently found pixels
-            
+
           } // end if condition to update seed
-          
+
           if( iNewSeed != iSeed ) { // if seed was indeed changed
             iSeed = iNewSeed;
             iPix  = -1; // will restart the loop over hit pixels
             if(fDebugHit>1) printf( "          restarting the loop over pixels\n");
-          } 
-          
+          }
+
         } // end if binary readout
         // END of dynamical change of the seed pixel
-      	
+
       } // end if pixel is not counted twice
-      
+
     } // end if neighbour pixel within limits
-    
+
   } // end loop over hit pixels
 
   if(fDebugHit>2) printf("  DHit:Analyse found %d valid neighbours\n", fStripsInClusterFound);
 
-  
+
   //=============
   // order pixels
   //=============
-  Int_t *nOfneighbours;
+  Int_t *nOfneighbours = nullptr;
 
   // For analog readout
   // re-order pixels from the highest charge to the lowest
@@ -2208,7 +2208,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 	if(fDebugHit>3) printf("     comparing pixels %d[%d] (%d-%d) and %d[%d] (%d-%d) in list of %d pixels\n", tPixelIndexList[ iPix], iPix, aPixel->GetPixelLine(), aPixel->GetPixelColumn(), tPixelIndexList[ jPix], jPix, bPixel->GetPixelLine(), bPixel->GetPixelColumn(), fStripsInClusterFound);
 	// direct neighbours are defines as
 	// abs(difference in line) + abs(difference in column) = 1
-	if( (abs(aPixel->GetPixelLine() - bPixel->GetPixelLine()) + 
+	if( (abs(aPixel->GetPixelLine() - bPixel->GetPixelLine()) +
 	     abs(aPixel->GetPixelColumn() - bPixel->GetPixelColumn()) ) == 1 ) {
 	  nOfneighbours[ iPix] += 1;
 	}
@@ -2219,7 +2219,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
       }
     } // end loop on pixels
     */
-    
+
     // swap previous info at index 0 with the one at index iSeed
     // so that all arrays have seed info at index 0
     Int_t iTemp;
@@ -2237,11 +2237,11 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
     fStripPulseHeight[iSeed] = fStripPulseHeight[0];
     fStripPulseHeight[0]     = temp;
 
-    // need to update some variables 
+    // need to update some variables
     // to take into account the new seed definition
     fPSeed = aListOfPixels->at( tPixelIndexList[ 0] );
     fSeedU      = fPSeed->GetPosition()(0);
-    fSeedV      = fPSeed->GetPosition()(1); 
+    fSeedV      = fPSeed->GetPosition()(1);
     fIndexSeed  = fPSeed->GetPixelIndex();
     for( Int_t iPix=1; iPix<fStripsInClusterFound ; iPix++) { // loop on pixels in candidate hit
       aNeighbour = aListOfPixels->at( tPixelIndexList[ iPix]);
@@ -2252,26 +2252,26 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
     if( fDebugHit>2 ) {
       printf("  DHit:Analyse  seed is now pixel %d in list, index %d, with %d direct neighbours\n", tPixelIndexList[ 0], fIndexSeed, fStripsInClusterFound);
     }
-    
+
   } // end if binary readout
 
   else {
     printf("DHit::Analyse WARNING analysis mode %d UNKNOWN !!\n", fPlane->GetAnalysisMode() );
     return false;
   }
-  
+
   delete[] nOfneighbours; // remove memory leaks, BH 2013/08/21
-  
+
   //==============
   // additional properties
-  //==============  
+  //==============
   // the number of strips in the cluster and the cluster charge sum are now known
-  // Depending wether the noise is calculated or not, 
+  // Depending wether the noise is calculated or not,
   // the SN ratio is a real ratio or simply the charge
   // JB 2010/10/05 and 2010/10/15 to separately compute Cluster and Area values
 
   tClusterAreaNoise  = sqrt(tClusterAreaNoise);
-  
+
   if (fClusterNoiseAverage > 0.5) {
     fClusterSignalToNoise  = fClusterPulseSum     / sqrt(fClusterNoiseAverage);
   }
@@ -2296,9 +2296,9 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
       if(fDebugHit>1)  cout<<"  DHit:Analyse  StoNover2  = "<<fStoNover2<<" neighbour "<<iPix<<"   fPSeed->Distance( *aNeighbour)   = "<<fPSeed->Distance( *aNeighbour)<<" SNR "<<aNeighbour->GetPulseHeightToNoise()<<"  aNeighbour->GetFound() = "<<  aNeighbour->Found()<<endl;
     } // end loop on pixels in candidate hit
   }
-  
+
   fTimestamp = fPSeed->GetTimestamp(); // JB 2015/05/25
-  
+
   if(fDebugHit>2) printf("  DHit:Analyse  potential hit has : PulseSum=%f, areaPulseSum=%f, noise=%f, areaNoise=%f, clusterSignalToNoise=%f, areaSignalToNoise=%f <?> cut %f, # pixels=%d within? [%d, %d], stover2=%d, time=%d\n", fClusterPulseSum, fClusterAreaPulseSum, fClusterNoiseAverage, tClusterAreaNoise, fClusterSignalToNoise, fSNneighbour, fCut->GetNeighbourPulseHeightToNoise(), fStripsInClusterFound, fCut->GetStripsInClusterMin(), fCut->GetStripsInClusterMax(), fStoNover2, fTimestamp);
 
 
@@ -2306,7 +2306,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   // Compute hit position
   //===============
 
-  // start to  calculate the exact hit position, which is in first order the seed strip position  
+  // start to  calculate the exact hit position, which is in first order the seed strip position
   (*fPositionHit)(0)    = (fPSeed->GetPosition())(0);
   (*fPositionHit)(1)    = (fPSeed->GetPosition())(1);
   (*fPositionHit)(2)    = (fPSeed->GetPosition())(2);
@@ -2323,7 +2323,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
     // Cut on the charge or on the charge/noise (See above)
     // Cut on # pixels in hit added, JB 2009/08/30
 
-    if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise() 
+    if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise()
 	&& fCut->GetStripsInClusterMin() <= fStripsInClusterFound
 	&& fStripsInClusterFound <= fCut->GetStripsInClusterMax()
        //&& fStoNover2 >=4 // MB 2010/11/12
@@ -2348,7 +2348,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 //     else if(fPlane->GetPlaneNumber()==4){cut1[0]=2000.;cut1[1]=-1000.;cut2[0]=2000.;cut2[1]=-2250;}*/
 
 //     if((fPSeed->GetPosition()(0)>cut1[0] || fPSeed->GetPosition()(0)<cut1[1]
-//        || fPSeed->GetPosition()(1)>cut2[0] || fPSeed->GetPosition()(1)<cut2[1]) 
+//        || fPSeed->GetPosition()(1)>cut2[0] || fPSeed->GetPosition()(1)<cut2[1])
 //        && fPlane->GetPlaneNumber()<1 ) valid=kFALSE;
     //RDM050809 for M25 end //in case you want to use this cut, put <5 instead of <1 in the last "if" line
 
@@ -2364,14 +2364,14 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
       tCorrection.SetValue( 0., 0., 0.);
       Float_t tClusterPulseSum = 0.;
       for( Int_t iStripIndex=0; iStripIndex < fStripsInClusterFound; iStripIndex++ ) {
-	   
+
         // Computation without the fStripDistance array, MG 2010/06/28
         aNeighbour = aListOfPixels->at( tPixelIndexList[ iStripIndex]);
         tCorTemp.SetValue( aNeighbour->GetPosition()(0)*aNeighbour->GetPulseHeight(),
                           aNeighbour->GetPosition()(1)*aNeighbour->GetPulseHeight(), 0);
         tCorrection += tCorTemp;
         tClusterPulseSum += aNeighbour->GetPulseHeight();
-        
+
         // "Old" computation with the fStripDistance array
 	     /*
  	     tCorTemp.SetValue( ((fPSeed->GetPosition())(0)-fStripDistanceU[iStripIndex])*fStripPulseHeight[iStripIndex],
@@ -2391,9 +2391,9 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 
       tCorrection.SetValue( 0., 0., 0.);
       Float_t tCluster33PulseSum = 0.;
-      
+
       for( Int_t iStripIndex=0; iStripIndex < fStripsInClusterFound; iStripIndex++ ) {
-	    
+
        if( fabs(fStripDistanceU[iStripIndex])<=fPSeed->GetSize()(0)
 	    && fabs(fStripDistanceV[iStripIndex])<=fPSeed->GetSize()(1) ) { // check neighbours is at most at 1 pitch from seed
 	      // Computation without the fStripDistance array, MG 2010/06/28
@@ -2435,7 +2435,7 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 	tCorrection += tCorTemp;
 	tCluster22PulseSum += fStripPulseHeight[tOrderedIndex];
       }
-      *fPositionHitCG22 = tCorrection/tCluster22PulseSum; 
+      *fPositionHitCG22 = tCorrection/tCluster22PulseSum;
 
 
       //==================
@@ -2448,13 +2448,13 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 	if(fDebugHit>1 && (fPositionAlgorithm==2 || fPositionAlgorithm==22)) printf("  DHit.cxx:Analyse  Digital or CoG response only set for plane %d (forgot about etaXXX.root file?)\n",fPlane->GetPlaneNumber());
       }
       else {
-    
+
 	TH1  *tEtaIntU = fPlane->GetEtaIntU();
 	TH1  *tEtaIntV = fPlane->GetEtaIntV();
 	Int_t iBinU    = tEtaIntU->FindBin( (*fPositionHitCG33-*fPositionHit)(0) );
 	Int_t iBinV    = tEtaIntV->FindBin( (*fPositionHitCG33-*fPositionHit)(1) );
 	Double_t corrU=0., corrV=0.;
-	
+
 	// correct wrt CoG if possible
 	if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
 	if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
@@ -2467,18 +2467,18 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
       // correct the 2x2 center of gravity (tCorrection) using the integral histogram of the charge density
       // the eta position is the Y value of the bin with X value = tCorrection
       // if the tCorrection from CoG is out of the X axis range, do not correct
-    
+
 	tEtaIntU = fPlane->GetEtaIntU2();
 	tEtaIntV = fPlane->GetEtaIntV2();
 	iBinU    = tEtaIntU->FindBin( (*fPositionHitCG22-*fPositionHit)(0) );
 	iBinV    = tEtaIntV->FindBin( (*fPositionHitCG22-*fPositionHit)(1) );
 	corrU = corrV = 0.;
-	
+
 	// correct wrt CoG if possible
 	if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
 	if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
 	tCorrection.SetValue( corrU, corrV, 0.);
-	
+
 	*fPositionHitEta22 = *fPositionHit + tCorrection;
 
       } // end if tDigital
@@ -2519,10 +2519,10 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
   } // end if PIXEL mode
 
 
-  // Release the neighbouring Pixels associated to the seed if the pixel is finally not selected 
+  // Release the neighbouring Pixels associated to the seed if the pixel is finally not selected
   // only the tested seed (Index=0) is not released
   // JB 2009/05/10
-  if( !valid ) { 
+  if( !valid ) {
     if(fDebugHit>1) printf("  DHit.cxx:Analyse  hit NOT selected, releasing %d pixels\n", fStripsInClusterFound-1);
     for (Int_t iNeigh = 1; iNeigh < fStripsInClusterFound; iNeigh++){ // loop over associated pixels
       if(fDebugHit>2) printf("  DHit.cxx:Analyse    releasing pixel %d at index %d\n", iNeigh, fStripIndexArray[iNeigh]);
@@ -2538,10 +2538,10 @@ Bool_t DHit::Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixe
 }
 
 //______________________________________________________________________________
-//  
+//
 Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels)
 {
-  // Based on Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels) but 
+  // Based on Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels) but
   //     Compute the center of gravity with floating point value in "pixel unit"
   //     Compare the ditance between cog to a pixel position (in pixel unit in floating point) with fClusterLimit to associate or not a pixel
   //     "Pixel unit" is choose for clarity (for debug this unity is more clear !)
@@ -2559,10 +2559,10 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
   //
   // Constructed from the original Analyse( Int_t aPixelIndexInList, vector<DPixel*> *aListOfPixels) by VR 2014/07/16
   // Modified: JB 2015/05/26 to introduce timestamps and TimeLimit
-  
+
   fFound      = kFALSE; // JB 2009/05/22
   fPSeed      = aListOfPixels->at( aPixelIndexInList);
-  
+
   DPixel   *aNeighbour;
   DPixel   *aPixel=NULL;
   Bool_t    pixelTwice = kFALSE; // test if a pixel is present twice in the neighbour list
@@ -2570,9 +2570,9 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
   Bool_t    tDigital = fPlane->GetStripResponseSetting();
   Int_t     tStripIndex;
   //Int_t     tPixelIndexList[500];
-  
+
   Int_t     tTimeLimit = fPlane->GetTimeLimit(); // 2015/05/26
-  
+
   fPositionHitCG->Zero();           // clear the position
   fPositionHitEta->Zero();
   fPositionHitEta22->Zero(); // JB 2010/12/8
@@ -2580,28 +2580,28 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
   fClusterSignalToNoise   = 0.0;
 
   fSeedU      = fPSeed->GetPosition()(0);
-  fSeedV      = fPSeed->GetPosition()(1); 
+  fSeedV      = fPSeed->GetPosition()(1);
   fIndexSeed  = fPSeed->GetPixelIndex();
-  
+
   Float_t ClusterLimitRadiusPix = fClusterLimitRadius * 2 / (fPSeed->GetSize()(0)+fPSeed->GetSize()(1)); // assume square pixels !!
-  
+
   DR3 cog(fPSeed->GetPixelLine(),fPSeed->GetPixelColumn(),0); //VR 2014/07/12 cog is in "pixels unit" for an easiest debug
-  
+
   Int_t iSeed = 0;
 
-  // here, the neighbourhood of strips is assumed to be ordered, 
+  // here, the neighbourhood of strips is assumed to be ordered,
   // at index 0 is the seed, to higher indices
   // the neighbourstrips are further away from the seed.
 
   Float_t tClusterAreaNoise = 0.;
   fClusterAreaPulseSum      = 0.; // area means the cluster except the seed
-  fClusterPulseSum        = fPSeed->GetPulseHeight(); 
+  fClusterPulseSum        = fPSeed->GetPulseHeight();
   fClusterNoiseAverage    = (fPSeed->GetNoise())*(fPSeed->GetNoise());  // => so it's only a seed  strip in the beginning
-  fStripsInClusterFound   = 1;                       
-  fPSeed->SetFound(kTRUE);                            
-  
+  fStripsInClusterFound   = 1;
+  fPSeed->SetFound(kTRUE);
 
-  
+
+
   tPixelIndexList[0]   = aPixelIndexInList;
   fStripIndexArray[0]  = 0;                            // place seed in position 0 of neighbour
   fStripIndex[0]       = fPSeed->GetPixelIndex();      // store seed index, JB 2009/05/12
@@ -2612,7 +2612,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
   fSeedNoise           = fPSeed->GetNoise();
   fStripDistanceU[0] = 0.;                             // distance seed to seed = 0.
   fStripDistanceV[0] = 0.;                             // distance seed to seed = 0.
-  fStoNover2 = 0;                                      // MB/12/11/2010 
+  fStoNover2 = 0;                                      // MB/12/11/2010
 
   //===============
   // associate neighbouring pixels to seed one
@@ -2622,27 +2622,27 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
   tStripIndex = 1; // start with the first neighbour, in the geometric ordered neighbourhood, avoid 0 because it is the seed itself!
   for (Int_t iPix = 0; iPix < (Int_t)aListOfPixels->size(); iPix++)
   { // loop over hit pixels
-    
+
     aNeighbour = aListOfPixels->at(iPix);
-    // Test if the pixel can be associated to the seed 
+    // Test if the pixel can be associated to the seed
     //   inside the geometrical cluster limits
     // and also in the time limit using the timestamp (which are all 0 if unavailable).
     //   JB+SS 2013/06/23
     // Geometrical limit test changed from a single 2D distance test
     //  to two 1D distance test.
     //  to JB 2013/08/29 to match really a rectangle
-    if ( !aNeighbour->Found() 
+    if ( !aNeighbour->Found()
         //&& fPSeed->GetTimestamp() == aNeighbour->GetTimestamp()
         && abs(fPSeed->GetTimestamp()-aNeighbour->GetTimestamp())<=tTimeLimit
-        ) 
+        )
     { // if neighbour pixel pass first test_delta_Col
       if ( sqrt(pow((cog(0)-Float_t(aNeighbour->GetPixelLine())),2) + pow((cog(1)-Float_t(aNeighbour->GetPixelColumn())),2)) <= ClusterLimitRadiusPix)
       { // is in radius ?
-      
+
         // Additional test to avoid counting the same pixel twice
         // JB 2011/11/07
         pixelTwice = kFALSE;
-        for ( Int_t jPix=0; jPix<fStripsInClusterFound; jPix++) 
+        for ( Int_t jPix=0; jPix<fStripsInClusterFound; jPix++)
         { // loop on currently found pixels
           aPixel = aListOfPixels->at( tPixelIndexList[ jPix] );
           //if(aNeighbour->GetPixelIndex() == aPixel->GetPixelIndex()) {
@@ -2651,10 +2651,10 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
           //}
           pixelTwice &= aNeighbour->GetPixelIndex() == aPixel->GetPixelIndex();
         } // end loop on currently found pixels
-        
-        if( !pixelTwice ) 
+
+        if( !pixelTwice )
         { // if pixel is not counted twice
-          
+
           fClusterAreaPulseSum     += aNeighbour->GetPulseHeight();
           tClusterAreaNoise +=(aNeighbour->GetNoise())*(aNeighbour->GetNoise());
           fClusterNoiseAverage   += (aNeighbour->GetNoise())*(aNeighbour->GetNoise());
@@ -2667,7 +2667,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
           fStripDistanceU[tStripIndex]   = fPSeed->DistanceU(aNeighbour->GetPosition());
           fStripDistanceV[tStripIndex]   = fPSeed->DistanceV(aNeighbour->GetPosition());
           aNeighbour->SetFound(kTRUE);
-          if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) with pulse %1.2f and distance %1.2f [pixels] (u=%1.2f, v=%1.2f) (<%1.2f) [pixels] found!\n", 
+          if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) with pulse %1.2f and distance %1.2f [pixels] (u=%1.2f, v=%1.2f) (<%1.2f) [pixels] found!\n",
                                   tStripIndex,
                                   aNeighbour->GetPixelIndex(),
                                   aNeighbour->GetPixelLine(),
@@ -2679,32 +2679,32 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
                                   ClusterLimitRadiusPix);
           tStripIndex++;    // increment the strip index counter
           fStripsInClusterFound++;
-          
-          // For binary ouput, dynamically change the seed pixel if 
+
+          // For binary ouput, dynamically change the seed pixel if
           //   there are more than 4 pixels found already,
           //   and the current seed is distant by more than half of the defined cluster limit
           // If so, then choose the seed as the pixel nearest to the center of gravity of all pixels
-          // JB 2011/07/21     
-          if( fPlane->GetAnalysisMode() == 3) 
+          // JB 2011/07/21
+          if( fPlane->GetAnalysisMode() == 3)
           { // if binary readout
             aPixel=NULL;
-            
+
             //VR 2014/07/12 calcul in Double_t
             if(fDebugHit>1) printf( "    updating cog : (%1.2f,%1.2f) -> ",cog(0), cog(1));
-            cog(0) = (Double_t(aNeighbour->GetPixelLine())   + cog(0) * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound); 
-            cog(1) = (Double_t(aNeighbour->GetPixelColumn()) + cog(1) * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound); 
+            cog(0) = (Double_t(aNeighbour->GetPixelLine())   + cog(0) * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound);
+            cog(1) = (Double_t(aNeighbour->GetPixelColumn()) + cog(1) * Double_t(fStripsInClusterFound-1)) / Double_t(fStripsInClusterFound);
             if(fDebugHit>1) printf( "(%1.2f,%1.2f) \n", cog(0), cog(1));
-            
-            
+
+
           } // end if binary readout
           // END of dynamical change of the seed pixel
-          
+
         } // end if pixel is not counted twice
-        
-      } // end if neighbour pixel in search radius 
+
+      } // end if neighbour pixel in search radius
       else
       {
-        if( fDebugHit>1) printf("    neighbour %d at index %d (r%d, c%d) with pulse %1.2f and distance %1.2f [pixels] (u=%1.2f, v=%1.2f) (>%1.2f) [pixels] to far away !\n", 
+        if( fDebugHit>1) printf("    neighbour %d at index %d (r%d, c%d) with pulse %1.2f and distance %1.2f [pixels] (u=%1.2f, v=%1.2f) (>%1.2f) [pixels] to far away !\n",
                         tStripIndex,
                         aNeighbour->GetPixelIndex(),
                         aNeighbour->GetPixelLine(),
@@ -2716,12 +2716,12 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
                         ClusterLimitRadiusPix);
       }
     }// end if neighbour pixel pass pre-tests
-    
+
   } // end loop over hit pixels
 
   if(fDebugHit>2) printf("  DHit:Analyse_2_cgo found %d valid neighbours\n", fStripsInClusterFound);
 
-  
+
   //=============
   // order pixels
   //=============
@@ -2745,7 +2745,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
 
 
   // For binary readout, update the seed information
-  else if( fPlane->GetAnalysisMode() == 3 ) 
+  else if( fPlane->GetAnalysisMode() == 3 )
   { // if binary readout
 
     /*
@@ -2762,7 +2762,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
         if(fDebugHit>3) printf("     comparing pixels %d[%d] (%d-%d) and %d[%d] (%d-%d) in list of %d pixels\n", tPixelIndexList[ iPix], iPix, aPixel->GetPixelLine(), aPixel->GetPixelColumn(), tPixelIndexList[ jPix], jPix, bPixel->GetPixelLine(), bPixel->GetPixelColumn(), fStripsInClusterFound);
         // direct neighbours are defines as
         // abs(difference in line) + abs(difference in column) = 1
-        if( (abs(aPixel->GetPixelLine() - bPixel->GetPixelLine()) + 
+        if( (abs(aPixel->GetPixelLine() - bPixel->GetPixelLine()) +
              abs(aPixel->GetPixelColumn() - bPixel->GetPixelColumn()) ) == 1 ) {
           nOfneighbours[ iPix] += 1;
         }
@@ -2773,7 +2773,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
       }
     } // end loop on pixels
     */
-    
+
     // swap previous info at index 0 with the one at index iSeed
     // so that all arrays have seed info at index 0
     Int_t iTemp;
@@ -2791,11 +2791,11 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
     fStripPulseHeight[iSeed] = fStripPulseHeight[0];
     fStripPulseHeight[0]     = temp;
 
-    // need to update some variables 
+    // need to update some variables
     // to take into account the new seed definition
     fPSeed = aListOfPixels->at( tPixelIndexList[ 0] );
     fSeedU      = fPSeed->GetPosition()(0);
-    fSeedV      = fPSeed->GetPosition()(1); 
+    fSeedV      = fPSeed->GetPosition()(1);
     fIndexSeed  = fPSeed->GetPixelIndex();
     for( Int_t iPix=1; iPix<fStripsInClusterFound ; iPix++)
     { // loop on pixels in candidate hit
@@ -2804,30 +2804,30 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
       fStripDistanceV[iPix]   = fPSeed->DistanceV(aNeighbour->GetPosition());
     }
 
-    if( fDebugHit>2 ) 
+    if( fDebugHit>2 )
     {
       printf("  DHit:Analyse_2_cgo  seed is now pixel %d in list, index %d, with %d direct neighbours\n", tPixelIndexList[ 0], fIndexSeed, nOfneighbours[ iSeed]);
     }
-    
+
   } // end if binary readout
 
   else {
     printf("DHit::Analyse_2_cgo WARNING analysis mode %d UNKNOWN !!\n", fPlane->GetAnalysisMode() );
     return false;
   }
-  
+
   delete[] nOfneighbours; // remove memory leaks, BH 2013/08/21
-  
+
   //==============
   // additional properties
-  //==============  
+  //==============
   // the number of strips in the cluster and the cluster charge sum are now known
-  // Depending wether the noise is calculated or not, 
+  // Depending wether the noise is calculated or not,
   // the SN ratio is a real ratio or simply the charge
   // JB 2010/10/05 and 2010/10/15 to separately compute Cluster and Area values
 
   tClusterAreaNoise  = sqrt(tClusterAreaNoise);
-  
+
   if (fClusterNoiseAverage > 0.5) {
     fClusterSignalToNoise  = fClusterPulseSum     / sqrt(fClusterNoiseAverage);
   }
@@ -2851,10 +2851,10 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
       }
       if(fDebugHit>1)  cout<<"  DHit:Analyse_2_cgo  StoNover2  = "<<fStoNover2<<"   fPSeed->Distance( *aNeighbour)   = "<<fPSeed->Distance( *aNeighbour)<<"  fPSeed->GetFound() = "<<  fPSeed->Found()<<endl;
     } // end loop on pixels in candidate hit
-  }  
-  
+  }
+
   fTimestamp = fPSeed->GetTimestamp(); // JB 2015/05/25
-  
+
   if(fDebugHit>2) printf("  DHit:Analyse  potential hit has : PulseSum=%f, areaPulseSum=%f, noise=%f, areaNoise=%f, clusterSignalToNoise=%f, areaSignalToNoise=%f <?> cut %f, # pixels=%d within? [%d, %d], stover2=%d, time=%d\n", fClusterPulseSum, fClusterAreaPulseSum, fClusterNoiseAverage, tClusterAreaNoise, fClusterSignalToNoise, fSNneighbour, fCut->GetNeighbourPulseHeightToNoise(), fStripsInClusterFound, fCut->GetStripsInClusterMin(), fCut->GetStripsInClusterMax(), fStoNover2, fTimestamp);
 
 
@@ -2862,7 +2862,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
   // Compute hit position
   //===============
 
-  // start to  calculate the exact hit position, which is in first order the seed strip position  
+  // start to  calculate the exact hit position, which is in first order the seed strip position
   (*fPositionHit)(0)    = (fPSeed->GetPosition())(0);
   (*fPositionHit)(1)    = (fPSeed->GetPosition())(1);
   (*fPositionHit)(2)    = (fPSeed->GetPosition())(2);
@@ -2879,7 +2879,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
     // Cut on the charge or on the charge/noise (See above)
     // Cut on # pixels in hit added, JB 2009/08/30
 
-    if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise() 
+    if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise()
         && fCut->GetStripsInClusterMin() <= fStripsInClusterFound
         && fCut->GetStripsInClusterMax() >= fStripsInClusterFound
       ){
@@ -2903,12 +2903,12 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
 //     else if(fPlane->GetPlaneNumber()==4){cut1[0]=2000.;cut1[1]=-1000.;cut2[0]=2000.;cut2[1]=-2250;}*/
 
 //     if((fPSeed->GetPosition()(0)>cut1[0] || fPSeed->GetPosition()(0)<cut1[1]
-//        || fPSeed->GetPosition()(1)>cut2[0] || fPSeed->GetPosition()(1)<cut2[1]) 
+//        || fPSeed->GetPosition()(1)>cut2[0] || fPSeed->GetPosition()(1)<cut2[1])
 //        && fPlane->GetPlaneNumber()<1 ) valid=kFALSE;
     //RDM050809 for M25 end //in case you want to use this cut, put <5 instead of <1 in the last "if" line
 
     // now compute position correction wrt seed position depending on the required algorithm
-    if( valid) 
+    if( valid)
     {
 
       if(fDebugHit>2) printf("  DHit:Analyse_2_cgo  hit is valid!\n");
@@ -2990,7 +2990,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
         tCorrection += tCorTemp;
         tCluster22PulseSum += fStripPulseHeight[tOrderedIndex];
       }
-      *fPositionHitCG22 = tCorrection/tCluster22PulseSum; 
+      *fPositionHitCG22 = tCorrection/tCluster22PulseSum;
 
 
       //==================
@@ -3003,13 +3003,13 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
         if(fDebugHit>1 && (fPositionAlgorithm==2 || fPositionAlgorithm==22)) printf("  DHit.cxx:Analyse_2_cgo  Digital or CoG response only set for plane %d (forgot about etaXXX.root file?)\n",fPlane->GetPlaneNumber());
       }
       else {
-    
+
         TH1  *tEtaIntU = fPlane->GetEtaIntU();
         TH1  *tEtaIntV = fPlane->GetEtaIntV();
         Int_t iBinU    = tEtaIntU->FindBin( (*fPositionHitCG33-*fPositionHit)(0) );
         Int_t iBinV    = tEtaIntV->FindBin( (*fPositionHitCG33-*fPositionHit)(1) );
         Double_t corrU=0., corrV=0.;
-        
+
         // correct wrt CoG if possible
         if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
         if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
@@ -3022,18 +3022,18 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
       // correct the 2x2 center of gravity (tCorrection) using the integral histogram of the charge density
       // the eta position is the Y value of the bin with X value = tCorrection
       // if the tCorrection from CoG is out of the X axis range, do not correct
-    
+
         tEtaIntU = fPlane->GetEtaIntU2();
         tEtaIntV = fPlane->GetEtaIntV2();
         iBinU    = tEtaIntU->FindBin( (*fPositionHitCG22-*fPositionHit)(0) );
         iBinV    = tEtaIntV->FindBin( (*fPositionHitCG22-*fPositionHit)(1) );
         corrU = corrV = 0.;
-        
+
         // correct wrt CoG if possible
         if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
         if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
         tCorrection.SetValue( corrU, corrV, 0.);
-        
+
         *fPositionHitEta22 = *fPositionHit + tCorrection;
 
       } // end if tDigital
@@ -3074,10 +3074,10 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
   } // end if PIXEL mode
 
 
-  // Release the neighbouring Pixels associated to the seed if the pixel is finally not selected 
+  // Release the neighbouring Pixels associated to the seed if the pixel is finally not selected
   // only the tested seed (Index=0) is not released
   // JB 2009/05/10
-  if( !valid ) { 
+  if( !valid ) {
     if(fDebugHit>1) printf("  DHit.cxx:Analyse_2_cgo  hit NOT selected, releasing %d pixels\n", fStripsInClusterFound-1);
     for (Int_t iNeigh = 1; iNeigh < fStripsInClusterFound; iNeigh++){ // loop over associated pixels
       if(fDebugHit>2) printf("  DHit.cxx:Analyse_2_cgo    releasing pixel %d at index %d\n", iNeigh, fStripIndexArray[iNeigh]);
@@ -3093,7 +3093,7 @@ Bool_t DHit::Analyse_2_cgo( Int_t aPixelIndexInList, std::vector<DPixel*> *aList
 }
 
 //______________________________________________________________________________
-//  
+//
 
 Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels, bool &IsBigCluster, int MaxClusterSize)
 {
@@ -3111,20 +3111,20 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
   //
   // Constructed from the original Analyse( Int_t aPixelIndexInList, std::vector<DPixel*> *aListOfPixels ) by AP, 2014 July 01
   // Modified: JB 2015/05/26 to introduce timestamps and TimeLimit
-  // 
-  
+  //
+
   fFound      = kFALSE; // JB 2009/05/22
   fPSeed      = aListOfPixels->at(aPixelIndexInList);
-  
+
   DPixel   *aNeighbour;
   DPixel   *aPixel=NULL;
   Bool_t    pixelTwice = kFALSE; // test if a pixel is present twice in the neighbour list
   Bool_t    valid    = kFALSE; // default return value
   Bool_t    tDigital = fPlane->GetStripResponseSetting();
   Int_t     tStripIndex;
-  Int_t     tStripsInClusterPossible = 0; // remove a warning 
+  Int_t     tStripsInClusterPossible = 0; // remove a warning
   //Int_t     tPixelIndexList[500];
-  
+
   Int_t     tTimeLimit = fPlane->GetTimeLimit(); // 2015/05/26
 
   fPositionHitCG->Zero();           // clear the position
@@ -3134,24 +3134,24 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
   fClusterSignalToNoise   = 0.0;
 
   fSeedU      = fPSeed->GetPosition()(0);
-  fSeedV      = fPSeed->GetPosition()(1); 
+  fSeedV      = fPSeed->GetPosition()(1);
   fIndexSeed  = fPSeed->GetPixelIndex();
-  
-  Int_t seedRow = fPSeed->GetPixelLine(); 
-  Int_t seedCol = fPSeed->GetPixelColumn(); 
+
+  Int_t seedRow = fPSeed->GetPixelLine();
+  Int_t seedCol = fPSeed->GetPixelColumn();
   Int_t iSeed = 0;
 
-  // here, the neighbourhood of strips is assumed to be ordered, 
+  // here, the neighbourhood of strips is assumed to be ordered,
   // at index 0 is the seed, to higher indices
   // the neighbourstrips are further away from the seed.
 
   Float_t tClusterAreaNoise = 0.;
   fClusterAreaPulseSum      = 0.; // area means the cluster except the seed
-  fClusterPulseSum        = fPSeed->GetPulseHeight(); 
+  fClusterPulseSum        = fPSeed->GetPulseHeight();
   fClusterNoiseAverage    = (fPSeed->GetNoise())*(fPSeed->GetNoise());  // => so it's only a seed  strip in the beginning
   fStripsInClusterFound   = 1;
   fPSeed->SetFound(kTRUE);
-  
+
   if (fStripsInClusterDemanded >0) {        // exact number demanded
     tStripsInClusterPossible = fStripsInClusterDemanded;
   }
@@ -3173,7 +3173,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
   fSeedNoise           = fPSeed->GetNoise();
   fStripDistanceU[0] = 0.;                             // distance seed to seed = 0.
   fStripDistanceV[0] = 0.;                             // distance seed to seed = 0.
-  fStoNover2 = 0;                                      // MB/12/11/2010 
+  fStoNover2 = 0;                                      // MB/12/11/2010
 
   //===============
   // associate neighbouring pixels to seed one
@@ -3191,23 +3191,23 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
   if( fPlane->GetAnalysisMode() < 2) { // if analog strip readout
     tStripIndex = 1; // start with the first neighbour, in the geometric ordered neighbourhood, avoid 0 because it is the seed itself!
     for (Int_t iPix = 0; iPix < (Int_t)aListOfPixels->size(); iPix++){ // loop over hit pixels
-    
+
       aNeighbour = aListOfPixels->at(iPix);
-      // Test if the pixel can be associated to the seed 
+      // Test if the pixel can be associated to the seed
       //   inside the geometrical cluster limits
       // and also in the time limit using the timestamp (which are all 0 if unavailable).
       //   JB+SS 2013/06/23
       // Geometrical limit test changed from a single 2D distance test
       //  to two 1D distance test.
       //  to JB 2013/08/29 to match really a rectangle
-      if ( !aNeighbour->Found() 
+      if ( !aNeighbour->Found()
 	   //&& fPSeed->Distance( *aNeighbour) < fClusterLimit->Length()
 	   && fabs(fPSeed->DistanceU(aNeighbour->GetPosition())) <= (*fClusterLimit)(0)
 	   && fabs(fPSeed->DistanceV(aNeighbour->GetPosition())) <= (*fClusterLimit)(1)
            //&& fPSeed->GetTimestamp() == aNeighbour->GetTimestamp()
            && abs(fPSeed->GetTimestamp()-aNeighbour->GetTimestamp())<=tTimeLimit
 	 ) { // if neighbour pixel within limits
-        
+
 	// Additional test to avoid counting the same pixel twice
 	// JB 2011/11/07
 	pixelTwice = kFALSE;
@@ -3215,8 +3215,8 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	  aPixel = aListOfPixels->at( tPixelIndexList[ jPix] );
 	  pixelTwice &= aNeighbour->GetPixelIndex() == aPixel->GetPixelIndex();
 	} // end loop on currently found pixels
-      
-	if( !pixelTwice ) { // if pixel is not counted twice        
+
+	if( !pixelTwice ) { // if pixel is not counted twice
 	  fClusterAreaPulseSum          += aNeighbour->GetPulseHeight();
 	  tClusterAreaNoise             +=(aNeighbour->GetNoise())*(aNeighbour->GetNoise());
 	  fClusterNoiseAverage          += (aNeighbour->GetNoise())*(aNeighbour->GetNoise());
@@ -3230,7 +3230,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	  fStripDistanceV[tStripIndex]   = fPSeed->DistanceV(aNeighbour->GetPosition());
 	  aNeighbour->SetFound(kTRUE);
 
-	  if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) with pulse %.1f and distance %.1f(u=%.1f, v=%.1f) (<%.1f(u=%.1f, v=%.1f)) and timestamp %d / seedTimestamp %d within %d slot found!\n", 
+	  if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) with pulse %.1f and distance %.1f(u=%.1f, v=%.1f) (<%.1f(u=%.1f, v=%.1f)) and timestamp %d / seedTimestamp %d within %d slot found!\n",
 				  tStripIndex,
 				  aNeighbour->GetPixelIndex(),
 				  aNeighbour->GetPixelLine(),
@@ -3248,28 +3248,28 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	  tStripIndex++;    // increment the strip index counter
 	  fStripsInClusterFound++;
 	} // end if pixel is not counted twice
-	
+
       } // end if neighbour pixel within limits
-      
+
     } // end loop over hit pixels
   } // end if analog strip readout
   else { //if pixel analog or binary readout
-    
+
     //Doing a different cultering for binary readout using a iterative algorithm (most likely not optimal)
     std::vector<int> _TheClusterPixelsList;
     _TheClusterPixelsList.clear();
     _TheClusterPixelsList.push_back(aPixelIndexInList);
-    
+
     if(fDebugHit>1) {
       cout << endl;
-      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Seed pixel = " << aPixelIndexInList << " at (col,lin) = (" << seedCol << "," << seedRow << ")" 
+      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Seed pixel = " << aPixelIndexInList << " at (col,lin) = (" << seedCol << "," << seedRow << ")"
 	   << ", and time-stamp = " << fPSeed->GetTimestamp() << ". Initial cluster size  = " << _TheClusterPixelsList.size() << endl;
       cout << endl;
     }
 
     //SON cut for pixels in case of analog output
     float SON_cut = 3.0;
-    
+
     //Define a region of interest (ROI) to look for pixels to add to the seed pixel
     int delta_row_ROI = 70;
     int delta_col_ROI = 70;
@@ -3280,15 +3280,15 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       aNeighbour = aListOfPixels->at(iPix);
       if(aNeighbour->Found()) continue;
       if(abs(fPSeed->GetTimestamp() - aNeighbour->GetTimestamp()) > tTimeLimit) continue;
-      int testRow = aNeighbour->GetPixelLine(); 
+      int testRow = aNeighbour->GetPixelLine();
       int testCol = aNeighbour->GetPixelColumn();
-      
+
       //Only consider pixels with a minimum S/N in case of analog output sensors
       if(fPlane->GetAnalysisMode() == 2 && aNeighbour->GetPulseHeightToNoise() < SON_cut) continue;
-      
+
       //Only conside pixels in ROI region w.r.t seed pixel
       if(not( (abs(seedRow - testRow) < delta_row_ROI) &&  (abs(seedCol - testCol) < delta_col_ROI))) continue;
-      
+
       _ROIlist.push_back(iPix);
     } //end of loop over hit pixels
 
@@ -3304,31 +3304,31 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
     std::vector<int> _FiredPixelsList;
     do {
       _FiredPixelsList.clear();
-     
-      //Check for pixels neighbour to already included pixels 
+
+      //Check for pixels neighbour to already included pixels
       for(Int_t iPix = 0; iPix < int(_ROIlist.size()); iPix++) { // being loop over ROI pixels
 	aNeighbour = aListOfPixels->at(_ROIlist[iPix]);
         if(aNeighbour->Found()) continue;
 	if(abs(fPSeed->GetTimestamp() - aNeighbour->GetTimestamp()) > tTimeLimit) continue;
-	
-	int testRow = aNeighbour->GetPixelLine(); 
+
+	int testRow = aNeighbour->GetPixelLine();
         int testCol = aNeighbour->GetPixelColumn();
-	
+
 	//Now check if test pixel is neighbour to any pixel already included in cluster
 	for(int iPixClus=0; iPixClus < int(_TheClusterPixelsList.size()); iPixClus++) { // begin loop over pixel already included to cluster
 	  if(_ROIlist[iPix] == _TheClusterPixelsList[iPixClus]) continue;
 	  aPixel = aListOfPixels->at(_TheClusterPixelsList[iPixClus]);
-	  
-	  int clusRow = aPixel->GetPixelLine(); 
+
+	  int clusRow = aPixel->GetPixelLine();
           int clusCol = aPixel->GetPixelColumn();
-	  
+
 	  int deltaRow = abs(clusRow - testRow);
           int deltaCol = abs(clusCol - testCol);
-	  if((deltaRow ==  1 && deltaCol ==  0) || //pixel to the right/left 
+	  if((deltaRow ==  1 && deltaCol ==  0) || //pixel to the right/left
 	     (deltaRow ==  0 && deltaCol ==  1) || //pixel at the top/bottom
 	     (deltaRow ==  1 && deltaCol ==  1)    //pixel at diagonal
             ) {
-	    
+
 	    //Check if this pixel has been already added to the list of fired pixels
 	    bool IsNotAlreadyIn = true;
 	    for(int iNewPix=0; iNewPix < int(_FiredPixelsList.size()); iNewPix++) {
@@ -3341,43 +3341,43 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	  }
         } // end loop over pixel already included to cluster
       } //end loop over ROI pixels
-      
+
       //Now add the found pixels to the cluster and remove them from the ROI list
       if(fDebugHit>1) cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Found " << _FiredPixelsList.size() << " new pixels around seed pixel at iteration " << iteration_counter+1 << "!!!" << endl;
       for(int iNewPix=0; iNewPix < int(_FiredPixelsList.size()); iNewPix++) { //begin loop over new cluster pixels
 	_TheClusterPixelsList.push_back(_FiredPixelsList[iNewPix]);
-	
+
 	if(fDebugHit>1) {
-	  cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Adding pixel " <<  _FiredPixelsList[iNewPix] << " at (col,lin) = (" << aListOfPixels->at(_FiredPixelsList[iNewPix])->GetPixelColumn() << "," 
+	  cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Adding pixel " <<  _FiredPixelsList[iNewPix] << " at (col,lin) = (" << aListOfPixels->at(_FiredPixelsList[iNewPix])->GetPixelColumn() << ","
 	       <<  aListOfPixels->at(_FiredPixelsList[iNewPix])->GetPixelLine()
 	       << "), time-stamp = " << aListOfPixels->at(_FiredPixelsList[iNewPix])->GetTimestamp() << " (" << tTimeLimit << ")" << endl;
 	}
-	
+
 	for(Int_t iPix = 0; iPix < int(_ROIlist.size()); iPix++) { // being loop over ROI pixels
 	  if(_FiredPixelsList[iNewPix] == _ROIlist[iPix]) {
 	    _ROIlist.erase(_ROIlist.begin() + iPix);
 	    break;
 	  }
 	} //end loop over ROI pixels
-	
+
       } //end loop over new cluster pixels
       if(fDebugHit>1 && int(_FiredPixelsList.size()) > 0) {
 	cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Cluster size increased to " << _TheClusterPixelsList.size() << " at iteration " << iteration_counter+1 << endl;
 	cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". ROI list size reduced  to " << _ROIlist.size()              << " at iteration " << iteration_counter+1 << endl;
       }
       if(fDebugHit>1) cout << endl;
-      
+
       iteration_counter++;
     }
     while(int(_FiredPixelsList.size()) > 0);
     _FiredPixelsList.clear();
     _ROIlist.clear();
-    
+
     if(fDebugHit>1) {
       cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Final cluster size is " << _TheClusterPixelsList.size() << " after " << iteration_counter << " iterations!" << endl;
       cout << endl;
     }
-    
+
     //Excluding repeated pixel. Only keeping the ones with the lowest time-stamp:
     std::vector<int> _TheClusterPixelsList_NotRepeated;
     _TheClusterPixelsList_NotRepeated.clear();
@@ -3400,11 +3400,11 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	Int_t theRow2 = aNeighbour_tmp->GetPixelLine();
         Int_t theCol2 = aNeighbour_tmp->GetPixelColumn();
 	int TS2       = aNeighbour_tmp->GetTimestamp();
-	
+
 	if(theRow == theRow2 && theCol == theCol2) {
 	  if(fDebugHit>1) {
-	    cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Pixel " << iPixClus1+1 
-	         << " in list at (col,lin,TS) = (" << theCol << "," << theRow << "," << TS1 << ") is repated, the other pixel is at (col,lin,TS) = (" 
+	    cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Pixel " << iPixClus1+1
+	         << " in list at (col,lin,TS) = (" << theCol << "," << theRow << "," << TS1 << ") is repated, the other pixel is at (col,lin,TS) = ("
 	         << theCol2 << "," << theRow2 << "," << TS2 << ")"
 	         << endl;
 	  }
@@ -3418,7 +3418,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       //If the pixel is not already in list inclue it
       if(IsNotRepeated) _TheClusterPixelsList_NotRepeated.push_back(_TheClusterPixelsList[iPixClus1]);
     }
-    
+
     //Fill list with the removed pixes
     for(int iPixClus1=0; iPixClus1 < int(_TheClusterPixelsList.size()); iPixClus1++) {
       bool IsRepeated = true;
@@ -3433,18 +3433,18 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       aNeighbour->SetFound(kTRUE);
     }
     _TheClusterPixelsList_Repeated.clear();
-    
+
     if(_TheClusterPixelsList.size() != _TheClusterPixelsList_NotRepeated.size()
        && fDebugHit>1
       ) {
       cout << endl;
-      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Cluster size previous to removing repeated pixels: " << _TheClusterPixelsList.size() 
+      cout << "DHit:: Plane " << fPlane->GetPlaneNumber() << ". Cluster size previous to removing repeated pixels: " << _TheClusterPixelsList.size()
            << ". Cluster size after removing repeated pixels: " << _TheClusterPixelsList_NotRepeated.size()
            << ". Removed " << _TheClusterPixelsList.size() - _TheClusterPixelsList_NotRepeated.size() << " repated pixels!!!"
            << endl;
       cout << endl;
     }
-    
+
     //Now replace the ClusterPixelList by the one with the repeated pixels removed
     _TheClusterPixelsList.clear();
     for(int iPixClus=0; iPixClus < int(_TheClusterPixelsList_NotRepeated.size()); iPixClus++) _TheClusterPixelsList.push_back(_TheClusterPixelsList_NotRepeated[iPixClus]);
@@ -3459,22 +3459,22 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       double height = aNeighbour->GetPulseHeight();
       double PixelU = aNeighbour->GetPosition()(0);
       double PixelV = aNeighbour->GetPosition()(1);
-      
+
       COG_U += PixelU*height;
       COG_V += PixelV*height;
       TotH  += height;
     }
     COG_U /= TotH;
     COG_V /= TotH;
-    
+
     //Order the pixels depending of analog or digital output
     for(int iii=2;iii<=int(_TheClusterPixelsList.size());iii++) {
       for(int jjj=0;jjj<=int(_TheClusterPixelsList.size())-iii;jjj++) {
-	
+
 	if(fPlane->GetAnalysisMode() == 2) {
 	  //In case of analog output arrange the pixels according to charge,
 	  //from highest (seed pixels) to lowest
-	  
+
 	  double charge_jjj   = aListOfPixels->at(_TheClusterPixelsList[jjj])->GetPulseHeight();
 	  double charge_jjjp1 = aListOfPixels->at(_TheClusterPixelsList[jjj])->GetPulseHeight();
 	  if(charge_jjj < charge_jjjp1) {
@@ -3482,37 +3482,37 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	    _TheClusterPixelsList[jjj]   = _TheClusterPixelsList[jjj+1];
 	    _TheClusterPixelsList[jjj+1] = aux_idx;
 	  }
-	  
+
 	}
 	else if(fPlane->GetAnalysisMode() == 3) {
-	  //In case of digital output arrange the pixels according to their distance to the 
+	  //In case of digital output arrange the pixels according to their distance to the
 	  //center of gravitiy, from closest (seed pixels) to farest
-	  
+
 	  double PixelU,PixelV;
-	  
+
 	  aNeighbour = aListOfPixels->at(_TheClusterPixelsList[jjj]);
           PixelU = aNeighbour->GetPosition()(0);
           PixelV = aNeighbour->GetPosition()(1);
           double dist_jjj   = sqrt(pow(COG_U - PixelU,2) + pow(COG_V - PixelV,2));
-	  
+
 	  aNeighbour = aListOfPixels->at(_TheClusterPixelsList[jjj+1]);
           PixelU = aNeighbour->GetPosition()(0);
           PixelV = aNeighbour->GetPosition()(1);
           double dist_jjjp1 = sqrt(pow(COG_U - PixelU,2) + pow(COG_V - PixelV,2));
-	  
+
 	  if(dist_jjj > dist_jjjp1) {
 	    int aux_idx                  = _TheClusterPixelsList[jjj];
 	    _TheClusterPixelsList[jjj]   = _TheClusterPixelsList[jjj+1];
 	    _TheClusterPixelsList[jjj+1] = aux_idx;
 	  }
 	}
-        
+
       }
     }
-    
+
     //Hard-coded limit in the number of pixel in a cluster
     //This is a way to identify cluster due to low-momentum heavy ions from fragmentation
-    //This should avoid crash of the code when such an event happends. This happends mainly 
+    //This should avoid crash of the code when such an event happends. This happends mainly
     //for high fluxes (high trigger rates > 20kHz).
     //int TheNpixelsLimit = 100;
     int TheNpixelsLimit = MaxClusterSize;
@@ -3521,7 +3521,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       cout << endl;
       double TheCol,TheLin;
       fPlane->ComputeStripPosition_UVToColRow(COG_U,COG_V,TheCol,TheLin);
-      cout << "  DHit: Analyse method found too many pixels in cluster, N-pixels = " << _TheClusterPixelsList.size() << " (Limit is set to config file value MaxNStrips " << TheNpixelsLimit 
+      cout << "  DHit: Analyse method found too many pixels in cluster, N-pixels = " << _TheClusterPixelsList.size() << " (Limit is set to config file value MaxNStrips " << TheNpixelsLimit
 	   << "), for plane " << fPlane->GetPlaneNumber() << ". Seed pixel location is (col,lin) = (" << TheCol << "," << TheLin << ")" << endl;
       cout << "  DHit: It is likely a cluster of low-momentum heavy ion from fragmentation. Excluding pixels from further analysis" << endl;
 
@@ -3536,7 +3536,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       }
       _TheClusterPixelsList.clear();
       _TheClusterPixelsList_All.clear();
-      
+
       return false;
     }
     _TheClusterPixelsList_All.clear();
@@ -3546,17 +3546,17 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
     fClusterPulseSum      = 0.0;
     fClusterNoiseAverage  = 0.0;
     fStripsInClusterFound = int(_TheClusterPixelsList.size());
-    
+
     //Fill up the tables with the quantities of the cluster
     for(int iPix=0;iPix<int(_TheClusterPixelsList.size());iPix++) {
       aNeighbour = aListOfPixels->at(_TheClusterPixelsList[iPix]);
       if(iPix == 0) {
 	fPSeed      = aNeighbour;
 	fSeedU      = fPSeed->GetPosition()(0);
-	fSeedV      = fPSeed->GetPosition()(1); 
+	fSeedV      = fPSeed->GetPosition()(1);
 	fIndexSeed  = fPSeed->GetPixelIndex();
-  
-	seedRow     = fPSeed->GetPixelLine(); 
+
+	seedRow     = fPSeed->GetPixelLine();
 	seedCol     = fPSeed->GetPixelColumn();
 	fPSeed->SetFound(kTRUE);
 
@@ -3570,7 +3570,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	fSeedNoise           = fPSeed->GetNoise();
 	fStripDistanceU[0] = 0.;                                // distance seed to seed = 0.
 	fStripDistanceV[0] = 0.;                                // distance seed to seed = 0.
-	fStoNover2 = 0;                                         // MB/12/11/2010 
+	fStoNover2 = 0;                                         // MB/12/11/2010
       }
       else {
 	fClusterAreaPulseSum          += aNeighbour->GetPulseHeight();
@@ -3586,7 +3586,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	fStripDistanceV[iPix]          = fPSeed->DistanceV(aNeighbour->GetPosition());
 	aNeighbour->SetFound(kTRUE);
 
-	if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) with pulse %.1f and distance %.1f(u=%.1f, v=%.1f) (<%.1f(u=%.1f, v=%.1f)) found!\n", 
+	if( fDebugHit>1) printf("  neighbour %d at index %d (r%d, c%d) with pulse %.1f and distance %.1f(u=%.1f, v=%.1f) (<%.1f(u=%.1f, v=%.1f)) found!\n",
 				iPix,
 				aNeighbour->GetPixelIndex(),
 				aNeighbour->GetPixelLine(),
@@ -3629,7 +3629,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
   } // end if analog readout
   else if( fPlane->GetAnalysisMode() == 3 ) { // if binary readout
     // For binary readout, update the seed information
-    
+
     // swap previous info at index 0 with the one at index iSeed
     // so that all arrays have seed info at index 0
     Int_t iTemp;
@@ -3647,11 +3647,11 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
     fStripPulseHeight[iSeed] = fStripPulseHeight[0];
     fStripPulseHeight[0]     = temp;
 
-    // need to update some variables 
+    // need to update some variables
     // to take into account the new seed definition
     fPSeed = aListOfPixels->at( tPixelIndexList[ 0] );
     fSeedU      = fPSeed->GetPosition()(0);
-    fSeedV      = fPSeed->GetPosition()(1); 
+    fSeedV      = fPSeed->GetPosition()(1);
     fIndexSeed  = fPSeed->GetPixelIndex();
     for( Int_t iPix=1; iPix<fStripsInClusterFound ; iPix++) { // loop on pixels in candidate hit
       aNeighbour = aListOfPixels->at( tPixelIndexList[ iPix]);
@@ -3662,26 +3662,26 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
     if( fDebugHit>2 ) {
       printf("  DHit:Analyse  seed is now pixel %d in list, index %d, with %d direct neighbours\n", tPixelIndexList[ 0], fIndexSeed, nOfneighbours[ iSeed]);
     }
-    
+
   } // end if binary readout
 
   else {
     printf("DHit::Analyse_dynamic WARNING analysis mode %d UNKNOWN !!\n", fPlane->GetAnalysisMode() );
     return false;
   }
-  
+
   delete[] nOfneighbours; // remove memory leaks, BH 2013/08/21
-  
+
   //==============
   // additional properties
-  //==============  
+  //==============
   // the number of strips in the cluster and the cluster charge sum are now known
-  // Depending wether the noise is calculated or not, 
+  // Depending wether the noise is calculated or not,
   // the SN ratio is a real ratio or simply the charge
   // JB 2010/10/05 and 2010/10/15 to separately compute Cluster and Area values
 
   tClusterAreaNoise  = sqrt(tClusterAreaNoise);
-  
+
   if (fClusterNoiseAverage > 0.5) {
     fClusterSignalToNoise  = fClusterPulseSum     / sqrt(fClusterNoiseAverage);
   }
@@ -3705,10 +3705,10 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       }
       if(fDebugHit>1)  cout<<"  DHit:Analyse  StoNover2  = "<<fStoNover2<<"   fPSeed->Distance( *aNeighbour)   = "<<fPSeed->Distance( *aNeighbour)<<"  fPSeed->GetFound() = "<<  fPSeed->Found()<<endl;
     } // end loop on pixels in candidate hit
-  }  
+  }
 
   fTimestamp = fPSeed->GetTimestamp(); // JB 2015/05/25
-  
+
   if(fDebugHit>2) printf("  DHit:Analyse  potential hit has : PulseSum=%f, areaPulseSum=%f, noise=%f, areaNoise=%f, clusterSignalToNoise=%f, areaSignalToNoise=%f <?> cut %f, # pixels=%d within? [%d, %d], stover2=%d, time=%d\n", fClusterPulseSum, fClusterAreaPulseSum, fClusterNoiseAverage, tClusterAreaNoise, fClusterSignalToNoise, fSNneighbour, fCut->GetNeighbourPulseHeightToNoise(), fStripsInClusterFound, fCut->GetStripsInClusterMin(), fCut->GetStripsInClusterMax(), fStoNover2, fTimestamp);
 
 
@@ -3716,7 +3716,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
   // Compute hit position
   //===============
 
-  // start to  calculate the exact hit position, which is in first order the seed strip position  
+  // start to  calculate the exact hit position, which is in first order the seed strip position
   (*fPositionHit)(0)    = (fPSeed->GetPosition())(0);
   (*fPositionHit)(1)    = (fPSeed->GetPosition())(1);
   (*fPositionHit)(2)    = (fPSeed->GetPosition())(2);
@@ -3734,7 +3734,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
     // Cut on # pixels in hit added, JB 2009/08/30
 
     if( fPlane->GetAnalysisMode() != 3) { //if analog readout
-      if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise() 
+      if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise()
 	  && fCut->GetStripsInClusterMin() <= fStripsInClusterFound
 	  && fStripsInClusterFound <= fCut->GetStripsInClusterMax()
 	  //&& fStoNover2 >=4 // MB 2010/11/12
@@ -3745,7 +3745,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       }
     }
     else { //if digital readout
-      if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise() 
+      if( fSNneighbour >= fCut->GetNeighbourPulseHeightToNoise()
 	  && fCut->GetStripsInClusterMin() <= fStripsInClusterFound
 	  ){
 	valid = kTRUE;
@@ -3816,7 +3816,7 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	tCorrection += tCorTemp;
 	tCluster22PulseSum += fStripPulseHeight[tOrderedIndex];
       }
-      *fPositionHitCG22 = tCorrection/tCluster22PulseSum; 
+      *fPositionHitCG22 = tCorrection/tCluster22PulseSum;
 
 
       //==================
@@ -3829,13 +3829,13 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 	if(fDebugHit>1 && (fPositionAlgorithm==2 || fPositionAlgorithm==22)) printf("  DHit.cxx:Analyse  Digital or CoG response only set for plane %d (forgot about etaXXX.root file?)\n",fPlane->GetPlaneNumber());
       }
       else {
-    
+
 	TH1  *tEtaIntU = fPlane->GetEtaIntU();
 	TH1  *tEtaIntV = fPlane->GetEtaIntV();
 	Int_t iBinU    = tEtaIntU->FindBin( (*fPositionHitCG33-*fPositionHit)(0) );
 	Int_t iBinV    = tEtaIntV->FindBin( (*fPositionHitCG33-*fPositionHit)(1) );
 	Double_t corrU=0., corrV=0.;
-	
+
 	// correct wrt CoG if possible
 	if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
 	if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
@@ -3848,18 +3848,18 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
       // correct the 2x2 center of gravity (tCorrection) using the integral histogram of the charge density
       // the eta position is the Y value of the bin with X value = tCorrection
       // if the tCorrection from CoG is out of the X axis range, do not correct
-    
+
 	tEtaIntU = fPlane->GetEtaIntU2();
 	tEtaIntV = fPlane->GetEtaIntV2();
 	iBinU    = tEtaIntU->FindBin( (*fPositionHitCG22-*fPositionHit)(0) );
 	iBinV    = tEtaIntV->FindBin( (*fPositionHitCG22-*fPositionHit)(1) );
 	corrU = corrV = 0.;
-	
+
 	// correct wrt CoG if possible
 	if( 1<=iBinU && iBinU<=tEtaIntU->GetNbinsX() ) corrU = tEtaIntU->GetBinContent( iBinU);
 	if( 1<=iBinV && iBinV<=tEtaIntV->GetNbinsX() ) corrV = tEtaIntV->GetBinContent( iBinV);
 	tCorrection.SetValue( corrU, corrV, 0.);
-	
+
 	*fPositionHitEta22 = *fPositionHit + tCorrection;
 
       } // end if tDigital
@@ -3900,10 +3900,10 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
   } // end if PIXEL mode
 
 
-  // Release the neighbouring Pixels associated to the seed if the pixel is finally not selected 
+  // Release the neighbouring Pixels associated to the seed if the pixel is finally not selected
   // only the tested seed (Index=0) is not released
   // JB 2009/05/10
-  if( !valid ) { 
+  if( !valid ) {
     if(fDebugHit>1) printf("  DHit.cxx:Analyse  hit NOT selected, releasing %d pixels\n", fStripsInClusterFound-1);
     for (Int_t iNeigh = 1; iNeigh < fStripsInClusterFound; iNeigh++){ // loop over associated pixels
       if(fDebugHit>2) printf("  DHit.cxx:Analyse    releasing pixel %d at index %d\n", iNeigh, fStripIndexArray[iNeigh]);
@@ -3921,9 +3921,9 @@ Bool_t DHit::Analyse_Iterative( Int_t aPixelIndexInList, std::vector<DPixel*> *a
 //______________________________________________________________________________
 //
 
-DStrip* DHit::GetMinor(Int_t aSk) 
+DStrip* DHit::GetMinor(Int_t aSk)
 {
-    // GetMinor(0) is fSeed, GetMinor(1) is strip with lower pulseheight 
+    // GetMinor(0) is fSeed, GetMinor(1) is strip with lower pulseheight
     // than fSeed
 
   if (aSk < fSeed->GetNeighbourCount() ) {
@@ -3954,7 +3954,7 @@ void DHit::SetHitPosition(DR3 aPosition,
   // Function to set the hit position from used value:
 
   fFound = kFALSE;
-  
+
   if(fHitNumber>0) {
     fPositionHit->SetValue(aPosition(0),aPosition(1),aPosition(2));
     fPositionHitCG->SetValue(aPosition(0),aPosition(1),aPosition(2));
@@ -3972,7 +3972,7 @@ void DHit::SetHitPosition(DR3 aPosition,
 Int_t DHit::Compare( const TObject * obj) const { // QL 04/06/2016
   // QL 04/06/2016
   // to enable Sort method in a TList
-  // Sorted by comparing zPosition of the plane center 
+  // Sorted by comparing zPosition of the plane center
 
   DPlane *objPlane = ((DHit*)obj)->GetPlane();
   return fPlane->Compare( objPlane);
@@ -3983,7 +3983,7 @@ void  DHit::DoMCA(void)
 {
   //AP 2017/05/09
   //This function performs the Main component analysis of the cluster
-  
+
   float meanU     = 0.0;
   float meanV     = 0.0;
   float meanU2    = 0.0;
@@ -3992,7 +3992,7 @@ void  DHit::DoMCA(void)
   float TotCharge = 0.0;
   //cout << "  N pixels in hit = " << GetStripsInCluster() << endl;
   for(int ipixInHit=0; ipixInHit < GetStripsInCluster(); ipixInHit++) {
-    
+
     double  PixelU, PixelV, height;
     if(fPlane->GetReadout() > 100) {
       std::vector<DPixel*> *aList = GetPlane()->GetListOfPixels();
@@ -4004,14 +4004,14 @@ void  DHit::DoMCA(void)
       int idex_pixel   = GetIndex(ipixInHit);
       int col = idex_pixel%fPlane->GetStripsNu();
       int row = idex_pixel/fPlane->GetStripsNu();
-      
+
       double w;
       fPlane->ComputeStripPosition(col,row, PixelU, PixelV, w);
       height  = GetPulseHeight(ipixInHit);
     }
     //height = TMath::Abs(height);
-    if(height < 0.0) height = 0.0; 
-    
+    if(height < 0.0) height = 0.0;
+
     meanU     += PixelU*height;
     meanU2    += pow(PixelU,2)*height;
     meanV     += PixelV*height;
@@ -4019,19 +4019,19 @@ void  DHit::DoMCA(void)
     meanUV    += PixelU*PixelV*height;
     TotCharge += height;
   }
-    
+
   if(TotCharge <= 1.0e-3) return;
-  
+
   meanU  /= TotCharge;
   meanU2 /= TotCharge;
   meanV  /= TotCharge;
   meanV2 /= TotCharge;
   meanUV /= TotCharge;
-  
+
   meanU2 -= pow(meanU,2);
   meanV2 -= pow(meanV,2);
   meanUV -= meanU*meanV;
-  
+
   int Nphi = 50;
   double Rphi[2];
   Rphi[0] = 0.0;
@@ -4042,17 +4042,17 @@ void  DHit::DoMCA(void)
     float cos2_phi    = pow(TMath::Cos(phi_val),2);
     float sin2_phi    = pow(TMath::Sin(phi_val),2);
     float sin_2phi    = TMath::Sin(2.0*phi_val);
-    
+
     float RMS_Uprime = meanU2*cos2_phi + meanV2*sin2_phi + meanUV*sin_2phi;
     float RMS_Vprime = meanU2*sin2_phi + meanV2*cos2_phi - meanUV*sin_2phi;
-    
+
     if(fNormMaxStd < RMS_Uprime) {
       fNormMaxStd   = RMS_Uprime;
       fNormMinStd   = RMS_Vprime;
       fMainAxisPhi = phi_val;
     }
   }
-  
+
   if(fNormMaxStd < 0.0 || fNormMinStd < 0.0) {
     fNormMaxStd  = -1000;
     fNormMinStd  = -1000;
@@ -4062,20 +4062,20 @@ void  DHit::DoMCA(void)
     fNormMaxStd = sqrt(fNormMaxStd);
     fNormMinStd = sqrt(fNormMinStd);
   }
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 void  DHit::CalcHitLimits(void)
 {
-  
+
   fColMin =  2*fPlane->GetStripsNu();
   fColMax = -1;
   fRowMin =  2*fPlane->GetStripsNv();
   fRowMax = -1;
-  
+
   for(int ipix=0;ipix < GetStripsInCluster();ipix++) {
     int col,row;
     if(fPlane->GetReadout() > 100) {
@@ -4088,22 +4088,22 @@ void  DHit::CalcHitLimits(void)
       col = idex_pixel%fPlane->GetStripsNu();
       row = idex_pixel/fPlane->GetStripsNu();
     }
-    
+
     if(fColMin > col) fColMin = col;
     if(fColMax < col) fColMax = col;
     if(fRowMin > row) fRowMin = row;
     if(fRowMax < row) fRowMax = row;
   }
-  
+
   return;
-  
+
 }
 //______________________________________________________________________________
 //
 void DHit::Print(const Option_t*) const
-{ 
+{
   fPlane->Print();
 }
 
 //______________________________________________________________________________
-//  
+//

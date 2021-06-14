@@ -13,6 +13,12 @@
 //                             .                                        //
 //////////////////////////////////////////////////////////////////////////
 
+// Choose ONLY ONE of the two following options
+// You cannot compile both simultaneously
+//#define PXIDAQLIB
+#define MSISDAQLIB
+
+
 #include <vector>
 #include <map>
 #include <ctime>
@@ -32,7 +38,9 @@
 //#include "DMonteCarlo.h"
 #include "TNTBoardReader.h"
 #include "PXIBoardReader.h"
-//#include "PXIeBoardReader.h"
+#ifdef PXIDAQLIB
+  #include "PXIeBoardReader.h"
+#endif
 #include "GIGBoardReader.h"
 #include "IMGBoardReader.h"
 #include "BoardReader.h"
@@ -43,7 +51,9 @@
 #include "DecoderGeant.h"
 #include "DEventMC.h"
 #include "BoardReaderIHEP.h"
-#include "BoardReaderMIMOSIS.h"
+#ifdef MSISDAQLIB
+  #include "BoardReaderMIMOSIS.h"
+#endif
 #include "sup_exp.typ" // for time reference information
 
 class DAcq : public TObject {
@@ -58,7 +68,9 @@ class DAcq : public TObject {
 
       TNTBoardReader  **fTNT;              // pointer to TNT boards
       PXIBoardReader  **fPXI;              // pointer to PXI boards
-//      PXIeBoardReader **fPXIe;             // pointer to PXIexpress boards
+#ifdef PXIDAQLIB
+      PXIeBoardReader **fPXIe;             // pointer to PXIexpress boards
+#endif
       GIGBoardReader  **fGIG;              // pointer to GIG boards, JB 2012/04/25
       IMGBoardReader  **fIMG;              // pointer to IMG boards, JB 2012/07/22
       VMEBoardReader  **fVME;              // pointer to VME boards, JB 2014/05/13
@@ -67,7 +79,9 @@ class DAcq : public TObject {
       DecoderM18      **fM18;              // pointer to DecoderM18 boards, JB 2014/05/25, then 2014/08/26
       DecoderGeant    **fGeant;            // pointer to DecoderGeant
       BoardReaderIHEP **fIHEP;             // pointer to IHEP boards, JB 2018/06/03
+#ifdef MSISDAQLIB
       BoardReaderMIMOSIS **fMSIS;          // pointer to MIMOSIS boards, JB 2021/05/01
+#endif
       Int_t          ***fRawData;          // pointer to Raw Values
       std::vector<DPixel*>  *fListOfPixels;     // pointer to list of hit pixel
       //std::vector<DMonteCarlo*> *fListOfMonteCarlo; // pointer to list of hit montecarlo
