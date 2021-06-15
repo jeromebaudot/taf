@@ -9,7 +9,23 @@
 /////////////////////////////////////////////////////////////
 //
 // created JB, 2021/04/21
-// Last Modified: Ziad, 2021/06/04
+// Last Modified: Ziad, 2021/06/15
+// This class enables the decoding of MIMOSIS1 sensor data
+// * Two main methods are used for decoding:
+//  - DecodeNextEvent: enables the scanning of the acquisitions and get the pointer of the current acquisition.
+//  - DecodeFrame: enables to add the pixel values corresponding to the current considered frame.
+//
+// * Two treatment modes are available: wih trigger (TriggerMode: 1) and without the trigger (TriggerMode: 0).
+//  - TriggerMode is set in the configuration file.
+//  - In case of no TriggerMode, all the frames are decoded.
+//  - In case of TriggerMode (1), fFramesPerTrigger frames are decoded starting at fTriggerOffset from the TriggerID:
+//          -> example: if fTriggerOffset = 1, fFramesPerTrigger = 3 and TriggerID = 300 => Decoded frames: 301, 302, 303
+//          -> fTriggerOffset and fFramesPerTrigger are set in the configuration file BUT considered only if TriggerMode: 1
+//          -> if TriggerMode: 0, fTriggerOffset and fFramesPerTrigger have default values, respectively 0 and 1, set in the constructor of the class
+//
+// * A SafeAcquisitionMode is possible and set by user with the parameters: fEventBuildingMode (0: risky, 1: safe).
+//   - Test is done in method isAcqSafe() checks if acquisition is safe to consider for decoding.
+//   - On 2021/06/15 the criteria of safe acquisition is that it has the same number of frames in all sensors.
 
 #define AP 0
 #include "TCanvas.h"
@@ -920,10 +936,16 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fRunNumber = runNumber;
   fNSensors = nSensors;
   fTriggerMode = triggerMode;
-  fTriggerOffset = triggerOffset;
-  fFramesPerTrigger = framesPerTrigger;
   fEventBuildingMode = eventBuildingMode;
   fEndianness = endianness;
+  
+    if (fTriggerMode == 1){ // Values for fTriggerOffset and fFramesPerTrigger are set by user only if TriggerMode = 1
+                            // if TriggerMode = 0, fTriggerOffset and fFramesPerTrigger are set to default values,
+                            // respectively 0 and 1 given in the constructor of the class.
+        fTriggerOffset = triggerOffset;
+        fFramesPerTrigger = framesPerTrigger;
+    }
+    
   fVetoOverflow = false; // set later by SetVetoPixel
   fisfirstAcq = true;
   fisAcqSafe = true; // ZE, 2021/06/14 we start assuming the current acquisition is not risky
@@ -1220,6 +1242,8 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
   //  there is still something to read in the current file
   //  or if the next file should be open (LookUpRawFile())
   //  or if there is nothing to read anymore ==> ready = false
+  //  This method operates in TriggerMode: 0 => Send all frames to be decoded in DecodeFrame() method
+  //  ---------------------if TriggerMode: 1 => Send fFramesPerTrigger starting at fTriggerOffset from TriggerID to DecodeFrame() method
 
    SInt32 VRet;                              // Error code returned by functions ( 0 => ok, < 0 => error )
    
@@ -1415,7 +1439,12 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 //------------------------------------------+-----------------------------------
 
 bool BoardReaderMIMOSIS::DecodeFrame() {
-         
+    
+    // This method enables to decode the frame of the current considered acquisition
+    // If fEventBuildingBoardMode : 0 => All the frames are decoded.
+    // If fEventBuildingBoardMode : 1 => Only safe frames are decoded.
+    // If fTriggerMode : 0, all the frames are decoded.
+    // If fTriggerMode : 1, fFramesPerTrigger starting at fTriggerOffset from TriggerID are decoded.
       SInt32 VRet;
       
       MIS1__TPixXY VPix;
@@ -1515,19 +1544,23 @@ void BoardReaderMIMOSIS::SkipNextEvent() {
 }
 
 // --------------------------------------------------------------------------------------
+// ZE, 2021/06/15
 bool BoardReaderMIMOSIS::isAcqSafe() {
   // This method tests whether the acquisition is safe (i.e not truncated)
   // This applies to Acquisition with the same number of frames in sensors
+  // if fEventBuildingMode = 0, all acquisitions are considered and no risk test performed.
     SInt32 VRet;
     fisAcqSafe = true;
 
+    if (fEventBuildingMode == 1){ // fEventBuildingMode = 0, consider all acquisitions ; fEventBuildingMode = 1, keep only safe acquisitions
     for (int MSisId = 0; MSisId < fNSensors; MSisId ++){
         VRet = MIS1__BT_FBtDecodeFr ( APP_VGPtAcqW16A, APP_VGPtAcqDec, MSisId, -1, 0 /* MeasExecTime */, 0 /* PrintLvl */ );
         if (MSisId > 0){
             if (APP_VGPtAcqDec->ResAFrNb[MSisId] != APP_VGPtAcqDec->ResAFrNb[MSisId-1])
                 fisAcqSafe = false;
+            }
         }
-    }
+    } // End of test over EventBuilding Mode
     return fisAcqSafe;
 }
 
