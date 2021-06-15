@@ -21,7 +21,7 @@
 //  - In case of TriggerMode (1), fFramesPerTrigger frames are decoded starting at fTriggerOffset from the TriggerID:
 //          -> example: if fTriggerOffset = 1, fFramesPerTrigger = 3 and TriggerID = 300 => Decoded frames: 301, 302, 303
 //          -> fTriggerOffset and fFramesPerTrigger are set in the configuration file BUT considered only if TriggerMode: 1
-//          -> if TriggerMode: 0, fTriggerOffset and fFramesPerTrigger have default values, respectively 0 and 1, set in the constructor of the class
+//          -> if TriggerMode: 0, fTriggerOffset and fFramesPerTrigger have default values, respectively 0 and 1.
 //
 // * A SafeAcquisitionMode is possible and set by user with the parameters: fEventBuildingMode (0: risky, 1: safe).
 //   - Test is done in method isAcqSafe() checks if acquisition is safe to consider for decoding.
@@ -938,10 +938,11 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fTriggerMode = triggerMode;
   fEventBuildingMode = eventBuildingMode;
   fEndianness = endianness;
-  
+  fTriggerOffset = 0;
+  fFramesPerTrigger = 1;
     if (fTriggerMode == 1){ // Values for fTriggerOffset and fFramesPerTrigger are set by user only if TriggerMode = 1
                             // if TriggerMode = 0, fTriggerOffset and fFramesPerTrigger are set to default values,
-                            // respectively 0 and 1 given in the constructor of the class.
+                            // respectively 0 and 1.
         fTriggerOffset = triggerOffset;
         fFramesPerTrigger = framesPerTrigger;
     }
