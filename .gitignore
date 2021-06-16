@@ -35,4 +35,4 @@ doc/taf_shortDoc\.out
 
 *.toc
 
-DS_Store
+.DS_Store
