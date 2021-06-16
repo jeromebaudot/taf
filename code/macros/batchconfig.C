@@ -1,14 +1,13 @@
-void batchrunumber(Int_t runNumber=0) {
+void batchconfig(Int_t runNumber=0, Int_t planeNumber=1, TString configFile="./config_TEST/mimosis405.cfg") {
   // Example of macro that can be executed in batch mode
-  // launch with: nohup TAF -b code/macros/batchrunumber.C > taf.out &
+  // launch with: nohup TAF -b code/macros/batchconfig.C > taf.out &
   // mote the "-b" option for batch (allows graphics to be created even if not displayed)
   //
   // JB 2009/10/06
 
   MimosaAnalysis *gTAF = new MimosaAnalysis();
 
-  gTAF->InitSession(runNumber,3);
-// gTAF->InitSession(runNumber,planeNumber,-1,configFile);
+  gTAF->InitSession(runNumber,planeNumber,-1,configFile.Data());
 //  gTAF->SetDebug(-2);
 
 //  gTAF->SetAlignStatus(2);
