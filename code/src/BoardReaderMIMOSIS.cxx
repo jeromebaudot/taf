@@ -1439,7 +1439,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 
 //------------------------------------------+-----------------------------------
 
-bool BoardReaderMIMOSIS::DecodeFrame() {
+void BoardReaderMIMOSIS::DecodeFrame() {
     
     // This method enables to decode the frame of the current considered acquisition
     // If fEventBuildingBoardMode : 0 => All the frames are decoded.
@@ -1460,7 +1460,7 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
                printf ( "WARNING: Decoding MSis data failed for Sensor : %d and FrameNb : %d \n", MSisId, fCurrentFrameNumber );
                printf ( "\n" );
                fBadDecFrameCounter ++;
-               return (-1);
+               // return (-1);
            }
            
           // Decode pixels only for frames with FiredPixNb > 0 and not truncated acquisition

@@ -338,7 +338,7 @@ Bool_t DSession::NextRawEvent( Int_t aTrigger)
   if (GetStatus()==0 && fTracker->GetPlanesStatus() ){ // Moved from Loop(), JB 2009/05/26
     SetStatus(fTracker->GetPlanesStatus()) ;
   }
-
+    
   // display current event number with variable frequency
   Int_t frequency = 1; // added by JB, April 2008
   if( fDebugSession) { cout << endl << endl; }
