@@ -107,6 +107,10 @@ Int_t main(Int_t argc, Char_t **argv)
   TString sessinit_dataDirPath_cmd = "-data";
   TString sessinit_dataDirPath_arg = "";
   TString sessinit_dataDirPath_def = "";
+  // exec DSFProduction :
+  TString sessinit_DSFProduction_cmd = "-dsfp";
+  Int_t sessinit_DSFProduction_arg = 0;
+  Int_t sessinit_DSFProduction_def = 0;
   // output files prefix :
   TString sessinit_outFilesPref_cmd = "-prefix";
   TString sessinit_outFilesPref_arg = "";
@@ -172,7 +176,7 @@ Int_t main(Int_t argc, Char_t **argv)
         cout << "     ["<< sessinit_outFilesSuff_cmd <<"] output files suffix for MRax (ex.: RUNxx), default is "<<  sessinit_outFilesSuff_def << "#" << endl;
         // cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
         cout << "     ["<< sessinit_dataDirPath_cmd <<"] path to data, superseeds gonfig file input"<< endl;
-
+      cout << "     ["<< sessinit_DSFProduction_cmd <<"] execute directly the DSFProduction "<< endl;
       cout << "  * TAF GUIs :" << endl;
       cout << "     ["<<tafgui_cmd<<"] : launch the default (MRaw) GUI" << endl;
       cout << "     ["<<tafgui_mraw_cmd<<"] : launch the MRaw GUI" << endl;
@@ -284,6 +288,14 @@ Int_t main(Int_t argc, Char_t **argv)
 	    if(verbose) cout << "  * InitSession: a data path is given: "<< sessinit_dataDirPath_arg << endl;
 	    i++;
 	  }
+    // DSFProduction
+     else if (!arg.CompareTo(sessinit_DSFProduction_cmd) && ((i+1)<argc)) // if this arg is followed by another
+      {
+        sessinit_DSFProduction_arg = atoi(argv[i+1]);
+        if(verbose) cout << "  * InitSession: DSFProduction is activated with "<< sessinit_DSFProduction_arg << " events " << endl;
+        i++;
+      }
+
     // output files suffix
     else if (!arg.CompareTo(sessinit_outFilesSuff_cmd) && ((i+1)<argc)) // if this arg is followed by another
     {
@@ -592,7 +604,14 @@ Int_t main(Int_t argc, Char_t **argv)
     rvalue = gROOT->ProcessLineSync(tafcommand);
 
     if(verbose) cout << " ***</Automatic Mimosa Analysis Session Initialisation>*** " <<endl;
-
+    
+    if (sessinit_DSFProduction_arg != 0)
+    {
+        cout << " ****DSFProduction will be launched with : " <<  sessinit_DSFProduction_arg << " events. " << endl;
+        sprintf(tafcommand, "gTAF->DSFProduction(%d)", sessinit_DSFProduction_arg);
+        cout << "tafcommand for DSF : " << tafcommand << endl;
+        gROOT->ProcessLineSync(tafcommand);
+    }
     //------------------------------
     // launch GUIs
     //------------------------------

@@ -1,0 +1,217 @@
+ ***<Reading arguments>*** 
+  * ROOT arg: exit when finished is asked
+  * InitSession: a run number is given: 405
+  * InitSession: DSFProduction is activated with 10 events 
+ ***</Reading arguments>*** 
+
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for TNTBoardReader.h
+   requested to autoload type DR3
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for TNTBoardReader.h
+   requested to autoload type DGlobalTools
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for TNTBoardReader.h
+   requested to autoload type TNTPixel
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for TNTBoardReader.h
+   requested to autoload type TNTEvent
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for TNTBoardReader.h
+   requested to autoload type TNTBoardReader
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for PXIBoardReader.h
+   requested to autoload type PXIPixel
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for PXIBoardReader.h
+   requested to autoload type PXIEvent
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for PXIBoardReader.h
+   requested to autoload type PXIBoardReader
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for GIGBoardReader.h
+   requested to autoload type GIGPixel
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for GIGBoardReader.h
+   requested to autoload type GIGMonteCarlo
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for GIGBoardReader.h
+   requested to autoload type GIGEvent
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for GIGBoardReader.h
+   requested to autoload type GIGBoardReader
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for IMGBoardReader.h
+   requested to autoload type IMGPixel
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for IMGBoardReader.h
+   requested to autoload type IMGEvent
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for IMGBoardReader.h
+   requested to autoload type IMGBoardReader
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for BoardReader.h
+   requested to autoload type BoardReaderPixel
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for BoardReader.h
+   requested to autoload type BoardReaderEvent
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for VMEBoardReader.h
+   requested to autoload type VMEBoardReader
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DPixel
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DHit
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DTrack
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DEventMC
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DEventHeader
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DEvent
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DAuthenticHit
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DAuthenticPlane
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DTransparentPlane
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DSession
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type DSetup
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MCBoardReader.h
+   requested to autoload type MCBoardReader
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for BoardReaderIHEP.h
+   requested to autoload type BoardReaderIHEP
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for AliMIMOSA22RawStreamVASingle.h
+   requested to autoload type AliMIMOSA22RawStreamVASingle
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DecoderM18.h
+   requested to autoload type DecoderM18
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DecoderGeant.h
+   requested to autoload type DecoderGeant
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for BoardReaderMIMOSIS.h
+   requested to autoload type BoardReaderMIMOSIS
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DAcq.h
+   requested to autoload type DAcq
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DataPoints
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DPrecAlign
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type MiniVector
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DLadder
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DPlane
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DAlign
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DHelix
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DHelixFitter
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DBeaster
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DTracker.h
+   requested to autoload type DTracker
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DStrip.h
+   requested to autoload type DStrip
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DLine.h
+   requested to autoload type DLine
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DCut.h
+   requested to autoload type DCut
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for DParticle.h
+   requested to autoload type DParticle
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MAnalysis.h
+   requested to autoload type MAlignment
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MAnalysis.h
+   requested to autoload type MimosaAlignAnalysis
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MAnalysis.h
+   requested to autoload type MHist
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MAnalysis.h
+   requested to autoload type MRaw
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MAnalysis.h
+   requested to autoload type MRax
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MAnalysis.h
+   requested to autoload type MimosaAnalysis
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MMillepede.h
+   requested to autoload type MMillepede
+Error in cling::AutoLoadingVisitor::InsertIntoAutoLoadingState:
+   Missing FileEntry for MGlobalAlign.h
+   requested to autoload type MimosaGlobalAlign
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.23/01                        https://root.cern |
+  | (c) 1995-2020, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for macosx64 on Feb 08 2021, 19:11:00                      |
+  | From heads/master@v6-23-01-RF-binSampling-684-gfc9c2691e4        |
+  | With Apple clang version 11.0.3 (clang-1103.0.32.62)             |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+
+ ***<TAF initialisation>*** 
+ * TAF will exit when finished
+ * Process command: MimosaAnalysis *gTAF = new MimosaAnalysis()Mdict dictionary payload:5:10: fatal error: 'MAnalysis.h' file not found
+#include "MAnalysis.h"
+         ^~~~~~~~~~~~~
+Error in <TInterpreter::AutoParse>: Error parsing payload code for class MimosaAnalysis with content:
+
+#line 1 "Mdict dictionary payload"
+
+
+#define _BACKWARD_BACKWARD_WARNING_H
+// Inline headers
+#include "MAnalysis.h"
+#include "MAlign.h"
+#include "MHist.h"
+#include "MRaw.h"
+#include "MRax.h"
+#include "MAlignment.h"
+#include "MMillepede.h"
+#include "MGlobalAlign.h"
+#include "MKalmanFilter.h"
+#include "MLeastChiSquare.h"
+
+#undef  _BACKWARD_BACKWARD_WARNING_H
+
+aborting
+./script_taf.sh: line 8:  8726 Abort trap: 6           /Users/zelbitar/HEP_SOFT/taf.git/taf.origin/taf/bin/bin/TAF -q -run 405 -dsfp 10
