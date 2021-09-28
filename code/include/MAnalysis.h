@@ -883,7 +883,7 @@ class MimosaAnalysis : public MHist {
 
 
 #ifndef MAC
-//#define gTAF MimosaAnalysis::Instance() // to comment for MAC
+#define gTAF MimosaAnalysis::Instance() // to comment for MAC
 #endif
 
 

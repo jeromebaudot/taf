@@ -90,7 +90,7 @@ private:
 
 
   bool  DecodeNextEvent();
-  bool  DecodeFrame();
+  void  DecodeFrame();
   bool  isAcqSafe();
     
   
