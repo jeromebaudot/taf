@@ -5428,7 +5428,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
   cout << "-------- Total number of event processed= "<<MaxEvent-MinEvent+1<<endl;
   cout << "-------- CUTS S/N seed and S/N neighbours= "<<CUT_S2N_seed<<" "<<CUT_S2N_neighbour<<endl;
   cout << "-------- MIN and MAX number of hits per event to evaluate efficiency "<<CUT_MinNbOfHits<<" "<<CUT_MaxNbOfHits<<endl;
-  cout << "-------- calibration 1"<<calibration<<endl;
+  cout << "-------- calibrationde 1"<<calibration<<endl;
 
   //---------------------------------------------------------------
   //---- Hot pixels management
