@@ -3781,7 +3781,12 @@ void MimosaAnalysis::MimosaPro2Planes(Int_t MaxEvt, Int_t TrackHitDist, Short_t 
   cout << "-------- CUTS S/N seed and S/N neighbours= "<<CUT_S2N_seed<<" "<<CUT_S2N_neighbour<<endl;
   cout << "-------- MIN and MAX number of hits per event to evaluate efficiency "<<CUT_MinNbOfHits<<" "<<CUT_MaxNbOfHits<<endl;
   cout << "-------- calibration "<<calibration<<endl;
-
+    
+    cout << "StatusEvent = ";
+    for ( Int_t i=1 ; i<10 ; i++ ) {
+      cout<<StatusEvent[i]<<" - ";
+    }
+    cout<<endl;
   //---------------------------------------------------------------
   //-- Write histos
   //---------------------------------------------------------------
@@ -5423,7 +5428,7 @@ void MimosaAnalysis::MimosaProLadder(Int_t MaxEvt, Int_t TrackHitDist, Float_t S
   cout << "-------- Total number of event processed= "<<MaxEvent-MinEvent+1<<endl;
   cout << "-------- CUTS S/N seed and S/N neighbours= "<<CUT_S2N_seed<<" "<<CUT_S2N_neighbour<<endl;
   cout << "-------- MIN and MAX number of hits per event to evaluate efficiency "<<CUT_MinNbOfHits<<" "<<CUT_MaxNbOfHits<<endl;
-  cout << "-------- calibration "<<calibration<<endl;
+  cout << "-------- calibration 1"<<calibration<<endl;
 
   //---------------------------------------------------------------
   //---- Hot pixels management
