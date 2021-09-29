@@ -628,7 +628,8 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
   // Compare position with nearest hit reconstructed
   // Hit number is set <0 if hit was used to fit track
   if( &aHit ) { // JB 2009/06/26
-    if(fDebugEvent) printf("  DTransparentPlane::DTransparentPlane   hit pos u,v=(%.1f, %.1f), number %d from %d, with %d strips, charge = %f, qseed = %f\n", aHit.GetPositionUhit(), aHit.GetPositionVhit(), aHit.GetNumber(), aPlane.GetHitsN(), aHit.GetStripsInCluster(), aHit.GetClusterPulseSum(), aHit.GetPulseHeight(0));
+  //  if(fDebugEvent)
+        printf("  DTransparentPlane::DTransparentPlane   hit pos u,v=(%.1f, %.1f), number %d from %d, with %d strips, charge = %f, qseed = %f\n", aHit.GetPositionUhit(), aHit.GetPositionVhit(), aHit.GetNumber(), aPlane.GetHitsN(), aHit.GetStripsInCluster(), aHit.GetClusterPulseSum(), aHit.GetPulseHeight(0));
     Tud              = aHit.GetPositionUhit() - Tu;
     Tvd              = aHit.GetPositionVhit() - Tv;
     ThN              = aPlane.GetHitsN();

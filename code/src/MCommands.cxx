@@ -296,7 +296,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     Ngoodhitinevent=0;
     Ngoodtrackinevent=0;
     NgoodtrackinDUTinevent=0;
-    for ( Int_t i=0 ; i<10 ; i++ ) { StatusEvent[i]=0; }
+  //  for ( Int_t i=0 ; i<10 ; i++ ) { StatusEvent[i]=0; }
 
     //-- Update display
 
