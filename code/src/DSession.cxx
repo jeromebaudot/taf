@@ -23,6 +23,7 @@
 // Last Modified: JB 2014/08/29 FillTree
 // Last Modified: BB 2015/11/18 Modification of FillTree to avoid a Break segmentation
 // Last Modified: JB 2021/05/01 Propagate potential sourcePath set via command line
+// Last Modified: ZE 2021/09/30 AddTransparentPlane in case of no hit in the plane
 
   ////////////////////////////////////////////////////////////
   // Class Description of DSession                          //
@@ -671,10 +672,12 @@ void DSession::FillTree()
         do{
           tTrack = fTracker->GetTrack(iteratorTrack);
           tHit = fTracker->nearest_hit( tTrack, pl, hitAssociated); // nearest hit, JB 2009/07/17
-          if( fDebugSession>1 ) printf("DSession::FillTree got track %d, %s hit %d\n", tTrack->GetNumber(), hitAssociated?"associated":"nearest", tHit?tHit->GetNumber():0); // JB 2014,08/29
+          if( fDebugSession>1 )
+              printf("DSession::FillTree got track %d, %s hit %d, plane %d \n", tTrack->GetNumber(), hitAssociated?"associated":"nearest", tHit?tHit->GetNumber():0, pl); // JB 2014,08/29
           if(tHit != nullptr){ // BB 2015/11/18 : assuming that we add a transparent plane only when there is a hit, otherwise go to the next event
             fEvent->AddTransparentPlane(*tPlane, *tTrack, *tHit, hitAssociated, *fTracker ); // store track along with nearest hit
           }
+        else fEvent->AddTransparentPlane(*tPlane, *tTrack, *fTracker ); // ZE on 2021/09/28, Add a transparent plane also for plane with no hit
           iteratorTrack++;
         }while(iteratorTrack <= tracksN); // end loop on tracks
      } // end condition added for calibration

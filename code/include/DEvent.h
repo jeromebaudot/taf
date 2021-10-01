@@ -2,7 +2,7 @@
 // Author: Dirk Meier   98/02/18
 // Last Modified, AP 2015/05/22, DEvent class: Changed Short_t by Int_t
 //                               fAHitsN,fT1PlanesN,fAPlanesN
-
+// Last Modified, ZE, AddTransparentPlane with no hits
 #ifndef _DEvent_included_
 #define _DEvent_included_
 
@@ -104,6 +104,7 @@ class DEvent : public TObject {
   void             SetTimeInterval(const Int_t aDeltaTime);
   void             AddAuthenticPlane(DPlane& aPlane, Int_t aNEvent);
   void             AddTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit, Bool_t hitAssociated, DTracker &aTracker); // modified JB 2014/12/18, 2014/08/29
+  void             AddTransparentPlane(DPlane& aPlane, DTrack& aTrack, DTracker &aTracker); // modified ZE 2021/09/28
   void             AddAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack);
   DEventHeader&    GetHeader()               { return fHeader;   }
   TClonesArray    *GetAuthenticHits()        { return fAHits;    }

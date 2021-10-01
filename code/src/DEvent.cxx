@@ -258,6 +258,18 @@ void DEvent::AddTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit, Boo
 
 }
 
+// Added ZE 2021/09/28
+//______________________________________________________________________________
+//
+void DEvent::AddTransparentPlane(DPlane& aPlane, DTrack& aTrack, DTracker &aTracker)
+{
+
+  TClonesArray &tData = *fT1Planes;
+  
+  new(tData[fT1PlanesN++]) DTransparentPlane(aPlane, aTrack, aTracker);
+
+}
+
 //______________________________________________________________________________
 //  
 void DEvent::SetHeader(const Int_t aNEvent, 
@@ -548,14 +560,6 @@ DAuthenticPlane::DAuthenticPlane(DPlane& aPlane, Int_t aNEvent) : TObject()
 
 //______________________________________________________________________________
 //  
-DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DTracker &aTracker) : TObject() 
-{
-
-  DTransparentPlane( aPlane, aTrack, *(aPlane.GetPrincipalHit()), kFALSE, aTracker);
-
-}
-//______________________________________________________________________________
-//  
 DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit, Bool_t hitAssociated, DTracker &aTracker) : TObject() 
 {
 
@@ -627,9 +631,9 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
 
   // Compare position with nearest hit reconstructed
   // Hit number is set <0 if hit was used to fit track
+    
   if( &aHit ) { // JB 2009/06/26
-  //  if(fDebugEvent)
-        printf("  DTransparentPlane::DTransparentPlane   hit pos u,v=(%.1f, %.1f), number %d from %d, with %d strips, charge = %f, qseed = %f\n", aHit.GetPositionUhit(), aHit.GetPositionVhit(), aHit.GetNumber(), aPlane.GetHitsN(), aHit.GetStripsInCluster(), aHit.GetClusterPulseSum(), aHit.GetPulseHeight(0));
+  if(fDebugEvent) printf("  DTransparentPlane::DTransparentPlane   hit pos u,v=(%.1f, %.1f), number %d from %d, with %d strips, charge = %f, qseed = %f\n", aHit.GetPositionUhit(), aHit.GetPositionVhit(), aHit.GetNumber(), aPlane.GetHitsN(), aHit.GetStripsInCluster(), aHit.GetClusterPulseSum(), aHit.GetPulseHeight(0));
     Tud              = aHit.GetPositionUhit() - Tu;
     Tvd              = aHit.GetPositionVhit() - Tv;
     ThN              = aPlane.GetHitsN();
@@ -726,3 +730,75 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
 
 }
 
+
+//______________________________________________________________________________
+//
+DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DTracker &aTracker) : TObject()
+{
+
+  // Basic storage of a track associated with a hit.
+  // With this method, the track is not systematically associated to the so called "Principal" hit.
+  //
+  // JB, September 2007
+  // Modified to get rid of call to DStrip class, JB 2009/05/12 and 2009/06/26
+  // Modified to store # hits in the track, JB 2009/09/08
+  // Modified for readout conditional variables, JB 2011/06/17
+  // Modified to indicate if hit is associated to track or not, JB 2014/08/29
+  // Modified to replace track by subtrack if any, JB 2014/12/15
+
+  TString        tPurpose = aPlane.GetPlanePurpose() ;
+
+  Tpk = aPlane.GetPlaneNumber();
+  TtN = aPlane.GetTracker()->GetTracksN(); // JB 2009/06/26
+  if(fDebugEvent) printf("  DTransparentPlane::DTransparentPlane adding track %d, with plane %d\n", aTrack.GetNumber(), aPlane.GetPlaneNumber());
+
+  // track information
+  Ttk      = aTrack.GetNumber();
+  TtHn     = aTrack.GetHitsNumber(); // JB 2009/09/08
+  // Consider the subtrack rather than the full track if it exists
+  DR3 trackPos;
+  DTrack *aSubTrack;
+  if( aTracker.GetNPlanesForSubTrack()>1 ) {
+    aSubTrack = (DTrack*)(aTracker.GetSubTrack( Ttk));
+    trackPos = aSubTrack->Intersection(&aPlane); // subtrack position in device frame (uvw)
+//    DR3 fullTrackPos = aTrack.Intersection(&aPlane);
+//    printf(" Subtrack %d pos (%.2f, %.2f) versus full track %d pos (%.2f, %.2f)\n", aSubTrack->GetNumber(), trackPos(0), trackPos(1), aTrack.GetNumber(), fullTrackPos(0), fullTrackPos(1));
+  }
+  else {
+    trackPos = aTrack.Intersection(&aPlane); // track position in device frame (uvw)
+  }
+  Tu     = trackPos(0);
+  Tv     = trackPos(1);
+  TDOX   = aTrack.GetDeltaOrigineX() ;
+  TDOY   = aTrack.GetDeltaOrigineY() ;
+  Tx     = aTrack.GetLinearFit().GetOrigin()(0);
+  Ty     = aTrack.GetLinearFit().GetOrigin()(1);
+  Tz     = aTrack.GetLinearFit().GetOrigin()(2);
+  Tdx    = aTrack.GetLinearFit().GetSlopeZ()(0);
+  Tdy    = aTrack.GetLinearFit().GetSlopeZ()(1);
+  Tchi2  = aTrack.GetChiSquare();
+  Tchi2u = aTrack.GetChiSquareU();
+  Tchi2v = aTrack.GetChiSquareV();
+  TvertexU         = aTrack.GetVertexX();    // LC 201212/17
+  TvertexV         = aTrack.GetVertexY();
+  TvertexW         = aTrack.GetVertexZ();
+
+  if(fDebugEvent) printf("  DTransparentPlane::DTransparentPlane   pos u,v=(%.1f, %.1f), x,y=(%.1f, %.1f), slope=(%.3f, %.3f), chi2=%f\n", Tu, Tv, Tx, Ty, Tdx, Tdy, Tchi2);
+
+  DR3 tSlopeInPlane;
+  tSlopeInPlane = aPlane.TrackerToPlane( aTrack.GetLinearFit().GetSlopeZ() );
+  Tdu    = tSlopeInPlane(0);
+  Tdv    = tSlopeInPlane(1);
+
+  //RDM250909 begin initialization
+
+  Tud              = 9999.;
+  Tvd              = 9999.;
+  ThN              = 0;
+  Thk              = 0;
+  TsN              = 0;
+  Tqc              = 0;
+  Tq0              = 0;
+  //RDM250909 end initialization
+
+}
