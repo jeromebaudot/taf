@@ -1313,13 +1313,13 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     // StatusEvent[5]>1 <=> there is a good track in the good geomatrix
     // StatusEvent[8/9]>1 <=> a hit is matched to the track
 
-  //  if (MimoDebug > 1) {
+    if (MimoDebug > 1) {
       cout << "StatusEvent = ";
       for ( Int_t i=1 ; i<10 ; i++ ) {
         cout<<StatusEvent[i]<<" - ";
       }
       cout<<endl;
-   // }
+    }
 
 
     if(MimoDebug) Info("MimosaPro","Event %d ended\n",ievt);
