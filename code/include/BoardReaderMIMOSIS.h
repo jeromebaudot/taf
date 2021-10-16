@@ -75,6 +75,7 @@ private:
   int             fFrameCount;
   int             fBadDecFrameCounter ; // ZE 2021/06/04 - Counter for bad decoded frames
   int             fTruncatedAcqCounter ; // ZE 2021/06/09 - Counter for Truncated Acquistions (risky)
+  int             *NbFiredPixPerFrame; // ZE 2021/10/10 - Number of fired pixels per frame "cumulated"
   int             fNEventsWithOverflow;
   BoardReaderEvent   *fCurrentEvent;
     

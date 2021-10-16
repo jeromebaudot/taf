@@ -1055,14 +1055,15 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
             //---------------------------------------------------------------
             else { // end if no hit matching the track was found
               nmiss++;
+  /*
+              cout << "Event for which a track is missed : " << ievt << endl;
+	      if(Ngoodtrackinevent == 1) {
+		  double mycol,mylin;
+		  ComputePixelPosition_UVToColRow(tu,tv,mycol,mylin);
+         cout << "Evt = " << ievt << " has Inefficient track located at (u,v) = (" << tu << "," << tv << "); (col,lin) = (" << mycol << "," << mylin << ")" << endl;
+	      }
 
-	      //if(Ngoodtrackinevent == 1) {
-		//double mycol,mylin;
-		//ComputePixelPosition_UVToColRow(tu,tv,mycol,mylin);
-	        //cout << "Evt = " << ievt << " has Inefficient track located at (u,v) = (" << tu << "," << tv << "); (col,lin) = (" << mycol << "," << mylin << ")" << endl;
-	      //}
-
-              if(ievt/NofCycle*NofCycle == ievt){
+    */          if(ievt/NofCycle*NofCycle == ievt){
                 cout << " Number of tracks missed = " << nmiss << endl;
               }
 
