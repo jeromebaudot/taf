@@ -1,5 +1,5 @@
-#ifndef _BoardReaderMIMOSIS_included_
-#define _BoardReaderMIMOSIS_included_
+#ifndef _BoardReaderTEMPLATE_included_
+#define _BoardReaderTEMPLATE_included_
 
 #include <iostream>
 #include <fstream>
@@ -33,7 +33,7 @@
 //using namespace std;
 
 //##############################################################################
-class BoardReaderMIMOSIS : public TObject  {
+class BoardReaderTEMPLATE : public TObject  {
 
 private:
 
@@ -57,9 +57,9 @@ private:
 
   int             fCurrentTriggerNumber;
   int             fCurrentEventNumber;
-  
+
   int             fReachEndOfRun;
-  
+
   int             fCurrentAcqNumber;
   int             fCurrentFrameNumber;
   int             fTriggerCount;
@@ -67,12 +67,12 @@ private:
   int             fBadDecFrameCounter ; // ZE 2021/06/04 - Counter for bad decoded frames
   int             fNEventsWithOverflow;
   BoardReaderEvent   *fCurrentEvent;
-    
+
   std::vector<BoardReaderPixel> fListOfPixels;
   std::vector<int>       fListOfTriggers;
   std::vector<int>       fListOfTimestamps;
   std::vector<int>       fListOfFrames;
-    
+
   std::vector<int>       fListOfTriggerPos; //JB 2010/06/16
   std::vector<int>       fListOfNextTriggerPos; //JB 2011/07/18
   std::vector<int>       *fListOfLineOverflow; // MG 2012/02/15
@@ -89,10 +89,10 @@ private:
 public:
 
     int test();
-    BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int endianness=0);
-  ~BoardReaderMIMOSIS();
+    BoardReaderTEMPLATE(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int endianness=0);
+  ~BoardReaderTEMPLATE();
 
-  void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderMIMOSIS " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }
+  void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderTEMPLATE " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }
   void  SetVetoPixel( int noiseRun=0);
   bool  HasData();
   void  SkipNextEvent();

@@ -590,7 +590,7 @@ void MRaw::RSDisplay()
     fSession->NextRawEvent();
     tTracker->Update();
     cout << "\n Event number : " << fSession->GetCurrentEventNumber()-1<<" ";
-    
+
     showit = kTRUE ;
   }
   Char_t name[100];
@@ -17058,5 +17058,368 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
   if(fDebugRaw) printf( "SitrineoAnalysisFromHits: ending lastPlane1stTracker %d, nPairs=%d\n", lastPlaneOfFirstTracker, (int)(tracklist->size()));
 
   return tracklist->size();
+
+}
+
+//
+//______________________________________________________________________________
+void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Double_t maxY1, Double_t maxSlopeX1, Double_t maxSlopeY1, Double_t maxDX2, Double_t maxDY2, Double_t maxSlopeX2, Double_t maxSlopeY2)
+{
+  // Display track & spectra for Sitrineo tracker continuously event by event
+  //
+  // Argument lastPlaneOfFirsttracker means:
+  //  all planes with ID <= lastPlaneOfFirsttracker are included in first tracker
+  //  all planes with ID > lastPlaneOfFirsttracker are included in second tracker
+  //
+  // JB, 2021/10/01
+
+  // Define magnetic field
+  double Bfield = 0.2; // Tesla
+  double Bfield_rangeX[2] = {-5000, 5000};
+  double Bfield_rangeY[2] = {-5000, 5000};
+  double Bfield_rangeZ[2] = {-5000, 5000};
+
+  // Define geometrical cuts
+  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0], fSession->GetSetup()->GetAnalysisPar().Umax[0][0]};
+  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0], fSession->GetSetup()->GetAnalysisPar().Vmax[0][0]};
+
+
+// ==================================
+// == Plane, hit and track info
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  DPlane* tPlane;
+  DHit* aHit;
+  DTrack* aTrack;
+  vector<sitritrack_t> *tracklist = new vector<sitritrack_t>;
+
+  int    nPlanes = tTracker->GetPlanesN();
+  int    NGoodPlanesInFirstTracker = 0;
+  int    NGoodPlanesInSecondTracker = 0;
+  bool   PlotPlane[nPlanes];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    tPlane = tTracker->GetPlane(iPlane);
+    if(tPlane->GetReadout() > 0) PlotPlane[iPlane-1] = true;
+    else                         PlotPlane[iPlane-1] = false;
+    if(PlotPlane[iPlane-1] && iPlane<=lastPlaneOfFirstTracker) {
+      NGoodPlanesInFirstTracker++;
+    }
+    else {
+      NGoodPlanesInSecondTracker++;
+    }
+  } // end loop on Planes
+
+
+  // ==================================
+  // == Canvas and histo info
+
+  TObject* gtmp;
+  Char_t name[50], title[1000], canvasTitle[200];
+
+  // Canvas for spectrum
+  TCanvas *cdisplayraw;
+  gtmp = gROOT->FindObject("cdisplayspectrum") ;
+  if (gtmp) {
+    cdisplayraw = (TCanvas*)gtmp;
+  }
+  else {
+    cdisplayraw = new TCanvas("cdisplayspectrum", "SITRINEO Spectrum", 100, 40, 500, 400);
+  }
+  cdisplayraw->Clear();
+  cdisplayraw->UseCurrentStyle();
+  cdisplayraw->cd();
+  TPaveLabel* label = new TPaveLabel();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,"");
+  cdisplayraw->cd();
+  TPad *padraw = new TPad("pad","",0.,0.,1.,0.965);
+  padraw->Draw();
+
+  // Canvas for tracks
+  TCanvas *cdisplaytrack;
+  gtmp = gROOT->FindObject("cdisplaytrack") ;
+  if (gtmp) {
+    cdisplaytrack = (TCanvas*)gtmp;
+  }
+  else {
+    cdisplaytrack = new TCanvas("cdisplaytrack", "SITRINEO Tracks", 600, 40 ,800, 700);
+  }
+  cdisplaytrack->Clear();
+  cdisplaytrack->UseCurrentStyle();
+  TPad *padtrack = new TPad("padtrack","",0.,0.,1.,0.965);
+  padtrack->Draw();
+
+  const int Ncolors(10);
+  int Colors_tmp[Ncolors];
+  Colors_tmp[0] = kBlack;
+  Colors_tmp[1] = kGreen+2;
+  Colors_tmp[2] = kBlue;
+  Colors_tmp[3] = kGray+2;
+  Colors_tmp[4] = kOrange-3;
+  Colors_tmp[5] = kCyan;
+  Colors_tmp[6] = kMagenta;
+  Colors_tmp[7] = kYellow;
+  Colors_tmp[8] = kOrange;
+  Colors_tmp[9] = kTeal+1;
+
+  TLatex* latex = new TLatex();
+  latex->SetTextAlign(12);
+  latex->SetTextSize(0.04);
+  latex->SetTextColor(kBlue);
+
+  TLatex* latex2 = new TLatex();
+  latex2->SetTextAlign(12);
+  latex2->SetTextSize(0.06);
+  latex2->SetTextColor(kBlue);
+
+  // BField represenation
+  TBox *BfieldBoxXY = new TBox(Bfield_rangeX[0],Bfield_rangeY[0],Bfield_rangeX[1],Bfield_rangeY[1]);
+  BfieldBoxXY->SetLineColor(40);
+  BfieldBoxXY->SetFillColor(40);
+  BfieldBoxXY->SetFillStyle(3095);
+  TBox *BfieldBoxXZ = new TBox(Bfield_rangeX[0],Bfield_rangeZ[0],Bfield_rangeX[1],Bfield_rangeZ[1]);
+  BfieldBoxXZ->SetLineColor(40);
+  BfieldBoxXZ->SetFillColor(40);
+  BfieldBoxXZ->SetFillStyle(3095);
+  TBox *BfieldBoxYZ = new TBox(Bfield_rangeY[0],Bfield_rangeZ[0],Bfield_rangeY[1],Bfield_rangeZ[1]);
+  BfieldBoxYZ->SetLineColor(40);
+  BfieldBoxYZ->SetFillColor(40);
+  BfieldBoxYZ->SetFillStyle(3095);
+//  TBRIK *Bfield3DBox = new TBRIK(Bfield_rangeX[0],Bfield_rangeY[0],Bfield_rangeX[1],Bfield_rangeY[1]);
+
+  // Geometrical cuts representation
+  TBox *cutBox = new TBox(cutX[0],cutY[0],cutX[1],cutY[1]);
+  cutBox->SetLineColor(2);
+  cutBox->SetFillStyle(0);
+
+
+  // Determine extrema of planes position in telescope frame
+  Double_t xmin=1e6, xmax=-1e6;
+  Double_t ymin=1e6, ymax=-1e6;
+  Double_t zmin=1e6, zmax=-1e6;
+  Double_t planeBox[2][2] = {{0,0},{0,0}};
+  TBox **geomPlaneBox = new TBox*[nPlanes];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    if(!PlotPlane[iPlane-1]) continue;
+    tPlane = tTracker->GetPlane(iPlane);
+    DR3 posInPlane, posBLInTracker, posURInTracker;
+
+   // bottom left corner
+    posInPlane.SetValue( -tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+			,-tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+			,0.);
+    posBLInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posBLInTracker(0)<xmin ) xmin = posBLInTracker(0);
+    if( posBLInTracker(1)<ymin ) ymin = posBLInTracker(1);
+    if( posBLInTracker(0)>xmax ) xmax = posBLInTracker(0);
+    if( posBLInTracker(1)>ymax ) ymax = posBLInTracker(1);
+   // upper right corner
+    posInPlane.SetValue( +tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+			,+tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+			,0.);
+    posURInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posURInTracker(0)<xmin ) xmin = posURInTracker(0);
+    if( posURInTracker(1)<ymin ) ymin = posURInTracker(1);
+    if( posURInTracker(0)>xmax ) xmax = posURInTracker(0);
+    if( posURInTracker(1)>ymax ) ymax = posURInTracker(1);
+    // final box
+    planeBox[0][0] = TMath::Min( posBLInTracker(0), posURInTracker(0));
+    planeBox[0][1] = TMath::Max( posBLInTracker(0), posURInTracker(0));
+    planeBox[1][0] = TMath::Min( posBLInTracker(1), posURInTracker(1));
+    planeBox[1][1] = TMath::Max( posBLInTracker(1), posURInTracker(1));
+    geomPlaneBox[iPlane-1] = new TBox( planeBox[0][0], planeBox[1][0], planeBox[0][1], planeBox[1][1]);
+    geomPlaneBox[iPlane-1]->SetFillStyle(0);
+    // Z extrema
+    if( tPlane->GetPosition()(2)<zmin) zmin = tPlane->GetPosition()(2);
+    if( tPlane->GetPosition()(2)>zmax) zmax = tPlane->GetPosition()(2);
+
+  } // end loop on planes
+  // Enlarge a bit the z-range
+  zmin -= 5000;
+  zmax += 5000;
+
+  // Spectrum histo
+  TH1F *hTrackPairMomentum = new TH1F( "hTrackPairMomentum", "Track momentum from fit; p [MeV/c]", 100, 0, 10);
+
+  // Track histograms
+  TH2F *hTrackMapXY;
+  gtmp = NULL;
+  gtmp = gROOT->FindObject("htrackmapxy");
+  if(gtmp) {
+     hTrackMapXY = (TH2F*)gtmp;
+  }
+  else {
+    hTrackMapXY = new TH2F( "htrackmapxy", "Tracks in XY;X (#mum);Y (#mum)", 100, xmin, xmax, 100, ymin, ymax);
+    hTrackMapXY->SetMarkerStyle(20);
+    hTrackMapXY->SetMarkerSize(1);
+    hTrackMapXY->SetStats(0);
+  }
+  TH2F *hTrackMapXZ;
+  gtmp = NULL;
+  gtmp = gROOT->FindObject("htrackmapxz");
+  if(gtmp) {
+     hTrackMapXZ = (TH2F*)gtmp;
+  }
+  else {
+    hTrackMapXZ = new TH2F( "htrackmapxz", "Tracks in XZ;Z (#mum);X (#mum)", 100, zmin, zmax, 100, xmin, xmax);
+    hTrackMapXZ->SetMarkerStyle(20);
+    hTrackMapXZ->SetMarkerSize(1);
+    hTrackMapXZ->SetStats(0);
+  }
+  TH2F *hTrackMapYZ;
+  gtmp = NULL;
+  gtmp = gROOT->FindObject("htrackmapyz");
+  if(gtmp) {
+     hTrackMapYZ = (TH2F*)gtmp;
+  }
+  else {
+    hTrackMapYZ = new TH2F( "htrackmapyz", "Tracks in YZ;Z (#mum);Y (#mum)", 100, zmin, zmax, 100, ymin, ymax);
+    hTrackMapYZ->SetMarkerStyle(20);
+    hTrackMapYZ->SetMarkerSize(1);
+    hTrackMapYZ->SetStats(0);
+  }
+  TH3F *hTrackMapXYZ;
+  gtmp = NULL;
+  gtmp = gROOT->FindObject("htrackmapxyz");
+  if(gtmp) {
+     hTrackMapXYZ = (TH3F*)gtmp;
+  }
+  else {
+    hTrackMapXYZ = new TH3F( "htrackmapxyz", "Tracks in XYZ;Z (#mum);X (#mum);Y (#mum)", 100, zmin, zmax, 100, xmin, xmax, 100, ymin, ymax);
+    hTrackMapXYZ->SetMarkerStyle(20);
+    hTrackMapXYZ->SetMarkerSize(1);
+    hTrackMapYZ->SetStats(0);
+  }
+
+
+
+  // ==================================
+  // == Event analysis
+
+  tracklist->clear();
+  // Uncomment to switch options
+  //while (1) { // stop after each event
+  while ( tracklist->size()<1 ) { // stop loop when track found
+    fSession->SetEvents(2);
+    fSession->NextRawEvent();
+    tTracker->Update();
+    SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, tracklist, cutX[0], cutX[1], cutY[0], cutY[1], 30.);
+    if(fVerbose) cout << endl << "Sitrineo: event " << fSession->GetCurrentEventNumber()-1 << ", found " << tracklist->size() << " tracks." << endl;
+  }
+
+  sprintf(canvasTitle, "Run %d Event %d", fSession->GetRunNumber(), fSession->GetCurrentEventNumber()-1);
+  cdisplayraw->cd();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  cdisplaytrack->cd();
+  sprintf(canvasTitle, "Run %d Event %d, %d tracks", fSession->GetRunNumber(), fSession->GetCurrentEventNumber(), tTracker->GetTracksN());
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+
+
+
+  // ==================================
+  // == Fill & display histos for each plane
+
+  TF1 *ftrackmodelX = new TF1("ftrackmodelX", sitritrajectoryBortho, -30000, 30000, 9);
+  TF1 *ftrackmodelY = new TF1("ftrackmodelY", sitritrajectoryBparallel, -30000, 30000, 9);
+  Int_t iCol, iRow; // start at 0, so for Setting Bin, use iCol/iRow +1
+  int GoodPlaneCounter = 0;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    if(!PlotPlane[iPlane-1]) continue;
+    GoodPlaneCounter++;
+    tPlane = tTracker->GetPlane(iPlane);
+    if(fVerbose) cout << "Plane " << iPlane << " has " << tPlane->GetHitsN() << " hits reconstructed" << endl;
+    for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
+      aHit = (DHit*)tPlane->GetHit( iHit);
+//      printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
+//      printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
+      if( aHit->GetFound() ) {
+        hTrackMapXY->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1));
+        hTrackMapXZ->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(2), tPlane->PlaneToTracker(*(aHit->GetPosition()))(0));
+        hTrackMapYZ->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(2), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1));
+        hTrackMapXYZ->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(2), tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1));
+      }
+
+      if(fDebugRaw) printf("MRaw::SitrineoByEvent  pl %d, hit[%d] at pix(%d,%d) pos(%.0f,%.0f)] signal=%.1f, found=%d\n", iPlane, iHit, aHit->GetIndexSeed()%tPlane->GetStripsNu(), aHit->GetIndexSeed()/tPlane->GetStripsNu(), aHit->GetPositionUhit(), aHit->GetPositionVhit(), aHit->GetClusterPulseSum(), aHit->GetFound());
+
+    } //end loop on hits
+
+  } //end loop on planes
+
+
+  // ==================================
+  // == Fill & display histos for each track
+
+  // Prepare track lines
+  std::vector<TPolyLine3D*> linesXYZ;
+  std::vector<TPolyLine*> linesXY, linesXZ, linesYZ;
+  TPolyLine *alineXY, *alineXZ, *alineYZ;
+  TPolyLine3D *alineXYZ;
+  int npointsPerLine = 500;
+  for( std::vector<sitritrack_t>::iterator atrack = tracklist->begin(); atrack !=tracklist->end(); ++atrack ) { // loop on tracks
+      if(fVerbose) printf(" track[%d] slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", (*atrack).id, (*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, (*atrack).fit_chi2X, (*atrack).fit_chi2Y);
+    // initial slope, x at z=0
+    // initial slope, y at z=0, momentum, zA start of Bfield, zB end of Bfield, charge = +/- 1, Bfield
+//    ftrackmodelX->SetParameters(0, 0, 0, 0, 1, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
+//    ftrackmodelY->SetParameters(0, 0, 0, 0, 1, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
+    hTrackPairMomentum->Fill( (*atrack).fit_momentum);
+    ftrackmodelX->SetParameters((*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
+    ftrackmodelY->SetParameters((*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
+    int trackcolor = Colors_tmp[((*atrack).id)%10];
+    alineXYZ = new TPolyLine3D(npointsPerLine);
+    alineXYZ->SetLineColor(trackcolor);
+    alineXYZ->SetLineWidth(2);
+    alineXY = new TPolyLine(npointsPerLine);
+    alineXY->SetLineColor(trackcolor);
+    alineXY->SetLineWidth(2);
+    alineXZ = new TPolyLine(npointsPerLine);
+    alineXZ->SetLineColor(trackcolor);
+    alineXZ->SetLineWidth(2);
+    alineYZ = new TPolyLine(npointsPerLine);
+    alineYZ->SetLineColor(trackcolor);
+    alineYZ->SetLineWidth(2);
+    for (int ipoint = 0; ipoint < npointsPerLine; ipoint++) {
+      double z = zmin+(zmax-zmin)*ipoint/npointsPerLine;
+      double x = ftrackmodelX->Eval(z);
+      double y = ftrackmodelY->Eval(z);
+      alineXY->SetPoint( ipoint, x, y);
+      alineXZ->SetPoint( ipoint, z, x);
+      alineYZ->SetPoint( ipoint, z, y);
+      alineXYZ->SetPoint( ipoint, z, x, y);
+//      printf(" MRaw::SitrineoByEvent  TRACK %d, point %d (%.0f, %.0f, %.0f)\n", (*atrack).id, ipoint, x, y, z);
+    }
+    linesXY.push_back( alineXY);
+    linesXZ.push_back( alineXZ);
+    linesYZ.push_back( alineYZ);
+    linesXYZ.push_back( alineXYZ);
+
+  } // end loop on tracks
+
+  // display spectrum
+  cdisplayraw->cd();
+  hTrackPairMomentum->Draw();
+  cdisplayraw->Update();
+
+  // display for tracks
+  padtrack->cd();
+  hTrackMapXYZ->DrawCopy("P");
+  for( std::vector<TPolyLine3D*>::iterator aline = linesXYZ.begin(); aline !=linesXYZ.end(); ++aline ) {
+    (*aline)->Draw();
+  }
+  hTrackMapXY->Delete();
+  hTrackMapXZ->Delete();
+  hTrackMapYZ->Delete();
+  hTrackMapXYZ->Delete();
+
+  cdisplaytrack->Update();
+
+  linesXY.clear();
+  linesXZ.clear();
+  linesYZ.clear();
+  linesXYZ.clear();
+
+  //===============
+  //== End
+  delete tracklist;
+  cout << "\n\n Event number : " << fSession->GetCurrentEventNumber()-1<<" " << endl;
+
 
 }
