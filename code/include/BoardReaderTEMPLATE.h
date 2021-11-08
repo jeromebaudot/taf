@@ -1,5 +1,5 @@
-#ifndef _BoardReaderMIMOSIS_included_
-#define _BoardReaderMIMOSIS_included_
+#ifndef _BoardReaderTEMPLATE_included_
+#define _BoardReaderTEMPLATE_included_
 
 #include <iostream>
 #include <fstream>
@@ -33,7 +33,7 @@
 //using namespace std;
 
 //##############################################################################
-class BoardReaderMIMOSIS : public TObject  {
+class BoardReaderTEMPLATE : public TObject  {
 
 private:
 
@@ -89,10 +89,10 @@ private:
 public:
 
     int test();
-    BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int endianness=0);
-  ~BoardReaderMIMOSIS();
+    BoardReaderTEMPLATE(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int eventBuildingMode=0, int endianness=0);
+  ~BoardReaderTEMPLATE();
 
-  void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderMIMOSIS " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }
+  void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderTEMPLATE " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }
   void  SetVetoPixel( int noiseRun=0);
   bool  HasData();
   void  SkipNextEvent();

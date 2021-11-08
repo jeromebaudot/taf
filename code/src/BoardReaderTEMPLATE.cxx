@@ -1,10 +1,8 @@
     /////////////////////////////////////////////////////////////
-// Class Description of BoardReaderMIMOSIS
+// Class Description of BoardReaderTEMPLATE
 //
-// Dedicated to decode output files from the PXI acquisition system
-//  dedicated to MIMOSIS sensors
+// This is not really a template but a copy of the MIMOSIS BoardReader
 //
-// Use Gilles Claus library to decode rawdata file, see code/inculde/mimo_daq_lib
 //
 /////////////////////////////////////////////////////////////
 //
@@ -15,11 +13,11 @@
 #include "TCanvas.h"
 #include "TApplication.h"
 
-#include "BoardReaderMIMOSIS.h"
+#include "BoardReaderTEMPLATE.h"
 #include "mimo_daq_lib/mimo_daq_lib.h"
 #include "mimo_daq_lib/mimo_daq_lib.c"
 
-ClassImp(BoardReaderMIMOSIS)
+ClassImp(BoardReaderTEMPLATE)
 
     /* ========================================= */
     /* Conditional compilation for DAQ sources   */
@@ -79,7 +77,7 @@ MIS1__TBtAcqDec*   APP_VGPtAcqDec;  // 26/05/2021 V1.1
 // Main : Mimosis 1 beam test run file access example, via class MIS1__TBtRunRead
 // ---------------------------------------------------------------------------------
 
-int BoardReaderMIMOSIS::test() {
+int BoardReaderTEMPLATE::test() {
 
    // ----------------------------------------------------------------
      // Variables
@@ -909,7 +907,7 @@ int BoardReaderMIMOSIS::test() {
      return 0;
 }
 //------------------------------------------+-----------------------------------
-BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int eventBuildingMode, int endianness) {
+BoardReaderTEMPLATE::BoardReaderTEMPLATE(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int eventBuildingMode, int endianness) {
   // Board creator
   // Load the rawdata file
   //
@@ -948,9 +946,9 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
                           // Contains decoded pixels + info on Acq, Frames : reggions nb, fired pixels nb, etc ...
 
   cout << "*****************************************" << endl;
-  cout << "    < BoardReaderMIMOSIS constructor >      " << endl;
+  cout << "    < BoardReaderTEMPLATE constructor >      " << endl;
   cout << "*****************************************" << endl;
-  cout << "Creating a BoardReaderMIMOSIS" << endl;
+  cout << "Creating a BoardReaderTEMPLATE" << endl;
   cout << " * board nb: " << fBoardNumber << endl;
   cout << " * runNumber : " << runNumber <<  endl;
   cout << " * nb of sensors: " << fNSensors << endl;
@@ -1093,12 +1091,12 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
 
 
     cout << "*****************************************" << endl;
-    cout << "    < BoardReaderMIMOSIS constructor DONE >      " << endl;
+    cout << "    < BoardReaderTEMPLATE constructor DONE >      " << endl;
     cout << "*****************************************" << endl;
 }
 
 //------------------------------------------+-----------------------------------
-BoardReaderMIMOSIS::~BoardReaderMIMOSIS()
+BoardReaderTEMPLATE::~BoardReaderTEMPLATE()
 {
 
     // ----------------------------------------------------------------
@@ -1154,7 +1152,7 @@ BoardReaderMIMOSIS::~BoardReaderMIMOSIS()
 
 // --------------------------------------------------------------------------------------
 
-bool BoardReaderMIMOSIS::HasData( ) {
+bool BoardReaderTEMPLATE::HasData( ) {
   // Try to find the pixel data for the next event in the raw data file
   //
   // ==> THIS MIGHT BE TOO SIMPLISTIC depending on the data format <==
@@ -1176,7 +1174,7 @@ bool BoardReaderMIMOSIS::HasData( ) {
 
  if(fDebugLevel) {
    cout << endl ;
-   cout << "BoardReaderMIMOSIS::HasData() fBoardNumber " << fBoardNumber << " BoardReaderMIMOSIS::HasData() - currentEvent " << fCurrentEventNumber << " currentTrigger " << fCurrentTriggerNumber << endl;
+   cout << "BoardReaderTEMPLATE::HasData() fBoardNumber " << fBoardNumber << " BoardReaderTEMPLATE::HasData() - currentEvent " << fCurrentEventNumber << " currentTrigger " << fCurrentTriggerNumber << endl;
  }
 
  if( DecodeNextEvent() ) {
@@ -1197,7 +1195,7 @@ bool BoardReaderMIMOSIS::HasData( ) {
  } // getting next buffer was not OK
  else{
    eventOK = false;
-   cout<<" -/-/- ERROR BoardReaderMIMOSIS::HasData() - Can't get next event !"<<endl;
+   cout<<" -/-/- ERROR BoardReaderTEMPLATE::HasData() - Can't get next event !"<<endl;
  }
 
  // End
@@ -1206,7 +1204,7 @@ bool BoardReaderMIMOSIS::HasData( ) {
 }
 
 //------------------------------------------+-----------------------------------
-bool BoardReaderMIMOSIS::DecodeNextEvent() {
+bool BoardReaderTEMPLATE::DecodeNextEvent() {
   // THIS IS THE MAIN PLACE FOR ROMA's WORK!
   //
   // This method should decide whether
@@ -1237,21 +1235,21 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 
     bool ready = false;
 
-  if(fDebugLevel>1) printf( "  BoardReaderMIMOSIS board %d::DecodeNextEvent() trying with event %d (current Acq=%d, frame=%d)\n", fBoardNumber, fCurrentEventNumber, fCurrentAcqNumber, fCurrentFrameNumber);
+  if(fDebugLevel>1) printf( "  BoardReaderTEMPLATE board %d::DecodeNextEvent() trying with event %d (current Acq=%d, frame=%d)\n", fBoardNumber, fCurrentEventNumber, fCurrentAcqNumber, fCurrentFrameNumber);
 
   // Check if first Acquisition or if CurrentFrameNumber less than fnbFrPerAcq; fnbFrPerAcq is not mandatory equal to MIS1__BT_VRS_MAX_FR_NB_PER_ACQ
 
     if ((fCurrentFrameNumber % fnbFrPerAcq == 0) || (fCurrentFrameNumber % MIS1__BT_VRS_MAX_FR_NB_PER_ACQ == 0)) {
 
         if (fisfirstAcq == true) {
-            if(fDebugLevel>1) cout << "BoardReaderMIMOSIS  Getting the pointer for the first acquisition " << endl;
+            if(fDebugLevel>1) cout << "BoardReaderTEMPLATE  Getting the pointer for the first acquisition " << endl;
             VPtAcq = APP_VGPtRunRead->FAcqFirst ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */ );
             fCurrentAcqNumber ++;
             fisfirstAcq = false;
             fCurrentFrameNumber = 0; // ZE 2021/06/04
             }
         else {
-             if(fDebugLevel>1) printf (" BoardReaderMIMOSIS Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
+             if(fDebugLevel>1) printf (" BoardReaderTEMPLATE Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
              VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */, &VResReachEndOfRun );
              fCurrentAcqNumber ++;
              fCurrentFrameNumber = 0; // ZE 2021/06/04
@@ -1270,7 +1268,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 
     if ( APP_VGPtAcqSrc == NULL    ) {
       printf ( "\n" );
-      printf ( "WARNING: BoardReaderMIMOSIS Get a pointer on first Acq of run has failed ! \n" );
+      printf ( "WARNING: BoardReaderTEMPLATE Get a pointer on first Acq of run has failed ! \n" );
       printf ( "\n" );
       return (-1);
     }
@@ -1279,7 +1277,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 
         if(fDebugLevel>1) {
             printf ( "\n" );
-            printf ( " BoardReaderMIMOSIS Get a pointer on first Acq of run done ! \n" );
+            printf ( " BoardReaderTEMPLATE Get a pointer on first Acq of run done ! \n" );
             printf ( "\n" );
             }
 
@@ -1297,7 +1295,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 
       if ( VRet < 0 ) {
 
-          printf ( "WARNING: BoardReaderMIMOSIS Filling AcqW16A failed ! \n" );
+          printf ( "WARNING: BoardReaderTEMPLATE Filling AcqW16A failed ! \n" );
           printf ( "\n" );
           return (-1);
 
@@ -1305,7 +1303,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
        else if(fDebugLevel>1) {
 
            printf ( "\n" );
-           printf ( " BoardReaderMIMOSIS Filling AcqW16A done ! \n" );
+           printf ( " BoardReaderTEMPLATE Filling AcqW16A done ! \n" );
            printf ( "\n" );
 
         }
@@ -1330,7 +1328,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
 
 //------------------------------------------+-----------------------------------
 
-bool BoardReaderMIMOSIS::DecodeFrame() {
+bool BoardReaderTEMPLATE::DecodeFrame() {
 
    SInt32 VRet;
 
@@ -1397,7 +1395,7 @@ bool BoardReaderMIMOSIS::DecodeFrame() {
 
 
 // --------------------------------------------------------------------------------------
-void BoardReaderMIMOSIS::AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime) {
+void BoardReaderTEMPLATE::AddPixel( int iSensor, int value, int aLine, int aColumn, int aTime) {
    // Add a pixel to the vector of pixels
    // require the following info
    // - input = number of the sensors
@@ -1406,7 +1404,7 @@ void BoardReaderMIMOSIS::AddPixel( int iSensor, int value, int aLine, int aColum
    // - time = something related to the frame or the trigger
 
   //if (fDebugLevel>3)
-    //  printf("BoardReaderMIMOSIS::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
+    //  printf("BoardReaderTEMPLATE::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn, aTime);
 
     fListOfPixels.push_back( BoardReaderPixel( iSensor + 1, value, aLine, aColumn, 0 /*TimeStamp has to be given for the constructor*/) );
 
@@ -1414,32 +1412,32 @@ void BoardReaderMIMOSIS::AddPixel( int iSensor, int value, int aLine, int aColum
 
 // --------------------------------------------------------------------------------------
 
-void BoardReaderMIMOSIS::SetVetoPixel( int noiseRun) {
+void BoardReaderTEMPLATE::SetVetoPixel( int noiseRun) {
   // Select the required function to veto the pixel depending on the run number.
   //
 
-  if( fDebugLevel) printf( "  BoardReaderMIMOSIS board %d::SetVetoPixel with noise run number %d\n", fBoardNumber, noiseRun);
+  if( fDebugLevel) printf( "  BoardReaderTEMPLATE board %d::SetVetoPixel with noise run number %d\n", fBoardNumber, noiseRun);
   if (noiseRun>0 ) fTool.SetVetoPixel( noiseRun);
 
 }
 
 // --------------------------------------------------------------------------------------
-void BoardReaderMIMOSIS::PrintEventHeader() {
+void BoardReaderTEMPLATE::PrintEventHeader() {
   // Print Event Header
 
 }
 
 // --------------------------------------------------------------------------------------
-void BoardReaderMIMOSIS::SkipNextEvent() {
+void BoardReaderTEMPLATE::SkipNextEvent() {
   // This method might be useful to ignore the next event
   //
 
-  if(fDebugLevel) printf("  BoardReaderMIMOSIS: %d skipping current event %d\n", fBoardNumber, fCurrentEventNumber);
+  if(fDebugLevel) printf("  BoardReaderTEMPLATE: %d skipping current event %d\n", fBoardNumber, fCurrentEventNumber);
 
 }
 
 // --------------------------------------------------------------------------------------
-void BoardReaderMIMOSIS::PrintStatistics(ostream &stream) {
+void BoardReaderTEMPLATE::PrintStatistics(ostream &stream) {
   // Print statistics on all the events read by this board
 
  stream << "***********************************************" << endl;
