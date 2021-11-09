@@ -285,6 +285,7 @@ void BeastCheckPosition();
 		 int Nevts_testing    = 10000);
 
   void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
+  void SitrineoContinuous( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
   void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
   void SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist);
   int SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist, Double_t minX1=-10000, Double_t maxX1=10000, Double_t minY1=-10000, Double_t maxY1=10000, Double_t maxSlope1=30.);
