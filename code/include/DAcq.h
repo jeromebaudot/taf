@@ -54,6 +54,7 @@
 #ifdef MSISDAQLIB
   #include "BoardReaderMIMOSIS.h"
 #endif
+#include "BoardReaderTREE.h"
 #include "sup_exp.typ" // for time reference information
 
 class DAcq : public TObject {
@@ -82,6 +83,7 @@ class DAcq : public TObject {
 #ifdef MSISDAQLIB
       BoardReaderMIMOSIS **fMSIS;          // pointer to MIMOSIS boards, JB 2021/05/01
 #endif
+      BoardReaderTREE **fTREE;             // pointer to boards producing Root TREE, JB 2021/11/05
       Int_t          ***fRawData;          // pointer to Raw Values
       std::vector<DPixel*>  *fListOfPixels;     // pointer to list of hit pixel
       //std::vector<DMonteCarlo*> *fListOfMonteCarlo; // pointer to list of hit montecarlo

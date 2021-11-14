@@ -412,6 +412,7 @@ class DSetup : public TObject {
     Int_t      Bits[fMaxModules];    // Number of Bits reserved for value
     Int_t      SigBits[fMaxModules]; // Number of significant bits, coding the value
     Int_t      NColumns;             // Number of columns of sensor
+    Int_t      NRows;                // Number of rows of sensor
     Int_t      NMultiFrames;         // Nb of frames stored when MultiFraming
     Char_t    *DeviceDataFile[fMaxModules];   // Data file name for each device, JB 2009/05/25
     Int_t      NbOfFramesPerChannel[fMaxModules];

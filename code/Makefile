@@ -71,24 +71,24 @@ endif
 
 #------------------------------------------------------------------------------
 
-DTHDRS          = TNTBoardReader.h PXIBoardReader.h \
-		GIGBoardReader.h IMGBoardReader.h BoardReader.h VMEBoardReader.h  MCBoardReader.h BoardReaderIHEP.h \
-    AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h BoardReaderMIMOSIS.h \
+DTHDRS   = BoardReader.h BoardReaderMIMOSIS.h BoardReaderTREE.h \
+		TNTBoardReader.h PXIBoardReader.h GIGBoardReader.h IMGBoardReader.h VMEBoardReader.h \
+		MCBoardReader.h BoardReaderIHEP.h AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h \
     DSession.h DSetup.h \
 		DAcq.h DTracker.h DPlane.h DStrip.h \
     DHit.h DTrack.h DLine.h DR3.h DCut.h DAlign.h \
 		DEvent.h  DEventMC.h  DParticle.h DGlobalTools.h \
     DPrecAlign.h DPixel.h DLadder.h DMiniVector.h DHelix.h DHelixFitter.h\
     DTrackFitter.h DBeaster.h MKalmanFilter.h MLeastChiSquare.h \
-# DXRay2DPdf.h # PXIeBoardReader.h 
+# DXRay2DPdf.h # PXIeBoardReader.h
 
 
 MHDRS		= MAnalysis.h  MAlign.h MHist.h MRaw.h MRax.h MAlignment.h MMillepede.h MGlobalAlign.h MKalmanFilter.h MLeastChiSquare.h
 
 DTSRCS		= MMain.cxx \
-		TNTBoardReader.cxx PXIBoardReader.cxx  \
-		GIGBoardReader.cxx IMGBoardReader.cxx BoardReader.cxx VMEBoardReader.cxx MCBoardReader.cxx BoardReaderIHEP.cxx \
-    AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx BoardReaderMIMOSIS.cxx \
+		BoardReader.cxx BoardReaderMIMOSIS.cxx BoardReaderTREE.cxx \
+		TNTBoardReader.cxx PXIBoardReader.cxx GIGBoardReader.cxx IMGBoardReader.cxx VMEBoardReader.cxx \
+		MCBoardReader.cxx BoardReaderIHEP.cxx AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx \
     DSession.cxx DSetup.cxx \
 		DAcq.cxx DTracker.cxx  DPlane.cxx DStrip.cxx  \
 		DHit.cxx DTrack.cxx DLine.cxx DR3.cxx DCut.cxx DAlign.cxx \

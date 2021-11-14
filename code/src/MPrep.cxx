@@ -810,11 +810,12 @@ void MimosaAnalysis::DSFProduction(Int_t NEvt, Int_t fillLevel)
   ofstream logfile;
   logfile.open("DSFProd.log",ios::app);
   logfile<< fSession->GetSummaryFileName().Data()  <<" had been renamed : "<< New_File_Name <<endl;
+
   logfile.close();
 }
 
 //______________________________________________________________________________
-  void MimosaAnalysis::Help()
+void MimosaAnalysis::Help()
 {
   //prints the common used commands
 
@@ -829,7 +830,8 @@ void MimosaAnalysis::DSFProduction(Int_t NEvt, Int_t fillLevel)
   cout<<"gTAF->InitSession( runNumber [, planeNumber])  : init the session MANDATORY "<<endl;
   cout<<"gTAF->GetRaw()"<<"  : Open a dedicated menu for data inspection"<<endl;
   cout<<"  any method of this menu can be accessed directly with more options with:"<<endl;
-  cout<<"    gTAF->GetRawDisplayxxx(...)"<< endl;
+  cout<<"    gTAF->GetRaw()->GetRawDisplayxxx(...)"<< endl;
+  cout<<"gTAF->ListSensor(): list sensors readable by TAF." << endl;
   /*  cout<<"----------------------------- "<<endl;
   cout<<"------------2/ RAW DATA "<<endl;
   cout<<"----------------------------- "<<endl;
@@ -918,8 +920,32 @@ void MimosaAnalysis::DSFProduction(Int_t NEvt, Int_t fillLevel)
 
   //cout<<"gTAF->()  : "<<endl;
   //  cout<<"gTAF->SettHitMapReadOpt(1) (0=store, 1= read)"<<endl;
+
 }
 
+//______________________________________________________________________________
+void MimosaAnalysis::ListSensor()
+{
+
+  cout << "------------------------------------" << endl;
+  cout << "----- LIST OF KNOWN MimosaType -----" << endl;
+  cout << "  listed config file(s) located in config_TEST directory" << endl;
+  cout << "  NOTE THAT sensors may be read without a defined MimosaType..." << endl;
+  cout << endl;
+  cout << "5 - MIMOSA 5,  " << endl;
+  cout << "18 - MIMOSA 18, run1040.cf, run18528.cfg" << endl;
+  cout << "20, 30, 40 - MIMOSA 25 (various pitches), " << endl;
+  cout << "225, 226 - MIMOSA 22SX, mimosa22sx.cfg" << endl;
+  cout << "26 - MIMOSA 26, run26000.cfg" << endl;
+  cout << "28 - MIMOSA 28, run26000.cfg" << endl;
+  cout << "32 - MIMOSA-32, MIMOSA-34 and PIPPER series, run32824.cfg, run34539.cfg, pippernewro-gain.cfg" << endl;
+  cout << "35 - FSBB, run35807.cfg" << endl;
+  cout << "36 - MIMOSIS series, mimosis405.cfg" << endl;
+  cout << "61 - Monolithic Imager, mi-test.cfg" << endl;
+  cout << "65, 651 - CE-65 , ce65d.cfg, ce65abc.cfg" << endl;
+  cout << "------------------------------------" << endl;
+
+}
 
 //______________________________________________________________________________
 void MimosaAnalysis::CreateConfig(int RunNumberBigin, int NumberOfFilesPerRun, int RunNumberEnd, int RunNumberStep )

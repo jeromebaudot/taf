@@ -51,6 +51,7 @@
 // Last Modified: JB 2017/11/20 ReadDAQBoardParameters for zero suppression option
 // Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
 // Last Modified: JB 2021/05/01 Handle source path as datapath
+// Last Modified: JB 2021/11/13 Add TREE reader config and NRows parameters
 
 ///////////////////////////////////////////////////////////////
 // Class Description of DSetup                               //
@@ -378,7 +379,7 @@
 // Name                  = [MANDATORY] (char) generic name of such modules
 //                        known names: "IMG", "TNT", "PXI", "PXIe", "GIG", "VME",
 //                                     "DecoderM18", "ALI22", "DecoderGeant",
-//                                     "IHEP", "MC", "MSIS"
+//                                     "IHEP", "MC", "MSIS", "TREE"
 // Type                  = [MANDATORY] (int) unique identifier for the module type
 // Devices               = [MANDATORY] (int) # module instances of this type,
 //                        typically, one instance decode one file
@@ -540,6 +541,19 @@
 // EventHeaderSize    = [MANDATORY] (int) {0} event header size in Bytes
 // EventTrailerSize   = [MANDATORY] (int) {4} event trailer size in Bytes
 // TriggerMode        = [MANDATORY] (int) method to deal with trigger info
+//
+// --- Name: "TREE"
+//  Type = 140
+//  EventBuildingBoardMode = [MANDATORY] (int) {0} drive how events are reconstructed
+//  Inputs           = [MANDATORY] (int) # identical data block (one per sensor typically)
+//  Channels          = [MANDATORY] (int) # channels in one input (data block)
+//  Bits             = [MANDATORY] (int)
+//  NColumns:        = [MANDATORY] (int)
+//  NRows:           = [MANDATORY] (int)
+//  DataFile         = [MANDATORY] (char) typically "FIFOdata_M28_RUN3_ch" don't need to add _runXXX neither .root
+//  TriggerMode, BinaryCoding, EventBufferSize, FileHeaderLine -> unused
+//  Channels, Bits, SignificantBits, EventBuildingBoardMode -> unused
+//  FirstTriggerChannel, LastTriggerChannel NbOfFramesPerChannel -> unused
 //
 //
 
@@ -2359,6 +2373,7 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
     pAcqModuleParameter[aBoardNumber].PixelShiftMod[i]        = -1;
   }
   pAcqModuleParameter[aBoardNumber].NColumns                  = 64;
+  pAcqModuleParameter[aBoardNumber].NRows                     = 32;
   pAcqModuleParameter[aBoardNumber].NMultiFrames              =  5;
   pAcqModuleParameter[aBoardNumber].FirstTriggerChannel       = -1;
   pAcqModuleParameter[aBoardNumber].LastTriggerChannel        = -1;
@@ -2434,6 +2449,9 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
     }
     else if( ! strcmp( fFieldName, "NColumns" ) ) {
       read_item(pAcqModuleParameter[aBoardNumber].NColumns);
+    }
+    else if( ! strcmp( fFieldName, "NRows" ) ) {
+      read_item(pAcqModuleParameter[aBoardNumber].NRows);
     }
     else if( ! strcmp( fFieldName, "NMultiFrames" ) ) {
       read_item(pAcqModuleParameter[aBoardNumber].NMultiFrames);
@@ -2874,6 +2892,18 @@ void DSetup::ReadSubmatrixParameters( Int_t aSubmatrixNumber)
     nextField();
 
   } while (  strcmp( fFieldName, "PixelSizeU" ) && !fConfigFileStream.eof() );
+
+  // In other parts of TAF, fMaxGeomatrices=4 geomatrices should be defined
+  // The following lines trim or expends exactly to fMaxGeomatrices geomatrices
+  if( AnalysisParameter.Geomatrices[aSubmatrixNumber] < fMaxGeomatrices ){
+    for( Int_t il=AnalysisParameter.Geomatrices[aSubmatrixNumber]; il<fMaxGeomatrices; il++) {
+      AnalysisParameter.Umin[aSubmatrixNumber][il] = AnalysisParameter.Umin[aSubmatrixNumber][il-1];
+      AnalysisParameter.Umax[aSubmatrixNumber][il] = AnalysisParameter.Umax[aSubmatrixNumber][il-1];
+      AnalysisParameter.Vmin[aSubmatrixNumber][il] = AnalysisParameter.Vmin[aSubmatrixNumber][il-1];
+      AnalysisParameter.Vmax[aSubmatrixNumber][il] = AnalysisParameter.Vmax[aSubmatrixNumber][il-1];
+    }
+    AnalysisParameter.Geomatrices[aSubmatrixNumber] = 4;
+  }
 
   if( DSetupDebug )  {
     cout << "  * Submatrix " << aSubmatrixNumber << endl;

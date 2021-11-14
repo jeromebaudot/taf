@@ -40,7 +40,8 @@
 // Last Modified: JB 2017/11/20 DAcq
 // Last Modified: JB 2018/02/11 InitTimeRefInfo -> updated 2018/03/21
 // Last Modified: JB 2020/02/17 Introduction of vetoPixdl for VMEBoardreader
-// Last Modofies: JB 2021/05/01 Adding BoardReaderMIMOSIS
+// Last Modified: JB 2021/05/01 Adding BoardReaderMIMOSIS
+// Last Modified: JB 2021/11/05 Adding BoardReaderTREE
 
 //*-- Modified :  IG
 //*-- Copyright:  RD42
@@ -216,6 +217,7 @@ DAcq::DAcq(DSetup& c)
 #ifdef MSISDAQLIB
   fMSIS  = new BoardReaderMIMOSIS*[totalNmodules];
 #endif
+  fTREE  = new BoardReaderTREE*[totalNmodules];
 
   // -+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+--+-+-+-+-+-
   // Loop on each acquisition module type to set its properties
@@ -498,14 +500,43 @@ DAcq::DAcq(DSetup& c)
         break;
 #endif
 
+        // -+-+- ROOT TREE modules
+        case 14:
+        fUseTimestamp[mdt-1][mdl-1] = kFALSE;
+        fTREE[iModule] = new BoardReaderTREE( iModule,
+            fc->GetModulePar(mdt).Inputs,
+            fc->GetModulePar(mdt).NColumns,
+            fc->GetModulePar(mdt).NRows,
+            fc->GetAcqPar().TriggerMode,
+            fc->GetModulePar(mdt).EventBuildingBoardMode,
+            fc->GetModulePar(mdt).Bits[0]);
+        fTREE[iModule]->SetDebugLevel( fDebugAcq);
+        if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
+          if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
+            sprintf( aBaseName, "%s_run%d", fc->GetModulePar(mdt).DeviceDataFile[mdl-1], fRunNumber);
+          } else {
+            sprintf( aBaseName, "run_%d_", fRunNumber);
+          }
+        } else {
+          sprintf( aBaseName, "run_%d_", fRunNumber);
+        }
+        sprintf( aFileName, "%s/%s.root", fc->GetRunPar().DataPath, aBaseName);
+        if( !( fTREE[iModule]->AddFile( aFileName ) ) ) {
+          sprintf( aFileName, "%s/%d/%s.root", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
+          initOK &= fTREE[iModule]->AddFile( aFileName );
+        } else {
+          initOK &= kTRUE;
+        }
+        break;
+
         // -+-+- Other modules
-          default:
-          cout << "WARNING: DAcq, unknown module type " << fc->GetModulePar(mdt).Type << "!" << endl;
+        default:
+        cout << "WARNING: DAcq, unknown module type " << fc->GetModulePar(mdt).Type << "!" << endl;
       }; // end switch on module types
 
-        cout << "  DAcq: << " << fc->GetModulePar(mdt).Name << " module " << mdl << " build with " << fc->GetModulePar(mdt).Inputs << " inputs of " << fc->GetModulePar(mdt).Channels[0] << " channels" << endl << endl;
+      cout << "  DAcq: << " << fc->GetModulePar(mdt).Name << " module " << mdl << " build with " << fc->GetModulePar(mdt).Inputs << " inputs of " << fc->GetModulePar(mdt).Channels[0] << " channels" << endl << endl;
 
-        iModule++;
+      iModule++;
 
     } // end loop on each modules of this type
 
@@ -755,6 +786,14 @@ void DAcq::SetDebug(Int_t aDebug)
           } // end loop on each module of this type
           break;
 #endif
+
+          // -+-+- TREE modules
+          case 14:
+          for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
+            fTREE[iModule]->SetDebugLevel( abs(aDebug) );
+            iModule++;
+          } // end loop on each module of this type
+          break;
 
       }; // end switch on module types
 
@@ -2114,6 +2153,63 @@ TBits* DAcq::NextEvent( Int_t eventNumber, Int_t aTrigger)
         break;
 #endif
 
+        // -+-+- TREE modules
+        // JB 2021/11/05
+        case 14:
+        for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
+
+          moduleOK = fTREE[iModule]->HasData(); // ask for an event
+          eventOK &= moduleOK;
+          if (fDebugAcq)  cout << " DAcq: getting raw data for module " << iModule << " or " << mdl << " of type " << fc->GetModulePar(mdt).Type << ", OK? " << moduleOK << endl;
+
+          readerEvent = (BoardReaderEvent*)fTREE[iModule]->GetEvent(); // get the event
+          if( readerEvent ) { // If event pointer correct
+            fRealEventNumber = readerEvent->GetEventNumber();
+            fTriggersN      += readerEvent->GetNumberOfTriggers();
+            fFramesN        += readerEvent->GetNumberOfFrames();
+            if (ListOfTriggers==NULL) {
+              ListOfTriggers = readerEvent->GetTriggers();
+            }
+            else {
+              ListOfTriggers->insert( ListOfTriggers->end(), (readerEvent->GetTriggers())->begin(), (readerEvent->GetTriggers())->end());
+              ;
+            }
+            if (ListOfFrames==NULL) {
+              ListOfFrames     = readerEvent->GetFrames();
+            }
+            else {
+              ListOfFrames->insert( ListOfFrames->begin(), (readerEvent->GetFrames())->begin(), (readerEvent->GetFrames())->end());
+              ;
+            }
+            if (fDebugAcq) {
+              cout << "   module " << mdl << " found " << readerEvent->GetNumberOfPixels() << " hit pixels  with " << fTriggersN << " triggers: ";
+              for( Int_t iTrig=0; iTrig<fTriggersN; iTrig++) {
+                cout <<  ", " << ListOfTriggers->at( iTrig);
+              }
+              cout << " and " << fFramesN << " frames: ";
+              for( Int_t iFr=0; iFr<fFramesN; iFr++) {
+                cout <<  ", " << ListOfFrames->at( iFr);
+              }
+              cout << " from daq event " << fRealEventNumber << endl << endl;
+            }
+            // Set values for hit pixels
+            for( Int_t iPix=0; iPix<readerEvent->GetNumberOfPixels(); iPix++) { // loop on Pixels
+              readerPixel = (BoardReaderPixel*)readerEvent->GetPixelAt( iPix);
+              GetMatchingPlaneAndShift( mdt, mdl, readerPixel->GetInput()+1, readerPixel->GetIndex()+1, aPlaneNumber, aShift);
+              if(fDebugAcq>2) cout << "  pixel " << iPix << " index " << readerPixel->GetIndex() << " from input " << readerPixel->GetInput() << " with value " << readerPixel->GetValue() << ", associated to plane " << aPlaneNumber << " with an index shift of " << aShift << " Timestamp " << readerPixel->GetTimeStamp() << endl;
+              DPixel* APixel = new DPixel( aPlaneNumber, readerPixel->GetIndex()+aShift, (Double_t)readerPixel->GetValue(), readerPixel->GetTimeStamp());
+              fListOfPixels[aPlaneNumber-1].push_back(APixel);
+            } // end loop on Pixels
+
+          }  // End if event pointer correct, JB 2009/05/26
+          else {
+            dataOK &= kFALSE;
+          }
+
+          iModule++;
+          } // end loop on each module of this type
+          break;
+
     }; // end switch on module types
 
     // Interrupt the loop on modules if one event data is not OK
@@ -2385,6 +2481,15 @@ void DAcq::PrintStatistics(ostream &stream)
       } // end loop on each modules of this type
       break;
 #endif
+
+      // -+-+- TREE modules
+      case 14:
+
+      for (Int_t mdl = 1; mdl <= fc->GetModulePar(mdt).Devices; mdl++){ // loop on each modules of this type
+        fTREE[iModule]->PrintStatistics(stream);
+        iModule++;
+      } // end loop on each modules of this type
+      break;
 
       // -+-+- Other modules
       default:

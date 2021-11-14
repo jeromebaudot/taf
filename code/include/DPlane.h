@@ -390,6 +390,7 @@ class DPlane : public TObject {
   Bool_t      IsSortable() const { return kTRUE; } // QL 04/06/2016
   Int_t       Compare( const TObject * obj) const;  // QL 04/06/2016
   virtual void       Print(const Option_t* ="") const; // QL 05/06/2016
+
   ClassDef(DPlane,3)                      // Detector Plane
 
 };

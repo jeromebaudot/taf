@@ -36,8 +36,8 @@ Int_t main(Int_t argc, Char_t **argv)
   //        Parameters:
   //--------------------------------------------------
   //Verbose mode (display infos)
-  Bool_t verbose=kTRUE;
-  //Bool_t verbose=kFALSE;
+  //Bool_t verbose=kTRUE;
+  Bool_t verbose=kFALSE;
 
   // Debug :
   //cout << argc << endl;
@@ -405,7 +405,7 @@ Int_t main(Int_t argc, Char_t **argv)
   if(tafinit_gtaf_bool || !sessinit_runnb_arg.IsNull())
   {
     sprintf(tafcommand,"MimosaAnalysis *gTAF = new MimosaAnalysis()");
-    cout << " * Process command: "<< tafcommand ;
+    if(verbose) cout << " * Process command: "<< tafcommand ;
     rvalue = gROOT->ProcessLineSync(tafcommand);
   }
 
@@ -568,7 +568,7 @@ Int_t main(Int_t argc, Char_t **argv)
     */
 
     sprintf(tafcommand, "gTAF->SetDebug(%d)", sessinit_debugLevel_arg);
-    cout << " * Process command: "<< tafcommand << endl << endl;
+    if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
 
     sprintf(tafcommand, "gTAF->InitSession(%s,%s,%s,\"%s\",\"%s\",\"%s\")",\
@@ -579,16 +579,16 @@ Int_t main(Int_t argc, Char_t **argv)
 	  sessinit_cfgDir_arg         .Data(),\
     sessinit_dataDirPath_arg    .Data()\
     );
-    cout << " * Process command: "<< tafcommand << endl << endl;
+    if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
     //cout << "  return " << rvalue << endl;
 
     sprintf(tafcommand, "gTAF->GetSession()->SetOutputFilesPrefix(\"%s\")",sessinit_outFilesPref_arg.Data());
-    cout << " * Process command: "<< tafcommand << endl << endl;
+    if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
 
     sprintf(tafcommand, "gTAF->GetSession()->SetOutputFilesSuffix(\"%s\")",sessinit_outFilesSuff_arg.Data());
-    cout << " * Process command: "<< tafcommand << endl << endl;
+    if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
 
     if(verbose) cout << " ***</Automatic Mimosa Analysis Session Initialisation>*** " <<endl;
@@ -600,7 +600,7 @@ Int_t main(Int_t argc, Char_t **argv)
     {
       if(verbose) cout << endl << " ***<Launching MRaw GUI>*** "<<endl;
       sprintf(tafcommand, "gTAF->GetRaw()");
-      cout << " * Process command: "<< tafcommand << endl << endl;
+      if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
       rvalue = gROOT->ProcessLineSync(tafcommand);
     }
 
@@ -608,7 +608,7 @@ Int_t main(Int_t argc, Char_t **argv)
     {
       if(verbose) cout << endl << " ***<Launching MRax GUI>*** "<<endl;
       sprintf(tafcommand, "gTAF->GetRax()");
-      cout << " * Process command: "<< tafcommand << endl << endl;
+      if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
       rvalue = gROOT->ProcessLineSync(tafcommand);
     }
   }

@@ -739,6 +739,8 @@ class MimosaAnalysis : public MHist {
 
   void       CDHist() { if(!CheckIfDone("mimosapro")) {return;} else { MHist::Dir();}}
   void       Help();
+  void       ListSensor(); // JB 2021/11/13
+
 
   void       InitSession(const Int_t TheRun,const unsigned int ThePlane=0, Int_t EventBuildingMode=-1,TString ConfigFile="", TString ConfigDir="", TString DataDir="");
   //EventBuildingMode key by default is at -1 meaning that it will not override the value taken in DSetup::ReadConfiguration(), SS 2011/11/14

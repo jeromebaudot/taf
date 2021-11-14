@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////
 
 
-//*-- Modified : IG  
+//*-- Modified : IG
 //*-- Copyright:  RD42
 //*-- Author   :  Dirk Meier   98/02/18
 //*KEEP,CopyRight.
@@ -40,7 +40,7 @@
 #include "DGlobalTools.h"
 
 
-  ClassImp(DEvent)             
+  ClassImp(DEvent)
   ClassImp(DEventHeader)
   ClassImp(DAuthenticPlane)
   ClassImp(DAuthenticHit)
@@ -49,21 +49,21 @@
   Int_t   fDebugEvent=0;   // flag for debugging
 
 //_____________________________________________________________________________
-//  
-  void DEventHeader::Set(const Int_t aNEvent, 
-			 const Int_t aNRun, 
-			 const Int_t aDate, 
-			 const Int_t aTime, 
+//
+  void DEventHeader::Set(const Int_t aNEvent,
+			 const Int_t aNRun,
+			 const Int_t aDate,
+			 const Int_t aTime,
 			 const Int_t aType,
 			 vector<int> *aListOfTriggers,
 			 vector<int> *aListOfFrames,
-			 vector<int> *aListOfTimestamps) 
+			 vector<int> *aListOfTimestamps)
 {
 
   // Array sizes are limited, but it has no influence on the hits or tracks srored
   //  the information on the list of #frames, #triggers used in this event is simply lost
   //  beyond MaxNumberOf (defined in DEvent.h)
-  
+
   // Modified JB 2010/07/07 to add list of triggers,...
   // Modified SS 2011/08/10 to limit lists to array size
 
@@ -94,7 +94,7 @@
   if (ENumberOfTriggers>MaxNumberOf){
     printf("DEvent:Too many (%d) triggers in the event %d, set back to %d\n",ENumberOfTriggers,aNEvent,MaxNumberOf);
     ENumberOfTriggers=MaxNumberOf;
-  }  
+  }
   for( Int_t index=0; index<ENumberOfTriggers && index<MaxNumberOf; index++) {
     EListOfTriggers[index] = aListOfTriggers->at(index);
   }
@@ -103,7 +103,7 @@
   if (ENumberOfFrames>MaxNumberOf){
 //    printf("DEvent:Too many (%d) frames in the event %d, set back to %d\n",ENumberOfFrames,aNEvent,MaxNumberOf);
     ENumberOfFrames=MaxNumberOf;
-  }  
+  }
   for( Int_t index=0; index<ENumberOfFrames; index++) {
     EListOfFrames[index] = aListOfFrames->at(index);
   }
@@ -112,7 +112,7 @@
   if (ENumberOfTimestamps>MaxNumberOf){
 //    printf("DEvent:Too many (%d) timestamps in the event %d, set back to %d\n",ENumberOfTimestamps,aNEvent,MaxNumberOf);
     ENumberOfTimestamps=MaxNumberOf;
-  }  
+  }
   for( Int_t index=0; index<ENumberOfTimestamps && index<50; index++) {
     EListOfTimestamps[index] = aListOfTimestamps->at(index);
   }
@@ -120,21 +120,21 @@
 }
 
 //_____________________________________________________________________________
-//  
+//
 void DEventHeader::Clear(const Option_t *){
 
   //if(fDebugEvent) printf("  DEventHeader::Clear clearing\n");
-    
+
 }
 
 //_____________________________________________________________________________
-//  
+//
 void DEventHeader::SetTimeSinceLastEvent(const Int_t aDeltaTime){
   EtimeSinceLastEvent = aDeltaTime;
 }
 
 //_____________________________________________________________________________
-//  
+//
 void DEventHeader::Print()
 {
 
@@ -164,9 +164,9 @@ void DEventHeader::Print()
 }
 
 //_____________________________________________________________________________
-//  
+//
 DEvent::DEvent()
-{ 
+{
   fT1PlanesN = 0;
   fT1Planes = new TClonesArray("DTransparentPlane", 100);
 
@@ -175,7 +175,7 @@ DEvent::DEvent()
 
   fAHitsN = 0;
   fAHits = new TClonesArray("DAuthenticHit", 1000);
-  
+
 }
 
 //______________________________________________________________________________
@@ -183,7 +183,7 @@ DEvent::DEvent()
 
 
 DEvent::DEvent(DSetup& fc)
-{ 
+{
 
   //Int_t      tAPlanesN=0;
   //Int_t      tAHitsN=0;
@@ -205,16 +205,16 @@ DEvent::DEvent(DSetup& fc)
 }
 
 //______________________________________________________________________________
-//  
+//
 
 DEvent::~DEvent()
-{ 
+{
   Clear();
 }
 
 //______________________________________________________________________________
-//  
-void DEvent::Clear(const Option_t *) 
+//
+void DEvent::Clear(const Option_t *)
 {
 
   if(fDebugEvent) printf("  DEvent::Clear clearing\n");
@@ -231,7 +231,7 @@ void DEvent::Clear(const Option_t *)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DEvent::AddAuthenticPlane(DPlane& aPlane, Int_t aNEvent)
 {
   TClonesArray &tData = *fAPlanes;
@@ -239,7 +239,7 @@ void DEvent::AddAuthenticPlane(DPlane& aPlane, Int_t aNEvent)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DEvent::AddAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack &aTrack)
 {
   TClonesArray &tData = *fAHits;
@@ -248,22 +248,22 @@ void DEvent::AddAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack &aTrack)
 
 
 //______________________________________________________________________________
-//  
+//
 void DEvent::AddTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit, Bool_t hitAssociated, DTracker &aTracker)
 {
 
   TClonesArray &tData = *fT1Planes;
-  
+
   new(tData[fT1PlanesN++]) DTransparentPlane(aPlane, aTrack, aHit, hitAssociated, aTracker);
 
 }
 
 //______________________________________________________________________________
-//  
-void DEvent::SetHeader(const Int_t aNEvent, 
-		       const Int_t aNRun, 
-		       const Int_t aDate, 
-		       const Int_t aTime, 
+//
+void DEvent::SetHeader(const Int_t aNEvent,
+		       const Int_t aNRun,
+		       const Int_t aDate,
+		       const Int_t aTime,
 		       const Int_t aType,
 		      std::vector<int> *aListOfTriggers,
 		      std::vector<int> *aListOfFrames,
@@ -271,7 +271,7 @@ void DEvent::SetHeader(const Int_t aNEvent,
 
   // Modified JB 2010/07/07 to add list of triggers,...
 
-  fHeader.Set(aNEvent, aNRun, aDate, aTime, aType, 
+  fHeader.Set(aNEvent, aNRun, aDate, aTime, aType,
 	      aListOfTriggers, aListOfFrames, aListOfTimestamps);
   fEvt = aNEvent;
 }
@@ -284,8 +284,8 @@ void DEvent::SetTimeInterval(const Int_t aDeltaTime)
 }
 
 //______________________________________________________________________________
-//  
-void DEvent::SetFrame(const Int_t aFrameNb, const Int_t aLineNb) 
+//
+void DEvent::SetFrame(const Int_t aFrameNb, const Int_t aLineNb)
 {
 
   fFrameNb = aFrameNb;
@@ -293,8 +293,8 @@ void DEvent::SetFrame(const Int_t aFrameNb, const Int_t aLineNb)
 }
 
 //______________________________________________________________________________
-//  
-DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObject() 
+//
+DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObject()
 {
   // Note that all positions here are in the Plane coord. system
   // Modified to get rid of call to DStrip class
@@ -336,7 +336,7 @@ DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObjec
 
   HTS              = aHit.GetTimestamp();
 
-  if(aHit.GetStripsInCluster() > 0) { 
+  if(aHit.GetStripsInCluster() > 0) {
     HuCG             = aHit.GetPositionUhitCG();
     HvCG             = aHit.GetPositionVhitCG(); // added by JB, 2007 June
     HuEta            = aHit.GetPositionUhitEta();
@@ -358,7 +358,7 @@ DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObjec
   if( /*&aTrack*/ HtN>0 ) { // Check that tracking was actually done, condition changed JB 2017/02/04
     Htk              = aTrack.GetNumber(); // JB 2009/06/26
     HtHn             = aTrack.GetHitsNumber(); // JB 2009/09/08
-    tTrackPos        = aTrack.Intersection(tPlane);   
+    tTrackPos        = aTrack.Intersection(tPlane);
     Htu              = tTrackPos(0);
     Htv              = tTrackPos(1);
     HtChi2           = aTrack.GetChiSquare();
@@ -367,7 +367,7 @@ DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObjec
   }
 //  cout << "Track" << endl;
 
-  if(aHit.GetStripsInCluster() > 0) { 
+  if(aHit.GetStripsInCluster() > 0) {
     Hqc              = aHit.GetClusterPulseSum();
     HsN              = aHit.GetSNseed(); // changed to SNRseed, JB 2013/11/08
     HSNc             = aHit.GetClusterSignalToNoise();
@@ -381,8 +381,8 @@ DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObjec
     //HsnIndex              = tSeed->GetStripIndex(); // JB, 2009/05/12
     //HsnIndex              = aHit.GetIndex(0); // JB, 2009/05/12
     HsnIndex              = aHit.GetIndexSeed(); // JB 2013/11/08
-  
-    Hnc              = aHit.GetClusterNoiseAverage(); 
+
+    Hnc              = aHit.GetClusterNoiseAverage();
     if(Hsn!=0.0){
      HSNc1            = Hqc/Hsn;
     }
@@ -396,25 +396,25 @@ DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObjec
     Hsn              = 1.0;
 
     HsnPulse         = 0.0;
-    
+
     double col,row;
     tPlane->ComputeStripPosition_UVToColRow(Hu,Hv,col,row);
     int index = int(col) + tPlane->GetStripsNu()*int(row);
-    
+
     HsnIndex         = index;
-  
-    Hnc              = aHit.GetClusterNoiseAverage(); 
+
+    Hnc              = aHit.GetClusterNoiseAverage();
     if(Hsn!=0.0){
      HSNc1           = Hqc/Hsn;
     }
     Hsk              = index;
   }
 //  cout << "Cluster" << endl;
-  
+
   //tNeighboursN     = tSeed->GetNeighbourCount(); // JB, 2009/05/12
   tNeighboursN     = aHit.GetStripsInCluster(); // JB, 2009/05/12
   HNNS = tNeighboursN ; // same as HsN
-    
+
 
   for(Int_t i = 0; i<100; i++)
     { // change stop condition with max neighbours possible, JB 2009/05/12
@@ -432,8 +432,8 @@ DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObjec
     HnM[i] = aHit.GetNoise(i);        //YV 21/10/09
   }
 
-  //Hq0 = aHit.GetMinor(0)->GetPulseHeight(); 
-  //Hk0 = aHit.GetMinor(0)->GetStripIndex(); 
+  //Hq0 = aHit.GetMinor(0)->GetPulseHeight();
+  //Hk0 = aHit.GetMinor(0)->GetStripIndex();
   //Hn0 = aHit.GetMinor(0)->GetNoise();
 
   Hq0 = HqM[0];
@@ -474,13 +474,13 @@ DAuthenticHit::DAuthenticHit(DHit& aHit, Int_t aNEvent, DTrack& aTrack) : TObjec
   HSNneighbour = aHit.GetSNneighbour();
 
   //cout << " Hit created with: Hqc=" << Hqc << ", HsN=" << HsN << ", Hsn=" << Hsn << ", HsnPulse=" << HsnPulse << ", Hq1=" << Hq1 << "." << endl;
-  
+
 }
 
 //______________________________________________________________________________
-//  
+//
 
-DAuthenticPlane::DAuthenticPlane(DPlane& aPlane, Int_t aNEvent) : TObject() 
+DAuthenticPlane::DAuthenticPlane(DPlane& aPlane, Int_t aNEvent) : TObject()
 {
 
   // Modified for readout conditional variables, JB 2011/06/17
@@ -547,16 +547,16 @@ DAuthenticPlane::DAuthenticPlane(DPlane& aPlane, Int_t aNEvent) : TObject()
 }
 
 //______________________________________________________________________________
-//  
-DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DTracker &aTracker) : TObject() 
+//
+DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DTracker &aTracker) : TObject()
 {
 
   DTransparentPlane( aPlane, aTrack, *(aPlane.GetPrincipalHit()), kFALSE, aTracker);
 
 }
 //______________________________________________________________________________
-//  
-DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit, Bool_t hitAssociated, DTracker &aTracker) : TObject() 
+//
+DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit, Bool_t hitAssociated, DTracker &aTracker) : TObject()
 {
 
   // Basic storage of a track associated with a hit.
@@ -583,7 +583,7 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
   DTrack *aSubTrack;
   if( aTracker.GetNPlanesForSubTrack()>1 ) {
     aSubTrack = (DTrack*)(aTracker.GetSubTrack( Ttk));
-    trackPos = aSubTrack->Intersection(&aPlane); // subtrack position in device frame (uvw)  
+    trackPos = aSubTrack->Intersection(&aPlane); // subtrack position in device frame (uvw)
 //    DR3 fullTrackPos = aTrack.Intersection(&aPlane);
 //    printf(" Subtrack %d pos (%.2f, %.2f) versus full track %d pos (%.2f, %.2f)\n", aSubTrack->GetNumber(), trackPos(0), trackPos(1), aTrack.GetNumber(), fullTrackPos(0), fullTrackPos(1));
   }
@@ -627,7 +627,7 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
 
   // Compare position with nearest hit reconstructed
   // Hit number is set <0 if hit was used to fit track
-  if( &aHit ) { // JB 2009/06/26
+  if( hitAssociated && &aHit ) { // JB 2009/06/26
     if(fDebugEvent) printf("  DTransparentPlane::DTransparentPlane   hit pos u,v=(%.1f, %.1f), number %d from %d, with %d strips, charge = %f, qseed = %f\n", aHit.GetPositionUhit(), aHit.GetPositionVhit(), aHit.GetNumber(), aPlane.GetHitsN(), aHit.GetStripsInCluster(), aHit.GetClusterPulseSum(), aHit.GetPulseHeight(0));
     Tud              = aHit.GetPositionUhit() - Tu;
     Tvd              = aHit.GetPositionVhit() - Tv;
@@ -666,7 +666,7 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
     Float_t        tPulseHeight[10];
 
     tNearest         = aPlane.NearestStrip(trackPos);  // bef980830 (trackPosOff);
-    tNeighboursN = tNearest->GetNeighbourCount();  
+    tNeighboursN = tNearest->GetNeighbourCount();
     Int_t st;
     for (st = 0; st < (tNeighboursN < 10 ? tNeighboursN : 10); st++){
       tNextNeighbour    =  tNearest->GetNeighbour(st);
@@ -682,7 +682,7 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
 
     DGlobalTools aTool; // JB 2011/07/18
     aTool.OrderIndexAsc(&tIndex[0], &tDist[0], tN); // find tIndex order so that tDist is ascending
- 
+
     Tq1 = tPulseHeight[tIndex[0]];
     if (tN > 1) Tq2 = tPulseHeight[tIndex[1]]; else Tq2 = 0.;
     if (tN > 2) Tq3 = tPulseHeight[tIndex[2]]; else Tq3 = 0.;
@@ -698,12 +698,12 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
     if( tNeighboursN>=3 ) { // test added, JB 2012/08/20
       //n1 = tNearest->GetNeighbour(1);
       //n2 = tNearest->GetNeighbour(2);
-      
+
       //if (fabs(n1->DistanceU(trackPos)) < fabs(n2->DistanceU(trackPos)) )
       //  no = n1;
-      //else 
+      //else
       //  no = n2;
-      
+
       //if (no->GetPosition()(0) < tNearest->GetPosition()(0)){
       //  nl = no;
       //  nr = tNearest;
@@ -713,7 +713,7 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
       //  nr = no;
       //}
     }
-    
+
     Tu1           = tNearest->GetPosition()(0);
     Tk1           = tNearest->GetStripIndex();
 
@@ -724,4 +724,3 @@ DTransparentPlane::DTransparentPlane(DPlane& aPlane, DTrack& aTrack, DHit& aHit,
   }
 
 }
-

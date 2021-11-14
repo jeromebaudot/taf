@@ -1467,6 +1467,11 @@ Bool_t DPlane::Update(){
         aPixel->SetPulseHeight(1.0e-6);
       }
 
+      if( fMimosaType==651) { // Matrix C of CE-65 needs to have signal inverted
+        aPixel->SetRawValue( -1*aPixel->GetRawValue() );
+        aPixel->SetPulseHeight( -1*aPixel->GetPulseHeight() );
+      }
+
       if ( fPixelGainRun ) {
         SetPixelGainFromHisto( colPhys, linPhys, aPixel);
       }

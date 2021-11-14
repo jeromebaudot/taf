@@ -73,7 +73,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
   if(TString(SaveAlign) == TString("yes")) fSession->GetSetup()->GetAnalysisPar().SavePlots = false;
 
   if(!CheckIfDone("init,clear")) return;
-  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaPro()","Please set a plane number!"); return; }
+  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaPro()","Please set a plane number for DUT witg gTAF->SetPlaneNumber(my_number)!"); return; }
   if(!RunNumber) Error("MimosaPro","RunNumber not set! Please run InitSession  first");
 
   InitMimosaType();
@@ -1774,7 +1774,7 @@ void MimosaAnalysis::MimosaFakerate(Int_t MaxEvt, Float_t S2N_seed, Float_t S2N_
   // Created: JB 2010/07/23, from a Macro written by JB & MG Fakerate_from DSF
 
   if(!CheckIfDone("init,clear")) return;
-  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaFakerate()","Please set a plane number!"); return; }
+  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaFakerate()","Please set a plane number for DUT witg gTAF->SetPlaneNumber(my_number)!"); return; }
   if(!RunNumber) Error("MimosaFakerate","RunNumber not set! Please run InitSession  first");
 
   InitMimosaType();
@@ -2014,7 +2014,7 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
   // Modified: JB 2014/01/21, new cut on cluster charge
 
   if(!CheckIfDone("init,clear")) return;
-  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaCalibration()","Please set a plane number (1 or 2)"); return; }
+  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaCalibration()","Please set a plane number for DUT witg gTAF->SetPlaneNumber(my_number)"); return; }
   if(!RunNumber) Error("MimosaCalibration","RunNumber not set! Please run InitSession  first");
 
   InitMimosaType();
@@ -2080,6 +2080,8 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
   //----------------------------------------------------------------------------------
 
   BookingHistograms();
+
+	GetAlignment();
 
   //---------------------------------------------------------------
   //-- Prepare the event loop
@@ -4110,7 +4112,7 @@ void MimosaAnalysis::MimosaVertexFinder(Int_t MaxEvt, Int_t submatrix , Int_t Ge
   // Loic ?
 
   if(!CheckIfDone("init,clear")) return;
-  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaVertexFinder()","Please set a plane number!"); return; }
+  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaVertexFinder()","Please set a plane number for DUT witg gTAF->SetPlaneNumber(my_number)!"); return; }
   if(!RunNumber) Error("MimosaVertexFinder","RunNumber not set! Please run InitSession  first");
 
   InitMimosaType();
@@ -5498,7 +5500,7 @@ void MimosaAnalysis::MimosaImaging(Int_t MaxEvt, Int_t submatrix, Int_t GeoMatri
 
 
   if(!CheckIfDone("init,clear")) return;
-  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaImaging()","Please set a plane number (1 or 2)"); return; }
+  if(!ThePlaneNumber || ThePlaneNumber>fSession->GetTracker()->GetPlanesN()) {Warning("MimosaImaging()","Please set a plane number for DUT witg gTAF->SetPlaneNumber(my_number)!"); return; }
   if(!RunNumber) Error("MimosaImaging","RunNumber not set! Please run InitSession  first");
 
   InitMimosaType();

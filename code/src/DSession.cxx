@@ -666,15 +666,12 @@ void DSession::FillTree()
       if(tracksN>0){ // condition added for calibration:
         if( fDebugSession) printf("DSession::FillTree adding %d transparentPlane (track) for plane %d\n", tracksN, pl);
         Int_t iteratorTrack = 1;
-        //for( Int_t it=1; it<=tracksN; it++) { // loop on tracks
 
         do{
           tTrack = fTracker->GetTrack(iteratorTrack);
           tHit = fTracker->nearest_hit( tTrack, pl, hitAssociated); // nearest hit, JB 2009/07/17
           if( fDebugSession>1 ) printf("DSession::FillTree got track %d, %s hit %d\n", tTrack->GetNumber(), hitAssociated?"associated":"nearest", tHit?tHit->GetNumber():0); // JB 2014,08/29
-          if(tHit != nullptr){ // BB 2015/11/18 : assuming that we add a transparent plane only when there is a hit, otherwise go to the next event
-            fEvent->AddTransparentPlane(*tPlane, *tTrack, *tHit, hitAssociated, *fTracker ); // store track along with nearest hit
-          }
+          fEvent->AddTransparentPlane(*tPlane, *tTrack, *tHit, hitAssociated, *fTracker ); // store track along with nearest hit
           iteratorTrack++;
         }while(iteratorTrack <= tracksN); // end loop on tracks
      } // end condition added for calibration

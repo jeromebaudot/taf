@@ -1171,7 +1171,9 @@ void MimosaAnalysis::GetAlignment()
 
   Bool_t gotAlignment = kFALSE;
 
-  if(theCorFile->IsOpen()){
+  if(MimoDebug) Info("GetAlignment", "Looking for alignment...");
+
+  if(theCorFile != nullptr && theCorFile->IsOpen()){
     if(theCorFile->FindKey("alignement") && CorStatus!=2){ // if the CorPar files is already initialized with proper objects
       Info("GetAlignment","Getting alignment from CorPar file.");
       alignement =(DPrecAlign*)theCorFile->Get("alignement");
@@ -3385,6 +3387,7 @@ void MimosaAnalysis::ClusterPosition_init()
    // JB 2013/05/01
    DR3 aPosition( hU, hV, hW);
    if( align != NULL ) {
+     cout << "In TransformHitToTracker" << endl;
      hX = align->TransformHitToTracker(aPosition)(0);
      hY = align->TransformHitToTracker(aPosition)(1);
      hZ = align->TransformHitToTracker(aPosition)(2);

@@ -239,7 +239,7 @@ void  MRaw::PrepareRaw()
 
       bar3->AddButton("BINARY FAKE", "gTAF->GetRaw()->FakeRateBinaryFromRawData(100000, 100, 0.01)", "Compute the fake rate for binary output sensors");
       bar3->AddButton("CUMULATE LINE OVERFLOW", "gTAF->GetRaw()->DisplayCumulatedOverflow()", "Display line overflow cumulated over 500 events in several views");
-      bar3->AddButton("RAW SPECTRUM", "gTAF->GetRaw()->DisplaySpectrum( 1000, 3, 2048, 0)", "Display the spectrum from raw data");
+      bar3->AddButton("RAW SPECTRUM", "gTAF->GetRaw()->DisplaySpectrum( 1000, 3, -2048, 2048)", "Display the spectrum from raw data");
 
       bar3->AddButton("CUMULATE MONTE CARLO", "gTAF->GetRaw()->DisplayCumulatedMonteCarlo2D(500)", "Display Monte Carlo hits cumulated over 500 events in several views");
 
@@ -3573,8 +3573,9 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
   // Inputs:
   //   o nEvents is the nb of events to analyse
   //   o ifDrawTrack turns on the display of the track extrapolation map
-  //   o if Define_Range is true, use arguments bins and X/Y_min/max to define 2D range
-  //   o if Define_QRange is true, use arguments qbins and qmax to define charge range
+  //   o if Define_Range is true, use arguments bins and X/Y_min/max to define 2D histo range
+  //      ==> also cut out hits outside geometric boundaries
+  //   o if Define_QRange is true, use arguments qbins and qmax to define charge histo range
   //
   // Outputs:
   //   o HitMap_run%d.root with all plots
@@ -3591,6 +3592,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
   // Last Modified JB 2014/05/14 plot #hits/event on independant canvas
   // Last Modified JB 2015/05/25 plot hit timestamp added
   // Last Modified QL 2015/10/23 plot #hits vs #event added
+  // Last Modified JB 2021/11/13 Define_Range applies cut on hit position selection
 
   fSession->SetEvents(nEvents);
 
@@ -3899,14 +3901,19 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
 #endif
 
 
+      Double_t xPos, yPos;
       if( tPlane->GetHitsN()>0 ) {
         nHitsReconstructed += tPlane->GetHitsN();
         //hNHitsPerEvent[iPlane-1]->Fill( tPlane->GetHitsN() );
         for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
           aHit = (DHit*)tPlane->GetHit( iHit);
+          xPos = tPlane->PlaneToTracker(*(aHit->GetPosition()))(0);
+          yPos = tPlane->PlaneToTracker(*(aHit->GetPosition()))(1);
+          // Following cut exlude outside defined range (if any), JB 2021/11/13
+          if( Define_Range && ( xPos<xmin || xmax<xPos || yPos<ymin || ymax<yPos ) ) continue;
           //printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
-          hHitMap[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1); // weight could be aHit->GetClusterPulseSum()
-          if( tPlane->GetStatus()==3 ) hHitMapDUT->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1);
+          hHitMap[iPlane-1]->Fill( xPos, yPos, 1); // weight could be aHit->GetClusterPulseSum()
+          if( tPlane->GetStatus()==3 ) hHitMapDUT->Fill( xPos, yPos, 1);
 
           // Filling hit properties depends on analysis mode
           // JB 2012/08/17
@@ -5944,7 +5951,7 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
 
       //cout << " checking plane " << iPlane << " with readout " << tPlane->GetReadout() << " and analysis " << tPlane->GetAnalysisMode() << endl ;
 
-      if ( (tPlane->GetReadout()>=3 || tPlane->GetReadout()==24 || tPlane->GetReadout()==25) /*&& tPlane->GetAnalysisMode()<3*/ ){
+      // if ( (tPlane->GetReadout()>=3 || tPlane->GetReadout()==24 || tPlane->GetReadout()==25) /*&& tPlane->GetAnalysisMode()<3*/ ){
 
        std::vector<DPixel*> *aList = tPlane->GetListOfPixels();
         //cout << " number of fired pixels = " << aList->size() << endl ;
@@ -5957,7 +5964,7 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
           time[iPlane-1]->Fill(aList->at(iPix)->GetTimestamp()); // JB 2015/05/25
         } //end loop on fired pixels
 
-      } //end of sparsified readout
+      // } //end of sparsified readout
 
     } //end loop on planes
 
@@ -5984,7 +5991,7 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
   label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
   TPad *pad = new TPad("pad","",0.,0.,1.,0.965);
   pad->Draw();
-  pad->Divide( (Int_t)ceil(nPlanes/2.), 2);
+  if(nPlanes>1) pad->Divide( (Int_t)ceil(nPlanes/2.), 2);
   pad->SetLogy();
 
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
@@ -6000,7 +6007,7 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
 
   // Display of timestamp
 
-  TCanvas *cdisplaytime = new TCanvas("cdisplaytime", "timestamp",5,5,800,700);
+  TCanvas *cdisplaytime = new TCanvas("cdisplaytime", "timestamp",50,50,800,700);
   cdisplaytime->UseCurrentStyle();
 //  TPaveLabel* label = new TPaveLabel();
 //  Char_t canvasTitle[200];
@@ -6008,7 +6015,7 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
   label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
   TPad *pad1 = new TPad("pad1","",0.,0.,1.,0.965);
   pad1->Draw();
-  pad1->Divide( (Int_t)ceil(nPlanes/2.), 2);
+  if(nPlanes>1) pad1->Divide( (Int_t)ceil(nPlanes/2.), 2);
 //  pad1->SetLogy();
 
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
