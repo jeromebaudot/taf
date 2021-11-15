@@ -48,7 +48,7 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
 }
 
 //_____________________________________________________________________________
-  void MimosaAnalysis::InitSession(const Int_t TheRun,const unsigned int  ThePlane/*=0*/, Int_t EventBuildingMode, TString ConfigFile/*=""*/, TString ConfigDir/*=""*/, TString DataDir/*=""*/)
+  void MimosaAnalysis::InitSession(const Int_t TheRun,const unsigned int  ThePlane/*=0*/, Int_t EventBuildingMode, TString ConfigFile/*=""*/, TString ConfigDir/*=""*/, TString DataDir/*=""*/, TString DataFile/*=""*/)
 {
 
   // initialization of TAF
@@ -63,6 +63,7 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   // Last modified VR 2014/06/30 rewrite the files and directories management, especialy fot the config dir/file
   // Last modified JB 2016/08/17 added config directory option
   // Last modified JB 2021/05/01 added data directory option
+  // Last modified JB 2021/11/15 added data filename option
 
   fSession = new DSession("options");
 
@@ -94,7 +95,7 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   //--------------
   if (ConfigDir.IsNull())// No ConfigDir specified, set the default one
   {
-    cout << "Option with no config dir " << endl;
+    //cout << " * No config dir specified, going for default (config/) unless a full config file is specified" << endl;
     aPath = DTDIR;
     aPath += "config/";
     fTool.LocalizeDirName(&aPath);
@@ -185,6 +186,18 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
     cout << " * data path is: " << fSession->GetRawSourcePath() << endl;
   }
 
+  //--------------
+  // Data filename
+  //--------------
+  if (DataFile.IsNull())
+  {
+    cout << " * data filename(s) will be taken from configuration file." << endl;
+  }
+  else
+  {
+    fSession->SetRawSourceFilename(DataFile);
+    cout << " * data filename is: " << fSession->GetRawSourceFilename() << endl;
+  }
 
   //--------------
   // Outputs Files and Dir.

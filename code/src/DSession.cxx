@@ -148,6 +148,7 @@ void DSession::InitSession()
   fc->SetConfigPath(fConfigPath);
   fc->SetConfigFileName(fConfigFileName);
   fc->SetSourcePath(fRawSourcePath);
+  fc->SetSourceFilename(fRawSourceFilename);
 
   // Read the .cfg file
   cout << " - Reading configuration " << endl;
@@ -199,7 +200,8 @@ void DSession::InitSession()
   fSummaryFileTitle = TString("TAF TTree ") + textRunNumber; // JB 2015/03/24
 
   printf(" DSession, Paths and Files :\n");
-  printf("  Raw Data Source  Path is  %s\n", fc->GetRunPar().DataPath ); // fRawSourcePath.Data() ); JB 2009/05/12
+  printf("  Raw Data Source Path is  %s\n", fc->GetRunPar().DataPath ); // fRawSourcePath.Data() ); JB 2009/05/12
+  if( !(fRawSourceFilename.IsNull()) ) printf("  Raw Data Source Filename is  %s\n", fRawSourceFilename.Data() ); // JB 2021/11/15
 //   printf("  Data Summary File Path (temporary OUTPUT)  %s\n", fSummaryFilePath.Data() );
 //   printf("  Data Summary File Name %s\n",                   fSummaryFileName.Data() );
   printf("  Data Summary File Name is %s\n",         fSummaryFilePathAndName.Data() );

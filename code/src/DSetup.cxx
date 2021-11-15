@@ -52,6 +52,7 @@
 // Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
 // Last Modified: JB 2021/05/01 Handle source path as datapath
 // Last Modified: JB 2021/11/13 Add TREE reader config and NRows parameters
+// Last Modified: JB 2021/11/15 Introduce data filename as default filename (if not in config)
 
 ///////////////////////////////////////////////////////////////
 // Class Description of DSetup                               //
@@ -668,6 +669,15 @@ void  DSetup::SetSourcePath(TString aSP)
 
   fSourcePath = aSP;
   if(DSetupDebug) cout << "DSetup::SetSourcePath "<< aSP << endl;
+
+}
+//______________________________________________________________________________
+//
+void  DSetup::SetSourceFilename(TString aSF)
+{
+
+  fSourceFilename = aSF;
+  if(DSetupDebug) cout << "DSetup::SetSourceFilenale "<< aSF << endl;
 
 }
 //______________________________________________________________________________
@@ -2492,12 +2502,16 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
       for( Int_t iMod=0; iMod<pAcqModuleParameter[aBoardNumber].Devices; iMod++) {
         pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod] = new Char_t[pAcqModuleParameter[aBoardNumber].tpsz];
         pAcqModuleParameter[aBoardNumber].PixelShiftMod[iMod] = 3; // default value
-        if( iMod>0 ) nextField();
-        if( strstr( fFieldName, "DataFile" ) ) {
-          read_strings( pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod], pAcqModuleParameter[aBoardNumber].tpsz);
-        }
-        else {
-          printf( "WARNING in ReadDAQBoardParameters: field %s found while 'DataFile%d' expected!\n    -> Board %d of type %d lacks rawdata connection.", fFieldName, iMod+1, iMod+1, aBoardNumber);
+        if( fSourceFilename.IsNull() ) { // Read the filename only if not set already
+          if( iMod>0 ) nextField();
+          if( strstr( fFieldName, "DataFile" ) ) {
+            read_strings( pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod], pAcqModuleParameter[aBoardNumber].tpsz);
+          }
+          else {
+            printf( "WARNING in ReadDAQBoardParameters: field %s found while 'DataFile%d' expected!\n    -> Board %d of type %d lacks rawdata connection.", fFieldName, iMod+1, iMod+1, aBoardNumber);
+          }
+        } else {
+          sprintf( pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod], "%s", fSourceFilename.Data());
         }
       }
     }
