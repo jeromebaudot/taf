@@ -76,6 +76,7 @@ class DSetup : public TObject {
   TString      fConfigFileName;             // name of the configuration file
   TString      fConfigPathAndFileName;      // both path and file name appended
   TString      fSourcePath;                 // name of the data path (if not provided in config file)
+  TString      fSourceFilename;             // filename of the data (if not provided in config file)
 
   Int_t        DSetupDebug;
 
@@ -124,6 +125,7 @@ class DSetup : public TObject {
   void         SetConfigPath(TString aCP) ;
   void         SetConfigFileName(TString aCFN) ;
   void         SetSourcePath(TString aSP) ;
+  void         SetSourceFilename(TString aSF) ;
   void         SetDebug(Int_t aDebug)             { DSetupDebug = aDebug; cout << "DSetup debug updated to " << DSetupDebug << endl;}
   DSession    *GetSession()                       { return fSession;}
   Int_t        GetDebug()                         { return DSetupDebug;}

@@ -46,6 +46,7 @@ class DSession : public TObject {
   TString        fConfigPath;                  // the path to the directory that contains telescope configuration files
   TString        fConfigFileName;              // name of the configuration file
   TString        fRawSourcePath;               // path to the raw data source  (input)
+  TString        fRawSourceFilename;           // filename of the raw data source (input)
   TString        fSummaryFilePath;             // path to the summary file (output)
   TString        fSummaryFileName;             // name of the data summary file
   TString        fSummaryFilePathAndName;      // name for the .root file (DSF)
@@ -109,6 +110,7 @@ class DSession : public TObject {
   TString        GetSummaryFileTitle()             { return  fSummaryFileTitle;            }
   TString        GetSummaryFilePath()              { return  fSummaryFilePath;             }
   TString        GetRawSourcePath()                { return  fRawSourcePath;               }
+  TString        GetRawSourceFilename()            { return  fRawSourceFilename;           }
   TString        GetConfigPath()                   { return  fConfigPath;}
   TString        GetConfigFileName()               { return  fConfigFileName;}//VR 2014/06/29
   TString        GetResultDirName()                { return  fResultDir;                   } // JB 2009/09/14
@@ -136,6 +138,7 @@ class DSession : public TObject {
   void           SetOutputFilesPrefix(TString aString) {fOutputFilesPrefix = aString;}
   void           SetOutputFilesSuffix(TString aString) {fOutputFilesSuffix = aString;}
   void           SetRawSourcePath(TString aRawSourcePath){ fRawSourcePath = aRawSourcePath; }
+  void           SetRawSourceFilename(TString aRawSourceFilename){ fRawSourceFilename = aRawSourceFilename; }
   void           SetSummaryFilePath(TString aSummaryFilePath){ fSummaryFilePath = aSummaryFilePath; gSystem->mkdir( fSummaryFilePath, 1); }
   void           SetSummaryFileName(TString aSummaryFileName){ fSummaryFileName = aSummaryFileName; }
   void           SetSummaryFilePathAndName() { fSummaryFilePathAndName = fSummaryFilePath + "/" + fSummaryFileName; }

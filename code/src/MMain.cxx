@@ -5,6 +5,7 @@
 // Last Modified: VR 2014/06/30 support of config file parameter
 // Last Modified: JB 2016/08/17 support of config directory parameter
 // Last Modified: JB 2020/05/01 support of data directory parameter
+// Last Modified: JB 2021/11/15 support of data file parameter
 
   /////////////////////////////////////////////////////////////
   //                                                         //
@@ -104,9 +105,13 @@ Int_t main(Int_t argc, Char_t **argv)
   TString sessinit_mainResDirPath_arg = "";
   TString sessinit_mainResDirPath_def = "";
   // data path :
-  TString sessinit_dataDirPath_cmd = "-data";
+  TString sessinit_dataDirPath_cmd = "-datapath";
   TString sessinit_dataDirPath_arg = "";
   TString sessinit_dataDirPath_def = "";
+  // data file :
+  TString sessinit_dataFile_cmd = "-datafile";
+  TString sessinit_dataFile_arg = "";
+  TString sessinit_dataFile_def = "";
   // output files prefix :
   TString sessinit_outFilesPref_cmd = "-prefix";
   TString sessinit_outFilesPref_arg = "";
@@ -171,7 +176,8 @@ Int_t main(Int_t argc, Char_t **argv)
         cout << "     ["<< sessinit_outFilesPref_cmd <<"] output files prefix for MRax (ex.: config_yy), default is "<<  sessinit_outFilesPref_def << endl;
         cout << "     ["<< sessinit_outFilesSuff_cmd <<"] output files suffix for MRax (ex.: RUNxx), default is "<<  sessinit_outFilesSuff_def << "#" << endl;
         // cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
-        cout << "     ["<< sessinit_dataDirPath_cmd <<"] path to data, superseeds gonfig file input"<< endl;
+        cout << "     ["<< sessinit_dataDirPath_cmd <<"] path to data, superseeds config file input"<< endl;
+        cout << "     ["<< sessinit_dataFile_cmd <<"] data file name, superseeds config file input"<< endl;
 
       cout << "  * TAF GUIs :" << endl;
       cout << "     ["<<tafgui_cmd<<"] : launch the default (MRaw) GUI" << endl;
@@ -277,11 +283,18 @@ Int_t main(Int_t argc, Char_t **argv)
 	    if(verbose) cout << "  * InitSession: a results path is given: "<< sessinit_mainResDirPath_arg << endl;
 	    i++;
 	  }
-	  // data path
+    // data path
 	  else if (!arg.CompareTo(sessinit_dataDirPath_cmd) && ((i+1)<argc)) // if this arg is followed by another
 	  {
 	    sessinit_dataDirPath_arg = argv[i+1];
 	    if(verbose) cout << "  * InitSession: a data path is given: "<< sessinit_dataDirPath_arg << endl;
+	    i++;
+	  }
+    // data file
+	  else if (!arg.CompareTo(sessinit_dataFile_cmd) && ((i+1)<argc)) // if this arg is followed by another
+	  {
+	    sessinit_dataFile_arg = argv[i+1];
+	    if(verbose) cout << "  * InitSession: a data filename is given: "<< sessinit_dataFile_arg << endl;
 	    i++;
 	  }
     // output files suffix
@@ -554,6 +567,18 @@ Int_t main(Int_t argc, Char_t **argv)
     else // if "data path" arg is NOT given
     {
       // sessinit_dataDirPath_arg = sessinit_dataDirPath_def; // then use default one (defined before)
+      if(verbose) cout << "  * data path taken from config file." << endl;
+    }
+    //------------------------------
+    // Data Filename
+    //------------------------------
+    if (! sessinit_dataFile_arg.IsNull()) // if "data file" arg is given
+    {
+      if(verbose) cout << "  * data filename     <given>:   " << sessinit_dataFile_arg << endl;
+    }
+    else // if "data file" arg is NOT given
+    {
+      // sessinit_dataFile_arg = sessinit_dataFile_def; // then use default one (defined before)
       if(verbose) cout << "  * data path taken from config file." << endl;
     }
     //------------------------------

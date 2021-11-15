@@ -24,9 +24,9 @@
 # You should use the Makefile.arch provided with your installation (choice 1a or 1b depending on ROOT VERSION)
 # If not available, you can use the given Makefile.arch (choice 2)
 
-#include $(ROOTSYS)/etc/Makefile.arch # choice 1a
+include $(ROOTSYS)/etc/Makefile.arch # choice 1a
 #include $(ROOTSYS)/test/Makefile.arch # choice 1b (old ROOT versions)
-include ./Makefile.arch # choice 2
+#include ./Makefile.arch # choice 2
 # ----------------------------------------
 #        SVN revision <-- DEPRECATED
 # TAF welcome message displays the SVN revision of the code used during the compilation
