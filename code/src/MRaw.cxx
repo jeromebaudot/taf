@@ -5749,6 +5749,507 @@ void MRaw::DisplayNoise( Int_t thePlaneNumber, Float_t calibFactor, Float_t maxA
 
 //______________________________________________________________________________
 //
+void MRaw::DisplayNoise( Int_t colMin, Int_t colMax, Int_t thePlaneNumber, Float_t calibFactor, Float_t maxAxisNoise, Float_t maxAxisPed, Bool_t ifPixelHistory)
+{
+  // Display the noise (and pedestal) per strip or pixel for each plane
+  // after it has been computed for the required amount of events.
+  //
+  // Display information onnly for columns between colMax and colMin
+  //  NOTE than col numbering starts at 1
+  //
+  // If a plane number is specified (-1 means no plane),
+  //  only this plane will be displayed
+  //  and its autocorrelation between 2 consecutive frames is computed.
+  //  A plane number is required for the "ifPixelHistory" option described below.
+  //
+  // If a calibFactor is specified (-1 means no factor),
+  //  the noise value are scaled by this factor
+  //  and the units are e- instead of ADCu.
+  //
+  // If maxAxisNoise/Ped positive, will be used to define axis range of relevant histos
+  //
+  // If ifPixelHistory is true (false by default),
+  //  a histogram for the signal distribution of EACH pixel is filled.
+  //  This options requires that thePlaneNumber is set.
+  //
+  // Call by gTAF->GetRaw()->DisplayNoise()
+  //
+  // JB, September 2007
+  // Modified: JB 2012/09/22 autocorrelation and reshaping
+  // Modified: JB 2013/08/29 manage digitize data whith non-sparsified readout
+  // Modified: JB 2013/09/16 introduction of calibration factor
+  // Modified: JB 2013/12/03 histos for individual pixel distribution
+  // Modified: JB 2017/04/21 axis range for distribution
+
+  Int_t events2Read = 1;
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  Int_t nPlanes = tTracker->GetPlanesN();
+  DPlane* tPlane = NULL;
+  Int_t iRow, iCol, st;
+  Double_t aNoise, aPedestal, autocorr;
+  Char_t name[50], title[100];
+
+  // Taking into account potential calibration
+  // JB 2013/09/16
+  Char_t units[20];
+  if( calibFactor>0. ) { // use the calibration
+    sprintf( units, "(e-)");
+  }
+  else { // set the scale to 1.
+    calibFactor = 1.;
+    sprintf( units, "(ADCu)");
+  }
+
+
+  // Analysis of a single plane
+  // For autocorrelation computation
+  // For display of individual pixel distribution, JB 2013/12/03
+  DPlane *thePlane = 0;
+  Double_t *previousValue = NULL;
+  TH1F **hPixelDistri = NULL;
+  if( thePlaneNumber>0 ) { // if a plane is specified
+    thePlaneNumber = thePlaneNumber<=nPlanes?thePlaneNumber:nPlanes;
+    cout << "The plane considered is " << thePlaneNumber << endl;
+    thePlane = tTracker->GetPlane( thePlaneNumber);
+
+    previousValue = new Double_t[thePlane->GetStripsN()];
+    fSession->NextRawEvent();
+    tTracker->Update();
+
+    hPixelDistri = new TH1F*[thePlane->GetStripsN()];
+    for (Int_t iStrip=0; iStrip<thePlane->GetStripsN(); iStrip++) {
+      //cout << "strip " << iStrip << ", value = " << thePlane->GetRawValue(iStrip+1) << endl;
+      previousValue[iStrip] = thePlane->GetRawValue(iStrip+1);
+      sprintf( name, "hPixelDistri%d", iStrip);
+      sprintf( title, "Pixel %d signal distribution over %d events", iStrip, thePlane->GetInitialNoise());
+      hPixelDistri[iStrip] = new TH1F( name, title, 50, -200., 200.);
+      hPixelDistri[iStrip]->SetXTitle(units);
+      hPixelDistri[iStrip]->SetLineColor(1+iStrip%9);
+    }
+
+  } // end if a plane is specified
+
+  // Define X (column) range for histos
+  Int_t nCols = colMax-colMin+1;
+  if( colMax<colMin ) {
+    cout << endl << "ERROR (DisplayNoise): Please specify colMax (" << colMax << ") gretaer than colMin (" << colMin << ")!" << endl;
+    return;
+  }
+
+  // Define histos for each plane
+  TH1F **hPedDistri = new TH1F*[nPlanes];
+  TH1F **h1Pedestal = new TH1F*[nPlanes];
+  TH2F **h2Pedestal = new TH2F*[nPlanes];
+  TH1F **hNoiseDistri = new TH1F*[nPlanes];
+  TH1F **hAutocorDistri = new TH1F*[nPlanes];
+  TH1F **h1Noise = new TH1F*[nPlanes];
+  TH2F **h2Noise = new TH2F*[nPlanes];
+  TH2F **h2Autocor = new TH2F*[nPlanes];
+  Int_t *tMode     = new Int_t[nPlanes];
+  Int_t *tReadout  = new Int_t[nPlanes];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    tPlane        = tTracker->GetPlane(iPlane);
+    tMode[iPlane-1] = tPlane->GetAnalysisMode();
+    tReadout[iPlane-1] = tPlane->GetReadout();
+
+    if( events2Read < (Int_t)(tPlane->GetInitialNoise()) ) {
+      events2Read = (Int_t)(tPlane->GetInitialNoise())/*+1*/;
+    }
+
+    if( tMode[iPlane-1]==1 ) { // STRIPS
+      sprintf( name, "hPedestalpl%d", iPlane);
+      sprintf( title, "Pedestal of plane %d", iPlane);
+      h1Pedestal[iPlane-1] = new TH1F(name, title, nCols, colMin, colMax);
+      h1Pedestal[iPlane-1]->SetXTitle("strip index");
+      h1Pedestal[iPlane-1]->SetYTitle(units);
+      sprintf( name, "hnoisepl%d", iPlane);
+      sprintf( title, "Noise of plane %d", iPlane);
+      h1Noise[iPlane-1] = new TH1F(name, title, nCols, colMin, colMax);
+      h1Noise[iPlane-1]->SetXTitle("strip index");
+      h1Noise[iPlane-1]->SetYTitle(units);
+      if(fVerbose) printf( "MRaw::DisplayNoise created %s histo with %d columns\n", name, nCols);
+    }
+    else if ( (tMode[iPlane-1]==2 || tPlane->GetDigitalThresholdNb()>0) ) { // PIXELS
+      sprintf( name, "hPedestalpl%d", iPlane);
+      sprintf( title, "Pedestal of plane %d", iPlane);
+      h2Pedestal[iPlane-1] = new TH2F(name, title,
+				      nCols, colMin-1-0.5, colMax-1+0.5,
+				      tPlane->GetStripsNv(), -0.5, tPlane->GetStripsNv()-1+0.5);
+      h2Pedestal[iPlane-1]->SetStats(0);
+      h2Pedestal[iPlane-1]->SetXTitle("column index");
+      h2Pedestal[iPlane-1]->SetYTitle("row index");
+      h2Pedestal[iPlane-1]->SetZTitle(units);
+      sprintf( name, "hnoisepl%d", iPlane);
+      sprintf( title, "Noise of plane %d", iPlane);
+      h2Noise[iPlane-1] = new TH2F(name, title,
+				   nCols, colMin-1-0.5, colMax-1+0.5,
+				   tPlane->GetStripsNv(), -0.5, tPlane->GetStripsNv()-1+0.5);
+      h2Noise[iPlane-1]->SetStats(0);
+      h2Noise[iPlane-1]->SetXTitle("column index");
+      h2Noise[iPlane-1]->SetYTitle("row index");
+      h2Noise[iPlane-1]->SetZTitle(units);
+      sprintf( name, "hautocorpl%d", iPlane);
+      sprintf( title, "Autocorrelation of plane %d", iPlane);
+      h2Autocor[iPlane-1] = new TH2F(name, title, nCols, colMin, colMax, tPlane->GetStripsNv(), 1, tPlane->GetStripsNv()+1);
+      h2Autocor[iPlane-1]->SetStats(0);
+      h2Autocor[iPlane-1]->Sumw2();
+      if(fVerbose) printf( "MRaw::DisplayNoise created %s histo with %d x %d channels\n", name, nCols, tPlane->GetStripsNv());
+    }
+    else if ( tMode[iPlane-1]==3 ) { // PIXELS with binary output
+      if( fVerbose ) printf("\n-*-* INFO: there is no noise computation in mode %d for plane %d\n", tPlane->GetAnalysisMode(), iPlane);
+    }
+    else { // unknown case
+      printf("\n-*-* WARNING: unknown analysis mode %d for plane %d\n", tMode[iPlane-1], iPlane);
+    }
+  } //end loop on planes
+
+
+  // Loop on events
+  fSession->SetEvents(events2Read);
+  printf("\n Will read %d events to compute noise\n", events2Read);
+  while( fSession->NextRawEvent() ){ // event loop
+    tTracker->Update();
+
+    // For autocorrelation computation and pixel distribution
+    if( thePlaneNumber>0 ) {
+      for (Int_t iStrip=0; iStrip<thePlane->GetStripsN(); iStrip++) {
+        iCol = iStrip%tPlane->GetStripsNu() + 1;
+        iRow = iStrip/tPlane->GetStripsNu() + 1;
+        //cout << "strip " << iStrip << ", [" << iCol << ", " << iRow << "], value = " << thePlane->GetRawValue(iStrip+1) << ", prevalue = " << previousValue[iStrip] << endl;
+        if( colMin<=iCol && iCol<=colMax ) {
+          h2Autocor[thePlaneNumber-1]->Fill( iCol, iRow, thePlane->GetRawValue(iStrip+1)*previousValue[iStrip] );
+          previousValue[iStrip] = thePlane->GetRawValue(iStrip+1);
+          hPixelDistri[iStrip]->Fill( thePlane->GetRawValue(iStrip+1) * calibFactor );
+        }
+      }
+    }
+
+  } //end loop on event
+
+
+  // Get the noise and pedestal for each strip
+
+  Double_t minNoise=1.e5, maxNoise=-1.e5;
+  Double_t minPed=1.e5, maxPed=-1.e5;
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    tPlane        = tTracker->GetPlane(iPlane);
+    if(fVerbose) cout << endl << "PLANE " << iPlane << endl;
+    if( tMode[iPlane-1]==1 && tReadout[iPlane-1]>0 ) { // STRIPS
+      for( Int_t iStrip=1; iStrip<=h1Noise[iPlane-1]->GetNbinsX(); iStrip++) {
+        aNoise = tPlane->GetNoise(iStrip) * calibFactor;
+        if(fVerbose) cout<<"aNoise["<<iStrip<<"]: " << aNoise << endl;
+        if( aNoise<minNoise) minNoise = aNoise;
+        if( maxNoise<aNoise) maxNoise = aNoise;
+        h1Noise[iPlane-1]->SetBinContent( iStrip, aNoise);
+        aPedestal = tPlane->GetPedestal(iStrip) * calibFactor;
+        if(fVerbose) cout<<"aPedestal["<<iStrip<<"]: " << aPedestal << endl;
+        if( aPedestal<minPed) minPed = aPedestal;
+        if( maxPed<aPedestal) maxPed = aPedestal;
+        h1Pedestal[iPlane-1]->SetBinContent( iStrip, aPedestal);
+      }
+    }
+    else if ( (tMode[iPlane-1]==2 || tPlane->GetDigitalThresholdNb()>0) && tReadout[iPlane-1]>0 ) { // PIXELS
+      for( Int_t iStripU=1; iStripU<=h2Noise[iPlane-1]->GetNbinsX(); iStripU++) {
+        // if( colMin<=iStripU && iStripU<=colMax ) { // test col in range
+          for( Int_t iStripV=1; iStripV<=h2Noise[iPlane-1]->GetNbinsY(); iStripV++) {
+            st = iStripU+(iStripV-1)*tPlane->GetStripsNu()-1;
+            aNoise = tPlane->GetNoise( st) * calibFactor;
+            if( aNoise<minNoise) minNoise = aNoise;
+            if( maxNoise<aNoise) maxNoise = aNoise;
+            h2Noise[iPlane-1]->SetBinContent( iStripU, iStripV, aNoise);
+            if(fVerbose) printf("MRaw::DisplayNoise plane %d, strips( %d, %d) channels %d, noise %f\n", iPlane, iStripU, iStripV, st, aNoise);
+            aPedestal = tPlane->GetPedestal(st) * calibFactor;
+            if( aPedestal<minPed) minPed = aPedestal;
+            if( maxPed<aPedestal) maxPed = aPedestal;
+            h2Pedestal[iPlane-1]->SetBinContent( iStripU, iStripV, aPedestal);
+            if(fVerbose) printf("MRaw::DisplayPedestal plane %d, strips( %d, %d) channels %d, pedestal %f\n", iPlane, iStripU, iStripV, st, aPedestal);
+          }
+        // } // end test col in range
+      }
+    }
+
+  } //end loop on planes
+
+
+  // Display the noises & pedestal histos
+  cout << "Display the noises & pedestal histos" << endl;
+  gStyle->SetPalette(1);
+  Char_t canvasTitle[200];
+  sprintf(canvasTitle, "Display Noise for run %d", fSession->GetRunNumber());
+  TCanvas *cnoise = new TCanvas("cnoise", canvasTitle, 0, 0, 800, 700);
+  cnoise->UseCurrentStyle();
+
+  sprintf(canvasTitle, "Display Pedestal for run %d", fSession->GetRunNumber());
+  TCanvas *cpedestal = new TCanvas("cpedestal", canvasTitle, 15, 0, 800, 700);
+  cpedestal->UseCurrentStyle();
+
+  if ( thePlaneNumber>0 ) { // when only one plane is displayed
+    if( tMode[thePlaneNumber-1]==1 && tReadout[thePlaneNumber-1]>0 ) { // STRIPS
+      cnoise->cd();
+      h1Noise[thePlaneNumber-1]->Draw();
+      cpedestal->cd();
+      h1Pedestal[thePlaneNumber-1]->Draw();
+    }
+    else if ( (tMode[thePlaneNumber-1]==2 || tPlane->GetDigitalThresholdNb()>0) && tReadout[thePlaneNumber-1]>0 ) { // PIXELS
+      cnoise->cd();
+      cnoise->SetBottomMargin(0.20);
+      cnoise->SetLeftMargin(0.15);
+      cnoise->SetRightMargin(0.15);
+      h2Noise[thePlaneNumber-1]->Draw("colz");
+      cpedestal->cd();
+      cpedestal->SetBottomMargin(0.15);
+      cpedestal->SetLeftMargin(0.15);
+      cpedestal->SetRightMargin(0.15);
+      h2Pedestal[thePlaneNumber-1]->Draw("colz");
+    }
+
+  }
+  else { // when several planes are displayed
+    Int_t nCanvasRows = 1;
+    if ( 9<nPlanes) nCanvasRows = 5;
+    else if ( 4<nPlanes ) nCanvasRows = 3;
+    else if ( 1<nPlanes ) nCanvasRows = 2;
+    cnoise->Divide( (Int_t)ceil(nPlanes/(Float_t)nCanvasRows), nCanvasRows);
+    cpedestal->Divide( (Int_t)ceil(nPlanes/(Float_t)nCanvasRows), nCanvasRows);
+    for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+      tPlane        = tTracker->GetPlane(iPlane);
+      if( tMode[iPlane-1]==1 && tReadout[iPlane-1]>0 ) { // STRIPS
+        cnoise->cd(iPlane);
+        h1Noise[iPlane-1]->Draw();
+        cpedestal->cd(iPlane);
+        h1Pedestal[iPlane-1]->Draw();
+      }
+      else if ( (tMode[iPlane-1]==2 || tPlane->GetDigitalThresholdNb()>0) && tReadout[iPlane-1]>0 ) { // PIXELS
+        if(fVerbose) cout << "Drawing noise for plane " << tPlane->GetPlaneNumber() << endl;
+        cnoise->cd(iPlane);
+        cnoise->SetBottomMargin(0.15);
+        cnoise->SetLeftMargin(0.15);
+        cnoise->SetRightMargin(0.15);
+        h2Noise[iPlane-1]->Draw("colz");
+        cpedestal->cd(iPlane);
+        cpedestal->SetBottomMargin(0.15);
+        cpedestal->SetLeftMargin(0.15);
+        cpedestal->SetRightMargin(0.15);
+        h2Pedestal[iPlane-1]->Draw("colz");
+      }
+    }
+  }
+  cnoise->Update();
+  cpedestal->Update();
+
+
+  // Display the distributions in histos
+  cout << "Display the distributions in histos" << endl;
+  sprintf(canvasTitle, "Display Distributions for run %d", fSession->GetRunNumber());
+  TCanvas *cdistri = new TCanvas("cdistri", canvasTitle, 30, 0, 800, 700);
+  cdistri->UseCurrentStyle();
+  cdistri->Divide( 2, nPlanes);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+
+    tPlane        = tTracker->GetPlane(iPlane);
+
+    double R_pedestal[2];
+    double R_noise[2];
+    R_pedestal[0] = R_noise[0] = +1.0e+20;
+    R_pedestal[1] = R_noise[1] = -1.0e+20;
+    if( tMode[iPlane-1]==1 && tReadout[iPlane-1]>0 ) { // STRIPS
+      for( Int_t iStrip=1; iStrip<=tPlane->GetStripsNu(); iStrip++) {
+        if(R_pedestal[0] > tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[0] = tPlane->GetPedestal(iStrip) * calibFactor;
+        if(R_pedestal[1] < tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[1] = tPlane->GetPedestal(iStrip) * calibFactor;
+
+        if(R_noise[0] > tPlane->GetNoise(iStrip) * calibFactor) R_noise[0] = tPlane->GetNoise(iStrip) * calibFactor;
+        if(R_noise[1] < tPlane->GetNoise(iStrip) * calibFactor) R_noise[1] = tPlane->GetNoise(iStrip) * calibFactor;
+      }
+    }
+    else if ( (tMode[iPlane-1]==2 || tPlane->GetDigitalThresholdNb()>0) && tReadout[iPlane-1]>0 ) { // PIXELS with analog output
+      for( Int_t iStrip=1; iStrip<=tPlane->GetStripsNu()*tPlane->GetStripsNv(); iStrip++) {
+        if(R_pedestal[0] > tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[0] = tPlane->GetPedestal(iStrip) * calibFactor;
+        if(R_pedestal[1] < tPlane->GetPedestal(iStrip) * calibFactor) R_pedestal[1] = tPlane->GetPedestal(iStrip) * calibFactor;
+
+        if(R_noise[0] > tPlane->GetNoise(iStrip) * calibFactor) R_noise[0] = tPlane->GetNoise(iStrip) * calibFactor;
+        if(R_noise[1] < tPlane->GetNoise(iStrip) * calibFactor) R_noise[1] = tPlane->GetNoise(iStrip) * calibFactor;
+      }
+    }
+
+    double porcent,delta;
+    porcent = 0.50;
+    delta = R_pedestal[1] - R_pedestal[0];
+    R_pedestal[0] -= delta*porcent;
+    R_pedestal[1] += delta*porcent;
+    double pedestal_max = TMath::Max(TMath::Abs(R_pedestal[0]),TMath::Abs(R_pedestal[1]));
+    R_pedestal[0] = -pedestal_max;
+    R_pedestal[1] = +pedestal_max;
+    porcent = 0.50;
+    delta = R_noise[1] - R_noise[0];
+    R_noise[0] =  0.0;
+//    R_noise[1] += delta*porcent; // does not always work
+
+    printf(" Limits for distributions of plane %d:\n", iPlane);
+
+    sprintf( name, "hPedDistripl%d", iPlane);
+    sprintf( title, "Pedestal distribution of plane %d", iPlane);
+    if ( maxAxisPed>0 ) {
+      printf("   pedestal: %.0f to %.0f\n", -maxAxisPed, maxAxisPed);
+      hPedDistri[iPlane-1] = new TH1F(name, title, 100, -maxAxisPed, maxAxisPed);
+    }
+    else {
+      printf("   pedestal: %.0f to %.0f\n", R_pedestal[0], R_pedestal[1]);
+//      hPedDistri[iPlane-1] = new TH1F(name, title, 100, TMath::Min( minPed, -50.), TMath::Max( maxPed, 50.));
+      hPedDistri[iPlane-1] = new TH1F(name, title, 100, R_pedestal[0], R_pedestal[1]);
+    }
+      hPedDistri[iPlane-1]->SetXTitle(units);
+    sprintf( name, "hNoiseDistripl%d", iPlane);
+    sprintf( title, "Noise distribution of plane %d", iPlane);
+    if ( maxAxisNoise>0 ) {
+      printf("   nois: %.0f to %.0f\n", 0., maxAxisNoise);
+      hNoiseDistri[iPlane-1] = new TH1F(name, title, 100, 0., maxAxisNoise);
+    }
+    else {
+      printf("   nois: %.0f to %.0f\n", R_noise[0], R_noise[1]);
+//      hNoiseDistri[iPlane-1] = new TH1F(name, title, 100, 0., TMath::Max( maxNoise, 50.));
+      hNoiseDistri[iPlane-1] = new TH1F(name, title, 100, R_noise[0],R_noise[1]);
+    }
+    hNoiseDistri[iPlane-1]->SetXTitle(units);
+
+    if( tMode[iPlane-1]==1 && tReadout[iPlane-1]>0 ) { // STRIPS
+      for( Int_t iStrip=1; iStrip<=tPlane->GetStripsNu(); iStrip++) {
+        if( colMin<=iStrip && iStrip<=colMax ) {
+          hPedDistri[iPlane-1]->Fill( tPlane->GetPedestal(iStrip) * calibFactor);
+          hNoiseDistri[iPlane-1]->Fill( tPlane->GetNoise(iStrip) * calibFactor);
+        }
+      }
+    }
+    else if ( (tMode[iPlane-1]==2 || tPlane->GetDigitalThresholdNb()>0) && tReadout[iPlane-1]>0 ) { // PIXELS with analog output
+      for( Int_t iStrip=1; iStrip<=tPlane->GetStripsNu()*tPlane->GetStripsNv(); iStrip++) {
+        iCol = iStrip%tPlane->GetStripsNu() + 1;
+        if( colMin<=iCol && iCol<=colMax ) {
+          hPedDistri[iPlane-1]->Fill( tPlane->GetPedestal(iStrip) * calibFactor);
+          hNoiseDistri[iPlane-1]->Fill( tPlane->GetNoise(iStrip) * calibFactor);
+        }
+      }
+    }
+
+    cdistri->cd(2*iPlane-1);
+    hPedDistri[iPlane-1]->Draw();
+    cdistri->cd(2*iPlane);
+    hNoiseDistri[iPlane-1]->Draw();
+
+  } //end loop on planes
+  cdistri->Update();
+
+
+  // For autocorrelation computation and pixel distribution
+
+  TCanvas *cautocor = NULL;
+  TCanvas *cpixels = NULL, *cpixels2 = NULL;
+  TLatex *t = new TLatex();
+  //t->SetTextColor(2);
+  Char_t string[200];
+
+  if( thePlaneNumber>0 ) { // if a plane specified
+    sprintf(canvasTitle, "Display Autocorrelation and pixel distrib. for plane %d and run %d", thePlaneNumber, fSession->GetRunNumber());
+
+    // autocorrelation
+    cautocor = new TCanvas("cautocor", canvasTitle, 45, 0, 800, 700);
+    cautocor->UseCurrentStyle();
+    cautocor->Divide( 2, 1);
+
+    sprintf( name, "hAutocorDistripl%d", thePlaneNumber);
+    sprintf( title, "Autocorrelation distribution of plane %d", thePlaneNumber);
+    hAutocorDistri[thePlaneNumber-1] = new TH1F(name, title, 100, 0., 0.);
+
+    for( Int_t iStripU=1; iStripU<=h2Autocor[thePlaneNumber-1]->GetNbinsX(); iStripU++) {
+      for( Int_t iStripV=1; iStripV<=h2Autocor[thePlaneNumber-1]->GetNbinsY(); iStripV++) {
+        st = iStripU+(iStripV-1)*thePlane->GetStripsNu();
+        aNoise    = thePlane->GetNoise( st);
+        aPedestal = thePlane->GetPedestal(st);
+        autocorr  = h2Autocor[thePlaneNumber-1]->GetBinContent( iStripU, iStripV);
+        autocorr  = (autocorr / (events2Read-1) - aPedestal*aPedestal);
+        if(fVerbose) printf("MRaw::DisplayAutocorr plane %d, strips( %d, %d) channels %d, noise %f pedestal %f autocor (%f) %f\n", thePlaneNumber, iStripU, iStripV, st, aNoise, aPedestal, h2Autocor[thePlaneNumber-1]->GetBinContent( iStripU, iStripV), autocorr);
+        h2Autocor[thePlaneNumber-1]->SetBinContent( iStripU, iStripV, autocorr);
+        hAutocorDistri[thePlaneNumber-1]->Fill( autocorr);
+      }
+    }
+
+    cautocor->cd(1);
+    h2Autocor[thePlaneNumber-1]->Draw("colz");
+    cautocor->cd(2);
+    hAutocorDistri[thePlaneNumber-1]->Draw();
+
+
+    // Pixel distribution
+    cpixels = new TCanvas("cpixels", "Single pixel distributions", 60, 0, 800, 700);
+    cpixels->UseCurrentStyle();
+    cpixels->Divide( 5, 4);
+
+    for (Int_t i=0; i<20; i++) {
+      cpixels->cd(i+1);
+      Int_t iStrip = (Int_t)(gRandom->Uniform(0,thePlane->GetStripsN()));
+      hPixelDistri[iStrip]->Draw();
+      iCol = iStrip%thePlane->GetStripsNu() + 1;
+      iRow = iStrip/thePlane->GetStripsNu() + 1;
+      sprintf( string, "autocorr = %.1f", h2Autocor[thePlaneNumber-1]->GetBinContent( iCol, iRow));
+      t->DrawLatex( (hPixelDistri[iStrip]->GetXaxis()->GetXmax())*.5, (hPixelDistri[iStrip]->GetMaximum())*.5, string);
+    }
+    cpixels->Update();
+
+    cpixels2 = new TCanvas("cpixels2", "Single pixel distributions overlayed", 75, 0, 800, 700);
+    cpixels2->UseCurrentStyle();
+    cpixels2->cd();
+
+    hPixelDistri[0]->Draw();
+    for (Int_t iStrip=1; iStrip<thePlane->GetStripsN(); iStrip++) {
+      hPixelDistri[iStrip]->Draw("same");
+    }
+    cpixels2->Update();
+
+  } // end if a plane specified
+
+
+  // Save canvas and histos
+  //cd to result dir
+  cout << "Save canvas and histos" << endl;
+  Char_t rootFile[300];
+  sprintf(rootFile,"%sNoise_run%d_col%d-%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber(), colMin, colMax);
+  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
+  cout << "\n-- Saving histos and canvas into " << rootFile << endl;
+  TFile fRoot(rootFile,"RECREATE");
+  cnoise->Write();
+  cpedestal->Write();
+  cdistri->Write();
+  if( thePlaneNumber>0 ) {
+    cautocor->Write();
+    cpixels->Write();
+    cpixels2->Write();
+  }
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    hPedDistri[iPlane-1]->Write();
+    hNoiseDistri[iPlane-1]->Write();
+    if( thePlaneNumber>0 )  {
+      hAutocorDistri[thePlaneNumber-1]->Write();
+      h2Autocor[thePlaneNumber-1]->Write();
+      for (Int_t iStrip=1; iStrip<thePlane->GetStripsN(); iStrip++) {
+        hPixelDistri[iStrip]->Write();
+      }
+    }
+    if( tMode[iPlane-1]==1 ) { // STRIPS
+      h1Pedestal[iPlane-1]->Write();
+      h1Noise[iPlane-1]->Write();
+    }
+    else if ( tMode[iPlane-1]==2 || tPlane->GetDigitalThresholdNb()>0 ) { // PIXELS
+      h2Pedestal[iPlane-1]->Write();
+      h2Noise[iPlane-1]->Write();
+    }
+  }
+  fRoot.Close();
+
+}
+
+//______________________________________________________________________________
+//
 void MRaw::DisplayCumulatedClusters( Int_t planeNumber, Int_t nEvents)
 {
   // Display the cluster characteristics for a given plane cumulated over the requested number of events

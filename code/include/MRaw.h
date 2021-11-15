@@ -209,7 +209,8 @@ void BeastCheckPosition();
 				double Colmin = -1.0e10, double Colmax = -1.0e10,
 				double Linmin = -1.0e10, double Linmax = -1.0e10); //RDM280509, JB 2011/03/14
  void DisplayCumulatedOverflow( Int_t nEvents=500); //MG 2012/03/14
- void DisplayNoise(  Int_t thePlaneNumber=-1, Float_t calibFactor=-1., Float_t maxAxisNoise=0., Float_t maxAxisPed=0., Bool_t ifPixelHistory=kFALSE);
+ void DisplayNoise( Int_t thePlaneNumber=-1, Float_t calibFactor=-1., Float_t maxAxisNoise=0., Float_t maxAxisPed=0., Bool_t ifPixelHistory=kFALSE);
+ void DisplayNoise( Int_t colMin, Int_t colMax, Int_t thePlaneNumber=-1, Float_t calibFactor=-1., Float_t maxAxisNoise=0., Float_t maxAxisPed=0., Bool_t ifPixelHistory=kFALSE);
  void SkipEvent( Int_t nEventsToSkip);
  void DisplaySpectrum(Int_t nEvents, Int_t minSN=3, Int_t minValue=0, Int_t maxValue=4096); //26/05/09 YV
  void DisplayCumulatedClusters(Int_t planeNumber, Int_t nEvents); //JB 2011/02/07
