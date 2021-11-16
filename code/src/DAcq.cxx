@@ -513,16 +513,20 @@ DAcq::DAcq(DSetup& c)
         fTREE[iModule]->SetDebugLevel( fDebugAcq);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
           if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
-            sprintf( aBaseName, "%s_run%d", fc->GetModulePar(mdt).DeviceDataFile[mdl-1], fRunNumber);
+            if( ! strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], ".root") ) { // full file specified, stop here
+              sprintf( aBaseName, "%s", fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
+            } else { // complete base with run # and extension
+              sprintf( aBaseName, "%s_run%d.root", fc->GetModulePar(mdt).DeviceDataFile[mdl-1], fRunNumber);
+            }
           } else {
-            sprintf( aBaseName, "run_%d_", fRunNumber);
+            sprintf( aBaseName, "run_%d_.root", fRunNumber);
           }
         } else {
-          sprintf( aBaseName, "run_%d_", fRunNumber);
+          sprintf( aBaseName, "run_%d_.root", fRunNumber);
         }
-        sprintf( aFileName, "%s/%s.root", fc->GetRunPar().DataPath, aBaseName);
+        sprintf( aFileName, "%s/%s", fc->GetRunPar().DataPath, aBaseName);
         if( !( fTREE[iModule]->AddFile( aFileName ) ) ) {
-          sprintf( aFileName, "%s/%d/%s.root", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
+          sprintf( aFileName, "%s/%d/%s", fc->GetRunPar().DataPath, fRunNumber, aBaseName);
           initOK &= fTREE[iModule]->AddFile( aFileName );
         } else {
           initOK &= kTRUE;
