@@ -1132,6 +1132,27 @@ void MimosaAnalysis::PrepareOnlineDisplay()
 
 //______________________________________________________________________________
 //
+void MimosaAnalysis::InitMimosaType() {
+  // MimosaType identify the sensor type under study
+  //  if not set from configuration, guess from run number
+  //
+  // Updated JB, 2021/11/15
+
+  MimosaType = 0;
+  if ( GetPlaneNumber()!=0 ) { // if a plane under study is known
+    MimosaType = fSession->GetSetup()->GetPlanePar( GetPlaneNumber() ).MimosaType;
+  }
+
+  if( MimosaType==0 ) {
+    MimosaType = (Int_t)(RunNumber/1000.);
+    if(RunNumber==2110)  MimosaType=4;
+    else if(RunNumber<1000) MimosaType = 99; // JB 2012/05/04 deal with RunNumber<1000 case
+  }
+  
+}
+
+//______________________________________________________________________________
+//
 void MimosaAnalysis::SetPlaneNumber(Int_t aPlaneNumber) {
 
   // JB 2012/10/30

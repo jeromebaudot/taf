@@ -626,7 +626,7 @@ class MimosaAnalysis : public MHist {
   Int_t      GetPlaneNumber()                    { return ThePlaneNumber;}
   void       SetPlaneNumber(Int_t aPlaneNumber);
   void       SetLadderNumber(Int_t aNumber); // JB 2014/01/10
-  void       InitPlaneNumber()                   { ThePlaneNumber = fSession->GetPlaneNumber(); }
+  int        InitPlaneNumber()                   { ThePlaneNumber = fSession->GetPlaneNumber(); return ThePlaneNumber; }
   Int_t      GetMimosaType()                     { return MimosaType;}
   void       SetMimosaType(Int_t aMimosaType)    { MimosaType  = aMimosaType;}
   Int_t      GetAlignStatus()                    { return fSession->GetTracker()->GetAlignmentStatus(); }
@@ -638,7 +638,8 @@ class MimosaAnalysis : public MHist {
   void       SetCUT_MaxHitRatePerPixel(Double_t aRate) { CUT_MaxHitRatePerPixel = aRate;}
   void       SetCUT_MinHitRatePerPixel(Double_t aRate) { CUT_MinHitRatePerPixel = aRate;}
 
-  void       InitMimosaType()                    {  MimosaType = (Int_t)(RunNumber/1000.); if(RunNumber==2110)  MimosaType=4; else if(RunNumber<1000) MimosaType = 99;} // JB 2012/05/04 deal with RunNumber<1000 case
+  // void       InitMimosaType()                    {  MimosaType = (Int_t)(RunNumber/1000.); if(RunNumber==2110)  MimosaType=4; else if(RunNumber<1000) MimosaType = 99;} // JB 2012/05/04 deal with RunNumber<1000 case
+  void       InitMimosaType();
 
   void       SetFileNumber(Int_t aUserFileNumber=0) {fUserFileNumber = aUserFileNumber;};
   void       SetDSFFile(const Char_t *aFileName) {sprintf( RootFile, "%s", aFileName);}; // JB 2013/09/19

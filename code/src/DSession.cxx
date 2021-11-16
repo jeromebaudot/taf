@@ -177,6 +177,22 @@ void DSession::InitSession()
   fTracker      = new DTracker(*fc, *fAcq);  // construct the DTracker
   if( fDebugSession>=0 ) fTracker->SetDebug( fDebugSession); // JB, 2010/11/25
 
+  // Try to guess a plane number of study, otherwise leave it at what MPrep set
+  // JB, 2021/11/15
+  if( fTracker->GetPlanesN()==1 ) { // there is only one choice
+    SetPlaneNumber(1);
+  } else { // there is only one DUT
+    Int_t nbOfDUT = 0;
+    Int_t DUTid = 0;
+    for (size_t iPlane = 1; iPlane <= fTracker->GetPlanesN() ; iPlane++) {
+      if( fc->GetPlanePar(iPlane).Status==3 ) {
+        nbOfDUT++;
+        DUTid = iPlane;
+      }
+    }
+    if( nbOfDUT==1 ) SetPlaneNumber(DUTid);
+  }
+
   fEventsToDo = 0;
   fCurrentEventNumber = 0;
 
