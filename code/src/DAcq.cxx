@@ -513,7 +513,8 @@ DAcq::DAcq(DSetup& c)
         fTREE[iModule]->SetDebugLevel( fDebugAcq);
         if( fc->GetModulePar(mdt).DeviceDataFile[mdl-1]!=NULL ) {
           if( strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], "") ) {
-            if( ! strcmp(fc->GetModulePar(mdt).DeviceDataFile[mdl-1], ".root") ) { // full file specified, stop here
+            TString afilename = fc->GetModulePar(mdt).DeviceDataFile[mdl-1];
+            if( afilename.Contains(".root") ) { // full file specified, stop here
               sprintf( aBaseName, "%s", fc->GetModulePar(mdt).DeviceDataFile[mdl-1]);
             } else { // complete base with run # and extension
               sprintf( aBaseName, "%s_run%d.root", fc->GetModulePar(mdt).DeviceDataFile[mdl-1], fRunNumber);

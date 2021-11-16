@@ -212,7 +212,7 @@ void BeastCheckPosition();
  void DisplayNoise( Int_t thePlaneNumber=-1, Float_t calibFactor=-1., Float_t maxAxisNoise=0., Float_t maxAxisPed=0., Bool_t ifPixelHistory=kFALSE);
  void DisplayNoise( Int_t colMin, Int_t colMax, Int_t thePlaneNumber=-1, Float_t calibFactor=-1., Float_t maxAxisNoise=0., Float_t maxAxisPed=0., Bool_t ifPixelHistory=kFALSE);
  void SkipEvent( Int_t nEventsToSkip);
- void DisplaySpectrum(Int_t nEvents, Int_t minSN=3, Int_t minValue=0, Int_t maxValue=4096); //26/05/09 YV
+ void DisplaySpectrum(Int_t nEvents, Int_t minSN=3, Int_t minValue=0, Int_t maxValue=4096, Int_t colMin=0, Int_t colMax=0); //26/05/09 YV
  void DisplayCumulatedClusters(Int_t planeNumber, Int_t nEvents); //JB 2011/02/07
  void LaserStudy( Int_t Xpixel=125, Int_t Ypixel=125, Int_t nPixels=50, Int_t nEvents=1000, Int_t cycleLength=20, Int_t nSpots=10); //JB+MB 2011/02/25
  void VertexStudy( Int_t nEvents=1000, Double_t lineX=0., Double_t lineY=0., Double_t beamTilt=0.); //JB 2011/07/26

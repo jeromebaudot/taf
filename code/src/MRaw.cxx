@@ -6402,14 +6402,22 @@ void MRaw::SkipEvent( Int_t nEventsToSkip)
 
 //______________________________________________________________________________
 //
-void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t maxValue )
+void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t maxValue, Int_t colMin, Int_t colMax )
 {
   // Display the signal distribution of fired pixels
   // minSN could be used to select pixels, need to be uncommented in code
   // histogram range = minValue, maxValue
+  // colMin, colMax select colums in the given range
   //
   // 25/05/2009 YV
   // Modified JB 2015/05/25 to add timestamp histo
+  // Modified JB 2021/11/15 allow column range selection in arguments AND saving to file
+
+  Bool_t colRange = kFALSE;
+  if( colMin<colMax ) {
+    colRange = kTRUE;
+    cout << "==> Column range selected: [ " << colMin << ", " << colMax << " ]" << endl;
+  }
 
   fSession->SetEvents(nEvents);
 
@@ -6424,6 +6432,9 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
     tPlane = tTracker->GetPlane(iPlane);
     sprintf( name, "spectrum_pl%d", iPlane);
     sprintf( title, "Spectrum of plane %d", iPlane);
+    if( colRange ) {
+      sprintf( title, "%s - col range [%d-%d]", title, colMin, colMax);
+    }
     //spectrum[iPlane-1] = new TH1F(name, title, tPlane->GetStripsN(), 0, tPlane->GetStripsN()-1);
     spectrum[iPlane-1] = new TH1F(name, title, TMath::Min(maxValue-minValue,500), minValue, maxValue);
     spectrum[iPlane-1]->SetMarkerStyle(20);
@@ -6433,12 +6444,16 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
 
     sprintf( name, "time_pl%d", iPlane);
     sprintf( title, "Time within event of plane %d", iPlane);
+    if( colRange ) {
+      sprintf( title, "%s - col range [%d-%d]", title, colMin, colMax);
+    }
     time[iPlane-1] = new TH1F(name, title, 100, 0, 0);
     time[iPlane-1]->SetMarkerStyle(20);
     time[iPlane-1]->SetMarkerSize(.4);
     time[iPlane-1]->SetMarkerColor(1);
     time[iPlane-1]->SetStats(kTRUE);
-}
+  }
+
 
   //Loop over the requested number of events
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
@@ -6459,8 +6474,10 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
         for( Int_t iPix=0; iPix<(Int_t)aList->size(); iPix++) {
           //cout << "   pixels " << iPix << "  pulse = " << aList->at(iPix)->GetPulseHeight() << " time = " << aList->at(iPix)->GetTimestamp() << endl ;
           //if(aList->at(iPix)->GetPulseHeight()>=minSN){
-            //spectrum[iPlane-1]->SetBinContent( aList->at(iPix)->GetPixelIndex(), aList->at(iPix)->GetPulseHeight());
-            spectrum[iPlane-1]->Fill(aList->at(iPix)->GetPulseHeight());
+            //spectrum[iPlane-1]->SetBinConten t( aList->at(iPix)->GetPixelIndex(), aList->at(iPix)->GetPulseHeight());
+            if( !colRange || (colMin<=aList->at(iPix)->GetPixelColumn() && aList->at(iPix)->GetPixelColumn()<=colMax) ) {
+              spectrum[iPlane-1]->Fill(aList->at(iPix)->GetPulseHeight());
+            }
           //}
           time[iPlane-1]->Fill(aList->at(iPix)->GetTimestamp()); // JB 2015/05/25
         } //end loop on fired pixels
@@ -6524,6 +6541,25 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
     if( time[iPlane-1]->GetEntries() ) time[iPlane-1]->DrawCopy();
   }
   cdisplaytime->Update();
+
+  // Save canvas and histos
+  cout << "Save canvas and histos" << endl;
+  Char_t rootFile[300];
+  if( colRange ) {
+    sprintf(rootFile,"%sSpectrum_run%d_col%d-%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber(), colMin, colMax);
+  } else {
+    sprintf(rootFile,"%sSpectrum_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
+  }
+  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile));
+  cout << "\n-- Saving histos and canvas into " << rootFile << endl;
+  TFile fRoot(rootFile,"RECREATE");
+  cdisplayspectrum->Write();
+  cdisplaytime->Write();
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    spectrum[iPlane-1]->Write();
+    time[iPlane-1]->Write();
+  }
+  fRoot.Close();
 
 }
 
@@ -7278,7 +7314,7 @@ void MRaw::FakeRateBinaryFromRawData( Int_t nEvents, Int_t aPlaneNumber, Int_t m
   DTracker *tTracker  =  fSession->GetTracker();
   DPlane* tPlane = tTracker->GetPlane( aPlaneNumber);
 
-  // set the column and row ranges wrt to provided information
+  // set the column and row ranges wrt to provided ﬁrmation
   //  only if they make sense
   Int_t nPixelsU = tPlane->GetStripsNu();
   Int_t nPixelsV = tPlane->GetStripsNv();
