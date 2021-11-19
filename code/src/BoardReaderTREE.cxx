@@ -179,7 +179,7 @@ bool BoardReaderTREE::DecodeNextEvent() {
   		for(int xPix = 0 ; xPix < fNcolumns ; xPix++) {
   		  for(int yPix = 0 ; yPix < fNrows ; yPix++) {
           index = yPix*fNcolumns + xPix;
-          value = fRawFrame->at(iFrame-1).raw_amp[xPix][yPix]-fRawFrame->at(iFrame).raw_amp[xPix][yPix];
+          value = fRawFrame->at(iFrame).raw_amp[xPix][yPix]-fRawFrame->at(iFrame-1).raw_amp[xPix][yPix];
           if(fDebugLevel>2) cout << "    Filling frame: " << iFrame << " x: " << xPix << " y: " << yPix << " index: " << index << " value = " << fRawFrame->at(iFrame).raw_amp[xPix][yPix] << " - " << fRawFrame->at(iFrame).raw_amp[xPix][yPix] << " = " << value << endl;
           fListOfPixels.push_back( BoardReaderPixel( 0, value, index, iFrame) );
         }
@@ -194,7 +194,7 @@ bool BoardReaderTREE::DecodeNextEvent() {
     for(int xPix = 0 ; xPix < fNcolumns ; xPix++) {
       for(int yPix = 0 ; yPix < fNrows ; yPix++) {
         index = yPix*fNcolumns + xPix;
-        value = fRawFrame->at(0).raw_amp[xPix][yPix]-fRawFrame->at(fRawFrame->size()-1).raw_amp[xPix][yPix];
+        value = fRawFrame->at(fRawFrame->size()-1).raw_amp[xPix][yPix]-fRawFrame->at(0).raw_amp[xPix][yPix];
         if(fDebugLevel>2) cout << "    Filling frame: " << fRawFrame->size()-1 << " x: " << xPix << " y: " << yPix << " index: " << index << " value = " << fRawFrame->at(fRawFrame->size()-1).raw_amp[xPix][yPix] << " - " << fRawFrame->at(0).raw_amp[xPix][yPix] << " = " << value << endl;
         fListOfPixels.push_back( BoardReaderPixel( 0, value, index, fRawFrame->size()-1) );
       }

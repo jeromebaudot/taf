@@ -1148,7 +1148,7 @@ void MimosaAnalysis::InitMimosaType() {
     if(RunNumber==2110)  MimosaType=4;
     else if(RunNumber<1000) MimosaType = 99; // JB 2012/05/04 deal with RunNumber<1000 case
   }
-  
+
 }
 
 //______________________________________________________________________________
@@ -3408,7 +3408,6 @@ void MimosaAnalysis::ClusterPosition_init()
    // JB 2013/05/01
    DR3 aPosition( hU, hV, hW);
    if( align != NULL ) {
-     cout << "In TransformHitToTracker" << endl;
      hX = align->TransformHitToTracker(aPosition)(0);
      hY = align->TransformHitToTracker(aPosition)(1);
      hZ = align->TransformHitToTracker(aPosition)(2);

@@ -6,6 +6,7 @@
 // Last Modified: JB 2016/08/17 support of config directory parameter
 // Last Modified: JB 2020/05/01 support of data directory parameter
 // Last Modified: JB 2021/11/15 support of data file parameter
+// Last Modified: JB 2021/11/19 support of DSF file parameter
 
   /////////////////////////////////////////////////////////////
   //                                                         //
@@ -112,6 +113,10 @@ Int_t main(Int_t argc, Char_t **argv)
   TString sessinit_dataFile_cmd = "-datafile";
   TString sessinit_dataFile_arg = "";
   TString sessinit_dataFile_def = "";
+  // DSF file :
+  TString sessinit_DSFFile_cmd = "-dsffile";
+  TString sessinit_DSFFile_arg = "";
+  TString sessinit_DSFFile_def = "";
   // output files prefix :
   TString sessinit_outFilesPref_cmd = "-prefix";
   TString sessinit_outFilesPref_arg = "";
@@ -178,6 +183,7 @@ Int_t main(Int_t argc, Char_t **argv)
       // cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
       cout << "     ["<< sessinit_dataDirPath_cmd <<"] path to data, superseeds config file input"<< endl;
       cout << "     ["<< sessinit_dataFile_cmd <<"] data file name, superseeds config file input"<< endl;
+      cout << "     ["<< sessinit_DSFFile_cmd <<"] DSF file path/name, superseed default name like run_XXX_YY.root"<< endl;
 
       cout << "  * TAF GUIs :" << endl;
       cout << "     ["<<tafgui_cmd<<"] : launch the default (MRaw) GUI" << endl;
@@ -300,6 +306,13 @@ Int_t main(Int_t argc, Char_t **argv)
 	  {
 	    sessinit_dataFile_arg = argv[i+1];
 	    if(verbose) cout << "  * InitSession: a data filename is given: "<< sessinit_dataFile_arg << endl;
+	    i++;
+	  }
+    // DSF file
+	  else if (!arg.CompareTo(sessinit_DSFFile_cmd) && ((i+1)<argc)) // if this arg is followed by another
+	  {
+	    sessinit_DSFFile_arg = argv[i+1];
+	    if(verbose) cout << "  * InitSession: a DSF path/filename is given: "<< sessinit_DSFFile_arg << endl;
 	    i++;
 	  }
     // output files suffix
@@ -587,6 +600,17 @@ Int_t main(Int_t argc, Char_t **argv)
       if(verbose) cout << "  * data path taken from config file." << endl;
     }
     //------------------------------
+    // DSF Filename
+    //------------------------------
+    if (! sessinit_DSFFile_arg.IsNull()) // if "DSF file" arg is given
+    {
+      if(verbose) cout << "  * DSF path/filename     <given>:   " << sessinit_DSFFile_arg << endl;
+    }
+    else // if "DSF file" arg is NOT given
+    {
+      if(verbose) cout << "  * default DSF file used, runXXX_YY.root." << endl;
+    }
+    //------------------------------
     // InitSession
     //------------------------------
     /*
@@ -621,6 +645,13 @@ Int_t main(Int_t argc, Char_t **argv)
     sprintf(tafcommand, "gTAF->GetSession()->SetOutputFilesSuffix(\"%s\")",sessinit_outFilesSuff_arg.Data());
     if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
+
+    if (! sessinit_DSFFile_arg.IsNull()) // if "DSF file" arg is given
+    {
+      sprintf(tafcommand, "gTAF->SetDSFFile(\"%s\")",sessinit_DSFFile_arg.Data());
+      if(verbose) cout << " * Process command: "<< tafcommand << endl << endl;
+      rvalue = gROOT->ProcessLineSync(tafcommand);
+    }
 
     if(verbose) cout << " ***</Automatic Mimosa Analysis Session Initialisation>*** " <<endl;
 
