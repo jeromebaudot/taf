@@ -46,6 +46,9 @@ private:
   int             fTriggerMode;
   int             fTriggerOffset;
   int             fFramesPerTrigger;
+  int             fMergingFrameMode;
+  int             fFramesToMerge;
+  int             fNbMergedFrame;
   int             fEventBuildingMode;
   bool            fVetoOverflow;
   int             fEndianness;       // 0= do not swap bytes, 1= swap bytes
@@ -103,7 +106,8 @@ private:
 public:
 
     int test();
-    BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int triggeroffset=0, int framesPerTrigger = 1, int eventBuildingMode=0, int endianness=0);
+  //  BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int triggeroffset=0, int framesPerTrigger = 1, int mergingFrameMode = 0, int framesToMerge = 1, int eventBuildingMode=0, int endianness=0);
+    BoardReaderMIMOSIS(int boardNumber, char *dataPath, int runNumber, int nSensors=1, int triggerMode=0, int triggeroffset=0, int framesPerTrigger = 1, int framesToMerge = 1, int eventBuildingMode=0, int endianness=0);
   ~BoardReaderMIMOSIS();
 
   void  SetDebugLevel( int aLevel) { fDebugLevel = aLevel; cout << "BoardReaderMIMOSIS " << fBoardNumber << " debug updated to " << fDebugLevel << endl; }

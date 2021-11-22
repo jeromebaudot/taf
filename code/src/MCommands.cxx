@@ -343,13 +343,17 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
     //    cout<<"####### evt RealEventNumber, evt-ievt , ievt"<<CurrentEventHeader.GetEventNumber()<<" "
     //	<<CurrentEventHeader.GetEventNumber()-ievt <<" "<<ievt<<endl;
 
+    // Added by Ziad on 2021/11/9
+  //    cout << "Evt->GetFrameNb() : " << Evt->GetFrameNb() << endl;
+  //    cout << "CurrentEventHeader->GetNumberOfFrames() : " << CurrentEventHeader.GetNumberOfFrames() << endl;
     if(MimoDebug>1) cout << " getting the planes, tracks " << Evt->fT1PlanesN << " and hits" << endl;
     TClonesArray *Trpl   = Evt->GetTransparentPlanes() ; //tracks
     TClonesArray *Hits   = Evt->GetAuthenticHits()     ; //hits (all planes)
     TClonesArray *Planes = Evt->GetAuthenticPlanes()   ; //planes
     Int_t NbOfTrpl   = Trpl->GetLast()+1   ; // total # tracks over all planes
     Int_t NbOfHits   = Hits->GetLast()+1   ; // total # hits over all planes
-
+ 
+      
     // check to avoid crash due to empty event, added by JB, Sept 2008,
     // cut NbOfHits==0 removed since there may be no hit at all but the event should still be taken into account for efficiency, JB 2012/06/08
     if( NbOfTrpl==0 ) {
@@ -678,6 +682,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
         aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( aTrpl->Tpk != ThePlaneNumber ) continue; // select only tracks in DUT
+         // cout << "aTrpl->Tpk = " << aTrpl->Tpk << endl;
         TrackParameters_compute(aTrpl, alignement); // compute tu,tv
 
         if( TrackInMimo( GeoMatrixForTrackCut,tu,tv, ThesubmatrixNumber) /* && aTrpl->Tchi2 >= 0. && aTrpl->Tchi2 < TrackChi2Limit */) {
@@ -712,7 +717,7 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
 
         aTrpl = (DTransparentPlane*) Trpl->At(iTrk);
         if( aTrpl->Tpk != ThePlaneNumber ) continue; // select only tracks in DUT
-
+        //  cout << "Plane Number : " << ThePlaneNumber << endl;
         StatusEvent[3]++;
 
         // ****************** Filling histos
@@ -1055,6 +1060,10 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
             //---------------------------------------------------------------
             else { // end if no hit matching the track was found
               nmiss++;
+                cout << "Event for which a track is missed : " << ievt << endl;
+                cout << "Number of Planes  = " << Planes->GetLast()+1  << endl;
+                             
+               // cout  << " pos " << ahit->Hu << ";" << ahit->Hv << endl; //Generate Break and Segmentation Fault since there is no Hit
   /*
               cout << "Event for which a track is missed : " << ievt << endl;
 	      if(Ngoodtrackinevent == 1) {

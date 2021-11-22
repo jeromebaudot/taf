@@ -920,7 +920,8 @@ int BoardReaderMIMOSIS::test() {
      
 }
 //------------------------------------------+-----------------------------------
-BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int triggerOffset, int framesPerTrigger,  int eventBuildingMode, int endianness) {
+//BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int triggerOffset, int framesPerTrigger, int mergingFrameMode, int framesToMerge,  int eventBuildingMode, int endianness) {
+BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runNumber, int nSensors, int triggerMode, int triggerOffset, int framesPerTrigger, int framesToMerge, int eventBuildingMode, int endianness) {
   // Board creator
   // Load the rawdata file
   //
@@ -937,6 +938,8 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fRunNumber = runNumber;
   fNSensors = nSensors;
   fTriggerMode = triggerMode;
+  fFramesToMerge = framesToMerge;
+ // fMergingFrameMode = mergingFrameMode;
   fEventBuildingMode = eventBuildingMode;
   fEndianness = endianness;
   fTriggerOffset = 0;
@@ -947,6 +950,8 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
         fTriggerOffset = triggerOffset;
         fFramesPerTrigger = framesPerTrigger;
     }
+  //  if (fMergingFrameMode == 1) fFramesToMerge = framesToMerge;
+    
     
   fVetoOverflow = false; // set later by SetVetoPixel
   fisfirstAcq = true;
@@ -980,6 +985,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   cout << " * trigger mode: " << fTriggerMode << endl;
   cout << " * trigger offset : " << fTriggerOffset << endl;
   cout << " * frames per trigger : " << fFramesPerTrigger << endl;
+  cout << " * number of frames to Merge once hits found : " << fFramesToMerge << endl;
   cout << " * event building mode: " << fEventBuildingMode << endl;
   cout << " * Endiannes: " << fEndianness << " => " << (fEndianness==0?"NO SWAP":"SWAP") << endl;
   cout << " * usage of veto for event with overflow: " << fVetoOverflow << " => " << (fVetoOverflow?"YES":"NO") << endl;
@@ -993,6 +999,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fFramesCounterInTrigger = 0;
   fTriggerCount = 0;
   fFrameCount = 0;
+  fNbMergedFrame = 0;
   fNEventsWithOverflow = 0;
   
   fCurrentAcqNumber = -1;
@@ -1254,7 +1261,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
    MIS1__TBtAcqRawHead* VPtAcqHead; // Pointer to current Acq Header
    MIS1__TBtTrigRec* VGPtTrig; // Pointer to triggers of current Acquisition
 
-    
+
   // UInt32 VAcqW16ASz; // 26/05/2021 V1.1
                         // Size of AcqW16A record = Flex RIO data reoorganized
                         // Contains Acq data reordered in order to have one array of W16 for each MSis1
@@ -1305,7 +1312,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
              if(fDebugLevel>1)
                  printf (" BoardReaderMIMOSIS Changing to NextAcq % d since fCurrentFrameNumber = % d \n", fCurrentAcqNumber + 1, fCurrentFrameNumber);
              
-            VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 1 /* PrintAcqHead */, &VResReachEndOfRun );
+            VPtAcq = APP_VGPtRunRead->FAcqNext ( 0 /* ChkAcqHead */, 0 /* PrintAcqHead */, &VResReachEndOfRun );
                         
             if (! isAcqSafe()){
                 printf(" The Acquisition %d is risky due to different number of frames in sensors \n", fCurrentAcqNumber);
@@ -1413,8 +1420,10 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
            
         }
      
-    if (fTriggerMode == 0)
+    if (fTriggerMode == 0) {
+        fNbMergedFrame ++;
         DecodeFrame ();
+    }
     
     else {
         
@@ -1427,6 +1436,7 @@ bool BoardReaderMIMOSIS::DecodeNextEvent() {
         if (fDebugLevel > 1)
         VRet = MIS1__BT_FTrigRecPrint ( fnbTrg, VGPtTrig); // Function described in line file msis1_data.c, line 1531
      
+        fNbMergedFrame ++;
         DecodeFrame();
     }
     
@@ -1451,8 +1461,12 @@ void BoardReaderMIMOSIS::DecodeFrame() {
     // If fTriggerMode : 1, fFramesPerTrigger starting at fTriggerOffset from TriggerID are decoded.
       SInt32 VRet;
       
+      
       MIS1__TPixXY VPix;
       
+    fFrameCount ++;
+    
+    NbFiredPixPerFrame[fCurrentFrameNumber] = 0;
       if (fDebugLevel > 1)
        printf("Decoding Frame %d in Acquisition %d associated to trigger number %d from %d triggers\n", fCurrentFrameNumber, fCurrentAcqNumber, fCurrentTriggerNumber, fnbTrg);
        for ( int MSisId = 0; MSisId < fNSensors; MSisId++ ) {
@@ -1493,7 +1507,9 @@ void BoardReaderMIMOSIS::DecodeFrame() {
                            for ( int ViPix = 0; ViPix < APP_VGPtAcqDec->ResAAFrHead[MSisId][fCurrentFrameNumber].FiredPixNb; ViPix++ ) {
                    
                                VPix = APP_VGPtAcqDec->ResAAAFrPix[MSisId][fCurrentFrameNumber][ViPix];
-                  
+                              /* if ( (fCurrentAcqNumber == 11) && (fCurrentFrameNumber > 448) && (fCurrentFrameNumber < 452))
+                                   printf("AcqID = %d - frameID = %d - SensorID = %d - Pixel [%.4d] : Y = %.4d - X  = %.4d \n ", fCurrentAcqNumber, fCurrentFrameNumber, MSisId + 1, ViPix, VPix.C.y, VPix.C.x);
+                               */
                                if (fDebugLevel > 3) {
                                    printf(" Pixel [%.4d] : Y = %.4d - X  = %.4d - frameID = %d \n ", ViPix, VPix.C.y, VPix.C.x, fCurrentFrameNumber );
                                }
@@ -1501,8 +1517,9 @@ void BoardReaderMIMOSIS::DecodeFrame() {
                                AddPixel( MSisId, 1, VPix.C.y ,VPix.C.x );
                    
                            }// End of Loop over pixels in a sensor for the current frame
-            
+                            
                        } // End of if condition : FiredPixNb > 0
+           
            
            }// End of Loop over sensors
       
@@ -1517,6 +1534,13 @@ void BoardReaderMIMOSIS::DecodeFrame() {
             fFramesCounterInTrigger = 0;
         }
    }
+    
+    if ((fCurrentFrameNumber <fnbFrPerAcq) && (NbFiredPixPerFrame[fCurrentFrameNumber-1] > 0 ) && (fNbMergedFrame < fFramesToMerge) && isAcqSafe()) {
+        DecodeFrame();
+        fNbMergedFrame ++;
+    }
+    else fNbMergedFrame = 0;
+     
 }
     
     
@@ -1576,17 +1600,18 @@ bool BoardReaderMIMOSIS::isAcqSafe() {
     for (int MSisId = 0; MSisId < fNSensors; MSisId ++){
         VRet = MIS1__BT_FBtDecodeFr ( APP_VGPtAcqW16A, APP_VGPtAcqDec, MSisId, -1, 0 /* MeasExecTime */, 0 /* PrintLvl */ );
         if (MSisId > 0){
-           /* if (APP_VGPtAcqDec->ResAFrNb[MSisId] != APP_VGPtAcqDec->ResAFrNb[MSisId-1]) // ZE, 2021/10/12 Acqusition is safety when all the sensors have the same number of frames
+            if (APP_VGPtAcqDec->ResAFrNb[MSisId] != APP_VGPtAcqDec->ResAFrNb[MSisId-1]) // ZE, 2021/10/12 Acqusition is safety when all the sensors have the same number of frames
             {
-                printf(" Acquisition %d is risky due to different number of frames in sensors \n", fCurrentAcqNumber);
+               // printf(" Acquisition %d is risky due to different number of frames in sensors \n", fCurrentAcqNumber);
                 fisAcqSafe = false;
             }
-            */
+            /*
             if ((APP_VGPtAcqDec->ResAAFrHead[MSisId][0].MSisFrHead.F.FC0 != FrIdInDs))
                 {
                // printf(" Acquisition %d is risky due to shifted frames \n", fCurrentAcqNumber);
                   fisAcqSafe = false;
                 }
+             */
             }
         } // End of loop over sensors
     } // End of test over EventBuilding Mode

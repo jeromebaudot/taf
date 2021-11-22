@@ -51,6 +51,7 @@
 // Last Modified: JB 2017/11/20 ReadDAQBoardParameters for zero suppression option
 // Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
 // Last Modified: JB 2021/05/01 Handle source path as datapath
+// Last Modified: ZE 2021/11/09 Add Merging Frame Mode and Number of Frames to Merge
 
 ///////////////////////////////////////////////////////////////
 // Class Description of DSetup                               //
@@ -542,6 +543,8 @@
 // TriggerMode        = [MANDATORY] (int) method to deal with trigger info
 // TriggerOffset      = [MANDATORY] (int) number of frames after the trigger where to start decoding. If (0) then start reading from the trigger
 // FramesPerTrigger   = [MANDATORY] (int) number of frames to be considered for decoding per trigger
+// MergingFrameMode   = [MANDATORY] (in) method to deal with MergingFrameMode (Activate : 1, Desactivate : 0)
+// FramesToMerge      = [MANDATORY] (int) number of frames to Merge
 
 // #############################################################################
 //                      Parameter for Final Analysis
@@ -2268,6 +2271,8 @@ void DSetup::ReadDAQParameters()
   AcqParameter.TriggerMode       =  0;
   AcqParameter.TriggerOffset     =  0;
   AcqParameter.FramesPerTrigger  =  0;
+  AcqParameter.MergingFrameMode  =  0;
+  AcqParameter.FramesToMerge     =  0;
   AcqParameter.EventBuildingMode =  1; //SS 2011.11.14. Setting EventBuildingMode=1 by default. It can be changed during initialisation of the session or from the config file
   sprintf(AcqParameter.TimeRefFile, ""); // JB 2018/02/11
   AcqParameter.IfExternalTimeRef = 0;
@@ -2303,6 +2308,12 @@ void DSetup::ReadDAQParameters()
     else if( ! strcmp( fFieldName, "FramesPerTrigger" ) ) {
         read_item(AcqParameter.FramesPerTrigger);
       }
+   else if( ! strcmp( fFieldName, "MergingFrameMode" ) ) {
+             read_item(AcqParameter.MergingFrameMode);
+           }
+  else if( ! strcmp( fFieldName, "FramesToMerge" ) ) {
+        read_item(AcqParameter.FramesToMerge);
+      }
    else if( ! strcmp( fFieldName, "EventBuildingMode" ) ) {
       read_item(AcqParameter.EventBuildingMode);
     }
@@ -2333,6 +2344,8 @@ void DSetup::ReadDAQParameters()
     cout << "   trigger mode " << AcqParameter.TriggerMode << endl;
     cout << "   trigger offset " << AcqParameter.TriggerOffset << endl;
     cout << "   decoded frames per trigger " << AcqParameter.FramesPerTrigger << endl;
+    cout << "   Merging Frame mode " << AcqParameter.MergingFrameMode << endl;
+    cout << "   Frames to Merge " << AcqParameter.FramesToMerge << endl;
     cout << "   event building mode " << AcqParameter.EventBuildingMode << endl;
     if( AcqParameter.IfExternalTimeRef ) cout << "   file for external time ref " << AcqParameter.TimeRefFile << endl;
   }

@@ -41,6 +41,7 @@
 // Last Modified: JB 2018/02/11 InitTimeRefInfo -> updated 2018/03/21
 // Last Modified: JB 2020/02/17 Introduction of vetoPixdl for VMEBoardreader
 // Last Modofies: JB 2021/05/01 Adding BoardReaderMIMOSIS
+// Last Modified: ZE 2021/11/22 AddingMergingFrameMode
 
 //*-- Modified :  IG
 //*-- Copyright:  RD42
@@ -486,6 +487,8 @@ DAcq::DAcq(DSetup& c)
         fc->GetAcqPar().TriggerMode,
         fc->GetAcqPar().TriggerOffset,
         fc->GetAcqPar().FramesPerTrigger,
+      //  fc->GetAcqPar().MergingFrameMode,
+        fc->GetAcqPar().FramesToMerge, //Added by ZE on 2021/11/22 
         fc->GetModulePar(mdt).EventBuildingBoardMode,
         fc->GetAcqPar().BinaryCoding);
         fMSIS[iModule]->SetDebugLevel( fDebugAcq);

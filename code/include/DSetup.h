@@ -396,6 +396,8 @@ class DSetup : public TObject {
     Int_t      TriggerMode;          // Expect a Trigger (1) or not (0) to separate event, JB 2010/08/23
     Int_t      TriggerOffset;        // Offset in number of frames from trigger id, ZE 2021/06/14
     Int_t      FramesPerTrigger;     // Number of frames to be considered starting from Trigger Offset
+    Int_t      MergingFrameMode;     // Activated = 1; Desactivated = 0
+    Int_t      FramesToMerge;        // Number of Frames to Merge per Event
     Int_t      EventBuildingMode;    // SS 2011.11.14
     Char_t     TimeRefFile[100];     // JB 2018/02/11
     Int_t      IfExternalTimeRef;
