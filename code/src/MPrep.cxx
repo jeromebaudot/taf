@@ -15,6 +15,7 @@
 // Last modified: VR 2014/08/15 add OutputFilesPrefix and OutputFilesSuffix
 // Last modified: AP 2015/06/08 added bool parameter (UseAllHits) to AlignTrackerMinuit to decide if doing alignment with all hits or the closest one
 // Last modified: BB 2015/07/28 Add StudyDeformation to parametrize deviation of the track-hit residual
+// Last modified: JB 2021/11/15 added list of sensors with known MimosaType: ListSensor() 
 //
   /////////////////////////////////////////////////////////////
   //                                                         //
@@ -955,7 +956,9 @@ void MimosaAnalysis::ListSensor()
   cout << "35 - FSBB, run35807.cfg" << endl;
   cout << "36 - MIMOSIS series, mimosis405.cfg" << endl;
   cout << "61 - Monolithic Imager, mi-test.cfg" << endl;
-  cout << "65, 651 - CE-65 , ce65d.cfg, ce65abc.cfg" << endl;
+  cout << "651, 652 - CE-65 , ce65abc.cfg, ce65d.cfg" << endl;
+  cout << "------------------------------------" << endl;
+  cout << "-- To update this list, edit code/Src/MPrep.cxx::ListSensor()" << endl;
   cout << "------------------------------------" << endl;
 
 }

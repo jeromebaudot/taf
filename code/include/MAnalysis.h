@@ -597,7 +597,7 @@ class MimosaAnalysis : public MHist {
   //====================
   MimosaAnalysis();
   virtual  ~MimosaAnalysis() {;}
-  Bool_t CheckIfDone(const Option_t* Option);
+  Bool_t CheckIfDone(const Option_t* Option, Bool_t noWarning=kFALSE);
 
   static  MimosaAnalysis*& Instance() {
     if (!fgInstance)
@@ -867,8 +867,8 @@ class MimosaAnalysis : public MHist {
   void       MimosaPixelHomogeneity();
   void       MimosaOptimize();
   void       FakeRate();
-  void       Calibration(); // JB 2010/07/27
-  TPad*      PlotCalibration(TH1F* h, Int_t manualFitRange=0);
+  void       Calibration(Int_t fitFunction=0); // JB 2010/07/27
+  void       PlotCalibration(TH1F* h, Int_t fitFunction=0, Int_t manualFitRange=0);
   void       MiniVectors(); // Jb 2010/08/21
   void       UserAnalysis();
   void       SaveGifFile();

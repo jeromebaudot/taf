@@ -2036,7 +2036,7 @@ Int_t MimosaAnalysis::GetFileNumber()
 
 //_____________________________________________________________________________
 //
-Bool_t MimosaAnalysis::CheckIfDone(const Option_t* Option)
+Bool_t MimosaAnalysis::CheckIfDone(const Option_t* Option, Bool_t noWarning)
 {
 
   // Checks if the requiered methods have been called before processing
@@ -2051,52 +2051,52 @@ Bool_t MimosaAnalysis::CheckIfDone(const Option_t* Option)
 
  if(opts.Contains("clear"))
     { if (!fClearDone)
-	{ Warning("CheckIfDone()","Please run Clear() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run Clear() First");aReturnCode = kFALSE;};
     }
 
  if(opts.Contains("init"))
     { if (!fInitDone)
-	{ Warning("CheckIfDone()","Please run InitSession() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run InitSession() First");aReturnCode = kFALSE;};
     }
 
  if(opts.Contains("mimosall")) // JB 2010/09/10
     { if (!fMimosaDone)
-	{ Warning("CheckIfDone()","Please run an anlysis method MimosaXXX() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run an anlysis method MimosaXXX() First");aReturnCode = kFALSE;};
     }
 
  if(opts.Contains("mimosapro"))
     { if (!fMimosaProDone)
-	{ Warning("CheckIfDone()","Please run MimosaPro() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run MimosaPro() First");aReturnCode = kFALSE;};
     }
 
  if(opts.Contains("mimosafakerate")) // JB 2010/07/26
     { if (!fMimosaFakerateDone)
-	{ Warning("CheckIfDone()","Please run MimosaFakerate() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run MimosaFakerate() First");aReturnCode = kFALSE;};
     }
 
  if(opts.Contains("mimosacalibration")) // JB 2010/07/27
     { if (!fMimosaCalibrationDone)
-	{ Warning("CheckIfDone()","Please run MimosaCalibration() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run MimosaCalibration() First");aReturnCode = kFALSE;};
     }
 
   if(opts.Contains("mimosaminivectors")) // JB 2010/08/30
   { if (!fMimosaMiniVectorsDone)
-	{ Warning("CheckIfDone()","Please run MimosaMiniVectors() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run MimosaMiniVectors() First");aReturnCode = kFALSE;};
   }
 
   if(opts.Contains("mimosapro2planes")) // JB 2013/05/01
   { if (!fMimosaPro2PlanesDone)
-	{ Warning("CheckIfDone()","Please run MimosaPro2Planes() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run MimosaPro2Planes() First");aReturnCode = kFALSE;};
   }
 
   if(opts.Contains("mimosaimaging")) // JB 2013/05/01
   { if (!fMimosaImagingDone)
-	{ Warning("CheckIfDone()","Please run MimosaImaging() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run MimosaImaging() First");aReturnCode = kFALSE;};
   }
 
   if(opts.Contains("MCGeneration")) // AP 2015/04/02
   { if (!fIfMCGeneration)
-	{ Warning("CheckIfDone()","Please run MimosaGeneration() First");aReturnCode = kFALSE;};
+	{ if(!noWarning) Warning("CheckIfDone()","Please run MimosaGeneration() First");aReturnCode = kFALSE;};
   }
 
  return aReturnCode;

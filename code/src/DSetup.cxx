@@ -263,7 +263,7 @@
 //                   1 -> strips,
 //                   2 -> pixels with analog output,
 //                   3 -> pixels with binary output.
-// MimosaType      = [optional] (int) {0} not clear (sorry!)
+// MimosaType      = [optional] (int) {0} do gTAF->ListSensor() for help
 // FixedGlobalAlign= [optional] (int) {0} to fix the plan for global alignment procedure
 // InitialPedestal = [obsolete] (int) superseded by InitialNoise
 //                   # events to analyze before the first computation

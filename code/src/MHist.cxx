@@ -94,7 +94,7 @@ TH1F* MHist::AutoZoom(TH1F* H,Option_t* aType, Int_t EntryMin/*=0*/)
     for (New_max=max;New_max>=min;New_max--)
     {Stat_t c = H->GetBinContent(New_max);  if (c>EntryMin) break;}
 
-    Stat_t  EntryMax=H->GetEntries()-H->GetEntries()/30; // previously /100
+    Stat_t  EntryMax=H->GetEntries()-H->GetEntries()/5; // previously /100
 
     Stat_t t = 0;
     for  (New_min=min; New_min<=New_max;New_min++)
@@ -809,7 +809,7 @@ void  MHist::BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t Pixe
     hqNeighbourCalibration = new TH1F( "hqNeighbourCalibration", "Neighbour pixels charge sum for calibration", ChargeNbins,-100.0,ChargeRange);
     hqNeighbourCalibration->SetXTitle("ADC counts");
 
-    hqSeedVsNeighbourCalibration = new TH2F( "hqSeedVsNeighbourCalibration", "Neibourgs charge sum vs Seed pixel charge for calibration",ChargeNbins,-100.0,ChargeRange, ChargeNbins,-100.0,ChargeRange);
+    hqSeedVsNeighbourCalibration = new TH2F( "hqSeedVsNeighbourCalibration", "Neibourgs charge sum vs Seed pixel charge for calibration",ChargeNbins,-100.0,ChargeRange, ChargeNbins*1.5,-ChargeRange/2,ChargeRange);
     hqSeedVsNeighbourCalibration->SetXTitle("Seed charge(ADC)");
     hqSeedVsNeighbourCalibration->SetYTitle("Neighbours charge sum (ADC)");
 

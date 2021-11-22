@@ -110,7 +110,7 @@ void   MimosaAnalysis::PreparePost()
 
      // Menu when calibration
      else if( fMimosaCalibrationDone ) {
-       bar2->AddButton("Calibration","gTAF->Calibration()","Fit the calibration peak.");
+       bar2->AddButton("Calibration","gTAF->Calibration(1)","Fit the calibration peak.");
      }
 
      // Menu when minivectors
@@ -123,7 +123,7 @@ void   MimosaAnalysis::PreparePost()
 
      bar2->AddButton("User's analysis","gTAF->UserAnalysis()","Perform user's analysis");
      bar2->AddButton("SAVE GIF/EPS files","gTAF->SaveGifFile()","Save in GIF and EPS files, in Results/#/ directory");
-     bar2->AddButton("Clear / Close","gTAF->Clear()","Clear everything to start over");
+     bar2->AddButton("Clear / Close","gTAF->Clear(\"\")","Clear everything to start over");
      bar2->Show();
 
    }
@@ -727,6 +727,8 @@ void MimosaAnalysis::CheckClusters()
   //TString EPSName_test  = TString(CreateGlobalResultDir()) + TString(tmpFile) + TString("_v2.pdf");
   //TString EPSName_final = TString(CreateGlobalResultDir()) + TString(tmpFile) + TString(".pdf");
 
+  if(MimoDebug) cout<<"CheckCluster started in directory "<<gSystem->pwd()<<endl;
+
   UsedMacro[6] = 1;
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
@@ -736,6 +738,7 @@ void MimosaAnalysis::CheckClusters()
   //--------------------------------
   //  Cluster properties 1
   //--------------------------------
+  if(MimoDebug) cout<<"  Now displaying cluster properties 1" << endl;
 
   c4 = new TCanvas("cclusterproperties","Cluster properties 1",100,10,700,900);
   c4->Draw();
@@ -881,6 +884,7 @@ void MimosaAnalysis::CheckClusters()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     c4->Print(EPSNameO.Data());
     c4->Print(EPSName.Data());
@@ -896,6 +900,7 @@ void MimosaAnalysis::CheckClusters()
   //--------------------------------
   //  Cluster properties 2
   //--------------------------------
+  if(MimoDebug) cout<<"  Now displaying cluster properties 2" << endl;
 
   cClusterProperties2 = new TCanvas("cclusterproperties2","Cluster properties 2",100,15,700,900);
   cClusterProperties2->Draw();
@@ -952,6 +957,7 @@ void MimosaAnalysis::CheckClusters()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     cClusterProperties2->Print(EPSNameO.Data());
     cClusterProperties2->Print(EPSName.Data());
@@ -967,6 +973,7 @@ void MimosaAnalysis::CheckClusters()
   //--------------------------------
   //  Cluster properties 3
   //--------------------------------
+  if(MimoDebug) cout<<"  Now displaying cluster properties 3" << endl;
 
   cClusterProperties3 = new TCanvas("cClusterProperties3","Cluster properties 3",100,15,700,900);
   cClusterProperties3->Draw();
@@ -1004,18 +1011,22 @@ void MimosaAnalysis::CheckClusters()
   mpad4_histo->cd(5);
   AutoZoom(hChargeInCrown2)->Draw();
   //-----------
-  mpad4_histo->cd(6);
-  //AutoZoom(hSeedBetweenDist)->Draw();
-  hMinDistance_vs_2ndDistance->Draw("colz");
+  if( CheckIfDone("mimosapro", kFALSE) ) { // if tracks
+    mpad4_histo->cd(6);
+    //AutoZoom(hSeedBetweenDist)->Draw();
+    hMinDistance_vs_2ndDistance->Draw("colz");
+  }
   //-----------
   mpad4_histo->cd(7);
   hdCGDigUV->Draw("colz");
   //-----------
-  mpad4_histo->cd(8);
-  AutoZoom(hTrackTo2ndclosestClusterDistance)->Draw();
-  //-----------
-  mpad4_histo->cd(9);
-  AutoZoom(hWrongAssociationProba)->Draw();
+  if( CheckIfDone("mimosapro", kFALSE) ) { // if tracks
+    mpad4_histo->cd(8);
+    AutoZoom(hTrackTo2ndclosestClusterDistance)->Draw();
+    //-----------
+    mpad4_histo->cd(9);
+    AutoZoom(hWrongAssociationProba)->Draw();
+  }
 
   cClusterProperties3->Update();
 
@@ -1024,6 +1035,7 @@ void MimosaAnalysis::CheckClusters()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     cClusterProperties3->Print(EPSNameO.Data());
     cClusterProperties3->Print(EPSName.Data());
@@ -1041,94 +1053,101 @@ void MimosaAnalysis::CheckClusters()
   //  Cluster properties 4
   //--------------------------------
 
-  cClusterProperties4 = new TCanvas("cClusterProperties4","Cluster properties 3",100,15,700,900);
-  cClusterProperties4->Draw();
-  cClusterProperties4->Clear();
-  cClusterProperties4->SetBorderMode(0);
-  cClusterProperties4->cd();
+  if( CheckIfDone("mimosapro", kFALSE) ) { // if tracks
 
-  TPad* mpad5_title = new TPad("mpad5_title","",0.10,0.91,0.85,0.99);
-  mpad5_title->SetGrid(1);
-  mpad5_title->SetFillColor(19);
-  mpad5_title->Draw();
-  mpad5_title->cd();
-  ttt2->DrawText( 0.05,0.6,Header2);
+    if(MimoDebug) cout<<"  Now displaying cluster properties 4" << endl;
 
-  cClusterProperties4->cd();
-  TPad* mpad5_histo = new TPad("mpad5_histo","",0.01,0.01,0.99,0.90);
-  mpad5_histo->SetGrid(1);
-  mpad5_histo->Draw();
-  mpad5_histo->cd();
-  mpad5_histo->Divide(2,2);
+    cClusterProperties4 = new TCanvas("cClusterProperties4","Cluster properties 3",100,15,700,900);
+    cClusterProperties4->Draw();
+    cClusterProperties4->Clear();
+    cClusterProperties4->SetBorderMode(0);
+    cClusterProperties4->cd();
 
-  mpad5_histo->cd(1);
-  mpad5_histo->cd(1)->SetTickx(1);
-  mpad5_histo->cd(1)->SetTicky(1);
-  hDuplicate_2DMult->Draw("colz");
-  mpad5_histo->cd(2);
-  mpad5_histo->cd(2)->SetTickx(1);
-  mpad5_histo->cd(2)->SetTicky(1);
-  hDuplicate_DeltaTS->Draw();
-  mpad5_histo->cd(3);
-  mpad5_histo->cd(3)->SetTickx(1);
-  mpad5_histo->cd(3)->SetTicky(1);
-  //hDuplicate_npixc->Scale(100.0/hnpix_c->GetEntries());
-  //AutoZoom(hDuplicate_npixc)->Draw();
-  for(int imult=0;imult<hnpix_c->GetXaxis()->GetNbins();imult++) {
-    double Num = hDuplicate_npixc->GetBinContent(imult+1);
-    double Den = hnpix_c->GetBinContent(imult+1);
-    double Prob[2];
-    if(Den > 0.0) {
-      Prob[0] = Num/Den;
-      Prob[1] = sqrt(Prob[0]*(1.0 - Prob[0])/Den);
-    }
-    else {
-      Prob[0] = 0.0;
-      Prob[1] = 1.0e-10;
-    }
-    Prob[0] *= 100.0;
-    Prob[1] *= 100.0;
-    hDuplicate_npixc->SetBinContent(imult+1,Prob[0]);
-    hDuplicate_npixc->SetBinError(imult+1,Prob[1]);
-  }
-  hDuplicate_npixc->SetStats(false);
-  hDuplicate_npixc->Draw();
-  mpad5_histo->cd(4);
-  mpad5_histo->cd(4)->SetTickx(1);
-  mpad5_histo->cd(4)->SetTicky(1);
-  //hDuplicate_npixc_vs_TrkDistToDiode->Scale(100.0/hnpix_c->GetEntries());
-  for(int imult=0;imult<hnpixc_vs_TrkDistToDiode->GetXaxis()->GetNbins();imult++) {
-    for(int itrkD=0;itrkD<hnpixc_vs_TrkDistToDiode->GetYaxis()->GetNbins();itrkD++) {
-      double Num = hDuplicate_npixc_vs_TrkDistToDiode->GetBinContent(imult+1,itrkD+1);
-      double Den = hnpixc_vs_TrkDistToDiode->GetBinContent(imult+1,itrkD+1);
-      double Prob = 0.0;
+    TPad* mpad5_title = new TPad("mpad5_title","",0.10,0.91,0.85,0.99);
+    mpad5_title->SetGrid(1);
+    mpad5_title->SetFillColor(19);
+    mpad5_title->Draw();
+    mpad5_title->cd();
+    ttt2->DrawText( 0.05,0.6,Header2);
+
+    cClusterProperties4->cd();
+    TPad* mpad5_histo = new TPad("mpad5_histo","",0.01,0.01,0.99,0.90);
+    mpad5_histo->SetGrid(1);
+    mpad5_histo->Draw();
+    mpad5_histo->cd();
+    mpad5_histo->Divide(2,2);
+
+    mpad5_histo->cd(1);
+    mpad5_histo->cd(1)->SetTickx(1);
+    mpad5_histo->cd(1)->SetTicky(1);
+    hDuplicate_2DMult->Draw("colz");
+    mpad5_histo->cd(2);
+    mpad5_histo->cd(2)->SetTickx(1);
+    mpad5_histo->cd(2)->SetTicky(1);
+    hDuplicate_DeltaTS->Draw();
+    mpad5_histo->cd(3);
+    mpad5_histo->cd(3)->SetTickx(1);
+    mpad5_histo->cd(3)->SetTicky(1);
+    //hDuplicate_npixc->Scale(100.0/hnpix_c->GetEntries());
+    //AutoZoom(hDuplicate_npixc)->Draw();
+    for(int imult=0;imult<hnpix_c->GetXaxis()->GetNbins();imult++) {
+      double Num = hDuplicate_npixc->GetBinContent(imult+1);
+      double Den = hnpix_c->GetBinContent(imult+1);
+      double Prob[2];
       if(Den > 0.0) {
-	Prob = Num/Den;
+        Prob[0] = Num/Den;
+        Prob[1] = sqrt(Prob[0]*(1.0 - Prob[0])/Den);
       }
-      Prob *= 100.0;
-      hDuplicate_npixc_vs_TrkDistToDiode->SetBinContent(imult+1,itrkD+1,Prob);
+      else {
+        Prob[0] = 0.0;
+        Prob[1] = 1.0e-10;
+      }
+      Prob[0] *= 100.0;
+      Prob[1] *= 100.0;
+      hDuplicate_npixc->SetBinContent(imult+1,Prob[0]);
+      hDuplicate_npixc->SetBinError(imult+1,Prob[1]);
     }
-  }
-  hDuplicate_npixc_vs_TrkDistToDiode->SetStats(false);
-  hDuplicate_npixc_vs_TrkDistToDiode->Draw("colz");
-  cClusterProperties4->Update();
+    hDuplicate_npixc->SetStats(false);
+    hDuplicate_npixc->Draw();
+    mpad5_histo->cd(4);
+    mpad5_histo->cd(4)->SetTickx(1);
+    mpad5_histo->cd(4)->SetTicky(1);
+    //hDuplicate_npixc_vs_TrkDistToDiode->Scale(100.0/hnpix_c->GetEntries());
+    for(int imult=0;imult<hnpixc_vs_TrkDistToDiode->GetXaxis()->GetNbins();imult++) {
+      for(int itrkD=0;itrkD<hnpixc_vs_TrkDistToDiode->GetYaxis()->GetNbins();itrkD++) {
+        double Num = hDuplicate_npixc_vs_TrkDistToDiode->GetBinContent(imult+1,itrkD+1);
+        double Den = hnpixc_vs_TrkDistToDiode->GetBinContent(imult+1,itrkD+1);
+        double Prob = 0.0;
+        if(Den > 0.0) {
+  	Prob = Num/Den;
+        }
+        Prob *= 100.0;
+        hDuplicate_npixc_vs_TrkDistToDiode->SetBinContent(imult+1,itrkD+1,Prob);
+      }
+    }
+    hDuplicate_npixc_vs_TrkDistToDiode->SetStats(false);
+    hDuplicate_npixc_vs_TrkDistToDiode->Draw("colz");
+    cClusterProperties4->Update();
 
-  if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
-    NPages++;
-    TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
-    TString EPSNameO = EPSName + TString("[");
-    TString EPSNameC = EPSName + TString("]");
+    if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
+      NPages++;
+      TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
+      TString EPSNameO = EPSName + TString("[");
+      TString EPSNameC = EPSName + TString("]");
+      if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
-    cClusterProperties4->Print(EPSNameO.Data());
-    cClusterProperties4->Print(EPSName.Data());
-    cClusterProperties4->Print(EPSNameC.Data());
-    //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
-    //gSystem->Exec(command.Data());
-    //command = TString("mv ") + EPSName_test + TString("  ") + EPSName_final;
-    //gSystem->Exec(command.Data());
-    //command = TString("rm -rf ") + EPSName;
-    //gSystem->Exec(command.Data());
-  }
+      cClusterProperties4->Print(EPSNameO.Data());
+      cClusterProperties4->Print(EPSName.Data());
+      cClusterProperties4->Print(EPSNameC.Data());
+      //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
+      //gSystem->Exec(command.Data());
+      //command = TString("mv ") + EPSName_test + TString("  ") + EPSName_final;
+      //gSystem->Exec(command.Data());
+      //command = TString("rm -rf ") + EPSName;
+      //gSystem->Exec(command.Data());
+    }
+
+  } // end if tracks
 
   //--------------------------------
   //--------------WRITE IN A ROOT FILE:
@@ -1165,20 +1184,25 @@ void MimosaAnalysis::CheckClusters()
   hnpix->Write();
   hnpix_c->Write();
   hnpix_nc->Write();
-
   hdCGDigUV->Write();
-  hTrackTo2ndclosestClusterDistance->Write();
-
-  hDuplicate_2DMult->Write();
-  hDuplicate_DeltaTS->Write();
-  hDuplicate_npixc->Write();
-  hDuplicate_npixc_vs_TrkDistToDiode->Write();
 
   //canvas:
   c4->Write();
   cClusterProperties2->Write();
   cClusterProperties3->Write();
-  cClusterProperties4->Write();
+
+  if( CheckIfDone("mimosapro", kFALSE) ) { // if tracks
+    hMinDistance_vs_2ndDistance->Write();
+    hTrackTo2ndclosestClusterDistance->Write();
+    hWrongAssociationProba->Write();
+
+    hDuplicate_2DMult->Write();
+    hDuplicate_DeltaTS->Write();
+    hDuplicate_npixc->Write();
+    hDuplicate_npixc_vs_TrkDistToDiode->Write();
+
+    cClusterProperties4->Write();
+  }
 
   ResultRootFile->Write();
   ResultRootFile->Close();
@@ -7254,6 +7278,7 @@ void MimosaAnalysis::HitMap()
   //
   // JB 2010/10/06
   // Modified: JB 2013/05/01 hit map in tracker frame added
+  // Modified: JB 2021/11/19 protected agains case when tracking was not done
 
   if(!CheckIfDone("mimosa")) return;
 
@@ -7271,6 +7296,8 @@ void MimosaAnalysis::HitMap()
   //TString EPSNameC = EPSName + TString("]");
   //TString EPSName_test  = TString(CreateGlobalResultDir()) + TString(tmpFile) + TString("_v2.pdf");
   //TString EPSName_final = TString(CreateGlobalResultDir()) + TString(tmpFile) + TString(".pdf");
+
+  if(MimoDebug) cout<<"HitMap started in directory "<<gSystem->pwd()<<endl;
 
   gROOT->SetStyle("Plain");
   gStyle->SetOptFit(11111);
@@ -7308,6 +7335,8 @@ void MimosaAnalysis::HitMap()
   gStyle->SetOptStat(111111);
   mpad1->Divide(3,2);
 
+  if(MimoDebug) cout<<"  Now displaying hit map" << endl;
+
   mpad1->cd(1);
   AutoZoom(huv)->Draw("colz");
   mpad1->cd(2);
@@ -7329,6 +7358,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     cHitMap->Print(EPSNameO.Data());
     cHitMap->Print(EPSName.Data());
@@ -7354,6 +7384,7 @@ void MimosaAnalysis::HitMap()
   cHitMap2->SetLeftMargin(0.15);
   cHitMap2->SetBottomMargin(0.15);
   cHitMap2->SetRightMargin(0.15);
+  if(MimoDebug) cout<<"  Now displaying 2nd hit map" << endl;
   huv_rate->Draw("colz");
   cHitMap2->Update();
 
@@ -7362,6 +7393,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     cHitMap2->Print(EPSNameO.Data());
     cHitMap2->Print(EPSName.Data());
@@ -7376,6 +7408,7 @@ void MimosaAnalysis::HitMap()
 
   //------------
   //--- Hit map 2
+  if(MimoDebug) cout<<"  Now displaying fired pixels per event" << endl;
   cPixEvent = new TCanvas("cPixEvent","Fired pixels per event",550,10,750,850);
   cPixEvent->Draw();
   cPixEvent->Clear();
@@ -7394,6 +7427,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     cPixEvent->Print(EPSNameO.Data());
     cPixEvent->Print(EPSName.Data());
@@ -7408,6 +7442,8 @@ void MimosaAnalysis::HitMap()
 
   //------------
   //---details pads:
+
+  if(MimoDebug) cout<<"  Now displaying position study 1" << endl;
 
   sprintf( nom, "positionStudy1_P%dS%d", ThePlaneNumber, ThesubmatrixNumber);
   sprintf( titre, "Study 1 of position calculation Pl %d Sub %d", ThePlaneNumber, ThesubmatrixNumber);
@@ -7442,6 +7478,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     cPosStudy1->Print(EPSNameO.Data());
     cPosStudy1->Print(EPSName.Data());
@@ -7453,6 +7490,8 @@ void MimosaAnalysis::HitMap()
     //command = TString("rm -rf ") + EPSName;
     //gSystem->Exec(command.Data());
   }
+
+  if(MimoDebug) cout<<"  Now displaying position study 2" << endl;
 
   sprintf( nom, "positionStudy2_P%dS%d", ThePlaneNumber, ThesubmatrixNumber);
   sprintf( titre, "Study 2 of position calculation Pl %d Sub %d", ThePlaneNumber, ThesubmatrixNumber);
@@ -7480,6 +7519,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
+    if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
 
     cPosStudy2->Print(EPSNameO.Data());
     cPosStudy2->Print(EPSName.Data());
@@ -7492,247 +7532,258 @@ void MimosaAnalysis::HitMap()
     //gSystem->Exec(command.Data());
   }
 
-  int NPadsX = 3;
-  int NPadsY = 3;
-  TLine* lh_TrackhitPos_vs_Mult = new TLine(huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmax()*0.5,huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmin(),
-					    huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmax()*0.5,huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmax());
-  lh_TrackhitPos_vs_Mult->SetLineColor(2);
-  lh_TrackhitPos_vs_Mult->SetLineWidth(3);
-  lh_TrackhitPos_vs_Mult->SetLineStyle(2);
-  double rell_u = (huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmax() - huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmin())*0.03;
-  double rell_v = (huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmax() - huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmin())*0.03;
-  Diodes = new TEllipse*[4];
-  int col,lin;
-  float u,v;
-  col = 0; lin = 0;
-  ComputePixelPosition(col,lin,u,v);
-  u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
-  u = (u - int(u))*2.0*PixelSizeU;
-  v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
-  v = (v - int(v))*2.0*PixelSizeV;
-  Diodes[0] = new TEllipse(u,v,rell_u,rell_v);
-  Diodes[0]->SetLineColor(2);
-  Diodes[0]->SetLineWidth(2);
-  Diodes[0]->SetFillStyle(3000);
+  // The next studies can only be done if there was some tracking
+  if( CheckIfDone("mimosapro", kFALSE) ) { // if tracks
 
-  col = 0; lin = 1;
-  ComputePixelPosition(col,lin,u,v);
-  u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
-  u = (u - int(u))*2.0*PixelSizeU;
-  v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
-  v = (v - int(v))*2.0*PixelSizeV;
-  Diodes[1] = new TEllipse(u,v,rell_u,rell_v);
-  Diodes[1]->SetLineColor(2);
-  Diodes[1]->SetLineWidth(2);
-  Diodes[1]->SetFillStyle(3000);
+    if(MimoDebug) cout<<"  Now displaying studies from track position" << endl;
 
-  col = 1; lin = 0;
-  ComputePixelPosition(col,lin,u,v);
-  u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
-  u = (u - int(u))*2.0*PixelSizeU;
-  v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
-  v = (v - int(v))*2.0*PixelSizeV;
-  Diodes[2] = new TEllipse(u,v,rell_u,rell_v);
-  Diodes[2]->SetLineColor(2);
-  Diodes[2]->SetLineWidth(2);
-  Diodes[2]->SetFillStyle(3000);
+    int NPadsX = 3;
+    int NPadsY = 3;
+    TLine* lh_TrackhitPos_vs_Mult = new TLine(huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmax()*0.5,huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmin(),
+  					    huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmax()*0.5,huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmax());
+    lh_TrackhitPos_vs_Mult->SetLineColor(2);
+    lh_TrackhitPos_vs_Mult->SetLineWidth(3);
+    lh_TrackhitPos_vs_Mult->SetLineStyle(2);
+    double rell_u = (huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmax() - huvCGtuv_vs_Mult[0]->GetXaxis()->GetXmin())*0.03;
+    double rell_v = (huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmax() - huvCGtuv_vs_Mult[0]->GetYaxis()->GetXmin())*0.03;
+    Diodes = new TEllipse*[4];
+    int col,lin;
+    float u,v;
+    col = 0; lin = 0;
+    ComputePixelPosition(col,lin,u,v);
+    u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
+    u = (u - int(u))*2.0*PixelSizeU;
+    v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
+    v = (v - int(v))*2.0*PixelSizeV;
+    Diodes[0] = new TEllipse(u,v,rell_u,rell_v);
+    Diodes[0]->SetLineColor(2);
+    Diodes[0]->SetLineWidth(2);
+    Diodes[0]->SetFillStyle(3000);
 
-  col = 1; lin = 1;
-  ComputePixelPosition(col,lin,u,v);
-  u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
-  u = (u - int(u))*2.0*PixelSizeU;
-  v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
-  v = (v - int(v))*2.0*PixelSizeV;
-  Diodes[3] = new TEllipse(u,v,rell_u,rell_v);
-  Diodes[3]->SetLineColor(2);
-  Diodes[3]->SetLineWidth(2);
-  Diodes[3]->SetFillStyle(3000);
+    col = 0; lin = 1;
+    ComputePixelPosition(col,lin,u,v);
+    u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
+    u = (u - int(u))*2.0*PixelSizeU;
+    v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
+    v = (v - int(v))*2.0*PixelSizeV;
+    Diodes[1] = new TEllipse(u,v,rell_u,rell_v);
+    Diodes[1]->SetLineColor(2);
+    Diodes[1]->SetLineWidth(2);
+    Diodes[1]->SetFillStyle(3000);
 
-  cPosStudy_TrackhitPos_vs_Mult = new TCanvas("cPosStudy_TrackhitPos_vs_Mult",
-					      "Track hit position vs diodes location",
-					      900,900);
-  cPosStudy_TrackhitPos_vs_Mult->Divide(NPadsX,NPadsY);
-  int counter_mult_canvas = 0;
-  for(int imult=0;imult<NPadsX*NPadsY;imult++) {
-    if(imult+1 > 6) continue;
-    counter_mult_canvas++;
-    cPosStudy_TrackhitPos_vs_Mult->cd(imult+1);
-    cPosStudy_TrackhitPos_vs_Mult->cd(imult+1)->SetFillColor(10);
-    cPosStudy_TrackhitPos_vs_Mult->cd(imult+1)->SetTickx(1);
-    cPosStudy_TrackhitPos_vs_Mult->cd(imult+1)->SetTicky(1);
-    if(imult+1 <= huCGwidth_vs_Mult->GetXaxis()->GetNbins()) {
-      huvCGtuv_vs_Mult[imult]->Draw("colz");
-      lh_TrackhitPos_vs_Mult->Draw();
-      Diodes[0]->Draw();
-      Diodes[1]->Draw();
-      Diodes[2]->Draw();
-      Diodes[3]->Draw();
+    col = 1; lin = 0;
+    ComputePixelPosition(col,lin,u,v);
+    u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
+    u = (u - int(u))*2.0*PixelSizeU;
+    v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
+    v = (v - int(v))*2.0*PixelSizeV;
+    Diodes[2] = new TEllipse(u,v,rell_u,rell_v);
+    Diodes[2]->SetLineColor(2);
+    Diodes[2]->SetLineWidth(2);
+    Diodes[2]->SetFillStyle(3000);
+
+    col = 1; lin = 1;
+    ComputePixelPosition(col,lin,u,v);
+    u = (u + 0.5*NofPixelInRaw    * PixelSizeU)/(2.0*PixelSizeU);
+    u = (u - int(u))*2.0*PixelSizeU;
+    v = (v + 0.5*NofPixelInColumn * PixelSizeV)/(2.0*PixelSizeV);
+    v = (v - int(v))*2.0*PixelSizeV;
+    Diodes[3] = new TEllipse(u,v,rell_u,rell_v);
+    Diodes[3]->SetLineColor(2);
+    Diodes[3]->SetLineWidth(2);
+    Diodes[3]->SetFillStyle(3000);
+
+    cPosStudy_TrackhitPos_vs_Mult = new TCanvas("cPosStudy_TrackhitPos_vs_Mult",
+  					      "Track hit position vs diodes location",
+  					      900,900);
+    cPosStudy_TrackhitPos_vs_Mult->Divide(NPadsX,NPadsY);
+    int counter_mult_canvas = 0;
+    for(int imult=0;imult<NPadsX*NPadsY;imult++) {
+      if(imult+1 > 6) continue;
+      counter_mult_canvas++;
+      cPosStudy_TrackhitPos_vs_Mult->cd(imult+1);
+      cPosStudy_TrackhitPos_vs_Mult->cd(imult+1)->SetFillColor(10);
+      cPosStudy_TrackhitPos_vs_Mult->cd(imult+1)->SetTickx(1);
+      cPosStudy_TrackhitPos_vs_Mult->cd(imult+1)->SetTicky(1);
+      if(imult+1 <= huCGwidth_vs_Mult->GetXaxis()->GetNbins()) {
+        huvCGtuv_vs_Mult[imult]->Draw("colz");
+        lh_TrackhitPos_vs_Mult->Draw();
+        Diodes[0]->Draw();
+        Diodes[1]->Draw();
+        Diodes[2]->Draw();
+        Diodes[3]->Draw();
+      }
     }
-  }
-  counter_mult_canvas++;
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetFillColor(10);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTickx(1);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTicky(1);
-  huvCGtuv->Draw("colz");
-  lh_TrackhitPos_vs_Mult->Draw();
-  Diodes[0]->Draw();
-  Diodes[1]->Draw();
-  Diodes[2]->Draw();
-  Diodes[3]->Draw();
-  counter_mult_canvas++;
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetFillColor(10);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTickx(1);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTicky(1);
-  huvCGtuv_NoAsso->Draw("colz");
-  lh_TrackhitPos_vs_Mult->Draw();
-  Diodes[0]->Draw();
-  Diodes[1]->Draw();
-  Diodes[2]->Draw();
-  Diodes[3]->Draw();
-  cPosStudy_TrackhitPos_vs_Mult->Update();
-  counter_mult_canvas++;
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetFillColor(10);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTickx(1);
-  cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTicky(1);
-  hnpixc_vs_TrkDistToDiode->Draw("colz");
-
-  if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
-    NPages++;
-    TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
-    TString EPSNameO = EPSName + TString("[");
-    TString EPSNameC = EPSName + TString("]");
-
-    cPosStudy_TrackhitPos_vs_Mult->Print(EPSNameO.Data());
-    cPosStudy_TrackhitPos_vs_Mult->Print(EPSName.Data());
-    cPosStudy_TrackhitPos_vs_Mult->Print(EPSNameC.Data());
-    //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
-    //gSystem->Exec(command.Data());
-    //command = TString("mv ") + EPSName_test + TString("  ") + EPSName_final;
-    //gSystem->Exec(command.Data());
-    //command = TString("rm -rf ") + EPSName;
-    //gSystem->Exec(command.Data());
-  }
-
-  cPosStudy_TrackhitPos_vs_Mult2 = new TCanvas("cPosStudy_TrackhitPos_vs_Mult2",
-					       "Track hit position vs diodes location 2",
-					       900,900);
-  cPosStudy_TrackhitPos_vs_Mult2->Divide(NPadsX,NPadsY);
-  counter_mult_canvas = 0;
-
-  for(int imult=0;imult<NPadsX*NPadsY;imult++) {
-    if(imult+1 > 6) continue;
     counter_mult_canvas++;
-    cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1);
-    cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1)->SetFillColor(10);
-    cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1)->SetTickx(1);
-    cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1)->SetTicky(1);
-    if(imult+1 <= huCGwidth_vs_Mult->GetXaxis()->GetNbins()) {
-      hDist_Trck_Diode_Asso_vs_Mult[imult]->Sumw2();
-      hDist_Trck_Diode_Asso_vs_Mult[imult]->Draw();
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetFillColor(10);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTickx(1);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTicky(1);
+    huvCGtuv->Draw("colz");
+    lh_TrackhitPos_vs_Mult->Draw();
+    Diodes[0]->Draw();
+    Diodes[1]->Draw();
+    Diodes[2]->Draw();
+    Diodes[3]->Draw();
+    counter_mult_canvas++;
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetFillColor(10);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTickx(1);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTicky(1);
+    huvCGtuv_NoAsso->Draw("colz");
+    lh_TrackhitPos_vs_Mult->Draw();
+    Diodes[0]->Draw();
+    Diodes[1]->Draw();
+    Diodes[2]->Draw();
+    Diodes[3]->Draw();
+    cPosStudy_TrackhitPos_vs_Mult->Update();
+    counter_mult_canvas++;
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetFillColor(10);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTickx(1);
+    cPosStudy_TrackhitPos_vs_Mult->cd(counter_mult_canvas)->SetTicky(1);
+    hnpixc_vs_TrkDistToDiode->Draw("colz");
+
+    if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
+      NPages++;
+      TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
+      TString EPSNameO = EPSName + TString("[");
+      TString EPSNameC = EPSName + TString("]");
+      if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
+
+      cPosStudy_TrackhitPos_vs_Mult->Print(EPSNameO.Data());
+      cPosStudy_TrackhitPos_vs_Mult->Print(EPSName.Data());
+      cPosStudy_TrackhitPos_vs_Mult->Print(EPSNameC.Data());
+      //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
+      //gSystem->Exec(command.Data());
+      //command = TString("mv ") + EPSName_test + TString("  ") + EPSName_final;
+      //gSystem->Exec(command.Data());
+      //command = TString("rm -rf ") + EPSName;
+      //gSystem->Exec(command.Data());
     }
-  }
-  counter_mult_canvas++;
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetFillColor(10);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTickx(1);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTicky(1);
-  hDist_Trck_Diode_Asso->Sumw2();
-  hDist_Trck_Diode_Asso->Draw();
-  counter_mult_canvas++;
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetFillColor(10);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTickx(1);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTicky(1);
-  hDist_Trck_Diode_NoAsso->Sumw2();
-  hDist_Trck_Diode_NoAsso->Draw();
 
-  counter_mult_canvas++;
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetFillColor(10);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTickx(1);
-  cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTicky(1);
-  //if(hDist_Trck_Diode_NoAsso->Integral() > 0.0) hDist_Trck_Diode_NoAsso->Scale(1.0/hDist_Trck_Diode_NoAsso->Integral("width"));
-  //if(hDist_Trck_Diode_Asso->Integral()   > 0.0) hDist_Trck_Diode_Asso->Scale(1.0/hDist_Trck_Diode_Asso->Integral("width"));
-  //hDist_Trck_Diode_NoAsso->SetStats(false);
-  //hDist_Trck_Diode_Asso->SetStats(false);
-  //double Maximum_TrkDiodeDist = TMath::Max(hDist_Trck_Diode_NoAsso->GetMaximum(),
-  //					   hDist_Trck_Diode_Asso->GetMaximum());
-  //hDist_Trck_Diode_NoAsso->SetMaximum(Maximum_TrkDiodeDist*(1.0 + 0.40));
-  //hDist_Trck_Diode_Asso->SetMaximum(  Maximum_TrkDiodeDist*(1.0 + 0.40));
-  //hDist_Trck_Diode_NoAsso->Draw();
-  //hDist_Trck_Diode_Asso->Draw("same");
-  //TLegend* leg_TrkDiodeDist = new TLegend(0.18,0.7,0.4,0.88);
-  //leg_TrkDiodeDist->SetFillColor(10);
-  //leg_TrkDiodeDist->AddEntry(hDist_Trck_Diode_Asso,  "Asso.",    "l");
-  //leg_TrkDiodeDist->AddEntry(hDist_Trck_Diode_NoAsso,"Non-Asso.","l");
-  //leg_TrkDiodeDist->Draw("same");
+    if(MimoDebug) cout<<"  Now displaying studies from track position 2" << endl;
 
-  double R_effic_TrkDiodeDist[2];
-  R_effic_TrkDiodeDist[0] = +1.0e+20;
-  R_effic_TrkDiodeDist[1] = -1.0e+20;
-  for(int ItrkDiode=0;ItrkDiode<hDist_Trck_Diode_NoAsso->GetXaxis()->GetNbins();ItrkDiode++) {
-    double v,e;
-    v = hEffic_vs_Dist_Trck_Diode->GetBinContent(ItrkDiode+1);
-    e = hEffic_vs_Dist_Trck_Diode->GetBinError(ItrkDiode+1);
-    if(v < 0.0) continue;
-    if(R_effic_TrkDiodeDist[0] > v-e) R_effic_TrkDiodeDist[0] = v-e;
-    if(R_effic_TrkDiodeDist[1] < v+e) R_effic_TrkDiodeDist[1] = v+e;
-  }
-  double Delta_Effic = R_effic_TrkDiodeDist[1] - R_effic_TrkDiodeDist[0];
-  if(Delta_Effic == 0.0) {
-    R_effic_TrkDiodeDist[0] =   0.0;
-    R_effic_TrkDiodeDist[1] = 100.0;
-  }
-  else {
-    R_effic_TrkDiodeDist[0] -= Delta_Effic*0.10;
-    R_effic_TrkDiodeDist[1] += Delta_Effic*0.10;
-  }
-  //cout << R_effic_TrkDiodeDist[0] << "  " << R_effic_TrkDiodeDist[1] << endl;
-  //TGaxis *axiseffic = new TGaxis(hDist_Trck_Diode_NoAsso->GetXaxis()->GetXmax(),
-  //				 hDist_Trck_Diode_NoAsso->GetMinimum(),
-  //                               hDist_Trck_Diode_NoAsso->GetXaxis()->GetXmax(),
-  //                               hDist_Trck_Diode_NoAsso->GetMaximum(),
-  //                               R_effic_TrkDiodeDist[0],R_effic_TrkDiodeDist[1],510,"+L");
-  //axiseffic->SetLineColor(hEffic_vs_Dist_Trck_Diode->GetLineColor());
-  //axiseffic->SetLabelColor(hEffic_vs_Dist_Trck_Diode->GetLineColor());
-  //axiseffic->SetTitleColor(hEffic_vs_Dist_Trck_Diode->GetLineColor());
-  //axiseffic->SetTitle("Efficiency (%)");
-  //axiseffic->Draw("same");
-  //
-  //double a_Effic_TrkDiodeDist = (hDist_Trck_Diode_NoAsso->GetMaximum() - hDist_Trck_Diode_NoAsso->GetMinimum())/(R_effic_TrkDiodeDist[1] - R_effic_TrkDiodeDist[0]);
-  //double b_Effic_TrkDiodeDist =  hDist_Trck_Diode_NoAsso->GetMinimum() - R_effic_TrkDiodeDist[0]*a_Effic_TrkDiodeDist;
-  //for(int ItrkDiode=0;ItrkDiode<hDist_Trck_Diode_NoAsso->GetXaxis()->GetNbins();ItrkDiode++) {
-  //  double effic     = hEffic_vs_Dist_Trck_Diode->GetBinContent(ItrkDiode+1);
-  //  double effic_err = hEffic_vs_Dist_Trck_Diode->GetBinError(ItrkDiode+1);
-  //  hEffic_vs_Dist_Trck_Diode->SetBinContent(ItrkDiode+1,effic*a_Effic_TrkDiodeDist + b_Effic_TrkDiodeDist);
-  //  hEffic_vs_Dist_Trck_Diode->SetBinError(ItrkDiode+1,effic_err*a_Effic_TrkDiodeDist);
-  //}
-  //hEffic_vs_Dist_Trck_Diode->Draw("same");
-  hEffic_vs_Dist_Trck_Diode->SetYTitle("Efficiency (%)");
-  hEffic_vs_Dist_Trck_Diode->SetStats(false);
-  hEffic_vs_Dist_Trck_Diode->SetMinimum(R_effic_TrkDiodeDist[0]);
-  hEffic_vs_Dist_Trck_Diode->SetMaximum(R_effic_TrkDiodeDist[1]);
-  hEffic_vs_Dist_Trck_Diode->Draw();
+    cPosStudy_TrackhitPos_vs_Mult2 = new TCanvas("cPosStudy_TrackhitPos_vs_Mult2",
+  					       "Track hit position vs diodes location 2",
+  					       900,900);
+    cPosStudy_TrackhitPos_vs_Mult2->Divide(NPadsX,NPadsY);
+    counter_mult_canvas = 0;
 
-  if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
-    NPages++;
-    TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
-    TString EPSNameO = EPSName + TString("[");
-    TString EPSNameC = EPSName + TString("]");
+    for(int imult=0;imult<NPadsX*NPadsY;imult++) {
+      if(imult+1 > 6) continue;
+      counter_mult_canvas++;
+      cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1);
+      cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1)->SetFillColor(10);
+      cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1)->SetTickx(1);
+      cPosStudy_TrackhitPos_vs_Mult2->cd(imult+1)->SetTicky(1);
+      if(imult+1 <= huCGwidth_vs_Mult->GetXaxis()->GetNbins()) {
+        hDist_Trck_Diode_Asso_vs_Mult[imult]->Sumw2();
+        hDist_Trck_Diode_Asso_vs_Mult[imult]->Draw();
+      }
+    }
+    counter_mult_canvas++;
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetFillColor(10);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTickx(1);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTicky(1);
+    hDist_Trck_Diode_Asso->Sumw2();
+    hDist_Trck_Diode_Asso->Draw();
+    counter_mult_canvas++;
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetFillColor(10);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTickx(1);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTicky(1);
+    hDist_Trck_Diode_NoAsso->Sumw2();
+    hDist_Trck_Diode_NoAsso->Draw();
 
-    cPosStudy_TrackhitPos_vs_Mult2->Print(EPSNameO.Data());
-    cPosStudy_TrackhitPos_vs_Mult2->Print(EPSName.Data());
-    cPosStudy_TrackhitPos_vs_Mult2->Print(EPSNameC.Data());
-    //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
-    //gSystem->Exec(command.Data());
-    //command = TString("mv ") + EPSName_test + TString("  ") + EPSName_final;
-    //gSystem->Exec(command.Data());
-    //command = TString("rm -rf ") + EPSName;
-    //gSystem->Exec(command.Data());
-  }
+    counter_mult_canvas++;
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetFillColor(10);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTickx(1);
+    cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTicky(1);
+    //if(hDist_Trck_Diode_NoAsso->Integral() > 0.0) hDist_Trck_Diode_NoAsso->Scale(1.0/hDist_Trck_Diode_NoAsso->Integral("width"));
+    //if(hDist_Trck_Diode_Asso->Integral()   > 0.0) hDist_Trck_Diode_Asso->Scale(1.0/hDist_Trck_Diode_Asso->Integral("width"));
+    //hDist_Trck_Diode_NoAsso->SetStats(false);
+    //hDist_Trck_Diode_Asso->SetStats(false);
+    //double Maximum_TrkDiodeDist = TMath::Max(hDist_Trck_Diode_NoAsso->GetMaximum(),
+    //					   hDist_Trck_Diode_Asso->GetMaximum());
+    //hDist_Trck_Diode_NoAsso->SetMaximum(Maximum_TrkDiodeDist*(1.0 + 0.40));
+    //hDist_Trck_Diode_Asso->SetMaximum(  Maximum_TrkDiodeDist*(1.0 + 0.40));
+    //hDist_Trck_Diode_NoAsso->Draw();
+    //hDist_Trck_Diode_Asso->Draw("same");
+    //TLegend* leg_TrkDiodeDist = new TLegend(0.18,0.7,0.4,0.88);
+    //leg_TrkDiodeDist->SetFillColor(10);
+    //leg_TrkDiodeDist->AddEntry(hDist_Trck_Diode_Asso,  "Asso.",    "l");
+    //leg_TrkDiodeDist->AddEntry(hDist_Trck_Diode_NoAsso,"Non-Asso.","l");
+    //leg_TrkDiodeDist->Draw("same");
+
+    double R_effic_TrkDiodeDist[2];
+    R_effic_TrkDiodeDist[0] = +1.0e+20;
+    R_effic_TrkDiodeDist[1] = -1.0e+20;
+    for(int ItrkDiode=0;ItrkDiode<hDist_Trck_Diode_NoAsso->GetXaxis()->GetNbins();ItrkDiode++) {
+      double v,e;
+      v = hEffic_vs_Dist_Trck_Diode->GetBinContent(ItrkDiode+1);
+      e = hEffic_vs_Dist_Trck_Diode->GetBinError(ItrkDiode+1);
+      if(v < 0.0) continue;
+      if(R_effic_TrkDiodeDist[0] > v-e) R_effic_TrkDiodeDist[0] = v-e;
+      if(R_effic_TrkDiodeDist[1] < v+e) R_effic_TrkDiodeDist[1] = v+e;
+    }
+    double Delta_Effic = R_effic_TrkDiodeDist[1] - R_effic_TrkDiodeDist[0];
+    if(Delta_Effic == 0.0) {
+      R_effic_TrkDiodeDist[0] =   0.0;
+      R_effic_TrkDiodeDist[1] = 100.0;
+    }
+    else {
+      R_effic_TrkDiodeDist[0] -= Delta_Effic*0.10;
+      R_effic_TrkDiodeDist[1] += Delta_Effic*0.10;
+    }
+    //cout << R_effic_TrkDiodeDist[0] << "  " << R_effic_TrkDiodeDist[1] << endl;
+    //TGaxis *axiseffic = new TGaxis(hDist_Trck_Diode_NoAsso->GetXaxis()->GetXmax(),
+    //				 hDist_Trck_Diode_NoAsso->GetMinimum(),
+    //                               hDist_Trck_Diode_NoAsso->GetXaxis()->GetXmax(),
+    //                               hDist_Trck_Diode_NoAsso->GetMaximum(),
+    //                               R_effic_TrkDiodeDist[0],R_effic_TrkDiodeDist[1],510,"+L");
+    //axiseffic->SetLineColor(hEffic_vs_Dist_Trck_Diode->GetLineColor());
+    //axiseffic->SetLabelColor(hEffic_vs_Dist_Trck_Diode->GetLineColor());
+    //axiseffic->SetTitleColor(hEffic_vs_Dist_Trck_Diode->GetLineColor());
+    //axiseffic->SetTitle("Efficiency (%)");
+    //axiseffic->Draw("same");
+    //
+    //double a_Effic_TrkDiodeDist = (hDist_Trck_Diode_NoAsso->GetMaximum() - hDist_Trck_Diode_NoAsso->GetMinimum())/(R_effic_TrkDiodeDist[1] - R_effic_TrkDiodeDist[0]);
+    //double b_Effic_TrkDiodeDist =  hDist_Trck_Diode_NoAsso->GetMinimum() - R_effic_TrkDiodeDist[0]*a_Effic_TrkDiodeDist;
+    //for(int ItrkDiode=0;ItrkDiode<hDist_Trck_Diode_NoAsso->GetXaxis()->GetNbins();ItrkDiode++) {
+    //  double effic     = hEffic_vs_Dist_Trck_Diode->GetBinContent(ItrkDiode+1);
+    //  double effic_err = hEffic_vs_Dist_Trck_Diode->GetBinError(ItrkDiode+1);
+    //  hEffic_vs_Dist_Trck_Diode->SetBinContent(ItrkDiode+1,effic*a_Effic_TrkDiodeDist + b_Effic_TrkDiodeDist);
+    //  hEffic_vs_Dist_Trck_Diode->SetBinError(ItrkDiode+1,effic_err*a_Effic_TrkDiodeDist);
+    //}
+    //hEffic_vs_Dist_Trck_Diode->Draw("same");
+    hEffic_vs_Dist_Trck_Diode->SetYTitle("Efficiency (%)");
+    hEffic_vs_Dist_Trck_Diode->SetStats(false);
+    hEffic_vs_Dist_Trck_Diode->SetMinimum(R_effic_TrkDiodeDist[0]);
+    hEffic_vs_Dist_Trck_Diode->SetMaximum(R_effic_TrkDiodeDist[1]);
+    hEffic_vs_Dist_Trck_Diode->Draw();
+
+    if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
+      NPages++;
+      TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
+      TString EPSNameO = EPSName + TString("[");
+      TString EPSNameC = EPSName + TString("]");
+      if(MimoDebug) cout<<"  Saving plots into " << EPSName.Data() << endl;
+
+      cPosStudy_TrackhitPos_vs_Mult2->Print(EPSNameO.Data());
+      cPosStudy_TrackhitPos_vs_Mult2->Print(EPSName.Data());
+      cPosStudy_TrackhitPos_vs_Mult2->Print(EPSNameC.Data());
+      //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
+      //gSystem->Exec(command.Data());
+      //command = TString("mv ") + EPSName_test + TString("  ") + EPSName_final;
+      //gSystem->Exec(command.Data());
+      //command = TString("rm -rf ") + EPSName;
+      //gSystem->Exec(command.Data());
+    }
+
+  } // end if tracks
 
   // == Now save histograms
 
@@ -7765,16 +7816,18 @@ void MimosaAnalysis::HitMap()
   hdCGEtaU->Write();
   hdCGEtaV->Write();
 
-  cPosStudy_TrackhitPos_vs_Mult->Write();
-  for(int imult=0;imult<huCGwidth_vs_Mult->GetXaxis()->GetNbins();imult++) {
-    huvCGtuv_vs_Mult[imult]->Write();
-    hDist_Trck_Diode_Asso_vs_Mult[imult]->Write();
-  }
-  huvCGtuv_NoAsso->Write();
-  hDist_Trck_Diode_Asso->Write();
-  hDist_Trck_Diode_NoAsso->Write();
-  hnpixc_vs_TrkDistToDiode->Write();
-  hEffic_vs_Dist_Trck_Diode->Write();
+  if( CheckIfDone("mimosapro", kFALSE) ) { // if tracks
+    cPosStudy_TrackhitPos_vs_Mult->Write();
+    for(int imult=0;imult<huCGwidth_vs_Mult->GetXaxis()->GetNbins();imult++) {
+      huvCGtuv_vs_Mult[imult]->Write();
+      hDist_Trck_Diode_Asso_vs_Mult[imult]->Write();
+    }
+    huvCGtuv_NoAsso->Write();
+    hDist_Trck_Diode_Asso->Write();
+    hDist_Trck_Diode_NoAsso->Write();
+    hnpixc_vs_TrkDistToDiode->Write();
+    hEffic_vs_Dist_Trck_Diode->Write();
+  } // end if tracks
 
   ResultRootFile->Write();
   ResultRootFile->Close();
@@ -7786,7 +7839,7 @@ void MimosaAnalysis::HitMap()
 
 
 //________________________________________________________________________________________
-void MimosaAnalysis::Calibration()
+void MimosaAnalysis::Calibration( Int_t fitFunction)
 {
 
   // Plots all the usefull histograms for calibration
@@ -7794,13 +7847,18 @@ void MimosaAnalysis::Calibration()
   // JB 2010/07/27 based on previous MCalib class
 
   if(!CheckIfDone("mimosacalibration")) return;
-  if(!fIfCalibration) return; // JB 2014/01/11
+  if(!fIfCalibration) {
+    cout << "MPost::Calibration, will not start Calibration display, set AnalysisGoal: \"calib\" in the config file!" << endl;
+    return; // JB 2014/01/11
+  }
 
   UsedMacro[15] = 1;
 
   gROOT->SetStyle("Plain");
   gStyle->SetOptFit(11111);
   gStyle->SetPalette(1,0);
+
+  if(MimoDebug) cout<<"Calibration started in directory "<<gSystem->pwd()<<endl;
 
   //------------
   //---main canvas:
@@ -7831,11 +7889,13 @@ void MimosaAnalysis::Calibration()
   ttt->DrawText( 0.05,0.6,Header);
   mpad0->Update();
 
+  if(MimoDebug) cout<<"Displaying calibration plot zoomed."<<endl;
 
   mpad1->cd();
   //mpad1->SetFillColor(19);
   gStyle->SetOptStat(111111);
-  PlotCalibration(AutoZoom(hqSeedCalibration,"calib",2), 0)->Draw();
+  PlotCalibration(AutoZoom(hqSeedCalibration,"calib",2), 0);
+  // PlotCalibration(AutoZoom(hqSeedCalibration,"calib",2), 0);
   mpad1->Update();
 
   //cd to result dir to save pad picture
@@ -7844,8 +7904,6 @@ void MimosaAnalysis::Calibration()
   Char_t CalibMainPs[50];
   sprintf(CalibMainPs,"Calib_main_%d.eps",rn);
   cCalibration->SaveAs(CalibMainPs);
-
-  printf("--Calib zoom drawn\n\n");
   //------------
 
   //------------
@@ -7857,10 +7915,13 @@ void MimosaAnalysis::Calibration()
   Calib_distr1->SetBorderMode(0);
   Calib_distr1->Divide(2,2);
 
+  if(MimoDebug) cout<<"Displaying detailed plots."<<endl;
+
   Calib_distr1->cd(1);
   AutoZoom(hqNeighbourCalibration)->Draw();
+  gPad->SetLogy();
   Calib_distr1->cd(2);
-  AutoZoom(hqSeedVsNeighbourCalibration)->Draw();
+  AutoZoom(hqSeedVsNeighbourCalibration)->Draw("colz");
   Calib_distr1->cd(3);
   AutoZoom(hSeedBetweenDist)->Draw();
 
@@ -7893,35 +7954,43 @@ void MimosaAnalysis::Calibration()
 
 //_______________________________________________________________________________________
 //
-TPad* MimosaAnalysis::PlotCalibration(TH1F* h, Int_t manualFitRange)
+void MimosaAnalysis::PlotCalibration(TH1F* h, Int_t fitFunction, Int_t manualFitRange)
 {
 
   // Plot and fit an histogram which is expected to be
   // the charge distribution of the seed pixel.
-  // The fit function is a gaussian(signal) + exponential(tail)
+  // The fit function is chosen according to variable fitFunction:
+  //    0: a gaussian(signal) + exponential(tail)
+  //    1: a gaussian(signal)
   // Returns a canvas with the fit result.
   //
+  // Assume that the signal originates from 55Fe source
+  // manualFitRange is not yet used!!
 
-  TPad* Pad = (TPad*)gPad;
+  if(MimoDebug) cout<<"Fitting calibration plot"<<endl;
 
   // Fits calibration peaks
 
   Float_t param[4][4]; // [Pad number] [parameter number]: 0=constant, 1=Mean, 2=sigma
   Float_t param2[4][4]; // Same for second peak.
 
-
   manualFitRange = 0;
-
 
   /*Float_t FitIntegral[4] = {0.,0.,0.,0.};
   Float_t FitIntegralb[4]= {0.,0.,0.,0.};*/
 
-  Float_t Peak1 =1640.0;
+  Float_t Peak1 =1640.0; // number of electrons expected from 55Fe
   //Float_t Peak2 =1804.0;
 
 
-  //TF1* Fit = new TF1("fit","gaus",h->GetMean()-2*h->GetRMS(),h->GetMean()+2*h->GetRMS());
-  TF1* Fit = new TF1("fit","gaus(0)+expo(3)",h->GetMean()-2*h->GetRMS(),h->GetMean()+2*h->GetRMS());
+  TF1* Fit;
+  if( fitFunction==1 ) {
+    Fit = new TF1("fit","gaus",h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
+    cout <<" -> Calibration fit with a single gaussian."<< endl;
+  } else {
+    Fit = new TF1("fit","gaus(0)+expo(3)",h->GetXaxis()->GetXmin(), h->GetXaxis()->GetXmax());
+    cout <<" -> Calibration fit with a gaussian + an exponential."<< endl;
+  }
   Fit->SetParName(0,"Norm (gaus)");
   Fit->SetParName(1,"Mean");
   Fit->SetParName(2,"Sigma");
@@ -7936,20 +8005,30 @@ TPad* MimosaAnalysis::PlotCalibration(TH1F* h, Int_t manualFitRange)
 
   Fit->SetParameter(2,5); // width
   Fit->SetParameter(1, h->GetMaximumBin());   // peak
+  Fit->SetParameters( h->Integral()/10., h->GetMean(), h->GetRMS(), 1e-3, -1.e-15);
 
+  cout<<"Range for peak: "<< h->GetXaxis()->GetXmin() << ", "<< h->GetXaxis()->GetXmax() <<endl;
+  if( fitFunction==1 ) {
+    cout<<"Initial paraleteres: norm-gaus=" << h->Integral()/10. <<", mean-gaus="<< h->GetMean() <<", width-gauss="<< h->GetRMS() <<", norm-exp="<< 1.e-3 <<", slope-exp="<< -1.e-15 << endl;
+  } else {
+    cout<<"Initial paraleteres: norm-gaus=" << h->Integral()/10. <<", mean-gaus="<< h->GetMean() <<", width-gauss="<< h->GetRMS() << endl;
+  }
 
+  h->Fit("fit","NMER");
+  h->Draw();
+  Fit->Draw("same");
+  param[0][0]=Fit->GetParameter(0); //normalisation
+  param[0][1]=Fit->GetParameter(1); //Mean
+  param[0][2]=Fit->GetParameter(2); //sigma
+  param[0][3]=Peak1/(Fit->GetParameter(1));
 
-   h->Fit("fit","WME");
-   param[0][0]=Fit->GetParameter(0); //constant.
-   param[0][1]=Fit->GetParameter(1); //Mean.
-   param[0][2]=Fit->GetParameter(2); //sigma.
-   param[0][3]=Peak1/(Fit->GetParameter(1));
+  TString status;
+  if( gMinuit->fCstatu.Contains("SUCCESS"))
+   { status = TString("GOOD");}
+  else
+   { status = TString("BAD");}
 
-   TString status;
-   if( gMinuit->fCstatu.Contains("SUCCESS"))
-     { status = TString("GOOD");}
-   else
-     { status = TString("BAD");}
+  if(MimoDebug) cout<<"Fit status: "<< status.Data() <<endl;
 
   /*
    TF1* Fit2 = new TF1("fit2","gaus");
@@ -7969,33 +8048,25 @@ TPad* MimosaAnalysis::PlotCalibration(TH1F* h, Int_t manualFitRange)
    int i =0;
 
    cout<<"\n*****************************************"<<endl;
-   cout<<"*      Fits results  "<<RunNumber<<"          *"<<endl;
+   cout<<"*      Fits results  "<<status.Data()<<"          *"<<endl;
    cout<<"*****************************************\n"<<endl;
 
-   cout<<"constant ** Mean ** sigma ** Gain (e- per ADC unit)"<<endl;
-   cout<<param[i][0]<<" ** "<<param[i][1]<<" ** "<<param[i][2]<<" ** "<<param[i][3]<<endl;
-   cout<<param2[i][0]<<" ** "<<param2[i][1]<<" ** "<<param2[i][2]<<" ** "<<param2[i][3]<<endl;
-
+   cout<<"Peak position ** Peak width (sigma) ** Calibration (e-/ADCu)"<<endl;
+   cout<<param[i][1]<<" ** "<<param[i][2]<<" ** "<<param[i][3]<<endl;
+   // i++;
+   //cout<<param2[i][1]<<" ** "<<param2[i][2]<<" ** "<<param[i][2]<<endl;
 
    Char_t calib_string[50];
-
    sprintf(calib_string,"Gain= %3.2f e-/ADCu, fit status= %s",param[0][3],status.Data());
-
-   gPad->SetBottomMargin(.15);
-   cout<<calib_string<<endl;
+   // gPad->SetBottomMargin(.15);
+   if(MimoDebug>1) cout<<"PlotCalibration: text located (0.02, 0.02) '"<<calib_string<<"'"<<endl;
    TText* inforeso = new TText(0.02,0.02,calib_string);
    inforeso->SetNDC(kTRUE);
    inforeso->SetTextSize(0.04);
    inforeso->SetTextColor(2);
    inforeso->Draw();
 
-
-
-   cout<<"END...."<<endl;
-
-
-
-return Pad;
+   if(MimoDebug>1) cout<<"END fitting calib plot...."<<endl;
 
 }
 

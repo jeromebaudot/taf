@@ -23,8 +23,6 @@ Results
 
 *.root
 
-results_ana_M28/
-
 *.png
 
 *.gz
@@ -36,3 +34,6 @@ doc/taf_shortDoc\.out
 *.toc
 
 .DS_Store
+
+results_*
+

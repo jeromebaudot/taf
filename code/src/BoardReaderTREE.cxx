@@ -8,6 +8,7 @@
 /////////////////////////////////////////////////////////////
 //
 // created JB, 2021/11/05
+// Last modified JB, 2011/11/19 Signal polarity fixed by Szymon Bugiel
 
 #include "TCanvas.h"
 #include "TApplication.h"

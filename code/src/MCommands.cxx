@@ -2102,7 +2102,7 @@ void MimosaAnalysis::MimosaCalibration(Int_t MaxEvt , Float_t S2N_seed, Float_t 
   // ************************************
 
   Info("MimosaCalibration","\nReady to loop over %d events\n", MaxEvent);
-  const Int_t NofCycle=1000;
+  const Int_t NofCycle=5000;
 
   // **********************************************************************************
   // ********* MAIN LOOP ***************
