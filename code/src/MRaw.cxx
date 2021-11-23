@@ -274,6 +274,7 @@ void  MRaw::PrepareRaw()
       bar3->AddButton("DISPLAY GEOMETRY", "gTAF->GetRaw()->DisplayGeometry()","Telescope geometry");
       bar3->AddButton("USER PLOT", "gTAF->GetRaw()->UserPlot()", "Plots built by user function");
       bar3->AddButton("TOGGLE VERBOSITY", "gTAF->GetRaw()->ToggleVerbosity()", "Switch On/Off messages");
+      bar3->AddButton("TOGGLE DEBUG", "gTAF->GetRaw()->ToggleDebug()", "Switch 0/1 debug level");
       bar3->AddButton("SKIP 100 EVENTS", "gTAF->GetRaw()->SkipEvent(100)", "Skip 100 events without analyzing them for hits");
       bar3->AddButton("Clear / Close","gTAF->GetRaw()->Clear()","Clear everything to start over");
       bar3->Show();
@@ -361,6 +362,19 @@ void MRaw::ToggleVerbosity()
 
   fVerbose = !fVerbose;
   printf( "\n--> Turning %s.\n\n", fVerbose?"verbose":"quiet");
+
+}
+
+//______________________________________________________________________________
+//
+void MRaw::ToggleDebug()
+{
+  // Toggle debug from 0 or 1
+  // JB 2021/11/23
+
+  if( fDebugRaw>0 ) { fDebugRaw=0; }
+  else { fDebugRaw=1; }
+  printf( "\n--> Turning debugging to %d.\n\n", fDebugRaw);
 
 }
 
@@ -1846,7 +1860,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
     if ( tPlane->GetReadout() >= 100 || tPlane->GetDigitalThresholdNb() > 0 ){ // sparsified readout RDM210509, and digitized non-sparse readout JB 2013/08/29
 
       std::vector<DPixel*> *aList = tPlane->GetListOfPixels();
-      if(fVerbose) cout << "Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
+      if(fVerbose || fDebugRaw) cout << "Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
       fprintf( outFile, "\n** plane %2d", iPlane);
 
       for( Int_t iPix=0; iPix<(Int_t)aList->size(); iPix++) { // loop on fired pixels
@@ -1895,7 +1909,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
 
 
     if( withHits ) {
-      if(fVerbose) cout << "Plane " << iPlane << " has " << tPlane->GetHitsN() << " hits reconstructed" << endl;
+      if(fVerbose || fDebugRaw) cout << "Plane " << iPlane << " has " << tPlane->GetHitsN() << " hits reconstructed" << endl;
       int color_counter = 0;
       for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
         aHit = (DHit*)tPlane->GetHit( iHit);
@@ -1917,8 +1931,8 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
 //        printf(" hit %d, (col,row)=(%3d, %3d), (u,v)=(%.1f, %.1f), Npixels=%d, testMult=%d\n", iHit, (int)TheCol, (int)TheRow, u, v, Npixels_in_Hit, testMult);
 
         if ( testMult ) {
-	  int TS = 0;
-	  if(tPlane->GetReadout() > 100) aHit->GetPSeed()->GetTimestamp();
+	        int TS = 0;
+	         if(tPlane->GetReadout() > 100) aHit->GetPSeed()->GetTimestamp();
           _HitPositions_U[iPlane-1].push_back(TheCol);
           _HitPositions_V[iPlane-1].push_back(TheRow);
           _HitTS[iPlane-1].push_back(aHit->GetTimestamp());
@@ -1928,7 +1942,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
           int idex_pixel;
           double Pixel_col;
           double Pixel_row;
-//          if(fVerbose) cout << "Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
+          if(fDebugRaw) cout << "Current hit " << iHit << " from Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
 
             for(int ipixInHit=0;ipixInHit < Npixels_in_Hit;ipixInHit++) {
             if( aHit->GetPSeed()==NULL ) { // Hit built with DStrip object
@@ -1941,7 +1955,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
               Pixel_col = aList->at(idex_pixel)->GetPixelColumn();
               Pixel_row = aList->at(idex_pixel)->GetPixelLine();
             }
-//            printf("    pix %d, index = %d, (col,row)=(%3d, %3d)\n", ipixInHit, idex_pixel, Pixel_col, Pixel_row );
+             if(fDebugRaw) printf("    pix %d, index = %d, (col,row)=(%3d, %3d)\n", ipixInHit, idex_pixel, Pixel_col, Pixel_row );
 
             _PixelsInHitPositions_U[iPlane-1].push_back(Pixel_col);
             _PixelsInHitPositions_V[iPlane-1].push_back(Pixel_row);
@@ -1953,15 +1967,14 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
           if(color_counter == Ncolors) color_counter = 0;
         }
 
-
-        if(fVerbose) printf("MRaw::DisplayRawData2D  pl %d, hit[%d] = (%.1f,%.1f) in plane.\n", iPlane, iHit, aHit->GetPositionUhit(), aHit->GetPositionVhit());
+        if(fVerbose || fDebugRaw) printf("MRaw::DisplayRawData2D  pl %d, hit[%d] = (%.1f,%.1f) in plane.\n", iPlane, iHit, aHit->GetPositionUhit(), aHit->GetPositionVhit());
 
       } //end loop on hits
     } // end if withHits
 
 
     if( withTracks ) {
-      if(fVerbose) cout << "Tracker has " << tTracker->GetTracksN() << " tracks reconstructed" << endl;
+      if(fVerbose || fDebugRaw) cout << "Tracker has " << tTracker->GetTracksN() << " tracks reconstructed" << endl;
       for( Int_t iTrack=1; iTrack<=tTracker->GetTracksN(); iTrack++ ) { // loop on tracks
         aTrack = tTracker->GetTrack(iTrack);
         double u = tPlane->Intersection(aTrack)(0);
@@ -1978,7 +1991,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
           _TrkIdx[iPlane-1].push_back(iTrack);
         }
 
-        if(fVerbose) printf("MRaw::DisplayRawData2D  pl %d, track[%d] = (%.1f,%.1f) in plane.\n", iPlane, iTrack, tPlane->Intersection(aTrack)(0), tPlane->Intersection(aTrack)(1));
+        if(fVerbose || fDebugRaw) printf("MRaw::DisplayRawData2D  pl %d, track[%d] = (%.1f,%.1f) in plane.\n", iPlane, iTrack, tPlane->Intersection(aTrack)(0), tPlane->Intersection(aTrack)(1));
       } // end loop on tracks
     } // end if withTracks
 

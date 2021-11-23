@@ -222,11 +222,12 @@ void BeastCheckPosition();
   void DumpEventHeader( Int_t nEvents); // JB 2012/05/03
   void UserPlot( Int_t nEvents=1000 ); // JB 2009/09/08
   void ToggleVerbosity(); // JB 2011/02/09
+  void ToggleDebug(); // JB 2021/11/23
   void DisplayCumulatedMonteCarlo2D( Int_t nEvents=1000, Bool_t ifDrawTrack=kTRUE); // LC 2012/10/19
   void SetMultiFrame( Int_t aPlane, Int_t nFrames ); // JB 2013/07/18
   void SetNbinsReductionFactor( Float_t aFactor); // JB 2014/12/08
   void DisplayHistory( Int_t nEvents=50000, Int_t nCumul=500);  // JB 2014/05/27
-  void SetDebugLevel( Int_t aLevel) { fDebugRaw = aLevel; }; // JB 2014/05/29
+  void SetDebugLevel( Int_t aLevel) { fDebugRaw = aLevel; cout<<"MRAWanalysis debug updated to "<<fDebugRaw<<endl;}; // JB 2014/05/29
   void DisplayImage( Int_t nEvents=1, Int_t planeToPlot=4, TString data=TString("raw"), TString format=TString("gif"), Bool_t displayImage=1, Bool_t saveImage=1, Float_t minValue=-65536, Float_t NBins=1., Bool_t greyScale=kTRUE, TString flip=TString("Y"));
   void StudyTrackMultiplicity( TH1F *hNTracksPerPlanes, TH1F *hNHitsPerTrack, Int_t nEvents);
   void StudyTrackingEfficiency(Int_t nEvents,
