@@ -1942,20 +1942,23 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
           int idex_pixel;
           double Pixel_col;
           double Pixel_row;
-          if(fDebugRaw) cout << "Current hit " << iHit << " from Plane " << iPlane << " has " << aList->size() << " fired pixels" << endl;
+          double Value;
+          if(fDebugRaw) cout << "Plane " << iPlane << ": hit " << iHit << " has " << Npixels_in_Hit << " pixels" << endl;
 
             for(int ipixInHit=0;ipixInHit < Npixels_in_Hit;ipixInHit++) {
             if( aHit->GetPSeed()==NULL ) { // Hit built with DStrip object
               idex_pixel = aHit->GetIndex(ipixInHit) - 1;
               Pixel_col = idex_pixel%tPlane->GetStripsNu();
               Pixel_row = idex_pixel/tPlane->GetStripsNu();
+              Value = tPlane->GetPulseHeight(idex_pixel);
             }
             else { // Hit built with DPixel object
               idex_pixel   = aHit->GetIndexInOriginalList(ipixInHit);
               Pixel_col = aList->at(idex_pixel)->GetPixelColumn();
               Pixel_row = aList->at(idex_pixel)->GetPixelLine();
+              Value = aList->at(idex_pixel)->GetPulseHeight();
             }
-             if(fDebugRaw) printf("    pix %d, index = %d, (col,row)=(%3d, %3d)\n", ipixInHit, idex_pixel, Pixel_col, Pixel_row );
+             if(fDebugRaw) printf("    pix %d, index = %d, (col,row)=(%3.0f, %3.0f), pulseheight=%.1f\n", ipixInHit, idex_pixel, Pixel_col, Pixel_row, Value );
 
             _PixelsInHitPositions_U[iPlane-1].push_back(Pixel_col);
             _PixelsInHitPositions_V[iPlane-1].push_back(Pixel_row);
