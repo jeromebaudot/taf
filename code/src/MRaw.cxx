@@ -1947,7 +1947,7 @@ void MRaw::DisplayRawData2D( Float_t minSN, Bool_t withHits, Bool_t withTracks, 
 
             for(int ipixInHit=0;ipixInHit < Npixels_in_Hit;ipixInHit++) {
             if( aHit->GetPSeed()==NULL ) { // Hit built with DStrip object
-              idex_pixel = aHit->GetIndex(ipixInHit) - 1;
+              idex_pixel = aHit->GetIndex(ipixInHit);
               Pixel_col = idex_pixel%tPlane->GetStripsNu();
               Pixel_row = idex_pixel/tPlane->GetStripsNu();
               Value = tPlane->GetPulseHeight(idex_pixel);
@@ -16605,7 +16605,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
 
       for(int ipixInHit=0;ipixInHit < Npixels_in_Hit;ipixInHit++) {
         if( aHit->GetPSeed()==NULL ) { // Hit built with DStrip object
-          idex_pixel = aHit->GetIndex(ipixInHit) - 1;
+          idex_pixel = aHit->GetIndex(ipixInHit);
           Pixel_col = idex_pixel%tPlane->GetStripsNu();
           Pixel_row = idex_pixel/tPlane->GetStripsNu();
         }
