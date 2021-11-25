@@ -1061,7 +1061,6 @@ void MimosaAnalysis::MimosaPro(Int_t   MaxEvt,
             else { // end if no hit matching the track was found
               nmiss++;
                 cout << "Event for which a track is missed : " << ievt << endl;
-                cout << "Number of Planes  = " << Planes->GetLast()+1  << endl;
                              
                // cout  << " pos " << ahit->Hu << ";" << ahit->Hv << endl; //Generate Break and Segmentation Fault since there is no Hit
   /*

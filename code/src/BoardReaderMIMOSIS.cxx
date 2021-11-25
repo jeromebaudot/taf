@@ -1008,7 +1008,7 @@ BoardReaderMIMOSIS::BoardReaderMIMOSIS(int boardNumber, char* dataPath, int runN
   fendTrg = 0;
   
   // Initialization of the number of fired pixels per frame
-  // for (int i = 0; i < 1000; i ++) NbFiredPixPerFrame[i] = 0;
+  //for (int i = 0; i < 1000; i ++) NbFiredPixPerFrame[i] = 0;
 
   // ----------------------------------------------------------------
   // Reading Class creation
@@ -1522,9 +1522,10 @@ void BoardReaderMIMOSIS::DecodeFrame() {
            
            
            }// End of Loop over sensors
-      
+    
+    
     if (fTriggerMode == 0)
-       fCurrentFrameNumber ++ ;
+        fCurrentFrameNumber ++ ;
     else
     {
         fFramesCounterInTrigger ++;
@@ -1536,10 +1537,20 @@ void BoardReaderMIMOSIS::DecodeFrame() {
    }
     
     if ((fCurrentFrameNumber <fnbFrPerAcq) && (NbFiredPixPerFrame[fCurrentFrameNumber-1] > 0 ) && (fNbMergedFrame < fFramesToMerge) && isAcqSafe()) {
-        DecodeFrame();
-        fNbMergedFrame ++;
+    if (fDebugLevel > 3) {
+        printf("----------------------------------\n");
+        printf("Number of Fired Pixels in current frame %d : %d \n",fCurrentFrameNumber-1, NbFiredPixPerFrame[fCurrentFrameNumber-1]);
+        printf("Merging frame %d into frame %d \n", fCurrentFrameNumber, fCurrentFrameNumber - 1);
     }
-    else fNbMergedFrame = 0;
+        fNbMergedFrame ++;
+       if (fDebugLevel > 3) printf("Number of Merged Frames : %d \n",fNbMergedFrame);
+        DecodeFrame();
+        
+
+    }
+    else
+        fNbMergedFrame = 0;
+   
      
 }
     
