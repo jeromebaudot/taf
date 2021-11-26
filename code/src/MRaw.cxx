@@ -11750,6 +11750,15 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   // Modified: JB 2021/11/26 to allow column range selection
 
   Int_t planeID = 1;
+  Int_t minEntriesForFit = 50;
+
+  if( maxfit<=minfit ) {
+    cout << "Inconsistent fit range: (" << minfit << ", " << maxfit << ") " << endl;
+  }
+  if(fVerbose || fDebugRaw) {
+    cout << endl << "Building gain map for Plane " << planeID << ", trying to fit in range (" << minfit << ", " << maxfit << ") " << minEntriesForFit << endl;
+    if( colMin < colMax ) cout << "  Range of columns [" << colMin << " - " << colMax << "]" << endl;
+  }
 
   DTracker *tTracker  =  fSession->GetTracker();
   DPlane   *tPlane = tTracker->GetPlane(planeID);
@@ -11795,6 +11804,8 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   // Loop over events
   fSession->SetEvents(nEvents);
 
+  if( fDebugRaw) cout << " Histograms ready, starting loop over " << nEvents << " events" << endl;
+
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) { // loop on events
     fSession->NextRawEvent();
     tTracker->Update();
@@ -11803,9 +11814,8 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
     if( tPlane->GetHitsN()>0 ) { // If there are some hits
       for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
         aHit = (DHit*)tPlane->GetHit( iHit);
-        //printf("GettaHit->GetIndexSeed()ing seed index for hit %d (address %x) at plane %d: ", iHit, aHit, iPlane);
-        //printf( "%d\n", aHit->GetIndexSeed());
         int icol = aHit->GetPSeed()->GetPixelColumn();
+        if( fDebugRaw )  printf(" hit %d with seed at index %d, col %d, pulseheight=%.0f\n", iHit, aHit->GetIndexSeed(), icol, aHit->GetPulseHeight(0));
         if ( colMax<=colMin || (colMin<=icol && icol<=colMax) ) { // test if in column range
           hHitSeedChargeAll->Fill( aHit->GetPulseHeight(0));
 
@@ -11826,6 +11836,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   // ================
   // Fit histos for all pixels and individual pixels
 
+  cout << " histo over all pixels has " << hHitSeedChargeAll->GetEntries() << " entries" << endl;
   ffit->SetRange( minfit, maxfit);
   ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
   ffit->SetParLimits( 0, minfit, maxfit);
@@ -11836,13 +11847,13 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   hHitSeedChargeAll->Fit( ffit, "QR");
   double averageMean = ffit->GetParameter(0);
   double averageSigma = ffit->GetParameter(1);
-  printf( "   average estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
+  printf( "   => average estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
 
 
   for ( int ipix=0; ipix<npixels; ipix++ ) {
-    cout << "getting histo nb " << ipix;
+    cout << " getting histo for pixel " << ipix;
     cout << " with " << hHitSeedCharge[ipix]->GetEntries() << " entries" << endl;
-    if( hHitSeedCharge[ipix]->GetEntries()>50 ) { // test enough entries for fit
+    if( hHitSeedCharge[ipix]->GetEntries()>minEntriesForFit ) { // test enough entries for fit
 
       ffit->SetRange( minfit, maxfit);
       ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
