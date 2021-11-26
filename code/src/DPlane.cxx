@@ -47,6 +47,7 @@
 // Last Modified: JB, 2018/05/04 DPlane::Update
 // Last Modified: JB, 2018/07/04 Dplane, Update, SetPixelGainFromHisto for pixel gain map usage
 // Last Modified: JB, 2010/11/25 Update
+// Last Modified: JB, 2010/11/26 Use fRegions to decide whether or not to do CMS
 
 /////////////////////////////////////////////////////////////
 // Class Description of DPlane                             //
@@ -422,12 +423,13 @@ DPlane::DPlane(DTracker& aTracker, const Int_t aPlaneNumber, const Int_t aLadder
     fCommonShift         = new Float_t[fRegions];
     fCommonChannels      = new Long_t[fRegions];
 
-    for(Int_t region = 0; region < fRegions; region++) {
+    for(Int_t region = 0; region < TMath::Max(fRegions,1); region++) {
       fCommonShift[region]    = 0.;
       fCommonChannels[region] = 0;
     }
-    // mark all channels as good:
+    if (fDebugPlane)   printf("  DPlane: Computing common mode shift (CMS) over %d regions.\n", fRegions);
 
+    // mark all channels as good:
     for (ch = 1; ch <=fChannelsN; ch++) {
       fChannelGood[ch] = 1;
     }
@@ -3209,17 +3211,20 @@ void DPlane::analyze_basics(){
   // For all events after the init step
   else if (fInitialCounter >= fInitialNoise) {
 
-    // calculate common mode shift
-    //CalculateCommonMode(); // Do not work yet, JB 2020/09/20
+    // calculate common mode shift, if needed
+    if( fRegions>0 ) CalculateCommonMode();
 
     // Loop only on fired pixels, JB 2011/04/15
     for (Int_t tci = 0; tci < fPixelsN; tci++) { // loop over hit pixels
       aPixel = fListOfPixels->at(tci);
       st     = fStripsNu*aPixel->GetPixelLine() + aPixel->GetPixelColumn();
       aStrip = GetStrip(st);
-      region = (Int_t)((1.*(st-1))/fStripsN * fRegions);
-      aStrip->SetCommonMode(fCommonShift[region]);
-      //aStrip->Update();
+      if( fRegions>0 ) {
+        region = (Int_t)((1.*(st-1))/fStripsN * fRegions);
+        aStrip->SetCommonMode(fCommonShift[region]);
+      }
+      else { aStrip->SetCommonMode(0.); }
+      //aStrip->Update(); // this update pedestal and noise beyond initialization
       aStrip->UpdateSignal();
       aStrip->SetFound( kFALSE); // JB 2012/08/20
       // The two following lines are required because the pixel list

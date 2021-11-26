@@ -23,6 +23,7 @@
 // Last Modified: JB 2014/08/29 FillTree
 // Last Modified: BB 2015/11/18 Modification of FillTree to avoid a Break segmentation
 // Last Modified: JB 2021/05/01 Propagate potential sourcePath set via command line
+// Last Modified: JB 2021/11/26 Updated commonRegions to init at 0
 
   ////////////////////////////////////////////////////////////
   // Class Description of DSession                          //

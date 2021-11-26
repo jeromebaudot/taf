@@ -7,7 +7,7 @@
 - comments on features
 - to do list for developers
 *********************************************************************************************************
-Contact: baudot@in2p3.fr, auguste.besson@iphc.cnrs.fr
+Contact: baudot@in2p3.fr, auguste.besson@iphc.cnrs.fr, ziad.elbitar@iphc.cnrs.fr
 
 Web page: http://www.iphc.cnrs.fr/TAF.html
 
@@ -37,17 +37,22 @@ gTAF->Help();
 # Note that TAF accepts arguments that can speed up the initialisation step:
 - run TAF --help to know more
 - run TAF on a specific run, use
-  TAF -run runNumber
+    TAF -run runNumber
 - run TAF on a specific run but a generic config file, use
-  TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg
+    TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg
 - run TAF on a specific run but a generic config file and specify the data-path, use
-  TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg -data /mydatapath
+    TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg -datapath /mydatapath
+- run TAF on a specific run but a generic config file and specific datafile, use
+  (note the datapath is still taken from the config file unless you use -datapath option)
+    TAF -run runNumber -cfg ./myConfigDir/myConfigFile.cfg -datafile myfile
+- run TAF analysis with a specific DSFfile, use
+    TAF -run runNumber -dsffile myDSFfile
 - run TAF on a specific run and with config file in a specific directory, used
-  TAF -run runNumber -cfgdir myConfigDir
+    TAF -run runNumber -cfgdir myConfigDir
 - run TAF with any of the above options and open directly the GUI, use (for instance)
-  TAF -run runNumber -gui
+    TAF -run runNumber -gui
 - run TAF with any of the above options and set a debug level
-  TAF -run runNumber -debug 2 
+    TAF -run runNumber -debug 2
 
 # To compile the software:
 - Prefered method, use the command (from anywhere): maketaf

@@ -332,8 +332,8 @@
 //                     between the seed pixel and any other pixel in the hit
 // ClusterLimitRadius= [MANDATORY if HitFinder==2] (float,um) maximal distance
 //                     between the center of gravity and any other pixel in the hit
-// CommonRegions     = [optional] (int) {1} # regions to define
-//                     for the common noise shift computation per event
+// CommonRegions     = [optional] (int) {0} # regions to define
+//                     for the common noise shift computation per event, if O => no CMS computed
 // HitPositionAlgorithm = [MANDATORY] (int) controls how the hit position
 //                     is estimated from the pixels info
 //                 1 = Center of Gravity,
@@ -1784,7 +1784,7 @@ void DSetup::ReadPlaneParameters( Int_t aPlaneNumber)
   pPlaneParameter[aPlaneNumber].MinNStrips = 1;
   pPlaneParameter[aPlaneNumber].ClusterLimit      = DR3(-1,-1,-1);
   pPlaneParameter[aPlaneNumber].ClusterLimitRadius = -1;
-  pPlaneParameter[aPlaneNumber].CommonRegions = 1; // JB 2014/12/29
+  pPlaneParameter[aPlaneNumber].CommonRegions = 0; // JB 2021/11/26
   pPlaneParameter[aPlaneNumber].Status             = -1;
   pPlaneParameter[aPlaneNumber].ParentLadderID     = -1;
   pPlaneParameter[aPlaneNumber].HitPositionAlgorithm = -1;
