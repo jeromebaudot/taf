@@ -260,7 +260,7 @@ void BeastCheckPosition();
 
   void SeedCuts(Int_t nEvents=1000);
 
-  void BuildPixelGainMap( Int_t nEvents=100000, Double_t min=850, Double_t max=960, Double_t maxcharge=2500 ); // JB 2018/07/04
+  void BuildPixelGainMap( Int_t nEvents=100000, Double_t min=850, Double_t max=960, Double_t maxcharge=2500,  Int_t colMin=0, Int_t colMax=0 ); // JB 2018/07/04
 
   void BetaSourceMultiFrameAnalysis(int     aPlane  = 0,
 				    int     nFrames = 0,

@@ -11728,7 +11728,7 @@ double CBfunction(double *x, double *par) {
 
 }
 //*****************************************************************************
-void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, Double_t maxcharge )
+void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, Double_t maxcharge,  Int_t colMin, Int_t colMax )
 {
   // Fit the seed charge distribution for all individual pixels of 1st plane
   //    => spectrum is expected to come from a monochromatic source!
@@ -11747,6 +11747,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   //  o PixelGain_runXXXX.root with 2d map of correction factors
   //
   // JB 2018/07/04
+  // Modified: JB 2021/11/26 to allow column range selection
 
   Int_t planeID = 1;
 
@@ -11764,12 +11765,12 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   for( int ipix=0; ipix<npixels; ipix++ ) {
     sprintf( name, "hhitseedq%dpl%d", ipix, planeID);
     sprintf( title, "Seed pixel charge for pixel %d - plane %d", ipix, planeID);
-    hHitSeedCharge[ipix] = new TH1F(name, title, maxcharge, 0, maxcharge);
+    hHitSeedCharge[ipix] = new TH1F(name, title, maxcharge*NbinsReductionFactor, 0, maxcharge);
     hHitSeedCharge[ipix]->SetXTitle("charge (ADCu)");
   }
   sprintf( name, "hhitseedqallpl%d", planeID);
   sprintf( title, "Seed pixel charge for all pixels - plane %d - %s", planeID, tPlane->GetPlanePurpose());
-  TH1F *hHitSeedChargeAll = new TH1F( name, title, maxcharge, 0, maxcharge);
+  TH1F *hHitSeedChargeAll = new TH1F( name, title, maxcharge*NbinsReductionFactor, 0, maxcharge);
 
   // For fit & statistics
   double *means = new double[npixels];
@@ -11804,13 +11805,15 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
         aHit = (DHit*)tPlane->GetHit( iHit);
         //printf("GettaHit->GetIndexSeed()ing seed index for hit %d (address %x) at plane %d: ", iHit, aHit, iPlane);
         //printf( "%d\n", aHit->GetIndexSeed());
+        int icol = aHit->GetPSeed()->GetPixelColumn();
+        if ( colMax<=colMin || (colMin<=icol && icol<=colMax) ) { // test if in column range
+          hHitSeedChargeAll->Fill( aHit->GetPulseHeight(0));
 
-        hHitSeedChargeAll->Fill( aHit->GetPulseHeight(0));
-
-        int ipix = (int)(aHit->GetIndexSeed());
-        if( 0<=ipix && ipix<npixels ) {
-          hHitSeedCharge[ipix]->Fill( aHit->GetPulseHeight(0));
-        }
+          int ipix = (int)(aHit->GetIndexSeed());
+          if( 0<=ipix && ipix<npixels ) {
+            hHitSeedCharge[ipix]->Fill( aHit->GetPulseHeight(0));
+          }
+        } // end test if in column range
 
       } //end loop on hits
     } // end If there are some hits
@@ -11839,33 +11842,36 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   for ( int ipix=0; ipix<npixels; ipix++ ) {
     cout << "getting histo nb " << ipix;
     cout << " with " << hHitSeedCharge[ipix]->GetEntries() << " entries" << endl;
-    ffit->SetRange( minfit, maxfit);
-    ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
-    ffit->SetParLimits( 0, minfit, maxfit);
-    ffit->SetParLimits( 1, 0, maxfit-minfit);
-    ffit->SetParLimits( 2, 0.5, 1.5);
-    ffit->SetParLimits( 3, 0.1, 2.);
-    ffit->SetParLimits( 4, 0., 1.e8);
-    hHitSeedCharge[ipix]->Fit( ffit, "QR");
-    means[ipix] = ffit->GetParameter(0);
-    sigmas[ipix] = ffit->GetParameter(1);
-    printf( "   first estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));
-    hpixelgain->SetBinContent( ipix%ncolumns+1, ipix/ncolumns+1, means[ipix]);
+    if( hHitSeedCharge[ipix]->GetEntries()>50 ) { // test enough entries for fit
 
-    // Uncomment the following for a second fit
-    /*    ffit->SetRange( means[ipix]-6*sigmas[ipix], means[ipix]+3*sigmas[ipix]);
-     ffit->SetParLimits( 0, minfit, maxfit);
-     ffit->SetParLimits( 1, 0, maxfit-minfit);
-     ffit->SetParLimits( 2, 0, 2.);
-     ffit->SetParLimits( 3, 0, 2.);
-     ffit->SetParLimits( 4, 0., 1.e8);
-     histo->Fit( ffit, "QR");
-     means[ipix] = ffit->GetParameter(0);
-     sigmas[ipix] = ffit->GetParameter(1);
-     printf( "   second estimation mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));*/
+      ffit->SetRange( minfit, maxfit);
+      ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
+      ffit->SetParLimits( 0, minfit, maxfit);
+      ffit->SetParLimits( 1, 0, maxfit-minfit);
+      ffit->SetParLimits( 2, 0.5, 1.5);
+      ffit->SetParLimits( 3, 0.1, 2.);
+      ffit->SetParLimits( 4, 0., 1.e8);
+      hHitSeedCharge[ipix]->Fit( ffit, "QR");
+      means[ipix] = ffit->GetParameter(0);
+      sigmas[ipix] = ffit->GetParameter(1);
+      printf( "   first estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));
+      hpixelgain->SetBinContent( ipix%ncolumns+1, ipix/ncolumns+1, means[ipix]);
 
-    hmeans->Fill( means[ipix]);
-    hsigmas->Fill( sigmas[ipix]);
+      // Uncomment the following for a second fit
+      /*    ffit->SetRange( means[ipix]-6*sigmas[ipix], means[ipix]+3*sigmas[ipix]);
+       ffit->SetParLimits( 0, minfit, maxfit);
+       ffit->SetParLimits( 1, 0, maxfit-minfit);
+       ffit->SetParLimits( 2, 0, 2.);
+       ffit->SetParLimits( 3, 0, 2.);
+       ffit->SetParLimits( 4, 0., 1.e8);
+       histo->Fit( ffit, "QR");
+       means[ipix] = ffit->GetParameter(0);
+       sigmas[ipix] = ffit->GetParameter(1);
+       printf( "   second estimation mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));*/
+
+      hmeans->Fill( means[ipix]);
+      hsigmas->Fill( sigmas[ipix]);
+    } // end test enough entries for fit
   }
 
   hpixelgain->Scale(1./averageMean);
