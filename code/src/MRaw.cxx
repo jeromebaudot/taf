@@ -11751,12 +11751,13 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
 
   Int_t planeID = 1;
   Int_t minEntriesForFit = 50;
+  Int_t nBinsCharge = TMath::Min( 500, maxcharge);
 
   if( maxfit<=minfit ) {
     cout << "Inconsistent fit range: (" << minfit << ", " << maxfit << ") " << endl;
   }
   if(fVerbose || fDebugRaw) {
-    cout << endl << "Building gain map for Plane " << planeID << ", trying to fit in range (" << minfit << ", " << maxfit << ") " << minEntriesForFit << endl;
+    cout << endl << "Building gain map for Plane " << planeID << ", trying to fit in range (" << minfit << ", " << maxfit << "), minimum entries per histo for fit = " << minEntriesForFit << endl;
     if( colMin < colMax ) cout << "  Range of columns [" << colMin << " - " << colMax << "]" << endl;
   }
 
@@ -11767,6 +11768,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   Int_t npixels  = tPlane->GetStripsN();
   Int_t ncolumns = tPlane->GetStripsNu();
   Int_t nrows = tPlane->GetStripsNv();
+  int icol;
 
   // For seed charge distributions
   TH1F **hHitSeedCharge = new TH1F*[npixels];
@@ -11774,12 +11776,12 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   for( int ipix=0; ipix<npixels; ipix++ ) {
     sprintf( name, "hhitseedq%dpl%d", ipix, planeID);
     sprintf( title, "Seed pixel charge for pixel %d - plane %d", ipix, planeID);
-    hHitSeedCharge[ipix] = new TH1F(name, title, maxcharge*NbinsReductionFactor, 0, maxcharge);
+    hHitSeedCharge[ipix] = new TH1F(name, title, nBinsCharge, 0, maxcharge);
     hHitSeedCharge[ipix]->SetXTitle("charge (ADCu)");
   }
   sprintf( name, "hhitseedqallpl%d", planeID);
   sprintf( title, "Seed pixel charge for all pixels - plane %d - %s", planeID, tPlane->GetPlanePurpose());
-  TH1F *hHitSeedChargeAll = new TH1F( name, title, maxcharge*NbinsReductionFactor, 0, maxcharge);
+  TH1F *hHitSeedChargeAll = new TH1F( name, title, nBinsCharge, 0, maxcharge);
 
   // For fit & statistics
   double *means = new double[npixels];
@@ -11814,7 +11816,8 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
     if( tPlane->GetHitsN()>0 ) { // If there are some hits
       for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { //loop on hits (starts at 1 !!)
         aHit = (DHit*)tPlane->GetHit( iHit);
-        int icol = aHit->GetPSeed()->GetPixelColumn();
+        if( fDebugRaw )  printf(" hit %d with seed at index %d, pulseheight=%.0f\n", iHit, aHit->GetIndexSeed(), aHit->GetPulseHeight(0));
+        icol = aHit->GetIndexSeed()%ncolumns;
         if( fDebugRaw )  printf(" hit %d with seed at index %d, col %d, pulseheight=%.0f\n", iHit, aHit->GetIndexSeed(), icol, aHit->GetPulseHeight(0));
         if ( colMax<=colMin || (colMin<=icol && icol<=colMax) ) { // test if in column range
           hHitSeedChargeAll->Fill( aHit->GetPulseHeight(0));
@@ -11836,7 +11839,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   // ================
   // Fit histos for all pixels and individual pixels
 
-  cout << " histo over all pixels has " << hHitSeedChargeAll->GetEntries() << " entries" << endl;
+  if(fVerbose || fDebugRaw) cout << " histo over all pixels has " << hHitSeedChargeAll->GetEntries() << " entries" << endl;
   ffit->SetRange( minfit, maxfit);
   ffit->SetParameters( (maxfit+minfit)/2, (maxfit-minfit)/4, 1., 1., 1.);
   ffit->SetParLimits( 0, minfit, maxfit);
@@ -11847,12 +11850,12 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
   hHitSeedChargeAll->Fit( ffit, "QR");
   double averageMean = ffit->GetParameter(0);
   double averageSigma = ffit->GetParameter(1);
-  printf( "   => average estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
+  printf( "   => average peak estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", averageMean, averageSigma, ffit->GetParameter(2), ffit->GetParameter(3));
 
 
+  int countLowStatHisto = 0;
   for ( int ipix=0; ipix<npixels; ipix++ ) {
-    cout << " getting histo for pixel " << ipix;
-    cout << " with " << hHitSeedCharge[ipix]->GetEntries() << " entries" << endl;
+    if(fDebugRaw) cout << "  getting histo for pixel " << ipix << " with " << hHitSeedCharge[ipix]->GetEntries() << " entries" << endl;
     if( hHitSeedCharge[ipix]->GetEntries()>minEntriesForFit ) { // test enough entries for fit
 
       ffit->SetRange( minfit, maxfit);
@@ -11865,7 +11868,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
       hHitSeedCharge[ipix]->Fit( ffit, "QR");
       means[ipix] = ffit->GetParameter(0);
       sigmas[ipix] = ffit->GetParameter(1);
-      printf( "   first estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));
+      if(fDebugRaw) printf( "   first estimate: mean = %.0f, std-dev = %.1f, alpha = %.3f, n = %.3f\n", means[ipix], sigmas[ipix], ffit->GetParameter(2), ffit->GetParameter(3));
       hpixelgain->SetBinContent( ipix%ncolumns+1, ipix/ncolumns+1, means[ipix]);
 
       // Uncomment the following for a second fit
@@ -11883,7 +11886,11 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
       hmeans->Fill( means[ipix]);
       hsigmas->Fill( sigmas[ipix]);
     } // end test enough entries for fit
+    else {
+      countLowStatHisto++;
+    }
   }
+  if(fVerbose || fDebugRaw) cout << "  Nb of pixels with low stat (then no fit): " << countLowStatHisto << endl;
 
   hpixelgain->Scale(1./averageMean);
 
