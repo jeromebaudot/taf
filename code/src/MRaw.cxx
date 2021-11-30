@@ -228,8 +228,9 @@ void  MRaw::PrepareRaw()
 //      bar3->AddButton("INSPECT FAKES","gTAF->GetRaw()->Inspectfake()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("JUMP EVENTS","gTAF->GetRaw()->MimosaJump()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("RAW CHANNELS", "gTAF->GetRaw()->DisplayRawData(1.)", "Display raw channels per plane and event");
-      bar3->AddButton("RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayRawData2D()", "Display raw channels per plane and event in 2D");
-      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(5000)", "Display raw data per plane cumulated over 500 events in 2D");
+      bar3->AddButton("RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayRawData2D(0,0)", "Display raw channels per plane and event in 2D");
+      bar3->AddButton("FOOT TEST", "gTAF->GetRaw()->FOOTCumul(4000)", "Display raw channels per plane and event in 2D");
+      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(10000)", "Display raw data per plane cumulated over 500 events in 2D");
       bar3->AddButton("HITS 2D", "gTAF->GetRaw()->DisplayHits2D(2,1,0)", "Display hits per plane and event in 2D");
       bar3->AddButton("CUMULATE HITS 2D", "gTAF->GetRaw()->DisplayCumulatedHits2D(5000)", "Display hits per plane cumulated over 500 events in 2D");
       if( fSession->GetTracker()->GetNumberOfLadders()>0 ) {
@@ -18213,30 +18214,31 @@ void MRaw::FOOTCumul(Int_t nEvents, Float_t minOccurence)
   }
 
 
-  Double_t occupancyMap[4] = {0.};
 
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
     nbPIPOT[iPlane-1] = new Float_t[nOccurences]; //nb Pixels In Plane Over Threshold
+    Double_t occupancyMap[4] = {0.};
     for (Int_t ioccurence_list=0; ioccurence_list<nOccurences; ioccurence_list++) nbPIPOT[iPlane-1][ioccurence_list]=0;
     for( Int_t xBin=0; xBin<hRDMap[iPlane-1]->GetNbinsX(); xBin++) {
       for( Int_t yBin=0; yBin<hRDMap[iPlane-1]->GetNbinsY(); yBin++) {
         occurence = hRDMap[iPlane-1]->GetBinContent( xBin+1, yBin+1)/(Float_t)nEvents;
-        if ( occurence < minOccurence ) {
+        //if ( occurence < minOccurence ) {
           if( xBin<240 ) { occupancyMap[0] += occurence; }
           else if ( xBin<480 ) { occupancyMap[1] += occurence; }
           else if ( xBin<720 ) { occupancyMap[2] += occurence; }
           else { occupancyMap[3] += occurence; }
-        }
+        //}
         for (Int_t ioccurence_list=0; ioccurence_list<nOccurences; ioccurence_list++) {
           if (occurence >= occurence_list[ioccurence_list]) nbPIPOT[iPlane-1][ioccurence_list]+=1;
         }
       }
     }
+    for( Int_t i=0; i<4; i++ ) { occupancyMap[i] /= 240*hRDMap[iPlane-1]->GetNbinsY(); }
+    printf("\n******* Occupancy per submatrix of PLANE %d ***********\n", iPlane);
+    printf("  %.1e  %.1e  %.1e  %.1e\n", occupancyMap[0], occupancyMap[1], occupancyMap[2], occupancyMap[3]);
+    printf("*************************************************\n");
   } // end loop on planes
 
-  printf("\n********** Occupancy per submatrix **************\n");
-  printf("  %f  %f  %f  %f\n", occupancyMap[0], occupancyMap[1], occupancyMap[2], occupancyMap[3]);
-  printf("*************************************************\n");
 
   // Now display
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
