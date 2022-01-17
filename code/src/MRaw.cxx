@@ -228,8 +228,9 @@ void  MRaw::PrepareRaw()
 //      bar3->AddButton("INSPECT FAKES","gTAF->GetRaw()->Inspectfake()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("JUMP EVENTS","gTAF->GetRaw()->MimosaJump()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("RAW CHANNELS", "gTAF->GetRaw()->DisplayRawData(1.)", "Display raw channels per plane and event");
-      bar3->AddButton("RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayRawData2D()", "Display raw channels per plane and event in 2D");
-      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(5000)", "Display raw data per plane cumulated over 500 events in 2D");
+      bar3->AddButton("RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayRawData2D(0,0)", "Display raw channels per plane and event in 2D");
+      bar3->AddButton("FOOT TEST", "gTAF->GetRaw()->FOOTCumul(4000)", "Display raw channels per plane and event in 2D");
+      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(10000)", "Display raw data per plane cumulated over 500 events in 2D");
       bar3->AddButton("HITS 2D", "gTAF->GetRaw()->DisplayHits2D(2,1,0)", "Display hits per plane and event in 2D");
       bar3->AddButton("CUMULATE HITS 2D", "gTAF->GetRaw()->DisplayCumulatedHits2D(5000)", "Display hits per plane cumulated over 500 events in 2D");
       if( fSession->GetTracker()->GetNumberOfLadders()>0 ) {
@@ -4649,7 +4650,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
   TCanvas *cnoisypixels;
   g = gROOT->FindObject("cnoisypixels") ;
   if (g) cnoisypixels= (TCanvas*)g;
-  else cnoisypixels = new TCanvas("cnoisypixels", "Noisy pixels Study", 5, 5,800,700);
+  else cnoisypixels = new TCanvas("cnoisypixels", "Noisy pixels Study", 150, 50,800,700);
   cnoisypixels->Clear();
   cnoisypixels->UseCurrentStyle();
   sprintf(canvasTitle, "Run %d, cumul over %d events", fSession->GetRunNumber(), nEvents);
@@ -18005,5 +18006,551 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
   delete tracklist;
   cout << "\n\n Event number : " << fSession->GetCurrentEventNumber()-1<<" " << endl;
 
+
+}
+
+//______________________________________________________________________________
+//
+void MRaw::FOOTCumul(Int_t nEvents, Float_t minOccurence)
+{
+  // Copy of CumulatedRawData2D with computation of fake rate
+  //
+  // JB 2021/11/30
+
+  fSession->SetEvents(nEvents);
+
+  TString str_EvtParsingMode="continuous";
+  Float_t minSN = 0;
+  Float_t occurence_min = 1.e-5;
+  Float_t occurence_max = 1.;
+  Int_t nOccurences=20;
+  Bool_t storeOccurence =kTRUE;
+  double Colmin = -1, Colmax = -1;
+  double Linmin = -1, Linmax = -1;
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  Int_t nPlanes = tTracker->GetPlanesN();
+  DPlane* tPlane;
+
+  // Canvas for Raw Data map
+  TCanvas *ccumulrd;
+  TObject* g = gROOT->FindObject("ccumulrd") ;
+  if (g) {
+    ccumulrd = (TCanvas*)g;
+  }
+  else {
+    ccumulrd = new TCanvas("ccumulrd", "Cumulate RawData", 5, 5,800,700);
+  }
+  ccumulrd->Clear();
+  ccumulrd->UseCurrentStyle();
+  TPaveLabel* label = new TPaveLabel();
+  Char_t canvasTitle[200];
+  sprintf(canvasTitle, "Run %d, cumul over %d events", fSession->GetRunNumber(), nEvents);
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad = new TPad("pad","",0.,0.,1.,0.965);
+  pad->Draw();
+  pad->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  // Canvas for noisy pixel study
+  TCanvas *cnoisypixels;
+  g = gROOT->FindObject("cnoisypixels") ;
+  if (g) cnoisypixels= (TCanvas*)g;
+  else cnoisypixels = new TCanvas("cnoisypixels", "Noisy pixels Study", 150, 50,800,700);
+  cnoisypixels->Clear();
+  cnoisypixels->UseCurrentStyle();
+  sprintf(canvasTitle, "Run %d, cumul over %d events", fSession->GetRunNumber(), nEvents);
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad2 = new TPad("pad2","",0.,0.,1.,0.965);
+  pad2->Draw();
+  pad2->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  double R_RawData_U[2][nPlanes];
+  int Nbins_RawData_U[nPlanes];
+  double R_RawData_V[2][nPlanes];
+  int Nbins_RawData_V[nPlanes];
+
+  // Histograms
+  TH2F **hRDMap = new TH2F*[nPlanes];
+  TGraph **gnoisypixels = new TGraph*[nPlanes];
+  Bool_t ifUseDaqIndex[nPlanes];
+  TH1F **h1HotPixelList = new TH1F*[nPlanes];
+  TH1F **h1FiredPixelsPerEvent = new TH1F*[nPlanes];
+  Char_t name[50], title[100];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    tPlane = tTracker->GetPlane(iPlane);
+    ifUseDaqIndex[iPlane-1] = kFALSE;
+    // -- Histo with pixel number
+    sprintf( name, "hrdmappl%d", iPlane);
+    sprintf( title, "Raw data map of plane %d - %s, S/N>%.1f", iPlane, tPlane->GetPlanePurpose(), minSN);
+    // check if the histo is existing or not
+
+    if( iPlane == 1 &&
+       (Colmin >= 0 && Colmax <= tPlane->GetStripsNu()) &&
+       (Linmin >= 0 && Linmax <= tPlane->GetStripsNv()) ) {
+      R_RawData_U[0][iPlane-1] = int(Colmin) - 0.5;
+      R_RawData_U[1][iPlane-1] = int(Colmax) + 0.5;
+      Nbins_RawData_U[iPlane-1] = int(R_RawData_U[1] - R_RawData_U[0]);
+
+      R_RawData_V[0][iPlane-1] = int(Linmin) - 0.5;
+      R_RawData_V[1][iPlane-1] = int(Linmax) + 0.5;
+      Nbins_RawData_V[iPlane-1] = int(R_RawData_V[1] - R_RawData_V[0]);
+    }
+    else {
+      R_RawData_U[0][iPlane-1] = -0.5;
+      R_RawData_U[1][iPlane-1] =  tPlane->GetStripsNu()-0.5;
+      Nbins_RawData_U[iPlane-1] = tPlane->GetStripsNu();
+
+      R_RawData_V[0][iPlane-1] = -0.5;
+      R_RawData_V[1][iPlane-1] = tPlane->GetStripsNv()-0.5;
+      Nbins_RawData_V[iPlane-1] = tPlane->GetStripsNv();
+    }
+
+
+    hRDMap[iPlane-1] = new TH2F(name, title,
+				Nbins_RawData_U[iPlane-1],R_RawData_U[0][iPlane-1],R_RawData_U[1][iPlane-1],
+				Nbins_RawData_V[iPlane-1],R_RawData_V[0][iPlane-1],R_RawData_V[1][iPlane-1]);
+				//tPlane->GetStripsNu(),
+				//-0.5,tPlane->GetStripsNu() - 0.5,
+				//tPlane->GetStripsNv(),
+				//-0.5,tPlane->GetStripsNv() - 0.5);
+    hRDMap[iPlane-1]->SetMarkerStyle(20);
+    hRDMap[iPlane-1]->SetMarkerSize(.1);
+    hRDMap[iPlane-1]->SetMarkerColor(1);
+    hRDMap[iPlane-1]->SetStats(kFALSE);
+
+    sprintf( name, "hpixelspereventpl%d", iPlane);
+    sprintf( title, "Nb of pixels per event of plane %d (%s); # pixels; # events", iPlane, tPlane->GetPlanePurpose());
+    h1FiredPixelsPerEvent[iPlane-1] = new TH1F( name, title, 1000, 0, 10000);
+  }
+
+  int TheNEvts_counter = 0;
+  //Loop over the requested number of events
+  std::vector<DPixel*> *aList;
+  for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
+
+    // FIXME Antonin Maire, 7 oct 2015
+    // Switch between 2 reading options : "continuous, evt after evt" vs "jumpy, every N evt"
+    if( str_EvtParsingMode.EqualTo("continuous") ){
+      if( !fSession->NextRawEvent() ) break; // Stop when no more events to read, JB 2011/07/08
+
+    }// end continuous reading
+    else if( str_EvtParsingMode.EqualTo("jumpy") ){
+      ULong_t lRunNb = fSession->GetCurrentEventNumber();
+      if( !fSession->GoToEvent(lRunNb +5)   ) break; // Stop when no more events to read, JB 2011/07/08
+    }// end jumpy reading events
+    else{
+      Printf("MRaw::DisplayCumulatedRawData2D : pb in the definition of the event parsing... exit!");
+      break;
+    }
+
+    // Printf("\n\n MRaw::DisplayCumulatedRawData2D :  Event[%d] \n", fSession->GetCurrentEventNumber() );
+
+    tTracker->Update();
+    TheNEvts_counter++;
+
+    //    DHit *aHit;
+    Int_t iCol, iRow;
+    for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+      tPlane = tTracker->GetPlane(iPlane);
+
+      if ( tPlane->GetReadout() >= 100){ // if sparsified readout
+
+        aList = tPlane->GetListOfPixels();
+        h1FiredPixelsPerEvent[iPlane-1]->Fill( aList->size());
+
+        // Specific test for first event in order to generate
+        //  list of DAQ index ordered pixel map
+        if( storeOccurence && !ifUseDaqIndex[iPlane-1]
+           && aList->size()>0 && aList->at(0)->GetDAQIndex()>=0 ) {
+          ifUseDaqIndex[iPlane-1] = kTRUE;
+          cout << "Plane " << iPlane << " uses DAQ pixel index !" << endl;
+          h1HotPixelList[iPlane-1] = new TH1F( Form("h1HotPixelListPl%d",iPlane), "Occupancy versus DAQ index; DAQ index; Occupancy (%)", tPlane->GetStripsNu()*tPlane->GetStripsNv(), -0.5, tPlane->GetStripsNu()*tPlane->GetStripsNv()-0.5);
+        }
+
+        for( Int_t iPix=0; iPix<(Int_t)aList->size(); iPix++) { // loop on fired pixels
+          iCol = aList->at(iPix)->GetPixelColumn();
+          iRow = aList->at(iPix)->GetPixelLine();
+          if( aList->at(iPix)->GetPulseHeight()>minSN ) {
+            if( ( Colmin<0 || (iCol >= R_RawData_U[0][iPlane-1] && iCol <= R_RawData_U[1][iPlane-1])) &&
+               ( Linmin<0 || (iRow >= R_RawData_V[0][iPlane-1] && iRow <= R_RawData_V[1][iPlane-1])) ) {
+              hRDMap[iPlane-1]->Fill( iCol, iRow, 1); // JB 2009/08/31
+              if( ifUseDaqIndex[iPlane-1] ) h1HotPixelList[iPlane-1]->Fill( aList->at(iPix)->GetDAQIndex() );
+            }
+          }
+
+        } //end loop on fired pixels
+
+      } //end of sparsified readout
+
+      else if ( tPlane->GetReadout() < 100 && tPlane->GetReadout() > 0 ){ // non-sparsified readout, test if not 0 added (JB 2013/05/26)
+
+        for( Int_t iStrip=0; iStrip<tPlane->GetStripsN(); iStrip++) {
+          iCol = iStrip%tPlane->GetStripsNu();
+          iRow = iStrip/tPlane->GetStripsNu();
+          hRDMap[iPlane-1]->Fill( iCol, iRow, tPlane->GetPulseHeight(iStrip));
+        } //end loop on strips
+
+      } //end of non-sparsified readout
+
+
+    } //end of loop on planes
+  } // END LOOP ON EVENTS
+
+  fSession->GetDataAcquisition()->PrintStatistics();
+  tTracker->PrintStatistics();
+
+  // Occurence and Noisy pixels study
+  Float_t occurence;
+  //Float_t occurence_step=(occurence_max-occurence_min)/(nOccurences-1);
+  Float_t occurence_step_log = log10(occurence_max/occurence_min)/Float_t(nOccurences-1);
+  Float_t *occurence_list=new Float_t[nOccurences];
+  Float_t **nbPIPOT = new Float_t*[nPlanes]; //nb Pixels In Plane Over Threshold
+  for (Int_t ioccurence_list=0; ioccurence_list<nOccurences; ioccurence_list++) {
+    //linear
+    //occurence_list[ioccurence_list]=occurence_min+occurence_step*ioccurence_list;
+
+    //log //VR 2014.07.10
+    occurence_list[ioccurence_list]=occurence_min * pow(10,occurence_step_log*ioccurence_list);
+  }
+
+
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+    nbPIPOT[iPlane-1] = new Float_t[nOccurences]; //nb Pixels In Plane Over Threshold
+    Double_t occupancyMap[4] = {0.};
+    for (Int_t ioccurence_list=0; ioccurence_list<nOccurences; ioccurence_list++) nbPIPOT[iPlane-1][ioccurence_list]=0;
+    for( Int_t xBin=0; xBin<hRDMap[iPlane-1]->GetNbinsX(); xBin++) {
+      for( Int_t yBin=0; yBin<hRDMap[iPlane-1]->GetNbinsY(); yBin++) {
+        occurence = hRDMap[iPlane-1]->GetBinContent( xBin+1, yBin+1)/(Float_t)nEvents;
+        //if ( occurence < minOccurence ) {
+          if( xBin<240 ) { occupancyMap[0] += occurence; }
+          else if ( xBin<480 ) { occupancyMap[1] += occurence; }
+          else if ( xBin<720 ) { occupancyMap[2] += occurence; }
+          else { occupancyMap[3] += occurence; }
+        //}
+        for (Int_t ioccurence_list=0; ioccurence_list<nOccurences; ioccurence_list++) {
+          if (occurence >= occurence_list[ioccurence_list]) nbPIPOT[iPlane-1][ioccurence_list]+=1;
+        }
+      }
+    }
+    for( Int_t i=0; i<4; i++ ) { occupancyMap[i] /= 240*hRDMap[iPlane-1]->GetNbinsY(); }
+    printf("\n******* Occupancy per submatrix of PLANE %d ***********\n", iPlane);
+    printf("  %.1e  %.1e  %.1e  %.1e\n", occupancyMap[0], occupancyMap[1], occupancyMap[2], occupancyMap[3]);
+    printf("*************************************************\n");
+  } // end loop on planes
+
+
+  // Now display
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+
+    pad->cd(iPlane);
+    pad->cd(iPlane)->SetTickx(1);
+    pad->cd(iPlane)->SetTicky(1);
+    hRDMap[iPlane-1]->SetMinimum( 0./*1e-3*nEvents*/); // JB 2011/03/14
+    hRDMap[iPlane-1]->DrawCopy("colz");
+
+    pad2->cd(iPlane);
+    gnoisypixels[iPlane-1]= new TGraph(nOccurences,occurence_list,nbPIPOT[iPlane-1]);
+    sprintf( name, "gnoisypixelspl%d", iPlane);
+    sprintf( title, "Plane %s (#%d)", tTracker->GetPlane(iPlane)->GetPlanePurpose(), iPlane );
+    gnoisypixels[iPlane-1]->SetName( name);
+    gnoisypixels[iPlane-1]->SetTitle( title);
+    gnoisypixels[iPlane-1]->Draw("AL*");
+    gPad->SetLogx();
+    gPad->SetGrid(1,1);
+    gnoisypixels[iPlane-1]->GetXaxis()->SetTitle("relative occurence");
+    gnoisypixels[iPlane-1]->GetXaxis()->SetLabelSize(0.05);
+    gnoisypixels[iPlane-1]->GetXaxis()->SetTitleOffset();
+    gnoisypixels[iPlane-1]->GetXaxis()->SetLabelOffset();
+    gnoisypixels[iPlane-1]->GetXaxis()->SetTitleSize(0.05);
+    gnoisypixels[iPlane-1]->GetYaxis()->SetTitle("number of pixels above relative occurence");
+    gnoisypixels[iPlane-1]->GetYaxis()->SetLabelSize(0.05);
+    gnoisypixels[iPlane-1]->GetYaxis()->SetTitleOffset(1.4);
+    gnoisypixels[iPlane-1]->GetYaxis()->SetLabelOffset();
+    gnoisypixels[iPlane-1]->GetYaxis()->SetTitleSize(0.05);
+
+  } // end loop on planes
+  ccumulrd->Update();
+  cnoisypixels->Update();
+
+
+#if 1
+  // Prepare a file for print output of high occurence pixels
+  if( storeOccurence ) {
+    // Force the min occurence to be at least 0.01 hits/pixel otherwise all pixels will be registered
+    Float_t minOccurenceForFile = (minOccurence<0.005)?0.005:minOccurence;
+    Char_t fileName[100];
+    sprintf( fileName, "%spixelOccurence_run%d_minocc%d.txt",
+	     fSession->GetResultDirName().Data(),
+	     fSession->GetRunNumber(),
+	     Int_t(1000*minOccurence) ); // directory updated, JB 2009/09/18
+    sprintf(fileName,"%s", fTool.LocalizeDirName( fileName)); // JB 2011/07/07
+    cout << "\n-- Saving list of high occurence pixels into " << fileName << endl;
+
+    FILE *outFile;
+    outFile = fopen( fileName, "w");
+    fprintf( outFile, "\nRun %d over %d events\n", fSession->GetRunNumber(), nEvents);
+    fprintf( outFile, " Pixel (row,col) with occurence higher than %.1f percent\n", minOccurenceForFile*100.);
+    for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
+      fprintf( outFile, "\n** Plane %d BEWARE THIS MAY NOT BE THE INPUT NUMBER NEEDED FOR BoardReader!", iPlane);
+      for( Int_t xBin=0; xBin<hRDMap[iPlane-1]->GetNbinsX(); xBin++) { // loop on X bins
+        for( Int_t yBin=0; yBin<hRDMap[iPlane-1]->GetNbinsY(); yBin++) { // loop on Y bins
+          occurence = hRDMap[iPlane-1]->GetBinContent( xBin+1, yBin+1)/(Float_t)nEvents;
+          if( occurence > minOccurenceForFile ) {
+            fprintf( outFile, "\n%4d %4d", yBin, xBin);
+          }
+        }  // end loop on Y bins
+      } // end loop on X bins
+    } // end llop on planes
+  }
+#endif
+
+  // Save canvas and histos
+  // cd to result dir
+  // added JB 2011/03/14
+  Char_t rootFile[300];
+  sprintf(rootFile,"%sRawDataMap_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
+  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
+  cout << "\n-- Saving histos and canvas into " << rootFile << endl;
+  TFile fRoot(rootFile,"RECREATE");
+  ccumulrd->Write();
+  cnoisypixels->Write();
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    hRDMap[iPlane-1]->Write();
+    //hRDMap[iPlane-1]->Delete();
+    gnoisypixels[iPlane-1]->Write();
+    h1FiredPixelsPerEvent[iPlane-1]->Write();
+  }
+  fRoot.Close();
+
+  // Store histo with occurence for a specific plane
+  //  in order to be used as a HotHitMap
+  // added, JB 2014/03/11
+  Char_t HotPixelFileName[500];
+  TFile *HotPixelFile;
+  TH2F *h2HotPixelMap;
+  if( storeOccurence ) {
+    for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+      sprintf(HotPixelFileName,"%shotPixelMap_run%d_pl%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber(),iPlane);
+      HotPixelFile = new TFile(HotPixelFileName,"RECREATE");
+      h2HotPixelMap = (TH2F*)hRDMap[iPlane-1]->Clone("h2HotPixelMap");
+      cout << "Plane " << iPlane << "  Integral = " << h2HotPixelMap->Integral() << "  Nevts = " << TheNEvts_counter << ", Ratio = " << h2HotPixelMap->Integral()/TheNEvts_counter << endl;
+      h2HotPixelMap->Scale(100./(Float_t)TheNEvts_counter);
+      h2HotPixelMap->SetXTitle("col #");
+      h2HotPixelMap->GetXaxis()->CenterTitle(true);
+      h2HotPixelMap->SetYTitle("lin #");
+      h2HotPixelMap->GetYaxis()->CenterTitle(true);
+      h2HotPixelMap->SetZTitle("Fake Rate (%)");
+      h2HotPixelMap->GetZaxis()->CenterTitle(true);
+
+      if( ifUseDaqIndex[iPlane-1] ) h1HotPixelList[iPlane-1]->Scale(100./(Float_t)nEvents);
+
+      const int Nsteps = 100;
+      double R_fakeRateCut[2];
+      R_fakeRateCut[0] = 0.0*100.0;
+      R_fakeRateCut[1] = 1.0e-2*100.0;
+
+      double factor = 1.0e-5;
+      TH1F* hAveFakeRate = new TH1F("hAveFakeRate","Average Fake Rate vs singe pixel fake rate cut",Nsteps,R_fakeRateCut[0],R_fakeRateCut[1]);
+      hAveFakeRate->SetXTitle("Pixel fake rate cut (%)");
+      hAveFakeRate->GetXaxis()->CenterTitle(true);
+      hAveFakeRate->SetYTitle("<Fake Rate> (#times10^{-5})");
+      hAveFakeRate->GetYaxis()->CenterTitle(true);
+      hAveFakeRate->SetLineColor(kBlue);
+      hAveFakeRate->SetLineWidth(2);
+      hAveFakeRate->SetStats(kFALSE);
+
+      TH1F* hRejectedPixels = new TH1F("hRejectedPixels","Fraction of rejected pixels vs singe pixel fake rate cut",Nsteps,R_fakeRateCut[0],R_fakeRateCut[1]);
+      hRejectedPixels->SetXTitle("Pixel fake rate cut (%)");
+      hRejectedPixels->GetXaxis()->CenterTitle(true);
+      //hRejectedPixels->SetYTitle("Frac. Reject. Pixels (%)");
+      hRejectedPixels->SetYTitle("# Reject. Pixels");
+      hRejectedPixels->GetYaxis()->CenterTitle(true);
+      hRejectedPixels->SetLineColor(kBlue);
+      hRejectedPixels->SetLineWidth(2);
+      hRejectedPixels->SetStats(kFALSE);
+
+      TH1F* hAveFakeRateTot = new TH1F("hAveFakeRateTot","Average Fake Rate in whole matrix",1,0.0,1.0);
+      hAveFakeRateTot->SetXTitle("");
+      hAveFakeRateTot->GetXaxis()->CenterTitle(true);
+      hAveFakeRateTot->SetYTitle("<Fake Rate> (#times10^{-5})");
+      hAveFakeRateTot->GetYaxis()->CenterTitle(true);
+      hAveFakeRateTot->SetLineColor(kBlue);
+      hAveFakeRateTot->SetLineWidth(2);
+      hAveFakeRateTot->SetStats(kFALSE);
+      hAveFakeRateTot->GetXaxis()->SetBinLabel(1,"");
+
+      int NHotPixels = 20;
+      TString HistTitle = TString("Average Fake Rate in whole matrix minus the ") + long(NHotPixels) + TString(" hotest pixels");
+      TH1F* hAveFakeRateMinusHot = new TH1F("hAveFakeRateMinusHot",
+                                            HistTitle.Data(),
+                                            1,0.0,1.0);
+      hAveFakeRateMinusHot->SetXTitle("");
+      hAveFakeRateMinusHot->GetXaxis()->CenterTitle(true);
+      hAveFakeRateMinusHot->SetYTitle("<Fake Rate> (#times10^{-5})");
+      hAveFakeRateMinusHot->GetYaxis()->CenterTitle(true);
+      hAveFakeRateMinusHot->SetLineColor(kRed);
+      hAveFakeRateMinusHot->SetLineWidth(2);
+      hAveFakeRateMinusHot->SetStats(kFALSE);
+      hAveFakeRateMinusHot->GetXaxis()->SetBinLabel(1,"");
+
+      int NAceptpixels[Nsteps];
+      double AveFake[Nsteps];
+      //double FracReject[Nsteps];
+      for(int istep=0;istep<Nsteps;istep++) {
+        AveFake[istep]      = 0.0;
+        //FracReject[istep]   = 0.0;
+        NAceptpixels[istep] = 0;
+      }
+
+      double Total_AveFake = 0.0;
+      for(int ix=0;ix<h2HotPixelMap->GetXaxis()->GetNbins();ix++) {
+        for(int iy=0;iy<h2HotPixelMap->GetYaxis()->GetNbins();iy++) {
+          double fake_rate = h2HotPixelMap->GetBinContent(ix+1,iy+1)/100.0;
+          Total_AveFake += fake_rate;
+        }
+      }
+      Total_AveFake /= (h2HotPixelMap->GetXaxis()->GetNbins()*h2HotPixelMap->GetYaxis()->GetNbins());
+      hAveFakeRateTot->SetBinContent(1,Total_AveFake/factor);
+
+      for(int istep=0;istep<Nsteps;istep++) {
+        for(int ix=0;ix<h2HotPixelMap->GetXaxis()->GetNbins();ix++) {
+          for(int iy=0;iy<h2HotPixelMap->GetYaxis()->GetNbins();iy++) {
+            double fake_rate = h2HotPixelMap->GetBinContent(ix+1,iy+1)/100.0;
+
+            if(fake_rate < hAveFakeRate->GetBinCenter(istep+1)/100.0) {
+              AveFake[istep] += fake_rate;
+              NAceptpixels[istep]++;
+            }
+
+          }
+        }
+      }
+
+      int TotNpixels = h2HotPixelMap->GetXaxis()->GetNbins()*h2HotPixelMap->GetYaxis()->GetNbins();
+      for(int istep=0;istep<Nsteps;istep++) {
+        AveFake[istep] /= NAceptpixels[istep];
+        hAveFakeRate->SetBinContent(istep+1,AveFake[istep]/factor);
+
+        //double Reject  = (double)NAceptpixels[istep]/TotNpixels;
+        //Reject         = 1.0 - Reject;
+        //Reject        *= 100.0
+        int Reject  = TotNpixels - NAceptpixels[istep];
+        hRejectedPixels->SetBinContent(istep+1,Reject);
+      }
+
+      //int NHotPixels = 20;
+      if(hRejectedPixels->GetBinContent(hRejectedPixels->GetXaxis()->GetNbins()) > NHotPixels) {
+        hAveFakeRateMinusHot->SetBinContent(1,hAveFakeRate->GetBinContent(hRejectedPixels->GetXaxis()->GetNbins()));
+      }
+      else if(hRejectedPixels->GetBinContent(1) < NHotPixels) {
+        hAveFakeRateMinusHot->SetBinContent(1,hAveFakeRate->GetBinContent(1));
+      }
+      else {
+        double fake_rate_tmp = -999.0;
+        for(int istep=0;istep<hRejectedPixels->GetXaxis()->GetNbins()-1;istep++) {
+          double x1 = hRejectedPixels->GetBinCenter(istep+1);
+          double x2 = hRejectedPixels->GetBinCenter(istep+2);
+          double y1 = hRejectedPixels->GetBinContent(istep+1);
+          double y2 = hRejectedPixels->GetBinContent(istep+2);
+
+          if(y1 >= NHotPixels &&
+             y2 <  NHotPixels) {
+            double a = (y2-y1)/(x2-x1);
+            double b = y2 - a*x2;
+            if(TMath::Abs(a) > 1.0e-8) {
+              fake_rate_tmp  = (NHotPixels - b)/a;
+            }
+            else fake_rate_tmp = 0.5*(x2 + x1);
+
+            break;
+          }
+        }
+
+        hAveFakeRateMinusHot->SetBinContent(1,hAveFakeRate->GetBinContent(hAveFakeRate->FindBin(fake_rate_tmp)));
+      }
+
+      TCanvas cFakeRate("cFakeRate","Hot pixels plots", 5, 5,800,700);
+      cFakeRate.SetFillColor(10);
+      cFakeRate.SetFrameFillColor(10);
+      cFakeRate.Divide(2,2);
+      cFakeRate.cd(1);
+      gPad->SetFillColor(10);
+      gPad->SetFrameFillColor(10);
+      gPad->SetTickx(1);
+      gPad->SetTicky(1);
+      gPad->SetLeftMargin(0.20);
+      gPad->SetBottomMargin(0.20);
+      gPad->SetRightMargin(0.20);
+      h2HotPixelMap->Draw("colz");
+      cFakeRate.cd(2);
+      gPad->SetFillColor(10);
+      gPad->SetFrameFillColor(10);
+      gPad->SetTickx(1);
+      gPad->SetTicky(1);
+      gPad->SetLeftMargin(0.20);
+      gPad->SetBottomMargin(0.20);
+      gPad->SetRightMargin(0.20);
+      hAveFakeRate->Draw();
+      cFakeRate.cd(3);
+      gPad->SetFillColor(10);
+      gPad->SetFrameFillColor(10);
+      gPad->SetTickx(1);
+      gPad->SetTicky(1);
+      gPad->SetLeftMargin(0.20);
+      gPad->SetBottomMargin(0.20);
+      gPad->SetRightMargin(0.20);
+      hRejectedPixels->Draw();
+      cFakeRate.cd(4);
+      gPad->SetFillColor(10);
+      gPad->SetFrameFillColor(10);
+      gPad->SetTickx(1);
+      gPad->SetTicky(1);
+      gPad->SetLeftMargin(0.20);
+      gPad->SetBottomMargin(0.20);
+      gPad->SetRightMargin(0.20);
+      double Maximum = TMath::Max(hAveFakeRateTot->GetMaximum(),
+                                  hAveFakeRateMinusHot->GetMaximum());
+      double Minimum = TMath::Min(hAveFakeRateTot->GetMaximum(),
+                                  hAveFakeRateMinusHot->GetMaximum());
+      double porcent = 0.50;
+      hAveFakeRateTot->SetMaximum(Maximum + porcent*(Maximum-Minimum));
+      hAveFakeRateTot->SetMinimum(Minimum - porcent*(Maximum-Minimum));
+      hAveFakeRateMinusHot->SetMaximum(Maximum + porcent*(Maximum-Minimum));
+      hAveFakeRateMinusHot->SetMinimum(Minimum - porcent*(Maximum-Minimum));
+      hAveFakeRateTot->Draw();
+      hAveFakeRateMinusHot->Draw("same");
+      char ytitle[200];
+      sprintf(ytitle,"<Fake> = %.5f #times 10^{-5}",hAveFakeRateTot->GetBinContent(1));
+      TLatex* latex = new TLatex();
+      latex->SetTextAlign(12);
+      latex->SetTextSize(0.04);
+      latex->SetTextColor(kBlack);
+      porcent = 0.05;
+      double porcentY = 0.05;
+      latex->DrawLatex(hAveFakeRateTot->GetXaxis()->GetXmin() + porcent*(hAveFakeRateTot->GetXaxis()->GetXmax() - hAveFakeRateTot->GetXaxis()->GetXmin()),
+                       hAveFakeRateTot->GetMaximum() - porcentY*(hAveFakeRateTot->GetMaximum() - hAveFakeRateTot->GetMinimum()),
+                       ytitle);
+
+      sprintf(ytitle,"<Fake> = %.5f #times 10^{-5} (- %d hot pix)",hAveFakeRateMinusHot->GetBinContent(1),NHotPixels);
+      latex->SetTextColor(kRed);
+      porcentY = 0.15;
+      latex->DrawLatex(hAveFakeRateTot->GetXaxis()->GetXmin() + porcent*(hAveFakeRateTot->GetXaxis()->GetXmax() - hAveFakeRateTot->GetXaxis()->GetXmin()),
+                       hAveFakeRateTot->GetMaximum() - porcentY*(hAveFakeRateTot->GetMaximum() - hAveFakeRateTot->GetMinimum()),
+                       ytitle);
+
+
+      cFakeRate.Write();
+      h2HotPixelMap->Write();
+      if( ifUseDaqIndex[iPlane-1] ) h1HotPixelList[iPlane-1]->Write();
+      hAveFakeRate->Write();
+      hRejectedPixels->Write();
+      hAveFakeRateTot->Write();
+      hAveFakeRateMinusHot->Write();
+
+      cout << "-------- The HOT PIXEL MAP FOR PLANE " << iPlane << " HAS BEEN FILLED !"<<endl;
+      HotPixelFile->Close();
+    }
+  }
 
 }
