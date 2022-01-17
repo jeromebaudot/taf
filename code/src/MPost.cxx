@@ -509,6 +509,21 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
       stats3->SetOptStat(111111);stats3->Draw();
     }
   }
+  cClusterCharge->Update();
+
+  if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
+    NPages++;
+    TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
+    TString EPSNameO = EPSName + TString("[");
+    TString EPSNameC = EPSName + TString("]");
+
+    cClusterCharge->Print(EPSNameO.Data());
+    cClusterCharge->Print(EPSName.Data());
+    cClusterCharge->Print(EPSNameC.Data());
+    TString PNGName = TString(CreateGlobalResultDir()) + ("run") + int(RunNumber) + ("Pl") + int(ThePlaneNumber) + ("_clusterCharges.png");
+    cClusterCharge->SaveAs(PNGName.Data());
+  }
+
 
   // ------------------------
   // --- Charge spread histo ---:
@@ -649,10 +664,11 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   ChargeSpread->SetTitle("Total charge in N pixels");
   ChargeSpread->GetHistogram()->SetMaximum(maximumYaxischarge+50.0);
   ChargeSpread->GetHistogram()->SetXTitle("Number of pixels in a cluster");
-  ChargeSpread->GetHistogram()->SetYTitle("Accumulated charge (electrons)");
+  ChargeSpread->GetHistogram()->SetYTitle("Accumulated charge");
   ChargeSpread->SetMarkerColor(kRed);
 //  fitf->SetLineWidth(2);
 //  fitf->SetLineColor(2);
+  mpad1->SetGrid(1,1);
   mpad1->Update();
   cout << "END fitting ChargeSpread" << endl;
 
@@ -665,6 +681,8 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
     mpad1->Print(EPSNameO.Data());
     mpad1->Print(EPSName.Data());
     mpad1->Print(EPSNameC.Data());
+    TString PNGName = TString(CreateGlobalResultDir()) + ("run") + int(RunNumber) + ("Pl") + int(ThePlaneNumber) + ("_chargeSpread.png");
+    mpad1->SaveAs(PNGName.Data());
   }
 
   /*TPaveStats *stats = (TPaveStats*)ChargeSpread->FindObject("stats");
@@ -7201,10 +7219,11 @@ void MimosaAnalysis::ClusterShape()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-
     shape->Print(EPSNameO.Data());
     shape->Print(EPSName.Data());
     shape->Print(EPSNameC.Data());
+    TString PNGName = TString(CreateGlobalResultDir()) + ("run") + int(RunNumber) + ("Pl") + int(ThePlaneNumber) + ("_clusterShape.png");
+    shape->SaveAs(PNGName.Data());
   }
 
 
