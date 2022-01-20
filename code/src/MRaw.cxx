@@ -11752,7 +11752,7 @@ void MRaw::BuildPixelGainMap( Int_t nEvents, Double_t minfit, Double_t maxfit, D
 
   Int_t planeID = 1;
   Int_t minEntriesForFit = 50;
-  Int_t nBinsCharge = TMath::Min( 500., maxcharge);
+  Int_t nBinsCharge = TMath::Min( 500, (int)maxcharge);
 
   if( maxfit<=minfit ) {
     cout << "Inconsistent fit range: (" << minfit << ", " << maxfit << ") " << endl;
