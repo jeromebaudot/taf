@@ -7,7 +7,7 @@
 - comments on features
 - to do list for developers
 *********************************************************************************************************
-Contact: baudot@in2p3.fr, auguste.besson@iphc.cnrs.fr
+Contact: baudot@in2p3.fr, auguste.besson@iphc.cnrs.fr, ziad.elbitar@iphc.cnrs.fr
 
 Web page: http://www.iphc.cnrs.fr/TAF.html
 
