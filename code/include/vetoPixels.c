@@ -107,6 +107,7 @@ bool vetoPixel_IPNLtelescopeV02 ( int chipNb, int row, int col) //26167
    || (chipNb==3 && row==94 && col==730)
    || (chipNb==3 && row==321 && col==818)
    || (chipNb==3 && row==319 && 818<col && col<825)
+   // r
  // Plane 8 OK
    || (chipNb==5 && row==253) //&& 215<col && col<280)
    || (chipNb==5 && row==431 && col==102)
@@ -3425,5 +3426,50 @@ bool vetoPixel_SITRINEO_IPHC( int chipNb, int row, int col) //28010
 
   ;
 }
+
+// -----------------------------------------------------------------------------
+
+bool vetoPixel_Mi28SitrineoIPHC( int chipNb, int row, int col) {
+  
+  // Noisy pixels filtering, called with NoiseRun = 28667
+  // 4 Mimosa 28 SITRINEO geometry at IPHC setup,
+  // 
+  // 
+  // Plane: 	   1 2 3 4
+  // Input: 	   1 2 3 4 = chipNb+1
+  // sitrineo PCB: 7 6 8 4
+  //
+  // defined 2022/01/25
+
+  return 
+  (chipNb==0 && row==184 &&  col==131)
+  || (chipNb==0 && row==185 &&  col==132)
+  || (chipNb==0 && row==249 && col==132)
+  || (chipNb==0 && row==184 && col==133)
+  || (chipNb==0 && row==634 && col==617)
+  || (chipNb==0 && row==228 && col==740)
+  || (chipNb==0 && row==413 && col==831)
+  || (chipNb==0 && row==773 && col==909)
+  || (chipNb==0 && row==874 && col==936)
+  || (chipNb==1 && row==609 && col==121)
+  || (chipNb==1 && row==98 && col==592)
+  || (chipNb==1 && row==99 && col==593)
+  || (chipNb==2 && row==137 && col==301)
+  || (chipNb==2 && row==284 && col==459)
+  || (chipNb==2 && row==860 && col==827)
+  || (chipNb==2 && row==859 && col==828)
+  || (chipNb==2 && row==860 && col==829)
+  || (chipNb==3 && row==20 && col==66)
+  || (chipNb==3 && row==830 && col==289)
+  || (chipNb==3 && row==568 && col==298)
+  || (chipNb==3 && row==359 && col==479)
+  || (chipNb==3 && row==227 && col==757)
+  || (chipNb==3 && row==272 && col==770)
+  || (chipNb==3 && row==698 && col==837)
+  || (chipNb==3 && row==705 && col==862)
+  || (chipNb==3 && row==385 && col==938)
+  ;
+}
+
 
 # endif

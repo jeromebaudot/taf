@@ -51,7 +51,7 @@ public:
 private:
 
   int             fDebugLevel;       // debug level
-  DGlobalTools    fTool;
+  DGlobalTools    fTool;                     
   Bool_t          fDisplay;
   int             fBoardNumber;
   Int_t           fRunNumber;           // run number

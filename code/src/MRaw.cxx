@@ -42,6 +42,7 @@
 // Last Modified: AP, 2016/08/19 BetaSourceMultiFrameAnalysis
 // Last Modified: AP, 2017/05/09 Added FillnTupleForTMVA function fill tree for TMVA analysis
 // Last Modified: JB, 2019/03/10 Sitrineo analysis
+// Last Modified: Jourd'huy,Stavroulakis , 2022/01&02 Sitrineo analysis and alignment
 
 /////////////////////////////////////////////////////////////
 //                                                         //
@@ -111,27 +112,29 @@ using namespace TMVA;
 
 //
 //______________________________________________________________________________
-void sitritrajectorybended(double *z, double *x, double *y, double *Par ){
+void sitritrajectorybended(double *z, double *x, double *y, double *Par){
   //
   // Give the position in (x,y)=f(z) for any z=z[0]
   //
   // Par[0] = thetax (rad), initial slope before the magnetic field
-  // Par[1] = x0 (um) at z=0
+  // Par[1] = xA (um) at z=zA
   // Par[2] = thetay (rad), initial slope before the magnetic field
-  // Par[3] = y0 (um) at z=0
+  // Par[3] = yA (um) at z=zB
   // Par[4] = p (MeV/c), momentum
   // Par[5] = zA (um), start of Bfield
   // Par[6] = zB (um), end of Bfield
   // Par[7] = q, charge = +/- 1
   // Par[8] = B (T), magnetic field
-
+  //
   // p(GeV/c) = 0.3 B(T) R(m)
   // p(MeV/c)*1e-3 = 0.3 B(T) R(um)*1e-6 => p(MeV/c) = 3e-4 B(T) R(um)
+  //
+  // Parameter list where corrected by E.Jourd'huy & P.Stavroulakis in Feb. 2022: Par[1,3] are postions at z=zA not 0
 
   double thetax = Par[0];
-  double x0 = Par[1];
+  double xA = Par[1];
   double thetay = Par[2];
-  double y0 = Par[3];
+  double yA = Par[3];
   double p = Par[4];
   double zA = Par[5];
   double zB = Par[6];
@@ -139,28 +142,28 @@ void sitritrajectorybended(double *z, double *x, double *y, double *Par ){
   double B = Par[8];
 
   //----------------------------------------------------------useful calculations
-  double R = fabs(p/(q*3e-4*B));
-  double xA = tan(thetax)*zA + x0; //x for zA
-  double yA = tan(thetay)*zA + y0;
+  double R = fabs(p/(q*3e-4*B)); // rho
   double xC = R*cos(q*thetax); //y for circle center
   double Delta = R*R - pow( zB-zA-R*sin(q*thetax) ,2);
   double xB, yB;
   if( Delta<0) {
     xB = 0;
+    yB = 0;
   }
   else {
     xB = xA + q*( -xC +sqrt(Delta) );
     yB = R*tan(thetay)*asin((zB-zA)/R) + yA;
   }
-  double l = sqrt(pow(zA-zB,2) + pow(xA-xB,2));
+  double l = sqrt(pow(zA-zB,2) + pow(xA-xB,2)); // rho_T/rho
   double gamma = -acos(1-(l*l)/(2*R*R));
-  double thetaxB=thetax+q*gamma;
+  double thetaxB=thetax + q*gamma;
+  //double thetayB=thetay + atan((TMath::Pi()*R/4)/(yB-yA));
 
   //----------------------------------------------------------y and x values in different zones
   // Before Bfield, straight trach with slope theta1
   if( z[0] < zA ) {
-    x[0] = tan(thetax)*z[0] + x0;
-    y[0] = tan(thetay)*z[0] + y0;
+    x[0] = tan(thetax)*(z[0]-zA) + xA;
+    y[0] = tan(thetay)*(z[0]-zA) + yA;
   }
 
   // Within Bfield, circle of radius R
@@ -205,6 +208,38 @@ double sitritrajectoryBortho(double *z, double *Par ){
   return x[0];
 }
 
+double sitritrajectoryBortho_p(double *p,  double *Parameter ){
+  //
+  // Give the position in x=f(p) for any p=p[0]
+  //
+  // Parameter[0] = thetax (rad), initial slope before the magnetic field
+  // Parameter[1] = xA (um) at z=zA
+  // Parameter[2] = thetay (rad), initial slope before the magnetic field
+  // Parameter[3] = yA (um) at z=zA
+  // Parameter[4] = zA (um), start of Bfield
+  // Parameter[5] = zB (um), end of Bfield
+  // Parameter[6] = q, charge = +/- 1
+  // Parameter[7] = B (T), magnetic field
+  // Parameter[8] = z at which p is evaluated
+  //
+  // Created by E.Jourd'Huy & P.Stavroulakis, 2022/02/05
+
+  double x[1], y[1], z[1], Par[9];
+
+  Par[0] = Parameter[0];
+  Par[1] = Parameter[1];
+  Par[2] = Parameter[2];
+  Par[3] = Parameter[3];
+  Par[4] = p[0];
+  Par[5] = Parameter[4];
+  Par[6] = Parameter[5];
+  Par[7] = Parameter[6];
+  Par[8] = Parameter[7];
+  z[0] = Parameter[8];
+
+  sitritrajectorybended( z, x, y, Par);
+  return x[0];
+}
 
 
 ClassImp(MRaw)
@@ -229,19 +264,18 @@ void  MRaw::PrepareRaw()
 //      bar3->AddButton("JUMP EVENTS","gTAF->GetRaw()->MimosaJump()", "RUN IT AFTER MIMOSA event display");
 //      bar3->AddButton("RAW CHANNELS", "gTAF->GetRaw()->DisplayRawData(1.)", "Display raw channels per plane and event");
       bar3->AddButton("RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayRawData2D()", "Display raw channels per plane and event in 2D");
-      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(5000)", "Display raw data per plane cumulated over 500 events in 2D");
+      bar3->AddButton("CUMULATE RAW CHANNELS 2D", "gTAF->GetRaw()->DisplayCumulatedRawData2D(400000)", "Display raw data per plane cumulated over 500 events in 2D");
+      bar3->AddButton("CREATE NOISY PIXEL MAP", "gTAF->GetRaw()->DisplayCumulatedRawData2D(200000, \"continuous\", 0, 1e-4, 1., 40, 5e-3, 1)", "Display raw data per plane cumulated over 500 events in 2D");
       bar3->AddButton("HITS 2D", "gTAF->GetRaw()->DisplayHits2D(2,1,0)", "Display hits per plane and event in 2D");
-      bar3->AddButton("CUMULATE HITS 2D", "gTAF->GetRaw()->DisplayCumulatedHits2D(5000)", "Display hits per plane cumulated over 500 events in 2D");
-      if( fSession->GetTracker()->GetNumberOfLadders()>0 ) {
-        bar3->AddButton("CUMUL HITS 2D LADDER (exp)", "gTAF->GetRaw()->DisplayLadderCumulatedHits2D(5000)", "Display hits per ladder cumulated over 500 events in 2D");
-      }
-      bar3->AddButton("NOISE MAP", "gTAF->GetRaw()->DisplayNoise()", "Display noise per pixel for each plane");
+      bar3->AddButton("CUMULATE HITS 2D", "gTAF->GetRaw()->DisplayCumulatedHits2D(400000)", "Display hits per plane cumulated over 500 events in 2D");
+      if( !strstr(goal, "sitrineo") ) bar3->AddButton("CUMUL HITS 2D LADDER (exp)", "gTAF->GetRaw()->DisplayLadderCumulatedHits2D(500)", "Display hits per ladder cumulated over 500 events in 2D");
+      if( !strstr(goal, "sitrineo") ) bar3->AddButton("NOISE MAP", "gTAF->GetRaw()->DisplayNoise()", "Display noise per pixel for each plane");
 
       bar3->AddButton("BINARY FAKE", "gTAF->GetRaw()->FakeRateBinaryFromRawData(100000, 100, 0.01)", "Compute the fake rate for binary output sensors");
       bar3->AddButton("CUMULATE LINE OVERFLOW", "gTAF->GetRaw()->DisplayCumulatedOverflow()", "Display line overflow cumulated over 500 events in several views");
-      bar3->AddButton("RAW SPECTRUM", "gTAF->GetRaw()->DisplaySpectrum( 1000, 3, 2048, 0)", "Display the spectrum from raw data");
+      if( !strstr(goal, "sitrineo") ) bar3->AddButton("RAW SPECTRUM", "gTAF->GetRaw()->DisplaySpectrum( 1000, 3, 2048, 0)", "Display the spectrum from raw data");
 
-      bar3->AddButton("CUMULATE MONTE CARLO", "gTAF->GetRaw()->DisplayCumulatedMonteCarlo2D(500)", "Display Monte Carlo hits cumulated over 500 events in several views");
+      if( !strstr(goal, "sitrineo") ) bar3->AddButton("CUMULATE MONTE CARLO", "gTAF->GetRaw()->DisplayCumulatedMonteCarlo2D(500)", "Display Monte Carlo hits cumulated over 500 events in several views");
 
 
       if( strstr(goal, "track") || strstr(goal, "Track") ) {
@@ -267,10 +301,12 @@ void  MRaw::PrepareRaw()
 
       if( strstr(goal, "sitrineo") || strstr(goal, "Sitrineo") ) {
         bar3->AddButton("SITRINEO/EVT", "gTAF->GetRaw()->SitrineoByEvent(2)", "Sitrineo analysis event-by-event");
-        bar3->AddButton("SITRINEO/CUMUL", "gTAF->GetRaw()->SitrineoCumul(1000000,2)", "Sitrineo analysis cumulated over X events");
+        bar3->AddButton("SITRINEO/CUMUL", "gTAF->GetRaw()->SitrineoCumul(400000,2)", "Sitrineo analysis cumulated over X events");
+	bar3->AddButton("SITRINEO/CONTINU", "gTAF->GetRaw()->SitrineoContinuous(20,2)", "Sitrineo continuous analysis by event");
+	bar3->AddButton("SITRINEO/ALIGN", "gTAF->GetRaw()->SitrineoAlign(200000, 1)", "Sitrineo alignment of planes using gaussian fit of hit data");
       }
 
-      bar3->AddButton("DISPLAY IMAGE", "gTAF->GetRaw()->DisplayImage(100)","Build a GIF image with 100 events");
+      if( !strstr(goal, "sitrineo") ) bar3->AddButton("DISPLAY IMAGE", "gTAF->GetRaw()->DisplayImage(100)","Build a GIF image with 100 events");
       bar3->AddButton("DISPLAY GEOMETRY", "gTAF->GetRaw()->DisplayGeometry()","Telescope geometry");
       bar3->AddButton("USER PLOT", "gTAF->GetRaw()->UserPlot()", "Plots built by user function");
       bar3->AddButton("TOGGLE VERBOSITY", "gTAF->GetRaw()->ToggleVerbosity()", "Switch On/Off messages");
@@ -554,7 +590,7 @@ void MRaw::RSDisplay()
   if(startRS)
     {
       sprintf(titre,"Tracker hits: event %d",fSession->GetCurrentEventNumber());
-      cnv = new TCanvas("cnv",titre,200,0,600,900);
+      cnv = new TCanvas("cnv",titre, 200, 0, 600, 900);
       cnv->Divide(2,4);
       // find number of strips in planes:
       somePl = fSession->GetTracker()->GetPlane(2);
@@ -574,7 +610,7 @@ void MRaw::RSDisplay()
     delete cnv; cnv=0;
     sprintf(titre,"Tracker hits: event %d",fSession->GetCurrentEventNumber());
 
-    cnv = new TCanvas("cnv",titre,200,0,600,900);
+    cnv = new TCanvas("cnv",titre, 200, 0, 600, 900);
 
     cnv->Divide(2,4);
 
@@ -689,7 +725,7 @@ void MRaw::MimosaDisplay(Int_t NEVENT /*=1*/ )
   char titre[50] ;
   sprintf(titre,"Run %d  Event POS %d",fSession->GetRunNumber(),fSession->GetCurrentEventNumber());
 
-  cnv = new TCanvas("cnv", titre,400,0,700,950);
+  cnv = new TCanvas("cnv", titre, 400, 0, 700, 950);
   cnv->UseCurrentStyle();
 
   DTracker *tTracker  =  fSession->GetTracker();
@@ -1021,7 +1057,7 @@ void MRaw::Inspectfake()
 
   char titre[50] ;
   sprintf(titre,"Run %d  Event POS %d",fSession->GetRunNumber(),fSession->GetCurrentEventNumber());
-  TCanvas *cinspectfake = new TCanvas("cinspectfake", titre,400,0,1200,700);
+  TCanvas *cinspectfake = new TCanvas("cinspectfake", titre, 400, 0, 1200, 700);
   cinspectfake->UseCurrentStyle();
 
 
@@ -1233,7 +1269,7 @@ void MRaw::InspectRawChannels( Int_t nEvents, Int_t thePlaneNumber, Int_t firstC
   gROOT->FindObject("ccumulrd") ;
   if (g) { ccumulrd = (TCanvas*)g; }
   else {
-    ccumulrd = new TCanvas("ccumulrd", "Cumulate RawData", 5, 5,800,700);
+    ccumulrd = new TCanvas("ccumulrd", "Cumulate RawData", 5, 5, 800, 700);
   }
   ccumulrd->Clear();
   ccumulrd->UseCurrentStyle();*/
@@ -1242,7 +1278,7 @@ void MRaw::InspectRawChannels( Int_t nEvents, Int_t thePlaneNumber, Int_t firstC
 
     sprintf(name, "cPl%dChan%d", thePlaneNumber, iChannel);
     sprintf(title, "Run %d, plane %d, channel %d", fSession->GetRunNumber(), thePlane->GetPlaneNumber(), iChannel+firstChannel);
-    cChannel[iChannel] = new TCanvas( name, title, 5*iChannel, 5*iChannel,800,700);
+    cChannel[iChannel] = new TCanvas( name, title, 5*iChannel, 5*iChannel, 800, 700);
 
     sprintf( name, "hevtchan%d", iChannel+firstChannel);
     sprintf( title, "Evolution of channel %d of plane %d", iChannel+firstChannel, thePlaneNumber);
@@ -2172,7 +2208,7 @@ void MRaw::DisplayHits2D( Int_t ifIndex, Int_t ifTrack, Int_t geomatrix)
     cdisplayhit = (TCanvas*)g;
   }
   else {
-    cdisplayhit = new TCanvas("cdisplayhit", "Inspect Hits", 5, 5,800,700);
+    cdisplayhit = new TCanvas("cdisplayhit", "Inspect Hits", 5, 5, 800, 700);
   }
   cdisplayhit->Clear();
   cdisplayhit->UseCurrentStyle();
@@ -2749,7 +2785,7 @@ void MRaw::DisplayTracks()
     cdisplaytrack = (TCanvas*)g;
   }
   else {
-    cdisplaytrack = new TCanvas("cdisplaytrack", "Inspect Tracks", 5, 5,800,700);
+    cdisplaytrack = new TCanvas("cdisplaytrack", "Inspect Tracks", 5, 5, 800, 700);
   }
   cdisplaytrack->Clear();
   cdisplaytrack->UseCurrentStyle();
@@ -3031,7 +3067,7 @@ void MRaw::DisplayCumulatedTracks( Int_t nEvents)
     ccumultrack2 = (TCanvas*)g;
   }
   else {
-    ccumultrack2 = new TCanvas("ccumultrack2", "Cumulate tracks 3D", 25, 25,800,700);
+    ccumultrack2 = new TCanvas("ccumultrack2", "Cumulate tracks 3D", 25, 25, 800, 700);
   }
   ccumultrack2->Clear();
   ccumultrack2->UseCurrentStyle();
@@ -3046,7 +3082,7 @@ void MRaw::DisplayCumulatedTracks( Int_t nEvents)
     ccumultrack3 = (TCanvas*)g;
   }
   else {
-    ccumultrack3 = new TCanvas("ccumultrack3", "Cumulate tracks Properties", 50, 50,900,700);
+    ccumultrack3 = new TCanvas("ccumultrack3", "Cumulate tracks Properties", 50, 50, 900, 700);
   }
   ccumultrack3->Clear();
   ccumultrack3->UseCurrentStyle();
@@ -3058,7 +3094,7 @@ void MRaw::DisplayCumulatedTracks( Int_t nEvents)
     ccumultrack4 = (TCanvas*)g;
   }
   else {
-    ccumultrack4 = new TCanvas("ccumultrack4", "Cumulate tracks Residual-U", 75, 75,800,700);
+    ccumultrack4 = new TCanvas("ccumultrack4", "Cumulate tracks Residual-U", 75, 75, 800, 700);
   }
   ccumultrack4->Clear();
   ccumultrack4->UseCurrentStyle();
@@ -3070,7 +3106,7 @@ void MRaw::DisplayCumulatedTracks( Int_t nEvents)
     ccumultrack5 = (TCanvas*)g;
   }
   else {
-    ccumultrack5 = new TCanvas("ccumultrack5", "Cumulate tracks Residual-V", 100, 100,800,700);
+    ccumultrack5 = new TCanvas("ccumultrack5", "Cumulate tracks Residual-V", 100, 100, 800, 700);
   }
   ccumultrack5->Clear();
   ccumultrack5->UseCurrentStyle();
@@ -3426,7 +3462,7 @@ void MRaw::DisplayCumulatedSubtracks( Int_t nEvents, Int_t dutPlaneNb)
     ccumulsubtrack = (TCanvas*)g;
   }
   else {
-    ccumulsubtrack = new TCanvas("ccumulsubtrack", "Cumulate subtracks", 5, 5,800,700);
+    ccumulsubtrack = new TCanvas("ccumulsubtrack", "Cumulate subtracks", 5, 5, 800, 700);
   }
   ccumulsubtrack->Clear();
   ccumulsubtrack->UseCurrentStyle();
@@ -3602,7 +3638,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     ccumulhit = (TCanvas*)g;
   }
   else {
-    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5,800,700);
+    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5, 800, 700);
   }
   ccumulhit->Clear();
   ccumulhit->UseCurrentStyle();
@@ -3715,6 +3751,8 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
 
   TH2F *hHitMapDUT;
   TH2F **hHitMap = new TH2F*[nPlanes];
+  TH1F **hHitProjX = new TH1F*[nPlanes];
+  TH1F **hHitProjY = new TH1F*[nPlanes];
   TH2F **hTrackMap = new TH2F*[nPlanes]; // JB 2011/11/02
   TH1F **hHitPixMult = new TH1F*[nPlanes];
   TH1F **hNHitsPerEvent = new TH1F*[nPlanes];
@@ -3741,7 +3779,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     // -- Histo with microns
     sprintf( name, "hhitmappl%d", iPlane);
     sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
-    // check if the histo is existing or not
+    // check if the histo exists or not
     hHitMap[iPlane-1] = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
     hHitMap[iPlane-1]->SetMarkerStyle(20);
     hHitMap[iPlane-1]->SetMarkerSize(.1);
@@ -3749,9 +3787,31 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     hHitMap[iPlane-1]->SetStats(kFALSE);
     //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
 
+    // -- Histo with microns (proj x)
+    sprintf( name, "hhitprojxpl%d", iPlane);
+    sprintf( title, "Hit projection in X of plane %d - %s;X (#mum)", iPlane, tPlane->GetPlanePurpose());
+    // check if the histo exists or not
+    hHitProjX[iPlane-1] = new TH1F(name, title, NbinsX/10, xmin, xmax);
+    hHitProjX[iPlane-1]->SetMarkerStyle(20);
+    hHitProjX[iPlane-1]->SetMarkerSize(.1);
+    hHitProjX[iPlane-1]->SetMarkerColor(1);
+    hHitProjX[iPlane-1]->SetStats(kFALSE);
+    //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+
+    // -- Histo with microns (proj y)
+    sprintf( name, "hhitprojypl%d", iPlane);
+    sprintf( title, "Hit projection in Y of plane %d - %s;Y (#mum)", iPlane, tPlane->GetPlanePurpose());
+    // check if the histo exists or not
+    hHitProjY[iPlane-1] = new TH1F(name, title, NbinsY/10, ymin, ymax);
+    hHitProjY[iPlane-1]->SetMarkerStyle(20);
+    hHitProjY[iPlane-1]->SetMarkerSize(.1);
+    hHitProjY[iPlane-1]->SetMarkerColor(1);
+    hHitProjY[iPlane-1]->SetStats(kFALSE);
+    //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+
     sprintf( name, "hhitmapdut");
     sprintf( title, "Hit map for DUTs;X (#mum);Y (#mum)");
-    // check if the histo is existing or not
+    // check if the histo exists or not
     hHitMapDUT = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
     hHitMapDUT->SetMarkerStyle(20);
     hHitMapDUT->SetMarkerSize(.2);
@@ -3906,6 +3966,8 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
           aHit = (DHit*)tPlane->GetHit( iHit);
           //printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
           hHitMap[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1); // weight could be aHit->GetClusterPulseSum()
+          hHitProjX[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0)); // projection on X
+          hHitProjY[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(1)); // projection on Y
           if( tPlane->GetStatus()==3 ) hHitMapDUT->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1);
 
           // Filling hit properties depends on analysis mode
@@ -3983,7 +4045,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     ccumulhit2 = (TCanvas*)g;
   }
   else {
-    ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 5, 5,800,700);
+    ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 5, 5, 800, 700);
   }
   ccumulhit2->Clear();
   ccumulhit2->UseCurrentStyle();
@@ -4009,7 +4071,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     ccumulhit21 = (TCanvas*)g;
   }
   else {
-    ccumulhit21 = new TCanvas("ccumulhit21", "Hit time stamp", 5, 5,800,700);
+    ccumulhit21 = new TCanvas("ccumulhit21", "Hit time stamp", 5, 5, 800, 700);
   }
   ccumulhit21->Clear();
   ccumulhit21->UseCurrentStyle();
@@ -4034,7 +4096,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     ccumulhit22 = (TCanvas*)g;
   }
   else {
-    ccumulhit22 = new TCanvas("ccumulhit22", "# hits VS event number", 5, 5,800,700);
+    ccumulhit22 = new TCanvas("ccumulhit22", "# hits VS event number", 5, 5, 800, 700);
   }
   ccumulhit22->Clear();
   ccumulhit22->UseCurrentStyle();
@@ -4059,7 +4121,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     ccumulhit3 = (TCanvas*)g;
   }
   else {
-    ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 5, 5,800,700);
+    ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 5, 5, 800, 700);
   }
   ccumulhit3->Clear();
   ccumulhit3->UseCurrentStyle();
@@ -4091,10 +4153,298 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
   }
   ccumulhit3->Update();
 
+  // Cumulate Hits in X
+  // Separately
+
+  TCanvas *ccumulhitx;
+  g = gROOT->FindObject("ccumulhitx") ;
+  if (g) {
+    ccumulhitx = (TCanvas*)g;
+  }
+  else {
+    ccumulhitx = new TCanvas("ccumulhitx", "Cumulate Hits in X per plane", 5, 5, 800, 700);
+  }
+  ccumulhitx->Clear();
+  ccumulhitx->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *padx = new TPad("padx","",0.,0.,1.,0.965);
+  padx->Draw();
+  padx->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      padx->cd(iPlane);
+      if( hHitProjX[iPlane-1]->GetEntries()>0 ) hHitProjX[iPlane-1]->DrawCopy();
+    }
+  }
+  ccumulhitx->Update();
+
+  // Superimposed
+
+  // Gaussian functions to fit the histos
+  Double_t hmeanx[4] = {hHitProjX[0]->GetMean(), hHitProjX[1]->GetMean(), hHitProjX[2]->GetMean(), hHitProjX[3]->GetMean()};
+  Double_t hrmsx[4] = {hHitProjX[0]->GetRMS(), hHitProjX[1]->GetRMS(), hHitProjX[2]->GetRMS(), hHitProjY[3]->GetMean()};
+  TF1 *fgaus1x = new TF1("fgaus1x", "gaus", hmeanx[0]-hrmsx[0], hmeanx[0]+hrmsx[0]);
+  TF1 *fgaus2x = new TF1("fgaus2x", "gaus", hmeanx[1]-1.5*hrmsx[1], hmeanx[1]+1.5*hrmsx[1]);
+  TF1 *fgaus3x = new TF1("fgaus3x", "gaus", hmeanx[2]-3*hrmsx[2], hmeanx[2]+3*hrmsx[2]);
+  TF1 *fgaus4x = new TF1("fgaus4x", "gaus", hmeanx[3]-1.5*hrmsx[3], hmeanx[3]+1.5*hrmsx[3]);
+
+  TCanvas *ccumulhitx4;
+  g = gROOT->FindObject("ccumulhitx4") ;
+  if (g) {
+    ccumulhitx4 = (TCanvas*)g;
+  }
+  else {
+    ccumulhitx4 = new TCanvas("ccumulhitx4", "Cumulate Hits in X superimposed", 5, 5, 800, 700);
+  }
+  ccumulhitx4->Clear();
+  ccumulhitx4->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *padx4 = new TPad("padx4","",0.,0.,1.,0.965);
+  padx4->Draw();
+
+  hHitProjX[0]->Fit(fgaus1x, "R");
+  hHitProjX[1]->Fit(fgaus2x, "R");
+  hHitProjX[2]->Fit(fgaus3x, "R");
+
+  TLegend *lx = new TLegend(0.50,0.65,0.85,0.90, "Difference of means");
+  lx->SetFillStyle(0);
+  lx->SetBorderSize(1);
+  lx->SetTextSize(.04);
+
+  Float_t hHitProjX_max = 0.;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( hHitProjX[iPlane-1]->GetMaximum() > hHitProjX_max ) {
+      hHitProjX_max = hHitProjX[iPlane-1]->GetMaximum();
+    }
+  }
+  hHitProjX[0]->SetMaximum( hHitProjX_max*1.2);
+  
+  Double_t meandiffx[3];
+  Char_t smeandiffx[30];
+
+  meandiffx[0]=fgaus2x->GetParameter(1) - fgaus1x->GetParameter(1);
+  meandiffx[1]=fgaus3x->GetParameter(1) - fgaus1x->GetParameter(1);
+  meandiffx[2]=fgaus3x->GetParameter(1) - fgaus4x->GetParameter(1);
+
+  sprintf(smeandiffx, "2 to 1: %.0f", meandiffx[0]);
+  lx->AddEntry( hHitProjX[1], smeandiffx, "l");
+  sprintf(smeandiffx, "3 to 1: %.0f", meandiffx[1]);
+  lx->AddEntry( hHitProjX[2], smeandiffx, "l");
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      if( hHitProjX[iPlane-1]->GetEntries()>0 ){
+	//hHitProjX[iPlane-1]->Scale( 1./hHitProjX[iPlane-1]->Integral() ); // Normalize to 1
+	  hHitProjX[iPlane-1]->SetLineColor(iPlane);
+	  hHitProjX[iPlane-1]->DrawCopy((iPlane>1)?"same":"");
+      }
+    }
+  }
+  lx->Draw();
+  ccumulhitx4->Update();
+
+  // Cumulate Hits in Y
+  // Separately
+  TCanvas *ccumulhity;
+  g = gROOT->FindObject("ccumulhity") ;
+  if (g) {
+    ccumulhity = (TCanvas*)g;
+  }
+  else {
+    ccumulhity = new TCanvas("ccumulhity", "Cumulate Hits in Y per plane", 5, 5, 800, 700);
+  }
+  ccumulhity->Clear();
+  ccumulhity->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pady = new TPad("pady44","",0.,0.,1.,0.965);
+  pady->Draw();
+  pady->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      pady->cd(iPlane);
+      if( hHitProjY[iPlane-1]->GetEntries()>0 ) hHitProjY[iPlane-1]->DrawCopy();
+    }
+  }
+  ccumulhity->Update();
+
+  // Superimposed
+
+  // Gaussian functions to fit the histos
+  Double_t hmeany[4] = {hHitProjY[0]->GetMean(), hHitProjY[1]->GetMean(), hHitProjY[2]->GetMean(), hHitProjY[3]->GetMean()};
+  Double_t hrmsy[4] = {hHitProjY[0]->GetRMS(), hHitProjY[1]->GetRMS(), hHitProjY[2]->GetRMS(), hHitProjY[3]->GetRMS()};
+  TF1 *fgaus1y = new TF1("fgaus1y", "gaus", hmeany[0]-hrmsy[0], hmeany[0]+hrmsy[0]);
+  TF1 *fgaus2y = new TF1("fgaus2y", "gaus", hmeany[1]-1.5*hrmsy[1], hmeany[1]+1.5*hrmsy[1]);
+  TF1 *fgaus3y = new TF1("fgaus3y", "gaus", hmeany[2]-3*hrmsy[2], hmeany[2]+3*hrmsy[2]);
+  TF1 *fgaus4y = new TF1("fgaus4y", "gaus", hmeany[3]-1.5*hrmsy[3], hmeany[3]+1.5*hrmsy[3]);
+
+  TCanvas *ccumulhity4;
+  g = gROOT->FindObject("ccumulhity4") ;
+  if (g) {
+    ccumulhity4 = (TCanvas*)g;
+  }
+  else {
+    ccumulhity4 = new TCanvas("ccumulhity4", "Cumulate Hits in Y superimposed", 5, 5, 800, 700);
+  }
+  ccumulhity4->Clear();
+  ccumulhity4->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pady4 = new TPad("pady4","",0.,0.,1.,0.965);
+  pady4->Draw();
+
+  hHitProjY[0]->Fit(fgaus1y, "R");
+  hHitProjY[1]->Fit(fgaus2y, "R");
+  hHitProjY[2]->Fit(fgaus3y, "R");
+
+  TLegend *ly = new TLegend(0.50,0.65,0.85,0.90, "Difference of means");
+  ly->SetFillStyle(0);
+  ly->SetBorderSize(1);
+  ly->SetTextSize(.04);
+
+  Float_t hHitProjY_max = 0.;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( hHitProjY[iPlane-1]->GetMaximum() > hHitProjY_max ) {
+      hHitProjY_max = hHitProjY[iPlane-1]->GetMaximum();
+    }
+  }
+  hHitProjY[0]->SetMaximum( hHitProjY_max*1.2);
+
+  Double_t meandiffy[3];
+  Char_t smeandiffy[30];
+
+  meandiffy[0]=fgaus2y->GetParameter(1) - fgaus1y->GetParameter(1);
+  meandiffy[1]=fgaus3y->GetParameter(1) - fgaus1y->GetParameter(1);
+  meandiffy[2]=fgaus3y->GetParameter(1) - fgaus4y->GetParameter(1);
+
+  sprintf(smeandiffy, "2 to 1: %.0f", meandiffy[0]);
+  ly->AddEntry( hHitProjY[1], smeandiffy, "l");
+  sprintf(smeandiffy, "3 to 1: %.0f", meandiffy[1]);
+  ly->AddEntry( hHitProjY[2], smeandiffy, "l");
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      if( hHitProjY[iPlane-1]->GetEntries()>0 ) {
+        //hHitProjY[iPlane-1]->Scale( 1./hHitProjY[iPlane-1]->Integral() ); // Normalize to 1
+	  hHitProjY[iPlane-1]->SetLineColor(iPlane);
+	  hHitProjY[iPlane-1]->DrawCopy((iPlane>1)?"same":"");
+      }
+    }
+  }
+  ly->Draw();
+  ccumulhity4->Update();
+
   TLatex* latex = new TLatex();
   latex->SetTextAlign(12);
   latex->SetTextSize(0.06);
   latex->SetTextColor(kRed);
+
+  // Determine and draw the expected spread due to diffusion and multiple scattering 
+  // on the hitmap as an ellipse on each plane as well as the deviation to to the magnetic field
+
+  // Par[0] = thetax (rad), initial slope before the magnetic field
+  // Par[1] = xA (um) at z=zA
+  // Par[2] = thetay (rad), initial slope before the magnetic field
+  // Par[3] = yA (um) at z=zA
+  // Par[4] = p (MeV/c), momentum
+  // Par[5] = zA (um), start of Bfield
+  // Par[6] = zB (um), end of Bfield
+  // Par[7] = q, charge = +/- 1
+  // Par[8] = B (T), magnetic field
+
+  // Define ellipse object that will be used to determine the opening of the source due to multiple scattering and diffusion
+  TEllipse **PlaneEllipse = new TEllipse*[nPlanes];
+  TEllipse **PlaneEllipse2 = new TEllipse*[nPlanes];
+  Double_t theta_ms; // Devation due to multiple scattering in rad
+  Double_t overall_dev_um[nPlanes]; // Deviation due to multiple scattering in um
+  double z_dist_um[nPlanes]; // Distance between planes
+  Double_t Ellipse_pos_x[nPlanes];
+  Double_t Ellipse_pos_y[nPlanes];
+  Double_t Ellipse_sigma_x[nPlanes];
+  Double_t Ellipse_sigma_y[nPlanes];
+
+  // Define magnetic field
+  double Bfield = 0.2; // Tesla
+  double Bfield_rangeX[2] = {-5000, 5000};
+  double Bfield_rangeZ[2] = {-5000, 5000};
+  double pvalue = 1.; // in Mev/c - mean value of Fermi distribution
+
+  DPlane *tPlane_a, *tPlane_b;
+  double parmts[9] = {0, fgaus1x->GetParameter(1), 0, fgaus1y->GetParameter(1), pvalue, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield}; // Here xA=x0 & yA=y0 because thetax & thetay are taken to be 0
+
+  for ( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // begin loop on planes
+    tPlane_a = tTracker->GetPlane(iPlane);
+    theta_ms = fTool.scatteringAngle("electron", 1e-3, "silicon", 50, 0);
+
+    if (iPlane==1) {
+      z_dist_um[iPlane-1] = 0;
+    }
+    else {
+      tPlane_b = tTracker->GetPlane(iPlane-1);
+      z_dist_um[iPlane-1] = abs(tPlane_a->GetPosition()(2)-tPlane_b->GetPosition()(2));
+    }
+
+    // Compute the deviation due to multiple scattering in um at each plane
+
+    overall_dev_um[iPlane-1]=theta_ms*z_dist_um[iPlane-1];
+
+    if (iPlane<3) {
+      Ellipse_pos_x[iPlane-1] = fgaus1x->GetParameter(1);
+      Ellipse_pos_y[iPlane-1] = fgaus1y->GetParameter(1);
+    }
+    else {
+      Ellipse_pos_x[iPlane-1] = sitritrajectoryBortho(&tPlane_a->GetPosition()(2), parmts);
+      Ellipse_pos_y[iPlane-1] = sitritrajectoryBparallel(&tPlane_a->GetPosition()(2), parmts);
+    }
+
+    if (iPlane==1) {
+      Ellipse_sigma_x[iPlane-1] = sqrt(pow(fgaus1x->GetParameter(2), 2) + pow(overall_dev_um[iPlane-1], 2));
+      Ellipse_sigma_y[iPlane-1] = sqrt(pow(fgaus1y->GetParameter(2), 2) + pow(overall_dev_um[iPlane-1], 2));
+    }
+    else {
+      Ellipse_sigma_x[iPlane-1] = sqrt(pow(Ellipse_sigma_x[iPlane-2], 2) + pow(overall_dev_um[iPlane-1], 2));
+      Ellipse_sigma_y[iPlane-1] = sqrt(pow(Ellipse_sigma_y[iPlane-2], 2) + pow(overall_dev_um[iPlane-1], 2));
+    }
+
+    // Redefine spread of ellipse at start of magnetic field if it's wider than Bfield_rangeX
+
+    if(iPlane==3) {
+      if (sqrt(pow(tTracker->GetPlane(2)->GetPosition()(2)*theta_ms, 2) + pow(Ellipse_sigma_x[1], 2))> Bfield_rangeX[1]) {
+        Ellipse_sigma_x[2] = sqrt(pow(Bfield_rangeX[1], 2) + pow(tTracker->GetPlane(3)->GetPosition()(2)*theta_ms,2));
+        //cout << "Spread in X larger than Bfield_rangeX" << endl;
+      }
+      if (sqrt(pow(tTracker->GetPlane(2)->GetPosition()(2)*theta_ms, 2) + pow(Ellipse_sigma_y[1], 2))> Bfield_rangeX[1]) {
+        Ellipse_sigma_y[2] = sqrt(pow(Bfield_rangeX[1], 2) + pow(tTracker->GetPlane(3)->GetPosition()(2)*theta_ms,2));
+        //cout << "Spread in Y larger than Bfield_rangeX" << endl;
+      }
+    }
+
+    if (fVerbose) {
+      cout << "\n***********************************\n" << endl;
+      cout << "\nX Position of Ellipse in Plane #" << iPlane << ": " << Ellipse_pos_x[iPlane-1] << " um" << endl;
+      cout << "\nY Position of Ellipse in Plane #" << iPlane << ": " << Ellipse_pos_y[iPlane-1] << " um" << endl;
+      cout << "\nX Deviation (1 sigma) of Ellipse in Plane #" << iPlane << ": " << Ellipse_sigma_x[iPlane-1] << " um" << endl;
+      cout << "\nY Deviation (1 sigma) of Ellipse in Plane #" << iPlane << ": " << Ellipse_sigma_y[iPlane-1] << " um" << endl;
+    }
+
+    PlaneEllipse[iPlane-1] = new TEllipse(Ellipse_pos_x[iPlane-1], Ellipse_pos_y[iPlane-1], Ellipse_sigma_x[iPlane-1], Ellipse_sigma_y[iPlane-1]);
+    PlaneEllipse[iPlane-1]->SetFillStyle(0);
+    //PlaneEllipse[iPlane-1]->SetFillColor(kOrange+3);
+    PlaneEllipse[iPlane-1]->SetLineColor(1);
+    PlaneEllipse[iPlane-1]->SetLineWidth(3);
+    PlaneEllipse2[iPlane-1] = new TEllipse(Ellipse_pos_x[iPlane-1], Ellipse_pos_y[iPlane-1], 2*Ellipse_sigma_x[iPlane-1], 2*Ellipse_sigma_y[iPlane-1]);
+    PlaneEllipse2[iPlane-1]->SetFillStyle(0);
+    //PlaneEllipse2[iPlane-1]->SetFillColor(kOrange-4);
+    PlaneEllipse2[iPlane-1]->SetLineColor(1);
+    PlaneEllipse2[iPlane-1]->SetLineWidth(5);
+    PlaneEllipse2[iPlane-1]->SetLineStyle(2);
+    pad->cd(iPlane);
+    PlaneEllipse2[iPlane-1]->Draw("l");
+    PlaneEllipse[iPlane-1]->Draw("l");
+    if (fVerbose) cout << "\nDrawing ellipses in Plane #" << iPlane << endl;
+  } // end loop on planes
+  ccumulhit->Update();
+
 #if 0
   TLine* CorrLines[(nPlanes*(nPlanes - 1)/2)];
   int NcanvasX = 3;
@@ -4171,7 +4521,7 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
         cHitProperties[iPlane-1] = (TCanvas*)g;
       }
       else {
-        cHitProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),900,700);
+        cHitProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1), 900, 700);
       }
       cHitProperties[iPlane-1]->Clear();
       cHitProperties[iPlane-1]->UseCurrentStyle();
@@ -4216,6 +4566,10 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
   ccumulhit2->Write();
   ccumulhit22->Write(); // QL 2015/10/23
   ccumulhit3->Write();
+  ccumulhitx->Write();
+  ccumulhitx4->Write();
+  ccumulhity->Write();
+  ccumulhity4->Write();
   //for(int i=0;i<RealNcanvas;i++) ccumulhit3_2[i]->Write();
 
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
@@ -4223,6 +4577,8 @@ void MRaw::DisplayCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack,
     hHitMapDUT->Write();
     if( 0 < tPlane->GetAnalysisMode()  ) {
       hHitMap[iPlane-1]->Write();
+      hHitProjX[iPlane-1]->Write();
+      hHitProjY[iPlane-1]->Write();
       hTrackMap[iPlane-1]->Write(); // JB 2011/11/02
       hHitPixMult[iPlane-1]->Write();
       hHitTimeStamp[iPlane-1]->Write();
@@ -4340,7 +4696,7 @@ void MRaw::DisplayLadderCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack, Bool
     cumulHitsInLadder = (TCanvas*)g;
   }
   else {
-    cumulHitsInLadder = new TCanvas("cumulHitsInLadder", "Cumulate Hits In Ladders", 5, 5,800,700);
+    cumulHitsInLadder = new TCanvas("cumulHitsInLadder", "Cumulate Hits In Ladders", 5, 5, 800, 700);
   }
 
   cumulHitsInLadder->Clear();
@@ -4443,7 +4799,7 @@ void MRaw::DisplayLadderCumulatedHits2D( Int_t nEvents, Bool_t ifDrawTrack, Bool
     // -- Histo for hits position
     sprintf( name, "hhitmapladder%d", iLadder);
     sprintf( title, "Hit map of ladder %d , face %d;X (#mum);Y (#mum)", iLadder, face);
-    // check if the histo is existing or not
+    // check if the histo exists or not
     hHitMap[iLadder*2-1] = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
     hHitMap[iLadder*2-1]->SetMarkerStyle(20);
     hHitMap[iLadder*2-1]->SetMarkerSize(.1);
@@ -4577,9 +4933,6 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
   //
   // Hot or noisy pixels study:
   //  - set storeOccurence=true  to get the outputs,
-  //  - Output 1 = a text file is created with the position
-  //  (column and row) of all pixels above the specified "minOccurence*nEvents",
-  //  - Output 2 = a root file with cumulated raw data normalized by nEvents.
   //
   // The Colmin,Colmax,Linmin,Linmax parameters:
   // If the values of the parameters Colmin,Colmax,Linmin,Linmax are specified
@@ -4610,7 +4963,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
     ccumulrd = (TCanvas*)g;
   }
   else {
-    ccumulrd = new TCanvas("ccumulrd", "Cumulate RawData", 5, 5,800,700);
+    ccumulrd = new TCanvas("ccumulrd", "Cumulate RawData", 5, 5, 800, 700);
   }
   ccumulrd->Clear();
   ccumulrd->UseCurrentStyle();
@@ -4626,7 +4979,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
   TCanvas *cnoisypixels;
   g = gROOT->FindObject("cnoisypixels") ;
   if (g) cnoisypixels= (TCanvas*)g;
-  else cnoisypixels = new TCanvas("cnoisypixels", "Noisy pixels Study", 5, 5,800,700);
+  else cnoisypixels = new TCanvas("cnoisypixels", "Noisy pixels Study", 5, 5, 800, 700);
   cnoisypixels->Clear();
   cnoisypixels->UseCurrentStyle();
   sprintf(canvasTitle, "Run %d, cumul over %d events", fSession->GetRunNumber(), nEvents);
@@ -4653,7 +5006,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
     // -- Histo with pixel number
     sprintf( name, "hrdmappl%d", iPlane);
     sprintf( title, "Raw data map of plane %d - %s, S/N>%.1f", iPlane, tPlane->GetPlanePurpose(), minSN);
-    // check if the histo is existing or not
+    // check if the histo exists or not
 
     if( iPlane == 1 &&
        (Colmin >= 0 && Colmax <= tPlane->GetStripsNu()) &&
@@ -4805,7 +5158,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
     pad->cd(iPlane);
     pad->cd(iPlane)->SetTickx(1);
     pad->cd(iPlane)->SetTicky(1);
-    hRDMap[iPlane-1]->SetMinimum( minOccurence*nEvents); // JB 2011/03/14
+    hRDMap[iPlane-1]->SetMinimum( 0. /*minOccurence*nEvents*/); // JB 2011/03/14
     hRDMap[iPlane-1]->DrawCopy("colz");
 
     pad2->cd(iPlane);
@@ -5029,7 +5382,7 @@ void MRaw::DisplayCumulatedRawData2D(Int_t nEvents,
         hAveFakeRateMinusHot->SetBinContent(1,hAveFakeRate->GetBinContent(hAveFakeRate->FindBin(fake_rate_tmp)));
       }
 
-      TCanvas cFakeRate("cFakeRate","Hot pixels plots", 5, 5,800,700);
+      TCanvas cFakeRate("cFakeRate","Hot pixels plots", 5, 5, 800, 700);
       cFakeRate.SetFillColor(10);
       cFakeRate.SetFrameFillColor(10);
       cFakeRate.Divide(2,2);
@@ -5130,7 +5483,7 @@ void MRaw::DisplayCumulatedOverflow( Int_t nEvents)
     ccumulovf = (TCanvas*)g;
   }
   else {
-    ccumulovf = new TCanvas("ccumulovf", "Cumulated Line Overflow", 5, 5,800,700);
+    ccumulovf = new TCanvas("ccumulovf", "Cumulated Line Overflow", 5, 5, 800, 700);
   }
   ccumulovf->Clear();
   ccumulovf->UseCurrentStyle();
@@ -5176,7 +5529,7 @@ void MRaw::DisplayCumulatedOverflow( Int_t nEvents)
 
     if(iPlane == 7) sprintf( title, "Line Overflow of plane 8");
     if(iPlane == 8) sprintf( title, "Line Overflow of plane 7");
-    // check if the histo is existing or not
+    // check if the histo exists or not
     hOVFPlot[iPlane-1] = new TH1F(name, title, tPlane->GetStripsNv(), 0, tPlane->GetStripsNv());//MG pipo
     sprintf( name, "hovfmap%d", iPlane);
     sprintf( title, "Hit map of plane %d", iPlane);
@@ -5766,7 +6119,7 @@ void MRaw::DisplayCumulatedClusters( Int_t planeNumber, Int_t nEvents)
     ccmumulcluster = (TCanvas*)g;
   }
   else {
-    ccmumulcluster = new TCanvas(name, title, 5, 5,800,700);
+    ccmumulcluster = new TCanvas(name, title, 5, 5, 800, 700);
   }
   ccmumulcluster->Clear();
   ccmumulcluster->UseCurrentStyle();
@@ -5976,7 +6329,7 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
 
   // Display of spectrum
 
-  TCanvas *cdisplayspectrum = new TCanvas("cdisplayspectrum", "spectrum",800,700);
+  TCanvas *cdisplayspectrum = new TCanvas("cdisplayspectrum", "spectrum", 800, 700);
   cdisplayspectrum->UseCurrentStyle();
   TPaveLabel* label = new TPaveLabel();
   Char_t canvasTitle[200];
@@ -6000,7 +6353,7 @@ void MRaw::DisplaySpectrum( Int_t nEvents, Int_t minSN, Int_t minValue, Int_t ma
 
   // Display of timestamp
 
-  TCanvas *cdisplaytime = new TCanvas("cdisplaytime", "timestamp",5,5,800,700);
+  TCanvas *cdisplaytime = new TCanvas("cdisplaytime", "timestamp", 5, 5, 800, 700);
   cdisplaytime->UseCurrentStyle();
 //  TPaveLabel* label = new TPaveLabel();
 //  Char_t canvasTitle[200];
@@ -6054,7 +6407,7 @@ void MRaw::LaserStudy( Int_t Xpixel, Int_t Ypixel, Int_t nPixels, Int_t nEvents,
     nPixels = 100;
   }
 
-  TCanvas *claser = new TCanvas("claser", "Laser study",800,700);
+  TCanvas *claser = new TCanvas("claser", "Laser study", 800, 700);
   claser->UseCurrentStyle();
   TPaveLabel* label = new TPaveLabel();
   Char_t canvasTitle[200];
@@ -6235,7 +6588,7 @@ void MRaw::LaserStudy( Int_t Xpixel, Int_t Ypixel, Int_t nPixels, Int_t nEvents,
   claser->Update();
 
   sprintf(canvasTitle, "Laser spot: run %d over %d events", fSession->GetRunNumber(), nEvents);
-  TCanvas *claserspot = new TCanvas("claserspot", canvasTitle,800,700);
+  TCanvas *claserspot = new TCanvas("claserspot", canvasTitle, 800, 700);
   claserspot->UseCurrentStyle();
   claserspot->Divide(2,2);
   claserspot->cd(1);
@@ -6412,7 +6765,7 @@ void MRaw::DisplayGeometry()
   gStyle->SetLabelSize(0.06);
   gStyle->SetTitleSize(0.06);
 
-  TCanvas *cgeometry = new TCanvas( "cgeometry", "Telescope geometry", 5, 5,500*TMath::Min(1., fabs(limit[2][0]-limit[2][1])*2/fabs(limit[1][0]-limit[1][1]) ),500);
+  TCanvas *cgeometry = new TCanvas( "cgeometry", "Telescope geometry", 5, 5, 500*TMath::Min(1., fabs(limit[2][0]-limit[2][1])*2/fabs(limit[1][0]-limit[1][1]) ), 500);
 
   cgeometry->cd();
   TPad* viewxy = new TPad("viewxy","view xy",0.01,0.51,0.99,0.99);
@@ -6591,7 +6944,7 @@ void MRaw::VertexStudy( Int_t nEvents, Double_t beamX, Double_t beamY, Double_t 
     cvertex = (TCanvas*)g;
   }
   else {
-    cvertex = new TCanvas("cvertex", "Cumulate tracks", 5, 5,1000,700);
+    cvertex = new TCanvas("cvertex", "Cumulate tracks", 5, 5, 1000, 700);
   }
   cvertex->Clear();
   //cvertex->UseCurrentStyle();
@@ -6873,7 +7226,7 @@ void MRaw::FakeRateBinaryFromRawData( Int_t nEvents, Int_t aPlaneNumber, Int_t m
     cfakerate = (TCanvas*)g;
   }
   else {
-    cfakerate = new TCanvas("cfakerate", "Fake rate from RawData", 5, 5,800,700);
+    cfakerate = new TCanvas("cfakerate", "Fake rate from RawData", 5, 5, 800, 700);
   }
   cfakerate->Clear();
   cfakerate->UseCurrentStyle();
@@ -7209,7 +7562,7 @@ void MRaw::DisplayCumulatedMonteCarlo2D( Int_t nEvents, Bool_t ifDrawTrack)
     cCumulMonteCarlo = (TCanvas*)g;
   }
   else {
-    cCumulMonteCarlo = new TCanvas("cCumulMonteCarlo", "Hits Monte Carlo vs Track intersections", 5, 5,800,700);
+    cCumulMonteCarlo = new TCanvas("cCumulMonteCarlo", "Hits Monte Carlo vs Track intersections", 5, 5, 800, 700);
   }
   cCumulMonteCarlo->Clear();
   cCumulMonteCarlo->UseCurrentStyle();
@@ -7312,7 +7665,7 @@ void MRaw::DisplayCumulatedMonteCarlo2D( Int_t nEvents, Bool_t ifDrawTrack)
     // -- Histo with microns
     sprintf( name, "hmontecarlomappl%d", iPlane);
     sprintf( title, "Monte Carlo map of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
-    // check if the histo is existing or not
+    // check if the histo exists or not
     hMonteCarloMap[iPlane-1] = new TH2F(name, title, 2000, xmin, xmax, 2000, ymin, ymax);
     hMonteCarloMap[iPlane-1]->SetMarkerStyle(20);
     hMonteCarloMap[iPlane-1]->SetMarkerSize(.2);
@@ -7419,7 +7772,7 @@ void MRaw::DisplayCumulatedMonteCarlo2D( Int_t nEvents, Bool_t ifDrawTrack)
     ccumulhit2 = (TCanvas*)g;
   }
   else {
-    ccumulhit2 = new TCanvas("ccumulhit2", "Hit Monte Carlo vs Hit TAF", 5, 5,800,700);
+    ccumulhit2 = new TCanvas("ccumulhit2", "Hit Monte Carlo vs Hit TAF", 5, 5, 800, 700);
   }
   ccumulhit2->Clear();
   ccumulhit2->UseCurrentStyle();
@@ -7619,7 +7972,7 @@ void MRaw::DisplayHistory( Int_t nEvents, Int_t nCumul)
     chistnhits = (TCanvas*)g;
   }
   else {
-    chistnhits = new TCanvas("chistnhits", "History of # hits per event", 5, 5,800,700);
+    chistnhits = new TCanvas("chistnhits", "History of # hits per event", 5, 5, 800, 700);
   }
   chistnhits->Clear();
   chistnhits->UseCurrentStyle();
@@ -7636,7 +7989,7 @@ void MRaw::DisplayHistory( Int_t nEvents, Int_t nCumul)
     chistcmult = (TCanvas*)g;
   }
   else {
-    chistcmult = new TCanvas("chistcmult", "History of cluster multiplicity", 5, 5,800,700);
+    chistcmult = new TCanvas("chistcmult", "History of cluster multiplicity", 5, 5, 800, 700);
   }
   chistcmult->Clear();
   chistcmult->UseCurrentStyle();
@@ -7667,7 +8020,7 @@ void MRaw::DisplayHistory( Int_t nEvents, Int_t nCumul)
     chisttrack = (TCanvas*)g;
   }
   else {
-    chisttrack = new TCanvas("chisttrack", "History on tracks", 5, 5,800,700);
+    chisttrack = new TCanvas("chisttrack", "History on tracks", 5, 5, 800, 700);
   }
   chisttrack->Clear();
   chisttrack->UseCurrentStyle();
@@ -8380,7 +8733,7 @@ void MRaw::StudyTrackMultiplicity( TH1F *hNTracksPerPlanes, TH1F *hNHitsPerTrack
     ctrackmult = (TCanvas*)g;
   }
   else {
-    ctrackmult = new TCanvas("ctrackmult", "Track multiplicity styudy", 100, 100,900,600);
+    ctrackmult = new TCanvas("ctrackmult", "Track multiplicity styudy", 100, 100, 900, 600);
   }
   ctrackmult->Clear();
   ctrackmult->Divide(2, 1);
@@ -8597,7 +8950,7 @@ void MRaw::StudyTrackingEfficiency(Int_t nEvents, Double_t nHitsMax, Double_t Xm
     cTrackEff = (TCanvas*)g;
   }
   else {
-    cTrackEff = new TCanvas("cTrackEff", "NHits VS NTracks/NHits", 100, 100,900,600);
+    cTrackEff = new TCanvas("cTrackEff", "NHits VS NTracks/NHits", 100, 100, 900, 600);
   }
   cTrackEff->Clear();
   cTrackEff->Divide((Int_t)((nPlanesInTracking+1)/2.),(nPlanesInTracking>1)?2:1); //nPlanesInTracking could be an odd number.
@@ -8618,7 +8971,7 @@ void MRaw::StudyTrackingEfficiency(Int_t nEvents, Double_t nHitsMax, Double_t Xm
     cTrackEff1 = (TCanvas*)g1;
   }
   else {
-    cTrackEff1 = new TCanvas("cTrackEff1", "NTracks/NHits VS NHits", 150, 150,900,600);
+    cTrackEff1 = new TCanvas("cTrackEff1", "NTracks/NHits VS NHits", 150, 150, 900, 600);
   }
   cTrackEff1->Clear();
   cTrackEff1->Divide((Int_t)((nPlanesInTracking+1)/2.),(nPlanesInTracking>1)?2:1);
@@ -8665,7 +9018,7 @@ void MRaw::StudyTrackingEfficiency(Int_t nEvents, Double_t nHitsMax, Double_t Xm
     cTrackEff2 = (TCanvas*)g2;
   }
   else {
-    cTrackEff2 = new TCanvas("cTrackEff2", "NTracks/NHits Study", 150, 150,900,600);
+    cTrackEff2 = new TCanvas("cTrackEff2", "NTracks/NHits Study", 150, 150, 900, 600);
   }
   cTrackEff2->Clear();
   cTrackEff2->Divide((Int_t)((nPlanesInTracking+1)/2.),(nPlanesInTracking>1)?2:1);
@@ -8685,7 +9038,7 @@ void MRaw::StudyTrackingEfficiency(Int_t nEvents, Double_t nHitsMax, Double_t Xm
     cTrackEff3 = (TCanvas*)g3;
   }
   else {
-    cTrackEff3 = new TCanvas("cTrackEff3", "NTracks/NHits in bins of columns and lines", 200, 200,900,600);
+    cTrackEff3 = new TCanvas("cTrackEff3", "NTracks/NHits in bins of columns and lines", 200, 200, 900, 600);
   }
   cTrackEff3->Clear();
   cTrackEff3->Divide((Int_t)((nPlanesInTracking+1)/2.),(nPlanesInTracking>1)?2:1);
@@ -8710,7 +9063,7 @@ void MRaw::StudyTrackingEfficiency(Int_t nEvents, Double_t nHitsMax, Double_t Xm
     cTrackEff4 = (TCanvas*)g4;
   }
   else {
-    cTrackEff4 = new TCanvas("cTrackEff4", "Mean NTracks/NHits VS PlaneNumber", 200, 200,900,600);
+    cTrackEff4 = new TCanvas("cTrackEff4", "Mean NTracks/NHits VS PlaneNumber", 200, 200, 900, 600);
   }
   cTrackEff4->Clear();
   TH1F * h1NtracksOverNhits_vs_plane = new TH1F("h1NtracksOverNhits_vs_plane","Mean nTracks/nHits for Telescope Planes", nPlanesInTracking, 0.5, nPlanesInTracking + 0.5);
@@ -8829,7 +9182,7 @@ void MRaw::StudyMultipleScattering( Int_t nEvents, Int_t set0plane0, Int_t set0p
     cmultscat = (TCanvas*)g;
   }
   else {
-    cmultscat = new TCanvas("cmultscat", "Multiple scattering study", 5, 5,800,700);
+    cmultscat = new TCanvas("cmultscat", "Multiple scattering study", 5, 5, 800, 700);
   }
   cmultscat->Clear();
   cmultscat->UseCurrentStyle();
@@ -9165,7 +9518,7 @@ void MRaw::StudyBeamProfile(Int_t nEvents, Bool_t ifFit2DGaus, Double_t Xmin, Do
     cBeamProfile_hitMap = (TCanvas*)g_hitMap;
   }
   else {
-    cBeamProfile_hitMap = new TCanvas("cBeamProfile_hitMap", "Hit Map", 100, 100,900,600);
+    cBeamProfile_hitMap = new TCanvas("cBeamProfile_hitMap", "Hit Map", 100, 100, 900, 600);
   }
   cBeamProfile_hitMap->Clear();
   cBeamProfile_hitMap->Divide((Int_t)((nPlanes+1)/2.),(nPlanes>1)?2:1); //nPlanesInTracking could be an odd number.
@@ -9199,7 +9552,7 @@ void MRaw::StudyBeamProfile(Int_t nEvents, Bool_t ifFit2DGaus, Double_t Xmin, Do
     cBeamProfile_nHitsVSevtN = (TCanvas*)g_nHitsVSevtN;
   }
   else {
-    cBeamProfile_nHitsVSevtN = new TCanvas("cBeamProfile_nHitsVSevtN", "NHits VS Event number", 100, 100,900,600);
+    cBeamProfile_nHitsVSevtN = new TCanvas("cBeamProfile_nHitsVSevtN", "NHits VS Event number", 100, 100, 900, 600);
   }
   cBeamProfile_nHitsVSevtN->Clear();
   cBeamProfile_nHitsVSevtN->Divide((Int_t)((nPlanes+1)/2.),(nPlanes>1)?2:1); //nPlanesInTracking could be an odd number.
@@ -9219,7 +9572,7 @@ void MRaw::StudyBeamProfile(Int_t nEvents, Bool_t ifFit2DGaus, Double_t Xmin, Do
     cBeamProfile_nClusters = (TCanvas*)g_nClusters;
   }
   else {
-    cBeamProfile_nClusters = new TCanvas("cBeamProfile_nClusters", "Number of Clusters per event", 100, 100,900,600);
+    cBeamProfile_nClusters = new TCanvas("cBeamProfile_nClusters", "Number of Clusters per event", 100, 100, 900, 600);
   }
   cBeamProfile_nClusters->Clear();
   cBeamProfile_nClusters->Divide((Int_t)((nPlanes+1)/2.),(nPlanes>1)?2:1); //nPlanesInTracking could be an odd number.
@@ -9244,7 +9597,7 @@ void MRaw::StudyBeamProfile(Int_t nEvents, Bool_t ifFit2DGaus, Double_t Xmin, Do
     cBeamProfile_hitPixMult = (TCanvas*)g_hitPixMult;
   }
   else {
-    cBeamProfile_hitPixMult = new TCanvas("cBeamProfile_hitPixMult", "Pixel Multiplicity", 100, 100,900,600);
+    cBeamProfile_hitPixMult = new TCanvas("cBeamProfile_hitPixMult", "Pixel Multiplicity", 100, 100, 900, 600);
   }
   cBeamProfile_hitPixMult->Clear();
   cBeamProfile_hitPixMult->Divide((Int_t)((nPlanes+1)/2.),(nPlanes>1)?2:1); //nPlanesInTracking could be an odd number.
@@ -9351,7 +9704,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     ccumulhit = (TCanvas*)g;
   }
   else {
-    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5,800,700);
+    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5, 800, 700);
   }
   ccumulhit->Clear();
   ccumulhit->UseCurrentStyle();
@@ -9486,7 +9839,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     // -- Histo with microns
     sprintf( name, "hhitmappl%d", iPlane);
     sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
-    // check if the histo is existing or not
+    // check if the histo exists or not
     hHitMap[iPlane-1] = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
     hHitMap[iPlane-1]->SetMarkerStyle(20);
     hHitMap[iPlane-1]->SetMarkerSize(.1);
@@ -9784,7 +10137,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     ccumulhit2 = (TCanvas*)g;
   }
   else {
-    ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 5, 5,800,700);
+    ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 5, 5, 800, 700);
   }
   ccumulhit2->Clear();
   ccumulhit2->UseCurrentStyle();
@@ -9810,7 +10163,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     ccumulhit21 = (TCanvas*)g;
   }
   else {
-    ccumulhit21 = new TCanvas("ccumulhit21", "Hit time stamp", 5, 5,800,700);
+    ccumulhit21 = new TCanvas("ccumulhit21", "Hit time stamp", 5, 5, 800, 700);
   }
   ccumulhit21->Clear();
   ccumulhit21->UseCurrentStyle();
@@ -9835,7 +10188,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     ccumulhit22 = (TCanvas*)g;
   }
   else {
-    ccumulhit22 = new TCanvas("ccumulhit22", "# hits VS event number", 5, 5,800,700);
+    ccumulhit22 = new TCanvas("ccumulhit22", "# hits VS event number", 5, 5, 800, 700);
   }
   ccumulhit22->Clear();
   ccumulhit22->UseCurrentStyle();
@@ -9860,7 +10213,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     ccumulhit3 = (TCanvas*)g;
   }
   else {
-    ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 5, 5,800,700);
+    ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 5, 5, 800, 700);
   }
   ccumulhit3->Clear();
   ccumulhit3->UseCurrentStyle();
@@ -9914,7 +10267,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       ccumulhit3_2[i] = (TCanvas*)g;
     }
     else {
-      ccumulhit3_2[i] = new TCanvas(TheName.Data(), "Correlation among the planes of Nb of hits per event", 5, 5,800,700);
+      ccumulhit3_2[i] = new TCanvas(TheName.Data(), "Correlation among the planes of Nb of hits per event", 5, 5, 800, 700);
     }
     ccumulhit3_2[i]->Divide(NcanvasX,NcanvasY);
     for(int ipad=0;ipad<NcanvasX*NcanvasY;ipad++) {
@@ -9970,7 +10323,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         cHitProperties[iPlane-1] = (TCanvas*)g;
       }
       else {
-        cHitProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),600,500);
+        cHitProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1), 600, 500);
       }
       cHitProperties[iPlane-1]->Clear();
       cHitProperties[iPlane-1]->UseCurrentStyle();
@@ -10012,7 +10365,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         cHitProperties2[iPlane-1] = (TCanvas*)g;
       }
       else {
-        cHitProperties2[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),600,500);
+        cHitProperties2[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1), 600, 500);
       }
       cHitProperties2[iPlane-1]->Clear();
       cHitProperties2[iPlane-1]->UseCurrentStyle();
@@ -10051,7 +10404,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         cHitSeedChargeSum[iPlane-1] = (TCanvas*)g;
       }
       else {
-        cHitSeedChargeSum[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),600,500);
+        cHitSeedChargeSum[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1), 600, 500);
       }
       cHitSeedChargeSum[iPlane-1]->Clear();
       cHitSeedChargeSum[iPlane-1]->UseCurrentStyle();
@@ -10074,7 +10427,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
         cHitChargeRatio[iPlane-1] = (TCanvas*)g;
       }
       else {
-        cHitChargeRatio[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),600,500);
+        cHitChargeRatio[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1), 600, 500);
       }
       cHitChargeRatio[iPlane-1]->Clear();
       cHitChargeRatio[iPlane-1]->UseCurrentStyle();
@@ -10097,7 +10450,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
 
       //Il faut ajouter un nouveau canvas temporaire pour celui la
       TH1F* htmp;
-      TCanvas *ctmp=new TCanvas("ctmp","ctmp",10,10,500,400);
+      TCanvas *ctmp=new TCanvas("ctmp","ctmp", 10, 10, 500, 400);
       ctmp->cd();
       htmp=(TH1F*)hHitSeedCharge[iPlane-1]->DrawClone();
       int binmax = htmp->GetXaxis()->GetXmax();
@@ -10114,7 +10467,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
       norm=HighestPeakPositionEv/xp;
       ctmp->Close();
 
-      TCanvas *ctmp2=new TCanvas("ctmp2","ctmp2",10,10,500,400);
+      TCanvas *ctmp2=new TCanvas("ctmp2","ctmp2", 10, 10, 500, 400);
       ctmp2->cd();
       TH1F* htmp2;
       htmp2=(TH1F*)hHitSeedCharge[iPlane-1]->DrawClone();
@@ -10135,7 +10488,7 @@ void MRaw::XrayAnalysis( Int_t nEvents,
     }
     else {
       TH1F* htmp;
-      TCanvas *ctmp=new TCanvas("ctmp","ctmp",10,10,500,400);
+      TCanvas *ctmp=new TCanvas("ctmp","ctmp", 10, 10, 500, 400);
       ctmp->cd();
       htmp=(TH1F*)hHitSeedCharge[iPlane-1]->DrawClone();
       int binmax = htmp->GetXaxis()->GetXmax();
@@ -12086,7 +12439,7 @@ void MRaw::BetaSourceMultiFrameAnalysis(int     aPlane,
   TCanvas *cbeta1 = NULL;
   g = gROOT->FindObject("cbeta1") ;
   if(g) cbeta1 = (TCanvas*)g;
-  cbeta1 = new TCanvas("cbeta1","Cumulate Hits", 5, 5,800,700);
+  cbeta1 = new TCanvas("cbeta1","Cumulate Hits", 5, 5, 800, 700);
   cbeta1->Clear();
   cbeta1->UseCurrentStyle();
   cbeta1->cd();
@@ -12234,7 +12587,7 @@ void MRaw::BetaSourceMultiFrameAnalysis(int     aPlane,
   TCanvas *cbeta2 = NULL;
   g = gROOT->FindObject("cbeta2") ;
   if(g) cbeta2 = (TCanvas*)g;
-  cbeta2 = new TCanvas("cbeta2","Cumulate Hits", 5, 5,800,700);
+  cbeta2 = new TCanvas("cbeta2","Cumulate Hits", 5, 5, 800, 700);
   cbeta2->Clear();
   cbeta2->UseCurrentStyle();
   cbeta2->cd();
@@ -12317,7 +12670,7 @@ void MRaw::BetaSourceMultiFrameAnalysis(int     aPlane,
   TCanvas *cbeta3 = NULL;
   g = gROOT->FindObject("cbeta3") ;
   if(g) cbeta3 = (TCanvas*)g;
-  cbeta3 = new TCanvas("cbeta3","Cumulate Hits", 5, 5,800,700);
+  cbeta3 = new TCanvas("cbeta3","Cumulate Hits", 5, 5, 800, 700);
   cbeta3->Clear();
   cbeta3->UseCurrentStyle();
   cbeta3->cd();
@@ -12418,7 +12771,7 @@ void MRaw::BetaSourceMultiFrameAnalysis(int     aPlane,
   TCanvas *cbeta4 = NULL;
   g = gROOT->FindObject("cbeta4") ;
   if(g) cbeta4 = (TCanvas*)g;
-  cbeta4 = new TCanvas("cbeta4","Cumulate Hits", 5, 5,800,700);
+  cbeta4 = new TCanvas("cbeta4","Cumulate Hits", 5, 5, 800, 700);
   cbeta4->Clear();
   cbeta4->UseCurrentStyle();
   cbeta4->cd();
@@ -12537,7 +12890,7 @@ void MRaw::BetaSourceMultiFrameAnalysis(int     aPlane,
   TCanvas *cbeta5 = NULL;
   g = gROOT->FindObject("cbeta5") ;
   if(g) cbeta5 = (TCanvas*)g;
-  cbeta5 = new TCanvas("cbeta5","Cumulate Hits", 5, 5,800,700);
+  cbeta5 = new TCanvas("cbeta5","Cumulate Hits", 5, 5, 800, 700);
   cbeta5->Clear();
   cbeta5->UseCurrentStyle();
   cbeta5->cd();
@@ -14414,7 +14767,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     // -- Histo with microns
     sprintf( name, "hhitmappl%d", iPlane);
     sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
-    // check if the histo is existing or not
+    // check if the histo exists or not
     hHitMap[iPlane-1] = new TH2F(name, title,
 				 NbinsU, RU[0], RU[1],
 				 NbinsV, RV[0], RV[1]);
@@ -14660,7 +15013,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   TCanvas *ccumulhit;
   TObject* g = gROOT->FindObject("ccumulhit") ;
   if(g) ccumulhit = (TCanvas*)g;
-  else  ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5,800,700);
+  else  ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5, 800, 700);
   ccumulhit->Clear();
   ccumulhit->UseCurrentStyle();
   TPaveLabel* label = new TPaveLabel();
@@ -14687,7 +15040,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   TCanvas *ccumulhit2;
   g = gROOT->FindObject("ccumulhit2") ;
   if(g) ccumulhit2 = (TCanvas*)g;
-  else  ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 5, 5,800,700);
+  else  ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 5, 5, 800, 700);
   ccumulhit2->Clear();
   ccumulhit2->UseCurrentStyle();
   label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
@@ -14724,7 +15077,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
   TCanvas *ccumulhit3;
   g = gROOT->FindObject("ccumulhit3") ;
   if(g) ccumulhit3 = (TCanvas*)g;
-  else  ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 5, 5,800,700);
+  else  ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 5, 5, 800, 700);
   ccumulhit3->Clear();
   ccumulhit3->UseCurrentStyle();
   label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
@@ -14764,7 +15117,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
       sprintf( title, "Hit properties of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
       g = gROOT->FindObject(name);
       if(g) cHitProperties[iPlane-1] = (TCanvas*)g;
-      else  cHitProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),600,500);
+      else  cHitProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1), 600, 500);
 
       cHitProperties[iPlane-1]->Clear();
       cHitProperties[iPlane-1]->UseCurrentStyle();
@@ -14841,7 +15194,7 @@ void MRaw::FillnTupleForTMVA(int    nEvents,
     sprintf( title, "Hit MCA properties of plane %d - %s", iPlane, tPlane->GetPlanePurpose());
     g = gROOT->FindObject(name);
     if(g) cMCAProperties[iPlane-1] = (TCanvas*)g;
-    else  cMCAProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1),600,500);
+    else  cMCAProperties[iPlane-1] = new TCanvas(name, title, 5, 5+5*(iPlane-1), 600, 500);
 
     double Frac_limit = 0.99;
 
@@ -15475,7 +15828,7 @@ void  MRaw::TrainTMVA(TString myMethodList,
   TCanvas *MLPRegressionOutput;
   TObject* g = gROOT->FindObject("MLPRegressionOutput") ;
   if(g) MLPRegressionOutput = (TCanvas*)g;
-  else  MLPRegressionOutput = new TCanvas("MLPRegressionOutput", "MLP Regression output", 5, 5,800,700);
+  else  MLPRegressionOutput = new TCanvas("MLPRegressionOutput", "MLP Regression output", 5, 5, 800, 700);
   MLPRegressionOutput->Clear();
   MLPRegressionOutput->UseCurrentStyle();
   TPaveLabel* label = new TPaveLabel();
@@ -15555,7 +15908,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   //
   // JB, 2019/03/10
   // Modified JB, 2020/03/28
-
+  // Modified E.Jourd'Huy, P.Stavroulakis, 2022/01/25
 
   // Define magnetic field
   double Bfield = 0.2; // Tesla
@@ -15564,8 +15917,11 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   double Bfield_rangeZ[2] = {-5000, 5000};
 
   // Define geometrical cuts
-  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0], fSession->GetSetup()->GetAnalysisPar().Umax[0][0]};
-  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0], fSession->GetSetup()->GetAnalysisPar().Vmax[0][0]};
+  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0] + 1000, fSession->GetSetup()->GetAnalysisPar().Umax[0][0] + 1000};
+  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0] + 3000, fSession->GetSetup()->GetAnalysisPar().Vmax[0][0] + 3000};
+
+  //cout << "cutX[2] = { " << cutX[0] << ", " << cutX[1] << "}" << endl;
+  //cout << "cutY[2] = { " << cutY[0] << ", " << cutY[1] << "}" << endl;
 
 
 // ==================================
@@ -15641,7 +15997,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
     cdisplaytrack = (TCanvas*)gtmp;
   }
   else {
-    cdisplaytrack = new TCanvas("cdisplaytrack", "Inspect Tracks", 600, 40 ,800, 700);
+    cdisplaytrack = new TCanvas("cdisplaytrack", "Inspect Tracks", 600, 40, 800, 700);
   }
   cdisplaytrack->Clear();
   cdisplaytrack->UseCurrentStyle();
@@ -15960,7 +16316,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
     hTrackMapXYZ = new TH3F( "htrackmapxyz", "Tracks in XYZ;Z (#mum);X (#mum);Y (#mum)", 100, zmin, zmax, 100, xmin, xmax, 100, ymin, ymax);
     hTrackMapXYZ->SetMarkerStyle(20);
     hTrackMapXYZ->SetMarkerSize(1);
-    hTrackMapYZ->SetStats(0);
+    hTrackMapXYZ->SetStats(0);
   }
 
 
@@ -15968,6 +16324,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   // ==================================
   // == Event analysis
 
+  NbRmTracks= 0;
   tracklist->clear();
   // Uncomment to switch options
   //while (1) { // stop after each event
@@ -15993,8 +16350,8 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   // ==================================
   // == Fill & display histos for each plane
 
-  TF1 *ftrackmodelX = new TF1("ftrackmodelX", sitritrajectoryBortho, -30000, 30000, 9);
-  TF1 *ftrackmodelY = new TF1("ftrackmodelY", sitritrajectoryBparallel, -30000, 30000, 9);
+  TF1 *ftrackmodelX = new TF1("ftrackmodelX", sitritrajectoryBortho, zmin, zmax, 9);
+  TF1 *ftrackmodelY = new TF1("ftrackmodelY", sitritrajectoryBparallel, zmin, zmax, 9);
   Int_t iCol, iRow; // start at 0, so for Setting Bin, use iCol/iRow +1
   int GoodPlaneCounter = 0;
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
@@ -16201,7 +16558,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   TPolyLine3D *alineXYZ;
   int npointsPerLine = 500;
   for( std::vector<sitritrack_t>::iterator atrack = tracklist->begin(); atrack !=tracklist->end(); ++atrack ) { // loop on tracks
-      if(fVerbose) printf(" track[%d] slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", (*atrack).id, (*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, (*atrack).fit_chi2X, (*atrack).fit_chi2Y);
+      if(fVerbose) printf(" track[%d] (%d %d %d %d) slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", (*atrack).id, (*atrack).hit[0], (*atrack).hit[1], (*atrack).hit[2], (*atrack).hit[3], (*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, (*atrack).fit_chi2X, (*atrack).fit_chi2Y);
     // initial slope, x at z=0
     // initial slope, y at z=0, momentum, zA start of Bfield, zB end of Bfield, charge = +/- 1, Bfield
 //    ftrackmodelX->SetParameters(0, 0, 0, 0, 1, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
@@ -16263,6 +16620,7 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   for( std::vector<TPolyLine3D*>::iterator aline = linesXYZ.begin(); aline !=linesXYZ.end(); ++aline ) {
     (*aline)->Draw();
   }
+
   hTrackMapXY->Delete();
   hTrackMapXZ->Delete();
   hTrackMapYZ->Delete();
@@ -16278,8 +16636,8 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   //===============
   //== End
   delete tracklist;
-  cout << "\n\n Event number : " << fSession->GetCurrentEventNumber()-1<<" " << endl;
-
+  cout << "\n\nEvent number : " << fSession->GetCurrentEventNumber()-1<<" " << endl;
+  cout << "\nNo. of tracks removed : " << NbRmTracks << "\n" << endl;
 
 }
 
@@ -16312,8 +16670,8 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   double Bfield_rangeZ[2] = {-5000, 5000};
 
   // Define geometrical cuts
-  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0], fSession->GetSetup()->GetAnalysisPar().Umax[0][0]};
-  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0], fSession->GetSetup()->GetAnalysisPar().Vmax[0][0]};
+  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0] + 1000, fSession->GetSetup()->GetAnalysisPar().Umax[0][0] + 1000};
+  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0] + 3000, fSession->GetSetup()->GetAnalysisPar().Vmax[0][0] + 3000};
 
 
   fSession->SetEvents(nEvents);
@@ -16327,7 +16685,7 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     ccumulhit = (TCanvas*)g;
   }
   else {
-    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5,800,700);
+    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5, 800, 700);
   }
   ccumulhit->Clear();
   ccumulhit->UseCurrentStyle();
@@ -16359,6 +16717,7 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   // Determine extrema of planes position in telescope frame
   Double_t xmin=1e6, xmax=-1e6;
   Double_t ymin=1e6, ymax=-1e6;
+  Double_t zmin=1e6, zmax=-1e6;
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
     tPlane = tTracker->GetPlane(iPlane);
     // bottom left corner
@@ -16380,7 +16739,15 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     if( posURInTracker(1)<ymin ) ymin = posURInTracker(1);
     if( posURInTracker(0)>xmax ) xmax = posURInTracker(0);
     if( posURInTracker(1)>ymax ) ymax = posURInTracker(1);
+    // Z extrema
+    if( tPlane->GetPosition()(2)<zmin) zmin = tPlane->GetPosition()(2);
+    if( tPlane->GetPosition()(2)>zmax) zmax = tPlane->GetPosition()(2);
+
   } // end loop on planes
+
+  // Enlarge a bit the z-range
+  zmin -= 5000;
+  zmax += 5000;
 
   TH2F **hHitMap = new TH2F*[nPlanes];
   TH1F **hHitPixMult = new TH1F*[nPlanes];
@@ -16449,30 +16816,53 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   TH1F *hTrackPairMomentumX = new TH1F( "hTrackPairMomentumX", "Track momentumX; p_X [MeV/c]", 100, 0, 10);
   TH1F *hTrackPairDSlopeY = new TH1F( "hTrackPairDSlopeY", "Track tilt_Y; #delta Slope_Y [rad]", 128, -3.2, 3.2);
   TH1F *hTrackPairMomentumY = new TH1F( "hTrackPairMomentumY", "Track momentumY; p_Y [MeV/c]", 100, 0, 10);
-  TH1F *hTrackPairChi2X = new TH1F( "hTrackPairChi2X", "Track #chi2 from X-fit; #chi2", 100, 0, 1000);
-  TH1F *hTrackPairChi2Y = new TH1F( "hTrackPairChi2Y", "Track #chi2 from Y-fit; #chi2", 100, 0, 1000);
+  TH1F *hTrackPairChi2X = new TH1F( "hTrackPairChi2X", "Track #chi2 from X-fit; #chi2", 500, 0, 500);
+  TH1F *hTrackPairChi2Y = new TH1F( "hTrackPairChi2Y", "Track #chi2 from Y-fit; #chi2", 500, 0, 500);
   TH1F *hTrackPairMomentum = new TH1F( "hTrackPairMomentum", "Track momentum from fit; p [MeV/c]", 100, 0, 10);
+  TH1F *hTrackPairFitSlopeX = new TH1F( "hTrackPairFitSlopeX", "Track fit_slope_X; Slope_X [rad]", 128, -3.2, 3.2);
+  TH1F *hTrackPairFitSlopeY = new TH1F( "hTrackPairFitSlopeY", "Track fit_slope_Y; Slope_Y [rad]", 128, -3.2, 3.2);
+  TH1F *hTrackPairFitXA = new TH1F( "hTrackPairFitXA", "Track X position at Bfield start; X [um]", 200, -10000, 10000);
+  TH1F *hTrackPairFitYA = new TH1F( "hTrackPairFitYA", "Track Y position at Bfield start; X [um]", 200, -10000, 10000);
 
+  TH2F *hChi2XvsP = new TH2F( "hChi2XvsP", "Fit Chi2X vs. Fit Momentum; Momentum [MeV/c]; Chi2X", 100, 0, 10, 500, 0, 500);
+  TH2F *hChi2YvsP = new TH2F( "hChi2YvsP", "Fit Chi2Y vs. Fit Momentum; Momentum [MeV/c]; Chi2Y", 100, 0, 10, 500, 0, 500);
+  TH2F *hSlopeXvsP = new TH2F( "hChi2XvsP", "Fit Slope X vs. Fit Momentum; Momentum [MeV/c]; Slope X", 100, 0, 10, 128, -3.2, 3.2);
+  TH2F *hSlopeYvsP = new TH2F( "hChi2XvsP", "Fit Slope Y vs. Fit Momentum; Momentum [MeV/c]; Slope Y", 100, 0, 10, 128, -3.2, 3.2);
+  TH2F *hXAvsP = new TH2F( "hXAvsP", "X0 vs. Fit Momentum; Momentum [MeV/c]; XA", 100, 0, 10, 200, -10000, 10000);
+  TH2F *hYAvsP = new TH2F( "hYAvsP", "Y0 vs. Fit Momentum; Momentum [MeV/c]; YA", 100, 0, 10, 200, -10000, 10000);
 
+  TH3F *hHitMapXYZ = new TH3F( "hhitmapxyz", "Hits from tracks in 3D;Z (#mum);X (#mum);Y (#mum)", 100, zmin, zmax, 100, xmin, xmax, 100, ymin, ymax);
+  hHitMapXYZ->SetMarkerStyle(20);
+  hHitMapXYZ->SetMarkerSize(.3);
+  hHitMapXYZ->SetStats(0);
+
+  std::vector<TPolyLine3D*> linesXYZ;
+  TPolyLine3D *alineXYZ;
+  int npointsPerLine = 500;
+
+  // For the 3D Map
+  TF1 *ftrackmodelX_3DMap = new TF1("ftrackmodelX_3DMap", sitritrajectoryBortho, zmin, zmax, 9);
+  TF1 *ftrackmodelY_3DMap = new TF1("ftrackmodelY_3DMap", sitritrajectoryBparallel, zmin, zmax, 9);
 
   //Loop over the requested number of events
   for( Int_t iEvt=0; iEvt < nEvents; iEvt++) {
     if( fDebugRaw ) cout << endl << "--------------------------" << endl << "SitrneoCumul: starting event " << iEvt << endl;
     if( !(fSession->NextRawEvent()) ) break; // JB 2009/06/26
     tTracker->Update();
-    SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, tracklist, cutX[0], cutX[1], cutY[0], cutY[1], 30);
-    if(fVerbose) cout << "  Sitrineo: found " << tracklist->size() << " tracks." << endl;
+    SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, tracklist, cutX[0], cutX[1], cutY[0], cutY[1], 30.);
+    if(fVerbose && (int)tracklist->size()!=0) cout << "  Sitrineo: found " << tracklist->size() << " tracks." << endl;
 
     nTracksReconstructed += tracklist->size();
     for( std::vector<sitritrack_t>::iterator atrack = tracklist->begin(); atrack !=tracklist->end(); ++atrack ) { // loop on tracks
       //if(fVerbose) printf("MRaw::SitrineoCumul track %d: slope1_X=%.2f, slope2_X=%.2f, Dslope_X=%.2f,  p_X=%.2f, slope1_Y=%.2f, slope2_Y=%.2f, Dslope_Y=%.2f, p_Y=%.2f\n", (*atrack).id, (*atrack).firsttrack_slopeX, (*atrack).secondtrack_slopeX, (*atrack).Dslope_X, (*atrack).momentum_X, (*atrack).firsttrack_slopeY, (*atrack).secondtrack_slopeY, (*atrack).Dslope_X, (*atrack).momentum_X);
-      if(fVerbose) printf(" track[%d] slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", (*atrack).id, (*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, (*atrack).fit_chi2X, (*atrack).fit_chi2Y);
+      //if(fVerbose) printf(" track[%d] (%d %d %d %d) slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", (*atrack).id, (*atrack).hit[0], (*atrack).hit[1], (*atrack).hit[2], (*atrack).hit[3], (*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, (*atrack).fit_chi2X, (*atrack).fit_chi2Y);
       // hit properties
       for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
         tPlane = (DPlane*)tTracker->GetPlane(iPlane);
         aHit=(DHit*)tPlane->GetHit((*atrack).hit[iPlane-1]);
         hNHitsPerEvent[iPlane-1]->Fill( tPlane->GetHitsN() );
         hHitMap[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1);
+        hHitMapXYZ->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(2), tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1));
         hHitPixMult[iPlane-1]->Fill( aHit->GetStripsInCluster());
         hHitTimeStamp[iPlane-1]->Fill( aHit->GetTimestamp());
         hNHitsVSEventN[iPlane-1]->Fill(iEvt);
@@ -16496,6 +16886,32 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
       hTrackPairChi2X->Fill((*atrack).fit_chi2X);
       hTrackPairChi2Y->Fill((*atrack).fit_chi2Y);
       hTrackPairMomentum->Fill( (*atrack).fit_momentum);
+      hTrackPairFitSlopeX->Fill( (*atrack).fit_slope_X);
+      hTrackPairFitSlopeY->Fill( (*atrack).fit_slope_Y);
+      hTrackPairFitXA->Fill( (*atrack).fit_origin_X);
+      hTrackPairFitYA->Fill( (*atrack).fit_origin_Y);
+      // fit variables vs. fit momentum
+      hChi2XvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_chi2X);
+      hChi2YvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_chi2Y);
+      hSlopeXvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_slope_X);
+      hSlopeYvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_slope_Y);
+      hXAvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_origin_X);
+      hYAvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_origin_Y);
+
+      // Lines for 3D Hit Map
+      ftrackmodelX_3DMap->SetParameters((*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
+      ftrackmodelY_3DMap->SetParameters((*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
+      alineXYZ = new TPolyLine3D(npointsPerLine);
+      alineXYZ->SetLineColor(kPink);
+      alineXYZ->SetLineWidth(2);
+      for (int ipoint = 0; ipoint < npointsPerLine; ipoint++) {
+        double z = zmin+(zmax-zmin)*ipoint/npointsPerLine;
+        double x = ftrackmodelX_3DMap->Eval(z);
+        double y = ftrackmodelY_3DMap->Eval(z);
+        alineXYZ->SetPoint( ipoint, z, x, y);
+      }
+      linesXYZ.push_back( alineXYZ);
+
     } // end loop of track-pairs
 
   } // END LOOP ON EVENTS
@@ -16511,8 +16927,9 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     pad->cd(iPlane);
     pad->cd(iPlane)->SetTickx(1);
     pad->cd(iPlane)->SetTicky(1);
+    hHitMap[iPlane-1]->SetMaximum(10);
     hHitMap[iPlane-1]->DrawCopy("colz");
-    cout << "Plane "<<iPlane<<" has seen "<<hHitMap[iPlane-1]->GetEntries()<<" hits."<< endl;
+    cout << "Plane "<<iPlane<<" has seen "<<hHitMap[iPlane-1]->GetEntries()<<" tracks."<< endl;
   }
   ccumulhit->Update();
 
@@ -16523,7 +16940,7 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     ccumulhit2 = (TCanvas*)g;
   }
   else {
-    ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 100, 50,800,700);
+    ccumulhit2 = new TCanvas("ccumulhit2", "Pixel multiplicitiy in hits", 100, 50, 800, 700);
   }
   ccumulhit2->Clear();
   ccumulhit2->UseCurrentStyle();
@@ -16549,7 +16966,7 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     ccumulhit21 = (TCanvas*)g;
   }
   else {
-    ccumulhit21 = new TCanvas("ccumulhit21", "Hit time stamp", 200, 100,800,700);
+    ccumulhit21 = new TCanvas("ccumulhit21", "Hit time stamp", 200, 100, 800, 700);
   }
   ccumulhit21->Clear();
   ccumulhit21->UseCurrentStyle();
@@ -16574,7 +16991,7 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     ccumulhit22 = (TCanvas*)g;
   }
   else {
-    ccumulhit22 = new TCanvas("ccumulhit22", "# hits VS event number", 60, 60,800,700);
+    ccumulhit22 = new TCanvas("ccumulhit22", "# hits VS event number", 60, 60, 800, 700);
   }
   ccumulhit22->Clear();
   ccumulhit22->UseCurrentStyle();
@@ -16599,7 +17016,7 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     ccumulhit3 = (TCanvas*)g;
   }
   else {
-    ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 80, 80,800,700);
+    ccumulhit3 = new TCanvas("ccumulhit3", "Nb of hits per event", 80, 80, 800, 700);
   }
   ccumulhit3->Clear();
   ccumulhit3->UseCurrentStyle();
@@ -16631,22 +17048,21 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   }
   ccumulhit3->Update();
 
-  // Track properties
+  // Track vector properties
   TCanvas *ccumultrack;
   g = gROOT->FindObject("ccumultrack") ;
   if (g) {
     ccumultrack = (TCanvas*)g;
   }
   else {
-    ccumultrack = new TCanvas("ccumultrack", "Track properties", 100, 100,1100,700);
+    ccumultrack = new TCanvas("ccumultrack", "Track vector properties", 100, 100, 1100, 700);
   }
   ccumultrack->Clear();
   ccumultrack->UseCurrentStyle();
   label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
   TPad *pad4 = new TPad("pad4","",0.,0.,1.,0.965);
   pad4->Draw();
-  pad4->Divide( 4, 4);
-  ccumultrack->cd();
+  pad4->Divide( 3, 4);
   pad4->cd(1);
   hTrackPairDX12->Draw();
   pad4->cd(2);
@@ -16671,17 +17087,125 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   hTrackPairDSlopeY->Draw();
   pad4->cd(12);
   hTrackPairMomentumY->Draw();
-  pad4->cd(13);
-  hTrackPairChi2X->Draw();
-  pad4->cd(14);
-  hTrackPairChi2Y->Draw();
-  pad4->cd(15);
-  hTrackPairMomentum->Draw();
-//  pad4->cd(9);
-//  hTrackPairSlopesX->Draw();
-//  pad4->cd(9);
-//  hTrackPairSlopesY->Draw();
   ccumultrack->Update();
+
+  // Track fit properties
+  TCanvas *ccumultrack1;
+  g = gROOT->FindObject("ccumultrack1") ;
+  if (g) {
+    ccumultrack1 = (TCanvas*)g;
+  }
+  else {
+    ccumultrack1 = new TCanvas("ccumultrack1", "Track fit properties", 300, 300, 1100, 700);
+  }
+  ccumultrack1->Clear();
+  ccumultrack1->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad5 = new TPad("pad5","",0.,0.,1.,0.965);
+  pad5->Draw();
+  pad5->Divide( 2, 4);
+  pad5->cd(1);
+  hTrackPairChi2X->Draw();
+  pad5->cd(2);
+  //hTrackPairChi2Y->Scale(1./hTrackPairChi2Y->Integral());
+  hTrackPairChi2Y->Draw();
+  pad5->cd(3);
+  hTrackPairMomentum->Draw();
+  pad5->cd(4);
+  hTrackPairFitSlopeX->Draw();
+  pad5->cd(5);
+  hTrackPairFitSlopeY->Draw();
+  pad5->cd(6);
+  hTrackPairFitXA->Draw();
+  pad5->cd(7);
+  hTrackPairFitYA->Draw();
+  ccumultrack1->Update();
+
+  // Fit variables vs. Fit momentum
+  TCanvas *ccumulvarp;
+  g = gROOT->FindObject("ccumulvarp") ;
+  if (g) {
+    ccumulvarp = (TCanvas*)g;
+  }
+  else {
+    ccumulvarp = new TCanvas("ccumulvarp", "Track vector properties", 100, 100, 1100, 700);
+  }
+  ccumulvarp->Clear();
+  ccumulvarp->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad6 = new TPad("pad6","",0.,0.,1.,0.965);
+  pad6->Draw();
+  pad6->Divide( 2, 3);
+  pad6->cd(1);
+  hChi2XvsP->Draw();
+  pad6->cd(2);
+  hChi2YvsP->Draw();
+  pad6->cd(3);
+  hSlopeXvsP->Draw();
+  pad6->cd(4);
+  hSlopeYvsP->Draw();
+  pad6->cd(5);
+  hXAvsP->Draw();
+  pad6->cd(6);
+  hYAvsP->Draw();
+  ccumulvarp->Update();
+
+  // 3D Hit Map
+  TCanvas *ccumulhitXYZ;
+  ccumulhitXYZ = new TCanvas("ccumulhitXYZ", "3D Hit Map", 200, 200, 1100, 700);
+  hHitMapXYZ->DrawCopy("P");
+  int linesXYZindex;
+  for( std::vector<TPolyLine3D*>::iterator aline = linesXYZ.begin(); aline !=linesXYZ.end(); ++aline ) {
+    linesXYZindex = find(linesXYZ.begin(), linesXYZ.end(), (*aline)) - linesXYZ.begin();
+    if(linesXYZindex%50==0) (*aline)->Draw("same"); // Draw only a few indicative tracks
+  }
+  char leg3Dentry[300];
+  sprintf(leg3Dentry, "No. of tracks: %d", (int)hHitMapXYZ->GetEntries()/4);
+  TLegend *leg3D = new TLegend(0.70,0.85,0.95,0.90, "");
+  leg3D->SetFillStyle(0);
+  leg3D->SetBorderSize(1);
+  leg3D->AddEntry((TObject*)0, leg3Dentry, "");
+  leg3D->Draw();
+  ccumulhitXYZ->Update();
+
+/*
+  // Plot of x(plane4) as a function of the momentum
+  DPlane *Plane4 = tTracker->GetPlane(4);
+  TCanvas *cmomentlim = new TCanvas("cmomentlim", "X Position (plane 4) vs. momentum", 200, 100, 700, 700);
+  TH1F *htrackmodelX_p = new TH1F("htrackmodelX_p", "Momentum Acceptance;Momentum (MeV/c);X Position at Plane 4 (#mum)", 60, 0.5, 3);
+  TF1 *ftrackmodelX_p1 = new TF1("ftrackmodelX_p1", sitritrajectoryBortho_p, 0.5, 3, 9);
+  TF1 *ftrackmodelX_p2 = new TF1("ftrackmodelX_p2", sitritrajectoryBortho_p, 0.5, 3, 9);
+  TF1 *ftrackmodelX_p3 = new TF1("ftrackmodelX_p3", sitritrajectoryBortho_p, 0.5, 3, 9);
+  htrackmodelX_p->SetMaximum(30000);
+  htrackmodelX_p->SetMinimum(0);
+  htrackmodelX_p->SetStats(0);
+  htrackmodelX_p->Draw();
+  TLine *liney = new TLine(0.5,10000,2.2,10000);
+  liney->SetLineColor(kBlue);
+  liney->SetLineWidth(2);
+  liney->Draw();
+  TLine *linex = new TLine(2.2,0,2.2,10000);
+  linex->SetLineColor(kBlue);
+  linex->SetLineWidth(2);
+  linex->Draw();
+  ftrackmodelX_p1->SetParameters(0, (Bfield_rangeX[0]+Bfield_rangeX[1])/2, 0, 0, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield, Plane4->GetPosition()(2));
+  ftrackmodelX_p1->SetLineColor(1);
+  ftrackmodelX_p1->Draw("LSAME");
+  ftrackmodelX_p2->SetParameters(0, Bfield_rangeX[0], 0, 0, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield, Plane4->GetPosition()(2));
+  ftrackmodelX_p2->SetLineColor(2);
+  ftrackmodelX_p2->Draw("LSAME");
+  ftrackmodelX_p3->SetParameters(0, Bfield_rangeX[1], 0, 0, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield, Plane4->GetPosition()(2));
+  ftrackmodelX_p3->SetLineColor(3);
+  ftrackmodelX_p3->Draw("LSAME");
+
+  TLegend *leg = new TLegend(0.40,0.65,0.85,0.90, "X Position");
+  leg->SetFillStyle(1001);
+  leg->SetBorderSize(1);
+  leg->AddEntry(ftrackmodelX_p2, "x (z=zmin) = xmin", "l");
+  leg->AddEntry(ftrackmodelX_p1, "x (z=zmin) = (xmin + xmax)/2", "l");
+  leg->AddEntry(ftrackmodelX_p3, "x (z=zmin) = xmax", "l");
+  leg->Draw();
+*/
 
   // Save canvas and histos
   // cd to result dir
@@ -16694,6 +17218,7 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   ccumulhit2->Write();
   ccumulhit22->Write();
   ccumulhit3->Write();
+  ccumulhitXYZ->Write();
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
     tPlane = tTracker->GetPlane(iPlane);
     if( 0 < tPlane->GetAnalysisMode()  ) {
@@ -16705,6 +17230,8 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     }
   }
   ccumultrack->Write();
+  ccumultrack1->Write();
+  ccumulvarp->Write();
   hTrackPairDX12->Write();
   hTrackPairDY12->Write();
   hTrackPairSlope12X->Write();
@@ -16722,13 +17249,24 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   hTrackPairChi2X->Write();
   hTrackPairChi2Y->Write();
   hTrackPairMomentum->Write();
+  hTrackPairFitSlopeX->Write();
+  hTrackPairFitSlopeY->Write();
+  hTrackPairFitXA->Write();
+  hTrackPairFitYA->Write();
+  hChi2XvsP->Write();
+  hChi2YvsP->Write();
+  hSlopeXvsP->Write();
+  hSlopeYvsP->Write();
+  hXAvsP->Write();
+  hYAvsP->Write();
+  hHitMapXYZ->Write();
 
   fRoot.Close();
 
   //delete tracklist; // crashes
 
+  if (fVerbose) cout << "\nTotal no. of tracks removed : " << NbRmTracks_tot << " out of " << hHitMap[0]->GetEntries() + NbRmTracks_tot << " : " << NbRmTracks_tot/(hHitMap[0]->GetEntries() + NbRmTracks_tot)*100 << "%" << " of tracks removed" << "\n" << endl;
   return;
-
 }
 
 //
@@ -16805,7 +17343,7 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
   //
   // Cuts allows to limit the position differences and angles
   //   maxX1 & maxY1 (in um) limit the initial impact zone (on first and second planes)
-  //   masSlope1 & maxSlope2 (in radians) constraints the slopes of both incoming and outgoing vectors
+  //   maxSlope1 & maxSlope2 (in radians) constraints the slopes of both incoming and outgoing vectors
   //   maxDX2 and maxDY2 (in um) limit the difference in position for the outgoing vector
   // ==> maxDY2 and maxSlope2 should a priori NOT BE USED
   // ==> maxSlope1 & maxDX2 allow to cut out tracks with large multiple-scattering
@@ -16813,21 +17351,24 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
   //  2019/03/10, Adele Perus, Romain Schotter
   //  2020/01/15, JB: new variables added
   //  2020/03/26, JB: fit to track model (through TH1F) added
+  //  2022/02/18, E.Jourd'Huy & P.Stavroulakis: new sorting algorithm
 
   double Bfield = 0.2; // Tesla
   double Bfield_rangeZ[2] = {-5000, 5000};
   double res = 500; // microns
-  double zmin = -30000.;
-  double zmax =  30000.;
+  double zmin =  1e6;
+  double zmax = -1e6;
 
   maxSlope1 *= TMath::DegToRad();
+  
+  NbRmTracks= 0; // Reinitialize no. of tracks removed from the tracklist
+  
+  tracklist->clear(); // Reinitialize tracklist
 
-  tracklist->clear();
   if(fDebugRaw) printf( "SitrineoAnalysisFromHits: starting lastPlane1stTracker %d, nPairs=%d, Bfield = %.2f, with cuts (X-range=%.0f to %.0f um, Y-range=%.0f to %.0f um, maxSlope=%.1f rad\n", lastPlaneOfFirstTracker, (int)(tracklist->size()), Bfield, minX1, maxX1, minY1, maxY1, maxSlope1);
 
-
   DTracker *tTracker  =  fSession->GetTracker();
-  DPlane *Plane2, *Plane1 ;
+  DPlane *Plane2, *Plane1, *tPlane ;
   DHit *Hit1, *Hit2, *Hit3, *Hit4;
   //DTrack *track1, *track2;
   //DR3 slope1, slope2;
@@ -16835,6 +17376,16 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
   vector< sitrihitpair_t > secondTrackerPairs;
   sitrihitpair_t apair;
   sitritrack_t atrack;
+
+  Int_t nPlanes = tTracker->GetPlanesN();
+  // Loop on planes to determine extreme plane positions in z axis
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    tPlane = (DPlane*)tTracker->GetPlane(iPlane);
+    if ( tPlane->GetPosition()(2)<zmin) zmin = tPlane->GetPosition()(2);
+    if ( tPlane->GetPosition()(2)>zmax) zmax = tPlane->GetPosition()(2);
+  }
+  zmin -= 5000;
+  zmax += 5000;
 
   Plane2 = (DPlane*)tTracker->GetPlane(4);
   Plane1 = (DPlane*)tTracker->GetPlane(3);
@@ -16980,9 +17531,9 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
         htrackx->SetBinError( ibin, res);
         if(fDebugRaw>1) printf( "   Bin %d for z=%.0f -> y=%.0f, x=%.0f\n", ibin, htracky->GetBinCenter(ibin), htracky->GetBinContent(ibin), htrackx->GetBinContent(ibin));
         // Par[0] = thetaX
-        // Par[1] = X0 at z=0
+        // Par[1] = XA at z=zA
         // Par[2] = thetaY
-        // Par[3] = y0 at z=0
+        // Par[3] = YA at z=zA
         // Par[4] = p, momentum
         // Par[5] = zA, start of Bfield
         // Par[6] = zB, end of Bfield
@@ -17018,11 +17569,11 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
           printf( "   FitY => chi2 = %.2e, thetaY=%.2f, y0=%.0f\n", ftrackmodelY->GetChisquare(), ftrackmodelY->GetParameter(2), ftrackmodelY->GetParameter(3));
         }
 
-        atrack.id = tracklist->size()+1;
+        atrack.id = tracklist->size()+1+NbRmTracks;
         atrack.hit[0] = (*firstpair).hitid1;
         atrack.hit[1] = (*firstpair).hitid2;
         atrack.hit[2] = (*secondpair).hitid1;
-        atrack.hit[3] = (*secondpair).hitid1;
+        atrack.hit[3] = (*secondpair).hitid2;
         atrack.firsttrack_DX = (*firstpair).deltaX;
         atrack.firsttrack_DY = (*firstpair).deltaY;
         atrack.firsttrack_DZ = (*firstpair).deltaZ;
@@ -17044,8 +17595,52 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
         atrack.fit_momentum = ftrackmodelX->GetParameter(4);
         atrack.fit_chi2X = ftrackmodelX->GetChisquare();
         atrack.fit_chi2Y = ftrackmodelY->GetChisquare();
-	if (ftrackmodelX->GetChisquare()<50 && ftrackmodelX->GetParameter(4)<9. && fabs( ftrackmodelX->Eval(0) )<5000 && ftrackmodelY->GetChisquare()<50){
-	      tracklist->push_back(atrack);
+
+	// Cuts on the tracklist
+	// New sorting algorithm by E.Jourd'huy & P.Stavroulakis, 2022/02/18
+
+	if (atrack.fit_chi2X<10. && /*atrack.fit_slope_X < 0.2 && atrack.fit_slope_Y < 0.2 && atrack.fit_momentum>3. &&*/ atrack.fit_momentum<9. && /*sqrt(fabs( pow(ftrackmodelX->Eval(-5000),2) + pow(ftrackmodelY->Eval(-5000),2) )) < 7000 && sqrt(fabs( pow(ftrackmodelX->Eval(0),2) + pow(ftrackmodelY->Eval(0),2) )) < 7000 && sqrt(fabs( pow(ftrackmodelX->Eval(5000),2) + pow(ftrackmodelY->Eval(5000),2) )) < 7000 &&*/ fabs( ftrackmodelX->Eval(-5000) )<5000 && /*fabs( ftrackmodelX->Eval(0) )<5000 &&*/ ftrackmodelX->Eval(0)<-1000 && ftrackmodelX->Eval(0)>-5000 && fabs( ftrackmodelX->Eval(5000) )<5000 && fabs( ftrackmodelY->Eval(-5000) )<5000 && fabs( ftrackmodelY->Eval(0) )<5000 && fabs( ftrackmodelY->Eval(5000) )<5000 && atrack.fit_chi2Y<60.){
+
+	  //cout << "atrack.fit_origin_X = " << atrack.fit_origin_X << endl;
+	  //cout << "ftrackmodelX->Eval(0) = " << ftrackmodelX->Eval(0) << endl;
+	  // Algorithm to remove tracks with hits in common
+	  // cout << "A track has passed the cutoffs. Track id = " << atrack.id << endl; 
+#if 1
+	  // Compare current track "atrack" with previous tracks in the tracklist
+	  for (int i=0; i<tracklist->size();i++) {
+	    if (atrack.hit[0]==(*tracklist)[i].hit[0] || atrack.hit[1]==(*tracklist)[i].hit[1] || atrack.hit[2]==(*tracklist)[i].hit[2] || atrack.hit[3]==(*tracklist)[i].hit[3]) {
+	      if (atrack.fit_chi2X<(*tracklist)[i].fit_chi2X) {
+		(*tracklist)[i].keep_track=0;
+	      }
+	      else /*if (atrack.fit_chi2X>(*tracklist)[i].fit_chi2X)*/ {
+		atrack.keep_track=0;
+		break;
+	      }
+	    }
+	  }
+	  // Remove unwanted tracks from tracklist if need be
+	  if(atrack.keep_track==1){
+	    for (int i = tracklist->size()-1; i>=0; i--) {
+	      if((*tracklist)[i].keep_track==0) {
+		tracklist->erase(tracklist->begin()+i);
+		NbRmTracks++;
+		NbRmTracks_tot++;
+		// cout << "Removed existing track from tracklist. NbRmTracks = " << NbRmTracks << endl;
+	      }
+	    }
+	    tracklist->push_back(atrack);
+	    // cout << "New track added to tracklist." << endl;
+	  }
+	  else {
+	    for (int i=tracklist->size()-1; i>=0;i--) {
+	      if ((*tracklist)[i].keep_track==0) (*tracklist)[i].keep_track=1;
+	    }
+	    NbRmTracks++; // Omitted track counts as removed
+	    NbRmTracks_tot++;
+	    // cout << "New track omitted. Did not add track to tracklist. NbRmTracks = " << NbRmTracks << endl;
+	  }
+#endif
+	  //tracklist->push_back(atrack);
 	}
 
       } // end loop on vectors 1-2
@@ -17063,7 +17658,7 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
 
 //
 //______________________________________________________________________________
-void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Double_t maxY1, Double_t maxSlopeX1, Double_t maxSlopeY1, Double_t maxDX2, Double_t maxDY2, Double_t maxSlopeX2, Double_t maxSlopeY2)
+void MRaw::SitrineoContinuous( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t maxX1, Double_t maxY1, Double_t maxSlopeX1, Double_t maxSlopeY1, Double_t maxDX2, Double_t maxDY2, Double_t maxSlopeX2, Double_t maxSlopeY2)
 {
   // Display track & spectra for Sitrineo tracker continuously event by event
   //
@@ -17123,7 +17718,7 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
     cdisplayraw = (TCanvas*)gtmp;
   }
   else {
-    cdisplayraw = new TCanvas("cdisplayspectrum", "SITRINEO Spectrum", 100, 40, 500, 400);
+    cdisplayraw = new TCanvas("cdisplayspectrum", "SITRINEO Spectrum", 100, 40, 500, 700);
   }
   cdisplayraw->Clear();
   cdisplayraw->UseCurrentStyle();
@@ -17141,7 +17736,7 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
     cdisplaytrack = (TCanvas*)gtmp;
   }
   else {
-    cdisplaytrack = new TCanvas("cdisplaytrack", "SITRINEO Tracks", 600, 40 ,800, 700);
+    cdisplaytrack = new TCanvas("cdisplaytrack", "SITRINEO Tracks", 600, 40 , 800, 700);
   }
   cdisplaytrack->Clear();
   cdisplaytrack->UseCurrentStyle();
@@ -17238,45 +17833,18 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
   zmax += 5000;
 
   // Spectrum histo
-  TH1F *hTrackPairMomentum = new TH1F( "hTrackPairMomentum", "Track momentum from fit; p [MeV/c]", 100, 0, 10);
+  TH1F *hTrackPairMomentum;
+  gtmp = NULL;
+  gtmp = gROOT->FindObject("hTrackPairMomentum");
+  if(gtmp) {
+     hTrackPairMomentum = (TH1F*)gtmp;
+  }
+  else {
+    hTrackPairMomentum = new TH1F( "hTrackPairMomentum", "Spectre en energie; p [MeV/c]", 100, 0, 10);
+    hTrackPairMomentum->SetStats(0);
+  }
 
   // Track histograms
-  TH2F *hTrackMapXY;
-  gtmp = NULL;
-  gtmp = gROOT->FindObject("htrackmapxy");
-  if(gtmp) {
-     hTrackMapXY = (TH2F*)gtmp;
-  }
-  else {
-    hTrackMapXY = new TH2F( "htrackmapxy", "Tracks in XY;X (#mum);Y (#mum)", 100, xmin, xmax, 100, ymin, ymax);
-    hTrackMapXY->SetMarkerStyle(20);
-    hTrackMapXY->SetMarkerSize(1);
-    hTrackMapXY->SetStats(0);
-  }
-  TH2F *hTrackMapXZ;
-  gtmp = NULL;
-  gtmp = gROOT->FindObject("htrackmapxz");
-  if(gtmp) {
-     hTrackMapXZ = (TH2F*)gtmp;
-  }
-  else {
-    hTrackMapXZ = new TH2F( "htrackmapxz", "Tracks in XZ;Z (#mum);X (#mum)", 100, zmin, zmax, 100, xmin, xmax);
-    hTrackMapXZ->SetMarkerStyle(20);
-    hTrackMapXZ->SetMarkerSize(1);
-    hTrackMapXZ->SetStats(0);
-  }
-  TH2F *hTrackMapYZ;
-  gtmp = NULL;
-  gtmp = gROOT->FindObject("htrackmapyz");
-  if(gtmp) {
-     hTrackMapYZ = (TH2F*)gtmp;
-  }
-  else {
-    hTrackMapYZ = new TH2F( "htrackmapyz", "Tracks in YZ;Z (#mum);Y (#mum)", 100, zmin, zmax, 100, ymin, ymax);
-    hTrackMapYZ->SetMarkerStyle(20);
-    hTrackMapYZ->SetMarkerSize(1);
-    hTrackMapYZ->SetStats(0);
-  }
   TH3F *hTrackMapXYZ;
   gtmp = NULL;
   gtmp = gROOT->FindObject("htrackmapxyz");
@@ -17284,22 +17852,31 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
      hTrackMapXYZ = (TH3F*)gtmp;
   }
   else {
-    hTrackMapXYZ = new TH3F( "htrackmapxyz", "Tracks in XYZ;Z (#mum);X (#mum);Y (#mum)", 100, zmin, zmax, 100, xmin, xmax, 100, ymin, ymax);
+    hTrackMapXYZ = new TH3F( "htrackmapxyz", "Trace reconstruite en 3D;Z (#mum);X (#mum);Y (#mum)", 100, zmin, zmax, 100, xmin, xmax, 100, ymin, ymax);
     hTrackMapXYZ->SetMarkerStyle(20);
     hTrackMapXYZ->SetMarkerSize(1);
-    hTrackMapYZ->SetStats(0);
+    hTrackMapXYZ->SetStats(0);
+    hTrackMapXYZ->SetTitleSize(0.03,"xyz");
+    hTrackMapXYZ->SetTitleOffset(1.5,"xyz");
+//    hTrackMapXYZ->SetTitleFontSize(0.03);
   }
 
+  TF1 *ftrackmodelX = new TF1("ftrackmodelX", sitritrajectoryBortho, -30000, 30000, 9);
+  TF1 *ftrackmodelY = new TF1("ftrackmodelY", sitritrajectoryBparallel, -30000, 30000, 9);
 
+  std::vector<TPolyLine3D*> linesXYZ;
+  TPolyLine3D *alineXYZ;
+  int npointsPerLine = 100;
 
   // ==================================
   // == Event analysis
 
+//  Int_t nEvents = 5;
+  fSession->SetEvents(10000000);
+  for( Int_t iEvt=0; iEvt < nEvents; iEvt++) { // Event loop
+
   tracklist->clear();
-  // Uncomment to switch options
-  //while (1) { // stop after each event
   while ( tracklist->size()<1 ) { // stop loop when track found
-    fSession->SetEvents(2);
     fSession->NextRawEvent();
     tTracker->Update();
     SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, tracklist, cutX[0], cutX[1], cutY[0], cutY[1], 30.);
@@ -17318,9 +17895,7 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
   // ==================================
   // == Fill & display histos for each plane
 
-  TF1 *ftrackmodelX = new TF1("ftrackmodelX", sitritrajectoryBortho, -30000, 30000, 9);
-  TF1 *ftrackmodelY = new TF1("ftrackmodelY", sitritrajectoryBparallel, -30000, 30000, 9);
-  Int_t iCol, iRow; // start at 0, so for Setting Bin, use iCol/iRow +1
+  //Int_t iCol, iRow; // start at 0, so for Setting Bin, use iCol/iRow +1
   int GoodPlaneCounter = 0;
   for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
     if(!PlotPlane[iPlane-1]) continue;
@@ -17332,9 +17907,6 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
 //      printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
 //      printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
       if( aHit->GetFound() ) {
-        hTrackMapXY->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1));
-        hTrackMapXZ->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(2), tPlane->PlaneToTracker(*(aHit->GetPosition()))(0));
-        hTrackMapYZ->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(2), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1));
         hTrackMapXYZ->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(2), tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1));
       }
 
@@ -17349,13 +17921,9 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
   // == Fill & display histos for each track
 
   // Prepare track lines
-  std::vector<TPolyLine3D*> linesXYZ;
-  std::vector<TPolyLine*> linesXY, linesXZ, linesYZ;
-  TPolyLine *alineXY, *alineXZ, *alineYZ;
-  TPolyLine3D *alineXYZ;
-  int npointsPerLine = 500;
   for( std::vector<sitritrack_t>::iterator atrack = tracklist->begin(); atrack !=tracklist->end(); ++atrack ) { // loop on tracks
       if(fVerbose) printf(" track[%d] slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", (*atrack).id, (*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, (*atrack).fit_chi2X, (*atrack).fit_chi2Y);
+      if( (*atrack).fit_chi2X>20 ) continue;
     // initial slope, x at z=0
     // initial slope, y at z=0, momentum, zA start of Bfield, zB end of Bfield, charge = +/- 1, Bfield
 //    ftrackmodelX->SetParameters(0, 0, 0, 0, 1, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
@@ -17367,28 +17935,13 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
     alineXYZ = new TPolyLine3D(npointsPerLine);
     alineXYZ->SetLineColor(trackcolor);
     alineXYZ->SetLineWidth(2);
-    alineXY = new TPolyLine(npointsPerLine);
-    alineXY->SetLineColor(trackcolor);
-    alineXY->SetLineWidth(2);
-    alineXZ = new TPolyLine(npointsPerLine);
-    alineXZ->SetLineColor(trackcolor);
-    alineXZ->SetLineWidth(2);
-    alineYZ = new TPolyLine(npointsPerLine);
-    alineYZ->SetLineColor(trackcolor);
-    alineYZ->SetLineWidth(2);
     for (int ipoint = 0; ipoint < npointsPerLine; ipoint++) {
       double z = zmin+(zmax-zmin)*ipoint/npointsPerLine;
       double x = ftrackmodelX->Eval(z);
       double y = ftrackmodelY->Eval(z);
-      alineXY->SetPoint( ipoint, x, y);
-      alineXZ->SetPoint( ipoint, z, x);
-      alineYZ->SetPoint( ipoint, z, y);
       alineXYZ->SetPoint( ipoint, z, x, y);
 //      printf(" MRaw::SitrineoByEvent  TRACK %d, point %d (%.0f, %.0f, %.0f)\n", (*atrack).id, ipoint, x, y, z);
     }
-    linesXY.push_back( alineXY);
-    linesXZ.push_back( alineXZ);
-    linesYZ.push_back( alineYZ);
     linesXYZ.push_back( alineXYZ);
 
   } // end loop on tracks
@@ -17397,6 +17950,7 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
   cdisplayraw->cd();
   hTrackPairMomentum->Draw();
   cdisplayraw->Update();
+  cdisplayraw->Print("spectrummovie.gif+99");
 
   // display for tracks
   padtrack->cd();
@@ -17404,17 +17958,16 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
   for( std::vector<TPolyLine3D*>::iterator aline = linesXYZ.begin(); aline !=linesXYZ.end(); ++aline ) {
     (*aline)->Draw();
   }
-  hTrackMapXY->Delete();
-  hTrackMapXZ->Delete();
-  hTrackMapYZ->Delete();
-  hTrackMapXYZ->Delete();
-
+  hTrackMapXYZ->Reset();
+  //hTrackMapXYZ->Delete();
   cdisplaytrack->Update();
+  cdisplaytrack->Print("trackmovie.gif+99");
 
-  linesXY.clear();
-  linesXZ.clear();
-  linesYZ.clear();
   linesXYZ.clear();
+
+  std::this_thread::sleep_for (std::chrono::seconds(1));
+  cout << "Nb of events with tracks: " << iEvt << endl;
+  } // end event loop
 
   //===============
   //== End
@@ -17423,3 +17976,591 @@ void MRaw::SitrineoContinuous( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Do
 
 
 }
+
+//______________________________________________________________________________
+//
+void MRaw::SitrineoAlign( Int_t nEvents, Bool_t order)
+{
+  // Compute Alignment constants (i.e. positions) of planes for SITRINEO tracker
+  //
+  // Call by gTAF->GetRaw()->SitrineoAlign()
+  //
+  // Inputs:
+  //   o nEvents is the nb of events to analyse
+  //   o order is the for the ordering of the planes in the mimosa-28 setup and is by default true.
+  //     For reverse ordering set it to false
+  //
+  // Elise Jourd'Huy & Petros Stavroulakis, 2022/01/28
+
+  fSession->SetEvents(nEvents);
+
+  Int_t nHitsReconstructed = 0;
+
+  TCanvas *ccumulhit;
+  TObject* g = gROOT->FindObject("ccumulhit") ;
+  if (g) {
+    ccumulhit = (TCanvas*)g;
+  }
+  else {
+    ccumulhit = new TCanvas("ccumulhit", "Cumulate Hits", 5, 5, 800, 700);
+  }
+  ccumulhit->Clear();
+  ccumulhit->UseCurrentStyle();
+  TPaveLabel* label = new TPaveLabel();
+  Char_t canvasTitle[200];
+  sprintf(canvasTitle, "Run %d, cumul over %d events", fSession->GetRunNumber(), nEvents);
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pad = new TPad("pad","",0.,0.,1.,0.965);
+  pad->Draw();
+
+  DTracker *tTracker  =  fSession->GetTracker();
+  DPlane* tPlane = NULL;
+  DTrack *aTrack = NULL;
+  DHit *aHit = NULL;
+
+  Int_t nPlanes = tTracker->GetPlanesN();
+  if( nPlanes>6 ) {
+    pad->Divide( (Int_t)ceil(nPlanes/4.), (nPlanes>4)?4:nPlanes);  // LC 4 lines instead of 2.
+  }
+  else {
+    pad->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+  }
+
+  // Determine extrema of planes position in telescope frame and draw it as a box on the hit data
+  Double_t xmin=1e6, xmax=-1e6;
+  Double_t ymin=1e6, ymax=-1e6;
+  Double_t planeBox[2][2] = {{0,0},{0,0}};
+  TBox **geomPlaneBox = new TBox*[nPlanes];
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // begin loop on planes
+    tPlane = tTracker->GetPlane(iPlane);
+    // bottom left corner
+    DR3 posInPlane, posBLInTracker, posURInTracker;
+    posInPlane.SetValue( -tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+                        ,-tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+                        ,0.);
+    posBLInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posBLInTracker(0)<xmin ) xmin = posBLInTracker(0);
+    if( posBLInTracker(1)<ymin ) ymin = posBLInTracker(1);
+    if( posBLInTracker(0)>xmax ) xmax = posBLInTracker(0);
+    if( posBLInTracker(1)>ymax ) ymax = posBLInTracker(1);
+    // upper right corner
+    posInPlane.SetValue( +tPlane->GetStripsNu() * tPlane->GetStripPitch()(0) / 2.
+                        ,+tPlane->GetStripsNv() * tPlane->GetStripPitch()(1) / 2.
+                        ,0.);
+    posURInTracker = tPlane->PlaneToTracker( posInPlane);
+    if( posURInTracker(0)<xmin ) xmin = posURInTracker(0);
+    if( posURInTracker(1)<ymin ) ymin = posURInTracker(1);
+    if( posURInTracker(0)>xmax ) xmax = posURInTracker(0);
+    if( posURInTracker(1)>ymax ) ymax = posURInTracker(1);
+    planeBox[0][0] = TMath::Min( posBLInTracker(0), posURInTracker(0));
+    planeBox[0][1] = TMath::Max( posBLInTracker(0), posURInTracker(0));
+    planeBox[1][0] = TMath::Min( posBLInTracker(1), posURInTracker(1));
+    planeBox[1][1] = TMath::Max( posBLInTracker(1), posURInTracker(1));
+    geomPlaneBox[iPlane-1] = new TBox( planeBox[0][0], planeBox[1][0], planeBox[0][1], planeBox[1][1]);
+    geomPlaneBox[iPlane-1]->SetFillStyle(0);
+  } // end loop on planes
+
+  // Define ellipse object that will be used to determine the opening of the source due to multiple scattering and diffusion
+  TEllipse **PlaneEllipse = new TEllipse*[nPlanes];
+  Double_t theta_ms; // Devation due to multiple scattering in rad
+  Double_t overall_dev_um[nPlanes]; // Deviation due to multiple scattering in um
+  Double_t z_dist_um[nPlanes] /*= {0, 19000, 25000, 20000}*/; // Distance between planes
+  Double_t Ellipse_pos_x[nPlanes];
+  Double_t Ellipse_pos_y[nPlanes];
+  Double_t Ellipse_sigma_x[nPlanes];
+  Double_t Ellipse_sigma_y[nPlanes];
+
+  int NbinsX = tPlane->GetStripsNu();
+  int NbinsY = tPlane->GetStripsNv();
+
+  TH2F *hHitMapDUT;
+  TH2F **hHitMap = new TH2F*[nPlanes];
+  TH1F **hHitProjX = new TH1F*[nPlanes];
+  TH1F **hHitProjY = new TH1F*[nPlanes];
+
+  Char_t name[50], title[100];
+  int counter_planes_pairs = 0;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // begin loop on planes
+    tPlane = tTracker->GetPlane(iPlane);
+
+    // -- Histo with microns
+    sprintf( name, "hhitmappl%d", iPlane);
+    sprintf( title, "Hit map of plane %d - %s;X (#mum);Y (#mum)", iPlane, tPlane->GetPlanePurpose());
+    // check if the histo exists or not
+    hHitMap[iPlane-1] = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
+    hHitMap[iPlane-1]->SetMarkerStyle(20);
+    hHitMap[iPlane-1]->SetMarkerSize(.1);
+    hHitMap[iPlane-1]->SetMarkerColor(1);
+    hHitMap[iPlane-1]->SetStats(kFALSE);
+    //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+
+    // -- Histo with microns (proj x)
+    sprintf( name, "hhitprojxpl%d", iPlane);
+    sprintf( title, "Hit projection in X of plane %d - %s;X (#mum)", iPlane, tPlane->GetPlanePurpose());
+    // check if the histo exists or not
+    hHitProjX[iPlane-1] = new TH1F(name, title, NbinsX/10, xmin, xmax);
+    hHitProjX[iPlane-1]->SetMarkerStyle(20);
+    hHitProjX[iPlane-1]->SetMarkerSize(.1);
+    hHitProjX[iPlane-1]->SetMarkerColor(1);
+    hHitProjX[iPlane-1]->SetStats(kFALSE);
+    //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+
+    // -- Histo with microns (proj y)
+    sprintf( name, "hhitprojypl%d", iPlane);
+    sprintf( title, "Hit projection in Y of plane %d - %s;Y (#mum)", iPlane, tPlane->GetPlanePurpose());
+    // check if the histo exists or not
+    hHitProjY[iPlane-1] = new TH1F(name, title, NbinsY/10, ymin, ymax);
+    hHitProjY[iPlane-1]->SetMarkerStyle(20);
+    hHitProjY[iPlane-1]->SetMarkerSize(.1);
+    hHitProjY[iPlane-1]->SetMarkerColor(1);
+    hHitProjY[iPlane-1]->SetStats(kFALSE);
+    //printf( "MRaw::DisplayRawData created %s histo with %dx%d pixels\n", name, tPlane->GetStripsNu(), tPlane->GetStripsNv());
+
+    sprintf( name, "hhitmapdut");
+    sprintf( title, "Hit map for DUTs;X (#mum);Y (#mum)");
+    // check if the histo exists or not
+    hHitMapDUT = new TH2F(name, title, NbinsX, xmin, xmax, NbinsY, ymin, ymax);
+    hHitMapDUT->SetMarkerStyle(20);
+    hHitMapDUT->SetMarkerSize(.2);
+    hHitMapDUT->SetMarkerColor(1);
+    hHitMapDUT->SetStats(kFALSE);
+
+  } // end loop on planes
+
+
+  //Loop over the requested number of events to fill the histos
+
+  for( Int_t iEvt=0; iEvt < nEvents; iEvt++) { // BEGIN LOOP ON EVENTS
+    if( !(fSession->NextRawEvent()) ) break; // JB 2009/06/26
+    tTracker->Update();
+
+    counter_planes_pairs = 0;
+    for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // begin loop on planes
+      tPlane = tTracker->GetPlane(iPlane);
+
+      //cout << "CumulateHits2D:: plane " << tPlane->GetPlaneNumber() << " has " << tPlane->GetHitsN() << endl;
+      //hNHitsPerEvent[iPlane-1]->Fill( tPlane->GetHitsN() );
+
+      if( tPlane->GetHitsN()>0 ) {
+        nHitsReconstructed += tPlane->GetHitsN();
+        for( Int_t iHit=1; iHit<=tPlane->GetHitsN(); iHit++) { // begin loop on hits (starts at 1 !!)
+          aHit = (DHit*)tPlane->GetHit( iHit);
+          //printf("Getting seed index for hit %d (address %x) at plane %d\n", iHit, aHit, iPlane);
+          hHitMap[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1); // weight could be aHit->GetClusterPulseSum()
+          hHitProjX[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0)); // projection on X
+          hHitProjY[iPlane-1]->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(1)); // projection on Y
+          if( tPlane->GetStatus()==3 ) hHitMapDUT->Fill( tPlane->PlaneToTracker(*(aHit->GetPosition()))(0), tPlane->PlaneToTracker(*(aHit->GetPosition()))(1), 1);
+
+        } // end loop on hits
+      }
+    } // end loop on planes
+
+  } // END LOOP ON EVENTS
+
+  fSession->GetDataAcquisition()->PrintStatistics();
+  tTracker->PrintStatistics();
+
+  // Now display
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    pad->cd(iPlane);
+    pad->cd(iPlane)->SetTickx(1);
+    pad->cd(iPlane)->SetTicky(1);
+    hHitMap[iPlane-1]->DrawCopy("colz");
+    geomPlaneBox[iPlane-1]->Draw("l");
+    cout << "Plane "<<iPlane<<" has seen "<<hHitMap[iPlane-1]->GetEntries()<<" hits."<< endl;
+  }
+  ccumulhit->Update();
+
+  // Cumulate Hits in X
+  // Separately
+  TCanvas *ccumulhitx;
+  g = gROOT->FindObject("ccumulhitx") ;
+  if (g) {
+    ccumulhitx = (TCanvas*)g;
+  }
+  else {
+    ccumulhitx = new TCanvas("ccumulhitx", "Cumulate Hits in X per plane", 5, 5, 800, 700);
+  }
+  ccumulhitx->Clear();
+  ccumulhitx->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *padx = new TPad("padx","",0.,0.,1.,0.965);
+  padx->Draw();
+  padx->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      padx->cd(iPlane);
+      if( hHitProjX[iPlane-1]->GetEntries()>0 ) hHitProjX[iPlane-1]->DrawCopy();
+    }
+  }
+  ccumulhitx->Update();
+
+  // Superimposed
+  
+  // Gaussian functions to fit the histos
+  Double_t hmeanx[4] = {hHitProjX[0]->GetMean(), hHitProjX[1]->GetMean(), hHitProjX[2]->GetMean(), hHitProjX[3]->GetMean()};
+  Double_t hrmsx[4] = {hHitProjX[0]->GetRMS(), hHitProjX[1]->GetRMS(), hHitProjX[2]->GetRMS(), hHitProjY[3]->GetMean()};
+  TF1 *fgaus1x = new TF1("fgaus1x", "gaus", hmeanx[0]-hrmsx[0], hmeanx[0]+hrmsx[0]);
+  TF1 *fgaus2x = new TF1("fgaus2x", "gaus", hmeanx[1]-1.5*hrmsx[1], hmeanx[1]+1.5*hrmsx[1]);
+  TF1 *fgaus3x = new TF1("fgaus3x", "gaus", hmeanx[2]-3*hrmsx[2], hmeanx[2]+3*hrmsx[2]);
+  TF1 *fgaus4x = new TF1("fgaus4x", "gaus", hmeanx[3]-1.5*hrmsx[3], hmeanx[3]+1.5*hrmsx[3]);
+
+  TCanvas *ccumulhitx4;
+  g = gROOT->FindObject("ccumulhitx4") ;
+  if (g) {
+    ccumulhitx4 = (TCanvas*)g;
+  }
+  else {
+    ccumulhitx4 = new TCanvas("ccumulhitx4", "Cumulate Hits in X superimposed", 5, 5, 800, 700);
+  }
+  ccumulhitx4->Clear();
+  ccumulhitx4->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *padx4 = new TPad("padx4","",0.,0.,1.,0.965);
+  padx4->Draw();
+  if (order) {
+    hHitProjX[0]->Fit(fgaus1x, "R");
+    hHitProjX[1]->Fit(fgaus2x, "R");
+    hHitProjX[2]->Fit(fgaus3x, "R");
+  }
+  else {
+    hHitProjX[2]->Fit(fgaus3x, "R");
+    hHitProjX[3]->Fit(fgaus4x, "R");
+  }
+
+  TLegend *lx = new TLegend(0.50,0.65,0.85,0.90, "Difference of means");
+  lx->SetFillStyle(0);
+  lx->SetBorderSize(1);
+  lx->SetTextSize(.04);
+  
+  Float_t hHitProjX_max = 0.;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( hHitProjX[iPlane-1]->GetMaximum() > hHitProjX_max ) {
+      hHitProjX_max = hHitProjX[iPlane-1]->GetMaximum();
+    }
+  }
+  hHitProjX[0]->SetMaximum( hHitProjX_max*1.2);
+  
+  Double_t meandiffx[3];
+  Char_t smeandiffx[30];
+
+  meandiffx[0]=fgaus2x->GetParameter(1) - fgaus1x->GetParameter(1);
+  meandiffx[1]=fgaus3x->GetParameter(1) - fgaus1x->GetParameter(1);
+  meandiffx[2]=fgaus3x->GetParameter(1) - fgaus4x->GetParameter(1);
+  if (order) {
+    sprintf(smeandiffx, "2 to 1: %.0f", meandiffx[0]);
+    lx->AddEntry( hHitProjX[1], smeandiffx, "l");
+    sprintf(smeandiffx, "3 to 1: %.0f", meandiffx[1]);
+    lx->AddEntry( hHitProjX[2], smeandiffx, "l");
+  }
+  else {
+    sprintf(smeandiffx, "3 to 4: %.0f", meandiffx[2]);
+    lx->AddEntry( hHitProjX[2], smeandiffx, "l");
+  }
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      if( hHitProjX[iPlane-1]->GetEntries()>0 ){
+	//hHitProjX[iPlane-1]->Scale( 1./hHitProjX[iPlane-1]->Integral() ); // Normalize to 1
+	  hHitProjX[iPlane-1]->SetLineColor(iPlane);
+	  hHitProjX[iPlane-1]->DrawCopy((iPlane>1)?"same":"");
+      }
+    }
+  }
+  lx->Draw();
+  ccumulhitx4->Update();
+
+  // Cumulate Hits in Y
+  // Separately
+  TCanvas *ccumulhity;
+  g = gROOT->FindObject("ccumulhity") ;
+  if (g) {
+    ccumulhity = (TCanvas*)g;
+  }
+  else {
+    ccumulhity = new TCanvas("ccumulhity", "Cumulate Hits in Y per plane", 5, 5, 800, 700);
+  }
+  ccumulhity->Clear();
+  ccumulhity->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pady = new TPad("pady44","",0.,0.,1.,0.965);
+  pady->Draw();
+  pady->Divide( (Int_t)ceil(nPlanes/2.), (nPlanes>1)?2:1);
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      pady->cd(iPlane);
+      if( hHitProjY[iPlane-1]->GetEntries()>0 ) hHitProjY[iPlane-1]->DrawCopy();
+    }
+  }
+  ccumulhity->Update();
+
+  // Superimposed
+
+  // Gaussian functions to fit the histos
+  Double_t hmeany[4] = {hHitProjY[0]->GetMean(), hHitProjY[1]->GetMean(), hHitProjY[2]->GetMean(), hHitProjY[3]->GetMean()};
+  Double_t hrmsy[4] = {hHitProjY[0]->GetRMS(), hHitProjY[1]->GetRMS(), hHitProjY[2]->GetRMS(), hHitProjY[3]->GetRMS()};
+  TF1 *fgaus1y = new TF1("fgaus1y", "gaus", hmeany[0]-hrmsy[0], hmeany[0]+hrmsy[0]);
+  TF1 *fgaus2y = new TF1("fgaus2y", "gaus", hmeany[1]-1.5*hrmsy[1], hmeany[1]+1.5*hrmsy[1]);
+  TF1 *fgaus3y = new TF1("fgaus3y", "gaus", hmeany[2]-3*hrmsy[2], hmeany[2]+3*hrmsy[2]);
+  TF1 *fgaus4y = new TF1("fgaus4y", "gaus", hmeany[3]-1.5*hrmsy[3], hmeany[3]+1.5*hrmsy[3]);
+
+  TCanvas *ccumulhity4;
+  g = gROOT->FindObject("ccumulhity4") ;
+  if (g) {
+    ccumulhity4 = (TCanvas*)g;
+  }
+  else {
+    ccumulhity4 = new TCanvas("ccumulhity4", "Cumulate Hits in Y superimposed", 5, 5, 800, 700);
+  }
+  ccumulhity4->Clear();
+  ccumulhity4->UseCurrentStyle();
+  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
+  TPad *pady4 = new TPad("pady4","",0.,0.,1.,0.965);
+  pady4->Draw();
+  if (order) {
+    hHitProjY[0]->Fit(fgaus1y, "R");
+    hHitProjY[1]->Fit(fgaus2y, "R");
+    hHitProjY[2]->Fit(fgaus3y, "R");
+  }
+  else {
+    hHitProjY[2]->Fit(fgaus3y, "R");
+    hHitProjY[3]->Fit(fgaus4y, "R");
+  }
+
+  TLegend *ly = new TLegend(0.50,0.65,0.85,0.90, "Difference of means");
+  ly->SetFillStyle(0);
+  ly->SetBorderSize(1);
+  ly->SetTextSize(.04);
+
+  Float_t hHitProjY_max = 0.;
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( hHitProjY[iPlane-1]->GetMaximum() > hHitProjY_max ) {
+      hHitProjY_max = hHitProjY[iPlane-1]->GetMaximum();
+    }
+  }
+  hHitProjY[0]->SetMaximum( hHitProjY_max*1.2);
+
+  Double_t meandiffy[3];
+  Char_t smeandiffy[30];
+
+  meandiffy[0]=fgaus2y->GetParameter(1) - fgaus1y->GetParameter(1);
+  meandiffy[1]=fgaus3y->GetParameter(1) - fgaus1y->GetParameter(1);
+  meandiffy[2]=fgaus3y->GetParameter(1) - fgaus4y->GetParameter(1);
+  if (order) {
+    sprintf(smeandiffy, "2 to 1: %.0f", meandiffy[0]);
+    ly->AddEntry( hHitProjY[1], smeandiffy, "l");
+    sprintf(smeandiffy, "3 to 1: %.0f", meandiffy[1]);
+    ly->AddEntry( hHitProjY[2], smeandiffy, "l");
+  }
+  else {
+    sprintf(smeandiffy, "3 to 4: %.0f", meandiffy[2]);
+    ly->AddEntry( hHitProjY[2], smeandiffy, "l");
+  }
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    if( 0 < tTracker->GetPlane(iPlane)->GetAnalysisMode()  ) {
+      if( hHitProjY[iPlane-1]->GetEntries()>0 ) {
+        //hHitProjY[iPlane-1]->Scale( 1./hHitProjY[iPlane-1]->Integral() ); // Normalize to 1
+	  hHitProjY[iPlane-1]->SetLineColor(iPlane);
+	  hHitProjY[iPlane-1]->DrawCopy((iPlane>1)?"same":"");
+      }
+    }
+  }
+  ly->Draw();
+  ccumulhity4->Update();
+
+  TLatex* latex = new TLatex();
+  latex->SetTextAlign(12);
+  latex->SetTextSize(0.06);
+  latex->SetTextColor(kRed);
+
+  // Determine and draw the expected spread due to diffusion and multiple scattering 
+  // on the hitmap as an ellipse on each plane
+
+  DPlane *tPlane_a, *tPlane_b;
+
+  if (order) { // Draw ellipse of expected opening for regular ordering
+    for ( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // begin loop on planes
+      tPlane_a = tTracker->GetPlane(iPlane);
+      theta_ms = fTool.scatteringAngle("electron", 1e-3, "silicon", 50, 0);
+
+      if (iPlane==1) {
+	z_dist_um[iPlane-1] = 0;
+      }
+      else {
+        tPlane_b = tTracker->GetPlane(iPlane-1);
+	z_dist_um[iPlane-1] = tPlane_a->GetPosition()(2)-tPlane_b->GetPosition()(2);
+      }
+
+      // Compute the deviation due to multiple scattering in um at each plane
+
+      overall_dev_um[iPlane-1]=theta_ms*z_dist_um[iPlane-1];
+
+      Ellipse_pos_x[iPlane-1] = fgaus1x->GetParameter(1);
+      Ellipse_pos_y[iPlane-1] = fgaus1y->GetParameter(1);
+      if (iPlane==1) {
+        Ellipse_sigma_x[iPlane-1] = sqrt(pow(fgaus1x->GetParameter(2), 2) + pow(overall_dev_um[iPlane-1], 2));
+        Ellipse_sigma_y[iPlane-1] = sqrt(pow(fgaus1y->GetParameter(2), 2) + pow(overall_dev_um[iPlane-1], 2));
+      }
+      else {
+        Ellipse_sigma_x[iPlane-1] = sqrt(pow(Ellipse_sigma_x[iPlane-2], 2) + pow(overall_dev_um[iPlane-1], 2));
+        Ellipse_sigma_y[iPlane-1] = sqrt(pow(Ellipse_sigma_y[iPlane-2], 2) + pow(overall_dev_um[iPlane-1], 2));
+      }
+
+      if (fVerbose) {
+        cout << "\n***********************************\n" << endl;
+        cout << "\nX Position of Ellipse in Plane #" << iPlane << ": " << Ellipse_pos_x[iPlane-1] << " um" << endl;
+        cout << "\nY Position of Ellipse in Plane #" << iPlane << ": " << Ellipse_pos_y[iPlane-1] << " um" << endl;
+        cout << "\nX Deviation of Ellipse in Plane #" << iPlane << ": " << Ellipse_sigma_x[iPlane-1] << " um" << endl;
+        cout << "\nY Deviation of Ellipse in Plane #" << iPlane << ": " << Ellipse_sigma_y[iPlane-1] << " um" << endl;
+      }
+
+      PlaneEllipse[iPlane-1] = new TEllipse(Ellipse_pos_x[iPlane-1], Ellipse_pos_y[iPlane-1], Ellipse_sigma_x[iPlane-1], Ellipse_sigma_y[iPlane-1]);
+      PlaneEllipse[iPlane-1]->SetFillStyle(0);
+      PlaneEllipse[iPlane-1]->SetLineColor(1);
+      PlaneEllipse[iPlane-1]->SetLineWidth(3);
+      pad->cd(iPlane);
+      PlaneEllipse[iPlane-1]->Draw("l");
+      if (fVerbose) cout << "\nDrawing ellipse in Plane #" << iPlane << endl;
+    } // end loop on planes
+    ccumulhit->Update();
+  }
+  else { // Draw ellipse of expected opening for reverse ordering
+    for ( Int_t iPlane=nPlanes; iPlane>=1; iPlane--) { // begin loop on planes
+      tPlane_a = tTracker->GetPlane(iPlane);
+      theta_ms=fTool.scatteringAngle("electron", 1e-3, "silicon", 50, 0);
+
+      if (iPlane==nPlanes) {
+	z_dist_um[iPlane-1] = 0;
+      }
+      else {
+        tPlane_b = tTracker->GetPlane(iPlane+1);
+	z_dist_um[iPlane-1] = tPlane_b->GetPosition()(2)-tPlane_a->GetPosition()(2);
+      }
+
+      // Compute the deviation due to multiple scattering in um at each plane
+
+      overall_dev_um[iPlane-1]=theta_ms*z_dist_um[iPlane-1];
+
+      Ellipse_pos_x[iPlane-1] = fgaus4x->GetParameter(1);
+      Ellipse_pos_y[iPlane-1] = fgaus4y->GetParameter(1);
+
+      if (iPlane==nPlanes) {
+	Ellipse_sigma_x[iPlane-1] = sqrt(pow(fgaus4x->GetParameter(2), 2) + pow(overall_dev_um[iPlane-1], 2));
+	Ellipse_sigma_y[iPlane-1] = sqrt(pow(fgaus4y->GetParameter(2), 2) + pow(overall_dev_um[iPlane-1], 2));
+      } else {
+	Ellipse_sigma_x[iPlane-1] = sqrt(pow(Ellipse_sigma_x[iPlane], 2) + pow(overall_dev_um[iPlane-1], 2));
+	Ellipse_sigma_y[iPlane-1] = sqrt(pow(Ellipse_sigma_y[iPlane], 2) + pow(overall_dev_um[iPlane-1], 2));
+      }
+
+      if (fVerbose) {
+        cout << "\n***********************************\n" << endl;
+        cout << "\nX Position of Ellipse in Plane #" << iPlane << ": " << Ellipse_pos_x[iPlane-1] << " um" << endl;
+        cout << "\nY Position of Ellipse in Plane #" << iPlane << ": " << Ellipse_pos_y[iPlane-1] << " um" << endl;
+        cout << "\nX Deviation of Ellipse in Plane #" << iPlane << ": " << Ellipse_sigma_x[iPlane-1] << " um" << endl;
+        cout << "\nY Deviation of Ellipse in Plane #" << iPlane << ": " << Ellipse_sigma_y[iPlane-1] << " um" << endl;
+      }
+
+      PlaneEllipse[iPlane-1] = new TEllipse(Ellipse_pos_x[iPlane-1], Ellipse_pos_y[iPlane-1], Ellipse_sigma_x[iPlane-1], Ellipse_sigma_y[iPlane-1]);
+      PlaneEllipse[iPlane-1]->SetFillStyle(0);
+      PlaneEllipse[iPlane-1]->SetLineColor(1);
+      PlaneEllipse[iPlane-1]->SetLineWidth(3);
+      pad->cd(iPlane);
+      PlaneEllipse[iPlane-1]->Draw("l");
+      if (fVerbose) cout << "\nDrawing ellipse in Plane #" << iPlane << endl;
+    } // end loop on planes
+    ccumulhit->Update();
+  }
+
+  // Print the alignment parameters
+  printf("\n***********************************\n");
+  printf("Alignment values from gaussian fit:\n");
+  printf("***********************************\n\n");
+  if (order) {
+    printf("Plane #2 w.r.t. Plane #1:\n");
+    printf("Shift in X: %.2f um\n", meandiffx[0]);
+    printf("Shift in Y: %.2f um\n", meandiffy[0]);
+    printf("Plane #3 w.r.t. Plane #1:\n");
+    printf("Shift in X: %.2f um\n", meandiffx[1]);
+    printf("Shift in Y: %.2f um\n", meandiffy[1]);
+    printf("\n***********************************\n\n");
+  }
+  else {
+    printf("Plane #3 w.r.t. Plane #4:\n");
+    printf("Shift in X: %.2f um\n", meandiffx[2]);
+    printf("Shift in Y: %.2f um\n", meandiffy[2]);
+    printf("\n***********************************\n\n");
+  }
+
+#if 0
+  // Plot the sigma in x and y after subtracting the multiple scattering from it (normal order only)
+  if (order) {
+    Double_t z_dist[3] = {z_dist_um[0], z_dist_um[1], z_dist_um[2]};
+    // In X
+    Double_t sigmadiff_x[3] = {fgaus1x->GetParameter(2), sqrt(abs(pow(fgaus2x->GetParameter(2), 2) - pow(overall_dev_um[1], 2))), sqrt((pow(fgaus3x->GetParameter(2), 2) - pow(overall_dev_um[2], 2)))};
+
+    TGraph *gr_emit_x = new TGraph(3, z_dist, sigmadiff_x);
+    gr_emit_x->SetTitle("Sigma x as a function of z");
+    gr_emit_x->GetXaxis()->SetTitle("Z Distance (#mum)");
+    gr_emit_x->GetYaxis()->SetTitle("Sigma (#mum)");
+    gr_emit_x->SetMarkerStyle(20);
+    gr_emit_x->SetMarkerColor(2);
+    TCanvas *cemittanceX;
+    cemittanceX = new TCanvas("cemittanceX", "Emittance in x", 5, 5, 800, 700);
+    cemittanceX->Clear();
+    cemittanceX->UseCurrentStyle();
+    gr_emit_x->Draw("AP");
+    //gr_emit_x->Fit("pol1");
+
+    // In Y
+    Double_t sigmadiff_y[3] = {fgaus1y->GetParameter(2), sqrt(abs(pow(fgaus2y->GetParameter(2), 2) - pow(overall_dev_um[1], 2))), sqrt(abs(pow(fgaus3y->GetParameter(2), 2) - pow(overall_dev_um[2], 2)))};
+
+    TGraph *gr_emit_y = new TGraph(3, z_dist, sigmadiff_y);
+    gr_emit_y->SetTitle("Sigma y as a function of z");
+    gr_emit_y->GetXaxis()->SetTitle("Z Distance (#mum)");
+    gr_emit_y->GetYaxis()->SetTitle("Sigma (#mum)");
+    gr_emit_y->SetMarkerStyle(20);
+    gr_emit_y->SetMarkerColor(2);
+    TCanvas *cemittanceY;
+    cemittanceY = new TCanvas("cemittanceY", "Emittance in y", 5, 5, 800, 700);
+    cemittanceY->Clear();
+    cemittanceY->UseCurrentStyle();
+    gr_emit_y->Draw("AP");
+    //gr_emit_y->Fit("pol1");
+  }
+#endif
+
+  // Save canvas and histos
+  //cd to result dir
+  // added JB 2011/03/14
+  Char_t rootFile[300];
+  sprintf(rootFile,"%ssitrineo_align_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
+  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
+  cout << "\n-- Saving histos and canvas into " << rootFile << endl;
+  TFile fRoot(rootFile,"RECREATE");
+  ccumulhit->Write();
+  ccumulhitx->Write();
+  ccumulhitx4->Write();
+  ccumulhity->Write();
+  ccumulhity4->Write();
+  //for(int i=0;i<RealNcanvas;i++) ccumulhit3_2[i]->Write();
+
+  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
+    tPlane = tTracker->GetPlane(iPlane);
+    hHitMapDUT->Write();
+    if( 0 < tPlane->GetAnalysisMode()  ) {
+      hHitMap[iPlane-1]->Write();
+      hHitProjX[iPlane-1]->Write();
+      hHitProjY[iPlane-1]->Write();
+    }
+  }
+
+  fRoot.Close();
+
+}
+
+
+

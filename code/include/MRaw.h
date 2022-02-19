@@ -46,6 +46,9 @@ class MRaw : public TObject {
  DGlobalTools   fTool;         // JB 2011/07/18 to use global tools
  DSession      *fSession;      // JB 2011/07/21 to get rid of global var tSession
 
+ int NbRmTracks = 0; // Number of tracks removed from the tracklist
+ int NbRmTracks_tot = 0; // Total number of tracks removed from the tracklist
+
   Float_t NbinsReductionFactor; // JB 2014/12/08
   Int_t MultiFramePlane; // JB 2013/07/18
   Int_t MultiFrameNFrames;
@@ -120,6 +123,7 @@ class MRaw : public TObject {
  };
  struct sitritrack_t {
      int id;
+     bool keep_track=1;
      int firstTrackID;
      int secondTrackID;
      int plane[4];
@@ -285,11 +289,11 @@ void BeastCheckPosition();
 		 int Nevts_testing    = 10000);
 
   void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
-  void SitrineoContinuous( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
   void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
   void SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist);
   int SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist, Double_t minX1=-10000, Double_t maxX1=10000, Double_t minY1=-10000, Double_t maxY1=10000, Double_t maxSlope1=30.);
-
+  void SitrineoContinuous( Int_t nEvents=20, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
+  void SitrineoAlign( Int_t nEvents=200000, Bool_t order=kTRUE);
 
  using TObject::Clear;
 

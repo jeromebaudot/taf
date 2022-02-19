@@ -16,6 +16,7 @@
 //
 // created JB, 2014/05/12
 // completely renewed JB, 2019/07/13
+// vetoPixel mechanism introduced, JB, 2020/02/17
 
 #include "VMEBoardReader.h"
 
@@ -105,8 +106,10 @@ int VMEBoardReader::Open()
 {
   // Open all ascii files, one file per channel/sensor.
   // Return false if one file cannot be opened, true otherwise.
+  // Assume various option for the datapath (w or wo the run number in)
   //
-  // Upgraded, JB 2019/11/06
+  //
+  // Upgraded, JB 2020/02/17
 
   TString inputFileName;
 
@@ -121,25 +124,39 @@ int VMEBoardReader::Open()
    } else {
     fRawFileAscii[i].close();
 //		 inputFileName = Form("%s/%s%04d/800%d_%s%d%s", fPrefixName.Data(), fgDefaultFolderName.Data(), fRunNumber, i, fBaseName.Data(), i, fgDefaultExtName.Data());
-    inputFileName = Form("%s/%s%d%s", fPathName.Data(), fPrefixName.Data(), i, fSuffixName.Data());
 
+    // Try with a first file format
+    inputFileName = Form("%s/%s%d%s", fPathName.Data(), fPrefixName.Data(), i, fSuffixName.Data());
     fRawFileAscii[i].open(inputFileName.Data());
     if( fRawFileAscii[i].fail() ) { // end the reading if file opening failed
-     cout << endl << "VMEBoardReader::Open(), cannot open file " << inputFileName << endl;
-     isOk = false;
-    } else {
-     cout << endl << "VMEBoardReader::Open(), file " << inputFileName << " opened" << endl;
-     isOk = true;
+
+     // try again by including the run number in the directory path assuming format runXXXX where XXXX=run number
+     if( fRunNumber<100 ) { inputFileName = Form("%s/run00%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); }
+     else if( fRunNumber<1000 ) {  inputFileName = Form("%s/run0%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); } 
+     else  { inputFileName = Form("%s/run%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); }
+     fRawFileAscii[i].open(inputFileName.Data());
+     if( fRawFileAscii[i].fail() ) { // end the reading if file opening failed
+ 
+     // try again by including the run number in the directory path assuming
+      inputFileName = Form("%s/%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data());
+      fRawFileAscii[i].open(inputFileName.Data());
+      if( fRawFileAscii[i].fail() ) { // end the reading if file opening failed
+       cout << endl << "VMEBoardReader::Open(), cannot open file " << inputFileName << endl;
+       isOk = false;
+      }
+     }
     }
+
+    cout << endl << "VMEBoardReader::Open(), file " << inputFileName << " opened" << endl;
+    isOk = true;
    }
    valid &= isOk;
 
- } // end loop on sensors
+  } // end loop on sensors
 
   return valid;
 
 }
-
 
 //------------------------------------------+-----------------------------------
 void VMEBoardReader::Close()
@@ -346,8 +363,8 @@ Bool_t VMEBoardReader::GetSensorEvent(Int_t iSensor)
 
    fEventSize = fIndex;
 
-   if(GetDebugLevel() > 2) {
-     printf(" Sensor %d, event size %d:\n", iSensor, fEventSize);
+   if(GetDebugLevel() > 2) printf(" Sensor %d, event size %d:\n", iSensor, fEventSize);
+   if(GetDebugLevel() > 3) {
       for (Int_t i = 0; i < fEventSize; ++i)
          printf("    Data %08x\n", fDataEvent[i]);
       printf("\n");
@@ -431,18 +448,15 @@ void VMEBoardReader::AddPixel( Int_t iSensor, Int_t value, Int_t aLine, Int_t aC
    // - input = number of the sensors
    // - value = analog value of this pixel
    // - line & column = position of the pixel in the matrix
+   // Check if there is a veto on certain pixels
    //
-   // Upgraded, JB 2019/07/13
+   // Upgraded, JB 2020/02/17
 
-   if (fDebugLevel>2) {
-     printf("VMEBoardReader::Addpixel adding pixel for sensor %d with value %d line %d row %d", iSensor, value, aLine, aColumn);
-     if (fTool.VetoPixel==NULL) {
-       printf(" with veto OFF\n");
-     }
-     else {
-       printf(" with veto ON and veto=%d\n", fTool.VetoPixel( iSensor, aLine, aColumn));
-     }
-   }
+   bool add = fTool.VetoPixel==NULL || !fTool.VetoPixel( iSensor, aLine, aColumn);
+
+   if (fDebugLevel>2) printf("VMEBoardReader::Addpixel adding pixel for sensor %d with value %d line %d row %d, veto-add=%d\n", iSensor, value, aLine, aColumn, add);
+
+   if( !add ) return;
 
    if ( fTool.VetoPixel==NULL || !fTool.VetoPixel( iSensor, aLine, aColumn) ) {
     ListOfPixels.push_back( BoardReaderPixel( iSensor+1, value, aLine, aColumn, 0) );

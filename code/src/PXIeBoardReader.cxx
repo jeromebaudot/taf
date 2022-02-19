@@ -803,7 +803,7 @@ void PXIeBoardReader::SetVetoPixel( int noiseRun) {
   // Select the required function to veto the pixel depending on the run number.
   // JB 2012/03/11
   
-  if( DebugLevel) printf( "  PXIeBoardReader board %d::SetVetoPixel with noise run number %d\n", BoardNumber, noiseRun);
+  /*if( DebugLevel)*/ printf( "  PXIeBoardReader board %d::SetVetoPixel with noise run number %d\n", BoardNumber, noiseRun);
   fTool.SetVetoPixel( noiseRun);
   
 }
