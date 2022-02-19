@@ -1,5 +1,5 @@
 // @(#)maf/dtools:$Name:  $:$Id: DAcq.h,v.2 2005/10/02 18:03:46 sha Exp $
-// Author: Dirk Meier   97/12/06 
+// Author: Dirk Meier   97/12/06
 
 #ifndef _DAcq_included_
 #define _DAcq_included_
@@ -12,6 +12,12 @@
 // Data Acquisition class                                               //
 //                             .                                        //
 //////////////////////////////////////////////////////////////////////////
+
+// Choose ONLY ONE of the two following options
+// You cannot compile both simultaneously
+//#define PXIDAQLIB
+#define MSISDAQLIB
+
 
 #include <vector>
 #include <map>
@@ -32,7 +38,9 @@
 //#include "DMonteCarlo.h"
 #include "TNTBoardReader.h"
 #include "PXIBoardReader.h"
-#include "PXIeBoardReader.h"
+#ifdef PXIDAQLIB
+  #include "PXIeBoardReader.h"
+#endif
 #include "GIGBoardReader.h"
 #include "IMGBoardReader.h"
 #include "BoardReader.h"
@@ -43,6 +51,9 @@
 #include "DecoderGeant.h"
 #include "DEventMC.h"
 #include "BoardReaderIHEP.h"
+#ifdef MSISDAQLIB
+  #include "BoardReaderMIMOSIS.h"
+#endif
 #include "sup_exp.typ" // for time reference information
 
 class DAcq : public TObject {
@@ -57,7 +68,9 @@ class DAcq : public TObject {
 
       TNTBoardReader  **fTNT;              // pointer to TNT boards
       PXIBoardReader  **fPXI;              // pointer to PXI boards
+#ifdef PXIDAQLIB
       PXIeBoardReader **fPXIe;             // pointer to PXIexpress boards
+#endif
       GIGBoardReader  **fGIG;              // pointer to GIG boards, JB 2012/04/25
       IMGBoardReader  **fIMG;              // pointer to IMG boards, JB 2012/07/22
       VMEBoardReader  **fVME;              // pointer to VME boards, JB 2014/05/13
@@ -66,6 +79,9 @@ class DAcq : public TObject {
       DecoderM18      **fM18;              // pointer to DecoderM18 boards, JB 2014/05/25, then 2014/08/26
       DecoderGeant    **fGeant;            // pointer to DecoderGeant
       BoardReaderIHEP **fIHEP;             // pointer to IHEP boards, JB 2018/06/03
+#ifdef MSISDAQLIB
+      BoardReaderMIMOSIS **fMSIS;          // pointer to MIMOSIS boards, JB 2021/05/01
+#endif
       Int_t          ***fRawData;          // pointer to Raw Values
       std::vector<DPixel*>  *fListOfPixels;     // pointer to list of hit pixel
       //std::vector<DMonteCarlo*> *fListOfMonteCarlo; // pointer to list of hit montecarlo
@@ -83,7 +99,7 @@ class DAcq : public TObject {
       std::vector<int>    ***fInputSegments;    // limits of segments for this input, JB 2013/08/14
       Int_t             fMaxSegments;      // max nb of segements allowed for an input
       Bool_t          **fUseTimestamp;     // flag for timestamp usage, JB 2015/05/26
-  
+
       Int_t             fEventNumber;      //  Number of the event according to DSession, JB 2009/05/26
       Int_t             fRealEventNumber;  //  Number of the event writen in the board
       Int_t             fEventsMissed;     // Number of events missed for synchronization
@@ -95,12 +111,12 @@ class DAcq : public TObject {
       Char_t           *fSynchroFileName;
       unsigned char    *fSynchroInfo;
       Int_t             fNbSynchroInfo;
-  
+
       // Data to synchronize two M18Decoders, JB 2015/03/27
       Int_t             fSynchroFirstM18Decoder;
       Int_t             fSynchroOMKDTransition;
       Int_t             fSynchroStopPointerTransition;
-  
+
       // Data to obtain external time references, JB 2018/02/11
       Char_t           *fTimeRefFileName;
       SEXP_TTsRec      *fTimeRefInfo;
@@ -110,13 +126,13 @@ class DAcq : public TObject {
       Int_t             fEventTime;
 
       Bool_t            fIfMonteCarlo;     // LC 2014/12/15 : If MonteCarlo Info in DPixel fIfMonteCarlo=1 else fIfMonteCarlo=0
-      
+
       Bool_t            fIsMCBoardReader;  // AP 2016/07/27   bool to specify if reading data with MCBoardReader
       DEventMC*         MCInfoHolder;      // AP 2016/04/21   Object with all the MC information. i.e. the full list of particles, hits and pixels (both from physics and noise)
 
   public:
-      DAcq();                                 
-      DAcq(DSetup& c);                                 
+      DAcq();
+      DAcq(DSetup& c);
       ~DAcq();
       TBits*           NextEvent( Int_t eventNumber, Int_t aTrigger=-1); // actually read the data from raw file!, JB 2009/05/26, 2012/07/10
       void             Reset();                                          // Restart event reading at 0, JB 2015/03/02
@@ -126,7 +142,7 @@ class DAcq : public TObject {
       //std::vector<Int_t>   *GetListOfPixels( Int_t aPlaneNumber) { return &fListOfPixels[aPlaneNumber]; }// get the hit pixel index list for a given plane
       //std::vector<DMonteCarlo*> *GetListOfMonteCarlo( Int_t aPlaneNumber) { return &fListOfMonteCarlo[aPlaneNumber-1]; }// get the hit monte carlo list for a given plane
       Bool_t           GetUsageTimestamp( Int_t mdt, Int_t mdl) { return fUseTimestamp[mdt-1][mdl-1];} // JB 2015/05/26
-  
+
       Bool_t           DumpHexToTerm();     // performs a hexadecimal dump of data
                                           // without any interpretation of data
       Int_t            GetEventNumber()     const { return fEventNumber; } // Number of the event according to Dsession, JB 2009/05/26
@@ -136,23 +152,23 @@ class DAcq : public TObject {
       std::vector<int>     *GetTriggers()                { return ListOfTriggers;}
       std::vector<int>     *GetFrames()                  { return ListOfFrames;}
       std::vector<int>     *GetTimestamps()              { return ListOfTimestamps;}
-      std::vector<int>     *GetLineOverflow()            { return ListOfLineOverflow;}      
+      std::vector<int>     *GetLineOverflow()            { return ListOfLineOverflow;}
       Int_t            GetNumberOfTriggers()        { return fTriggersN;}
       Int_t            GetNumberOfFrames()          { return fFramesN;}
       Int_t            GetNumberOfTimestamps()      { return fTimestampsN;}
       Int_t            GetTriggerAt( int index)     { return ListOfTriggers->at(index); }
       Int_t            GetFrameAt( int index)       { return ListOfFrames->at(index); }
       Int_t            GetTimestampAt( int index)   { return ListOfTimestamps->at(index); }
-  
+
       // Methods to synchronized two boards, JB 2012/07/19
       Bool_t           InitSynchroInfo( );
       Bool_t           GetSynchroInfo( int anEventId, int &anAcqId, int &aFrameId);
-      
+
       // Methods to obtain an outside time reference , JB 2018/02/11
       Bool_t           InitTimeRefInfo( );
       Bool_t           GetTimeRef( int index, int &recordID, int &cycleID, int &rtcTime, int &ntpTime);
       Int_t            GetEventTime()               { return fEventTime; } // JB 2018/02/12
-  
+
       DSetup&          GetSetup()                            { return *fc; }
       void             SetDebug(Int_t aDebug);
       Int_t            GetDebug()                            { return fDebugAcq;}
@@ -161,13 +177,11 @@ class DAcq : public TObject {
       void             DumpSynchroInfo( Int_t nEvents=-1); // JB 2013/08/20
 
       Bool_t           IfMonteCarlo()               { return fIfMonteCarlo; }  // LC 2014/12/15 : Test to include MonteCarlo Infos
-      
+
       Bool_t           GetIfMCBoardReader()         { return fIsMCBoardReader; }  // AP 2016/07/27 : Function to get the if reading data with MCBoardReader
       DEventMC*        GetMCInfoHolder()            { return MCInfoHolder;  }     // AP 2016/04/21 : Function to get the MCInfoHolder
-      
-      ClassDef(DAcq,3)                    // Data Acquisition 
+
+      ClassDef(DAcq,3)                    // Data Acquisition
 };
- 
+
 #endif
-
-

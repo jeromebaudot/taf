@@ -70,7 +70,7 @@ DCut::DCut(DPlane& aPlane)
       if (fDebugCut) cout << "  fClusterLimit=" << (*fClusterLimit)(0) << ", " << (*fClusterLimit)(1) << endl;
     // slightly modified JB 2009/09/23
     
-      fStripsInClusterArea = ceil( ((*fClusterLimit)(0)*2./tPitch(0)+1) * ((*fClusterLimit)(1)*2./tPitch(1)+1) );
+     fStripsInClusterArea = ceil( ((*fClusterLimit)(0)*2./tPitch(0)+1) * ((*fClusterLimit)(1)*2./tPitch(1)+1) );
 //      fStripsInClusterArea = (Int_t)( ((*fClusterLimit)(0)*2./tPitch(0)) * ((*fClusterLimit)(1)*2./tPitch(1)) );//VR 2014/07/12
     
       if (fDebugCut) cout << "  fStripsInClusterArea= " << fStripsInClusterArea << endl; 

@@ -15,6 +15,7 @@
 # Last update LC 2014/15/19: Add DMiniVector.h DMiniVector.cxx
 # Last update JB 2018/09/06: remove dependencies to tcsh, switch to sh
 # Last update JB 2018/11/08: cp .pcm files to the lib directory
+# Last update JB 2020/11/25: make use of USExxxx env variables for conditianal library link
 
 # ----------------------------------------
 #            Makefile.arch
@@ -27,11 +28,11 @@ include $(ROOTSYS)/etc/Makefile.arch # choice 1a
 #include $(ROOTSYS)/test/Makefile.arch # choice 1b (old ROOT versions)
 #include ./Makefile.arch # choice 2
 # ----------------------------------------
-#        SVN revision
+#        SVN revision <-- DEPRECATED
 # TAF welcome message displays the SVN revision of the code used during the compilation
 # The 'svnversion' software must be installed for this functionality, if not, comment both two lines
-SVNREV     := -D'SVN_REVISION="$(shell svnversion -n .)"'
-CXXFLAGS   += $(SVNREV)
+#SVNREV     := -D'SVN_REVISION="$(shell svnversion -n .)"'
+#CXXFLAGS   += $(SVNREV)
 # ----------------------------------------
 
 
@@ -47,39 +48,54 @@ vpath 	%.$(ObjSuf) 		$(OBJ_DIR)
 vpath 	%.$(DllSuf) 		$(LIB_DIR)
 
 # Uncomment -g if you need debugger
-CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 -Wno-unused-variable -Wno-unused-parameter #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
-LIBS        = $(ROOTLIBS)
-GLIBS       = $(ROOTGLIBS)
-LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore -lSpectrum \
--lTMVA -L/sw/lib #-ltiff
+CXXFLAGS   += -I$(DTDIR)/code/include -DCC_64B -D_FILE_OFFSET_BITS=64 \
+ -Wno-unused-variable -Wno-unused-parameter -Wno-format-zero-length  -Wno-sign-compare \
+ #-Wno-unused-but-set-variable
+ #-w #-std=c++0x # -g # new flag g++<4.7 : -std=c++0x g++>=4.7 -std=c++11 to add std library tools.
+# LIBS        = $(ROOTLIBS)
+# GLIBS       = $(ROOTGLIBS)
+LIBSALL     = $(ROOTLIBS) -lMinuit -lGeom -lEG -lGui -lGed -lTreePlayer -lMatrix -lPhysics -lMathCore
+ifeq ( $USETSPECTRUM, "TRUE" )
+  CXXFLAGS += -DUSETSPECTRUM
+	LIBSALL  += -lSpectrum
+endif
+ifeq ( $(USETMVA), "TRUE" )
+  CXXFLAGS += -DUSETMA
+  LIBSALL += -lTMVA
+endif
+ifeq ( $(USETIFF), "TRUE" )
+  CXXFLAGS += -DUSETIFF
+  LIBSALL += -ltiff
+endif
+
 
 #------------------------------------------------------------------------------
 
-DTHDRS          = TNTBoardReader.h PXIBoardReader.h PXIeBoardReader.h \
+DTHDRS          = TNTBoardReader.h PXIBoardReader.h \
 		GIGBoardReader.h IMGBoardReader.h BoardReader.h VMEBoardReader.h  MCBoardReader.h BoardReaderIHEP.h \
-    AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h \
+    AliMIMOSA22RawStreamVASingle.h DecoderM18.h DecoderGeant.h BoardReaderMIMOSIS.h \
     DSession.h DSetup.h \
 		DAcq.h DTracker.h DPlane.h DStrip.h \
     DHit.h DTrack.h DLine.h DR3.h DCut.h DAlign.h \
 		DEvent.h  DEventMC.h  DParticle.h DGlobalTools.h \
     DPrecAlign.h DPixel.h DLadder.h DMiniVector.h DHelix.h DHelixFitter.h\
-    DTrackFitter.h DBeaster.h\
-# DXRay2DPdf.h
+    DTrackFitter.h DBeaster.h MKalmanFilter.h MLeastChiSquare.h \
+# DXRay2DPdf.h # PXIeBoardReader.h 
 
 
 MHDRS		= MAnalysis.h  MAlign.h MHist.h MRaw.h MRax.h MAlignment.h MMillepede.h MGlobalAlign.h MKalmanFilter.h MLeastChiSquare.h
 
 DTSRCS		= MMain.cxx \
-		TNTBoardReader.cxx PXIBoardReader.cxx PXIeBoardReader.cxx \
+		TNTBoardReader.cxx PXIBoardReader.cxx  \
 		GIGBoardReader.cxx IMGBoardReader.cxx BoardReader.cxx VMEBoardReader.cxx MCBoardReader.cxx BoardReaderIHEP.cxx \
-    AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx \
+    AliMIMOSA22RawStreamVASingle.cxx DecoderM18.cxx DecoderGeant.cxx BoardReaderMIMOSIS.cxx \
     DSession.cxx DSetup.cxx \
 		DAcq.cxx DTracker.cxx  DPlane.cxx DStrip.cxx  \
 		DHit.cxx DTrack.cxx DLine.cxx DR3.cxx DCut.cxx DAlign.cxx \
 		DEvent.cxx  DEventMC.cxx  DParticle.cxx DGlobalTools.cxx \
 		DPrecAlign.cxx DPixel.cxx DLadder.cxx DMiniVector.cxx DHelix.cxx DHelixFitter.cxx \
-    DTrackFitter.cxx DBeaster.cxx\
-# DXRay2DPdf.cxx
+    DTrackFitter.cxx DBeaster.cxx MKalmanFilter.cxx MLeastChiSquare.cxx \
+# DXRay2DPdf.cxx # PXIeBoardReader.cxx
 
 MSRCS		= MPrep.cxx MAnalysis.cxx MPost.cxx MCommands.cxx  MMCGeneration.cxx  MAlign.cxx MHist.cxx MRaw.cxx MRax.cxx \
            MAlignment.cxx MMillepede.cxx MGlobalAlign.cxx MKalmanFilter.cxx MLeastChiSquare.cxx
@@ -101,34 +117,37 @@ $(OBJ_DIR):
 		@/bin/sh -cf 'if [ ! -d $(OBJ_DIR) ]; then mkdir -p  $(OBJ_DIR); fi'
 		@/bin/sh -cf 'if [ ! -d $(LIB_DIR) ]; then mkdir -p $(LIB_DIR); fi'
 
-libTAF.$(DllSuf): Mdict.$(ObjSuf) $(MOBJS) $(MSRCS) $(MHDRS)
+#libTAF.$(DllSuf): Mdict.$(ObjSuf) $(MOBJS) $(MSRCS) $(MHDRS) $(DTOBJS) $(DTSRCS) $(DTHDRS)
+libTAF.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS) Mdict.$(ObjSuf) $(MOBJS) $(MSRCS) $(MHDRS)
 		@echo ""
 		@echo " *********************************************"
 		@echo " Creating shared lib" libTAF.$(DllSuf)
 		@echo " *********************************************"
-		$(LD) $(SOFLAGS)   $(LDFLAGS) $(OBJ_DIR)/M*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
-#		$(LD) $(SOFLAGS) -Wl  $(LDFLAGS) $(OBJ_DIR)/M*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
+		@echo $(SOFLAGS)
+		$(LD) $(SOFLAGS)  $(LIBSALL) $(LDFLAGS) $(OBJ_DIR)/*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
+#		$(LD) $(SOFLAGS)  $(LIBSALL) $(LDFLAGS) $(OBJ_DIR)/M*.$(ObjSuf) $(OutPutOpt) $(LIB_DIR)/libTAF.$(DllSuf)
 
-libDTools.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS)
+#libDTools.$(DllSuf): DTdict.$(ObjSuf) $(DTOBJS) $(DTSRCS) $(DTHDRS)
+#		@echo ""
+#		@echo " *********************************************"
+#		@echo " Creating shared lib" libDTools.$(DllSuf)
+#		@echo " *********************************************"
+#		$(LD) $(SOFLAGS)  $(LIBSALL) $(LDFLAGS) $(OBJ_DIR)/D*.$(ObjSuf) \
+#    $(OBJ_DIR)/*BoardReader.$(ObjSuf) $(OBJ_DIR)/BoardReaderIHEP.$(ObjSuf) \
+#    $(OBJ_DIR)/AliMIMOSA22RawStreamVASingle.$(ObjSuf) $(OBJ_DIR)/MKalmanFilter.$(ObjSuf) $(OBJ_DIR)/MLeastChiSquare.$(ObjSuf) \
+#		$(OutPutOpt) $(LIB_DIR)/libDTools.$(DllSuf)
+
+
+#$(PROGRAM):	$(OBJ_DIR)  MMain.$(ObjSuf) libDTools.$(DllSuf) libTAF.$(DllSuf)
+$(PROGRAM):	$(OBJ_DIR)  MMain.$(ObjSuf) libTAF.$(DllSuf)
 		@echo ""
 		@echo " *********************************************"
-		@echo " Creating shared lib" libDTools.$(DllSuf)
-		@echo " *********************************************"
-		$(LD) $(SOFLAGS)   $(LDFLAGS) $(OBJ_DIR)/D*.$(ObjSuf) \
-    $(OBJ_DIR)/*BoardReader.$(ObjSuf) $(OBJ_DIR)/BoardReaderIHEP.$(ObjSuf) \
-    $(OBJ_DIR)/AliMIMOSA22RawStreamVASingle.$(ObjSuf) \
-		$(OutPutOpt) $(LIB_DIR)/libDTools.$(DllSuf)
-
-
-$(PROGRAM):	$(OBJ_DIR)  MMain.$(ObjSuf) libDTools.$(DllSuf) libTAF.$(DllSuf)
-		@echo ""
-		@echo " *********************************************"
-	      	@echo " Creating executable file                     "
+	  @echo " Creating executable file                     "
 		@echo " *********************************************"
 		$(LD) $(LDFLAGS)  $(OBJ_DIR)/MMain.$(ObjSuf)  $(LIB_DIR)/lib*  $(LIBSALL)  $(OutPutOpt) $(PROGRAM)
 		@echo ""
 		@echo " ******************** :-) ********************"
-	      	@echo "                $(PROGNAME) built successfully !"
+	  @echo "                $(PROGNAME) built successfully !"
 
 clean:
 		@rm -rf **/*~ **/\#* $(DTDIR)/test.dat  $(LIB_DIR) $(OBJ_DIR) $(BUILD_DIR)

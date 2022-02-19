@@ -1,5 +1,5 @@
 // @(#)maf/maf:$Name:  $:$Id: MPost.cxx v.1 2005/10/02 18:03:46 sha Exp $
-// Author: A. Shabetai 
+// Author: A. Shabetai
 // Last Modified: JB 2009/09/07 for User's plots
 // Last Modified: JB 2009/09/10 for Resolution plots
 // Last Modified: JB 2009/09/15 for Resolution plots
@@ -28,8 +28,8 @@
 
 /////////////////////////////////////////////////////////////
 //                                                         //
-//  Contains all methods to display analysis results.      
-//                                                         
+//  Contains all methods to display analysis results.
+//
 //  Those are accessible at the end of the main analysis methods,
 //   through a graphical menu displayed by a call to PreparePost().
 //
@@ -54,7 +54,7 @@
 #include "TVector2.h"
 #include "TEllipse.h"
 
-ClassImp(MimosaAnalysis) 
+ClassImp(MimosaAnalysis)
 
 
 //_______________________________________________________________________________________
@@ -70,14 +70,14 @@ void   MimosaAnalysis::PreparePost()
   // Modified: AP 2015/03/09 adding summary pdf file with metadata and plots
 
   if( !fMimosaProDone && !fMimosaFakerateDone && !fMimosaCalibrationDone && !fMimosaMiniVectorsDone && !fMimosaPro2PlanesDone && !fMimosaImagingDone ) return;
-  
+
   // Flag that the general analysis on Mimosa is done
   fMimosaDone = kTRUE; // JB 2010/09/10
 
  if (!gROOT->IsBatch())
    {
      bar2  = new TControlBar("vertical","Display");
-     // Menu whatever the analysis was 
+     // Menu whatever the analysis was
      bar2->AddButton("Cluster charge (Landau)","gTAF->MimosaClusterCharge()", "Main distribution of cluster charge & SNR");
      bar2->AddButton("Cluster charge (Gauss)","gTAF->MimosaClusterCharge(\"gaus\")", "Main distribution of cluster charge & SNR with gaussians");
      bar2->AddButton("Binary output Plots","gTAF->MimosaBinaryplots()","Plot for binary readout");
@@ -92,7 +92,7 @@ void   MimosaAnalysis::PreparePost()
        bar2->AddButton("Fake Rate","gTAF->FakeRate()","Plot experimental fake rate");
      }
      if( !fMimosaProDone && !fMimosaPro2PlanesDone ) bar2->AddButton("Check Clusters","gTAF->CheckClusters()","Selected cluster properties");
-     
+
      // Menu when tracking (mimosapro)
      if( fMimosaProDone || fMimosaPro2PlanesDone) {
        bar2->AddButton("Resolution","gTAF->MimosaResolution()", "...  >>Resolution<<");
@@ -118,7 +118,7 @@ void   MimosaAnalysis::PreparePost()
        bar2->AddButton("Check eff in the run","gTAF->InspectEfficiency()","check how evolves eff during the run");
        bar2->AddButton("MiniVectors","gTAF->MiniVectors()","Track to vector comparison.");
      }
-     
+
      // Again generic end menu
 
      bar2->AddButton("User's analysis","gTAF->UserAnalysis()","Perform user's analysis");
@@ -127,14 +127,14 @@ void   MimosaAnalysis::PreparePost()
      bar2->Show();
 
    }
-  
+
  for(Int_t iu=0;iu<50;iu++){ UsedMacro[iu]= 0; }
- 
+
  gStyle->SetOptStat(1);
  gStyle->SetOptFit(1);
  gStyle->SetPalette(1); // JB 2010/07/26
  gROOT->SaveContext();
- 
+
  gStyle->SetPalette(1);
  gStyle->SetLabelSize(0.06); // JB 2011/11/01
  gStyle->SetTitleSize(0.06);
@@ -148,28 +148,28 @@ void   MimosaAnalysis::PreparePost()
 //_______________________________________________________________________________________
 //
 int MimosaAnalysis::ResultsStrore()
-{  
+{
   if(!CheckIfDone("mimosall") ) return 0;
-  
+
   // collect and store all important results
-  
+
   cout<<"  ==> Storing Results ..."<<endl;
-  
+
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
-  
+
+
   char fOutName[50];
   sprintf(fOutName,"Results_%d_%d_%d.root",fSession->GetRunNumber(),fSession->GetPlaneNumber(),ThesubmatrixNumber);
   sprintf(fOutName,"%s", fTool.LocalizeDirName( fOutName)); // JB 2011/07/07
   TFile fOut(fOutName,"RECREATE");
-  
+
   TNtuple Ntp("Results","Mimosa Analysis Results","MimosaType:ChipNumber:RunNumber:Temperature:IrradiationDose:Angle:MatrixNumber:SubMatrixNumber:AvSN:MPVSN:Noise:NoiseError:Efficiency:EfficiencyError:ResidualU:ResolutionU:ResidualV:ResolutionV:AvChargeSeed:AvCharge2x2:AvCharge3x3:AvCharge5x5:MPVChargeSeed:MPVCharge2x2:MPVCharge3x3:MPVCharge5x5:SN_Seed_CUT:SN_Neighbours_CUT:ClusteSize:Pixelsize:DiodeSize");
-  
+
   //---ADC
-  
-  //---ADC 
+
+  //---ADC
   tVect[0] = (float)MimosaType;
   tVect[1] = (float)3; //ChipNumber;
   tVect[2] = (float)RunNumber;
@@ -179,11 +179,11 @@ int MimosaAnalysis::ResultsStrore()
   tVect[3] = (float)Temperature; //Temperature;
   tVect[4] = (float)0; //IrradiationDose;
   tVect[5] = (float)0; //Angle;
-  
+
   tVect[6] = (float) ThePlaneNumber; //MatrixNumber
-  tVect[7] = (float) ThesubmatrixNumber; //SubMatrixNumber 
+  tVect[7] = (float) ThesubmatrixNumber; //SubMatrixNumber
   tVect[8] = (float) hsnc->GetMean(); //AvSN
-  tVect[9] = (float) (hsnc->GetFunction("landau"))->GetParameter(1); //MPVSN 
+  tVect[9] = (float) (hsnc->GetFunction("landau"))->GetParameter(1); //MPVSN
   tVect[10] = (float) hRealTrackNoise->GetMean(); //Noise
   tVect[11] = (float) hRealTrackNoise->GetRMS(); //NoiseError
   tVect[12] = (float) MimosaEfficiency; //Efficiency
@@ -192,40 +192,40 @@ int MimosaAnalysis::ResultsStrore()
   tVect[15] = (float) sqrt(ResolutionPoint[4]*ResolutionPoint[4]-1.0);  //Resolution[0]
   tVect[16] = (float) ResolutionPoint[5];// Residual[1]
   tVect[17] = (float) sqrt(ResolutionPoint[5]*ResolutionPoint[5]-1.0);// Resolution[1]
-  
+
   tVect[18] = (float) hqcn[0]->GetMean(); // AvChargeSeed
   tVect[19] = (float) hqcn[3]->GetMean(); //AvCharge2x2
   tVect[20] = (float) hqcn[8]->GetMean(); // AvCharge3x3
   tVect[21] = (float) hqcn[24]->GetMean(); //AvCharge5x5
-  
+
   tVect[22] = (float)  (hqcn[0]->GetFunction("landau"))->GetParameter(1);//PVChargeSeed
   tVect[23] = (float)  (hqcn[3]->GetFunction("landau"))->GetParameter(1); //MPVCharge2x2
   tVect[24] = (float)  (hqcn[8]->GetFunction("landau"))->GetParameter(1); //MPVCharge3x3
   tVect[25] = (float)  (hqcn[24]->GetFunction("landau"))->GetParameter(1); //MPVCharge5x5
-  
+
   tVect[26] = (float) CUT_S2N_seed; //SN_Seed_CUT
   tVect[27] = (float) CUT_S2N_neighbour; //SN_Neighbours_CUT
   tVect[28] = (float) ChargeSpread->GetX()[TMath::LocMax(ChargeSpread->GetN(), ChargeSpread->GetY())]; //clustesize
-  tVect[29] = (float) PixelSize;//pitch 
-  
+  tVect[29] = (float) PixelSize;//pitch
+
   float diode_size = 0;
   if((RunNumber ==  9581 || RunNumber ==  9630) && ThesubmatrixNumber==1) diode_size = 36;
   if((RunNumber ==  9581 || RunNumber ==  9630) && ThesubmatrixNumber==2) diode_size = 11.56;
   if((RunNumber ==  9582 || RunNumber ==  9583) && ThesubmatrixNumber==1) diode_size = 11.56;
   if((RunNumber ==  9582 || RunNumber ==  9583) && ThesubmatrixNumber==2) diode_size = 25;
-  tVect[30] = (float) diode_size; //diode_size 
-  
+  tVect[30] = (float) diode_size; //diode_size
+
   // ->etudier les parametres clefs: efficacite, resolution, N, S/N, Charge
   // 1,4,9,25, (MPV plutot que valeur moyenne) "taille du cluster", en fonction
   // de la temperature, des tailles des diodes et du pitch. Dans un premier
   // temps tu peux faire un tableau resumant toutes ces valeurs.
-  
-  
+
+
   Ntp.Fill(tVect);
   Ntp.Write();
   Ntp.Show(0);
   fOut.Close();
-  
+
   return 0;
 }
 
@@ -293,7 +293,7 @@ void MimosaAnalysis::CheckMimosaAlign()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     c2->Print(EPSNameO.Data());
     c2->Print(EPSName.Data());
     c2->Print(EPSNameC.Data());
@@ -307,11 +307,11 @@ void MimosaAnalysis::CheckMimosaAlign()
 
   // ------------------------
   // --- Save histos and canvas ---:
-  
+
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileName2[50];
   sprintf(ResultFileName2,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2));
@@ -347,9 +347,9 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   // Modified: JB 2012/09/07 save noise histo
   // Modified: JB 2013/09/17 protection when fitting hSNNReal
   // Modified: JB 2013/10/29 allow two models for signal distri. Landau/Gauss
-  
+
   if(!CheckIfDone("mimosall")) return;
-  
+
   UsedMacro[1] = 1;
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
@@ -364,14 +364,14 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   cClusterCharge->Draw();
   cClusterCharge->Clear();
   cClusterCharge->SetBorderMode(0);
-  
+
   // ------------------------
   // --- build the screen ---:
-  
+
   //---ab
   Char_t titleSN[20];
   sprintf(titleSN,"e=%f",MimosaEfficiency);
-  
+
   //--ab
   cClusterCharge->Update();
   TPad* mpad1 = new TPad("mpad1","Total charge in N (charge ordered) pixels",0.67,0.02,0.99,0.5);
@@ -397,7 +397,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   TPad* mpad7 = new TPad("mpad7","Charge sum in the 5x5 highest pixels",
                          0.67,0.51,0.99,0.9);
   mpad7->Draw();
-  
+
   TPad* mpad5 = new TPad("mpad5","MIMOSA cluster charge",
                          0.01,0.91,0.99,0.99);
   mpad5->Draw();
@@ -412,38 +412,38 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   Char_t Header[100];
   //---ab
   sprintf(Header,"M%d ; run %d; Pl %d, sub %d, dist %.0f; Gain %3.2f; eff %3.3f +- %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,ThesubmatrixNumber,TrackToHitDistanceLimit,calibration,MimosaEfficiency,MimosaEfficiency_ERR,CUT_S2N_seed,CUT_S2N_neighbour);
-  
+
   ttt->DrawText( 0.05,0.6,Header);
   TText *tt2 = new TText();
   tt2->SetTextFont(222);
   tt2->SetTextColor(1);
   tt2->SetTextSize(0.2);
   tt2->SetTextAlign(12);
-  
+
   mpad1->SetFillColor(19);
   mpad2->SetFillColor(19);
   mpad3->SetFillColor(19);
   mpad4->SetFillColor(19);
   mpad6->SetFillColor(19);
   mpad7->SetFillColor(19);
-  
+
   ttt->DrawText( 0.05,0.6,Header);
   tt2 = new TText();
   tt2->SetTextFont(222);
   tt2->SetTextColor(1);
   tt2->SetTextSize(0.2);
   tt2->SetTextAlign(12);
-  
+
   mpad1->SetFillColor(19);
   mpad2->SetFillColor(19);
   mpad3->SetFillColor(19);
   mpad4->SetFillColor(19);
   mpad6->SetFillColor(19);
   mpad7->SetFillColor(19);
-  
+
   //--- end of screen building ---
-  
-  
+
+
   // ------------------------
   // --- Draw simple histos ---:
 
@@ -457,47 +457,47 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
     hSNReal->Draw();
   }
   mpad3->Update();
-  
+
   //- Noise in the central pixel
   mpad4->cd();
   AutoZoom(hRealTrackNoise)->Draw();
   mpad4->Update();
-  
+
   //- Charge in the central(seed) pixel
   mpad6->cd();
   hqcn[0]->Draw();
-  //AutoZoom(hqcn[0],"all", hqcn[0]->GetMaximum()/2.)->Draw(); 
+  //AutoZoom(hqcn[0],"all", hqcn[0]->GetMaximum()/2.)->Draw();
   mpad6->Update();
   TPaveStats *stats2 = (TPaveStats*)hqcn[0]->GetListOfFunctions()->FindObject("stats");
   if(stats2!=0){
     stats2->SetX1NDC(0.5);stats2->SetX2NDC(0.95);stats2->SetY1NDC(0.5);stats2->SetY2NDC(0.97);
-    
+
     stats2->SetOptStat(111111);stats2->Draw();
   }
-  
+
   //- Charge sum in the 3x3 highest pixels
   mpad2->cd();
   mpad2->GetFrame()->SetFillColor(0);
-  
-  //AutoZoom(hqcn[8],"all", hqcn[8]->GetMaximum()/1.5)->Draw(); 
+
+  //AutoZoom(hqcn[8],"all", hqcn[8]->GetMaximum()/1.5)->Draw();
   hqcn[8]->Draw();
-  //hqcn[TMath::Min(NumOfPoint/2,8)]->Draw(); 
-  
+  //hqcn[TMath::Min(NumOfPoint/2,8)]->Draw();
+
   mpad2->Update();
   TPaveStats *stats1 = (TPaveStats*)hqcn[8]->GetListOfFunctions()->FindObject("stats");
   if(stats1!=0){
     stats1->SetX1NDC(0.5);stats1->SetX2NDC(0.95);stats1->SetY1NDC(0.5);stats1->SetY2NDC(0.97);
     stats1->SetOptStat(111111);stats1->Draw();
   }
-  
+
   //- Charge sum in the 5x5 highest pixels
   if( MaxNofPixelsInCluster>24 ) {
     mpad7->cd();
-    
-    hqcn[24]->Draw(); 
-    //AutoZoom(hqcn[24],"all", hqcn[24]->GetMaximum()/1.3)->Draw(); 
-    //hqcn[TMath::Min(NumOfPoint-1,24)]->Draw(); 
-    
+
+    hqcn[24]->Draw();
+    //AutoZoom(hqcn[24],"all", hqcn[24]->GetMaximum()/1.3)->Draw();
+    //hqcn[TMath::Min(NumOfPoint-1,24)]->Draw();
+
     mpad7->Update();
     TPaveStats *stats3 = (TPaveStats*)hqcn[24]->GetListOfFunctions()->FindObject("stats");
     if(stats3!=0){
@@ -505,10 +505,10 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
       stats3->SetOptStat(111111);stats3->Draw();
     }
   }
-  
+
   // ------------------------
   // --- Charge spread histo ---:
-  
+
   //- Compute the average & MPV charge collected by a number of pixels
   // modified by JB 2010/03/12
 
@@ -519,16 +519,16 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   cCharges->SetBorderMode(0);
   Int_t ncols = (Int_t)(sqrt(MaxNofPixelsInCluster));
   Int_t nrows = ceil(MaxNofPixelsInCluster/ncols);
-  cCharges->Divide( ncols, nrows ); 
-  
-  Float_t* NumberOfEntries = new Float_t[MaxNofPixelsInCluster]; 
-  Float_t* Chi2 = new Float_t[MaxNofPixelsInCluster]; 
-  Float_t* MPVerr = new Float_t[MaxNofPixelsInCluster]; 
-  Float_t* Ndf = new Float_t[MaxNofPixelsInCluster]; 
+  cCharges->Divide( ncols, nrows );
+
+  Float_t* NumberOfEntries = new Float_t[MaxNofPixelsInCluster];
+  Float_t* Chi2 = new Float_t[MaxNofPixelsInCluster];
+  Float_t* MPVerr = new Float_t[MaxNofPixelsInCluster];
+  Float_t* Ndf = new Float_t[MaxNofPixelsInCluster];
   Float_t* ChargeOfPixelGroup = new Float_t[MaxNofPixelsInCluster];
   Float_t* RMSChargeOfPixelGroup = new Float_t[MaxNofPixelsInCluster];
   TF1 *fitf = 0;
-  
+
   Int_t NumOfPoint = 0; // num of valid point
   TH1F *hToFit;
   for(Int_t i=0; i<MaxNofPixelsInCluster; i++){
@@ -536,7 +536,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
     hToFit = (TH1F*)AutoZoom(hqcn[i],"all", hqcn[i]->GetMaximum()/1.3);
     NumberOfEntries[i]=hqcn[i]->Integral();
     //NumberOfEntries[i]=hqcn[i]->GetEntries();
-    
+
     if ( NumberOfEntries[i]>200 ) { // check there is enough data points for a fit
       NumOfPoint++;
 //      hToFit->Draw();
@@ -551,7 +551,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
       if(!(gMinuit->fCstatu).Contains("CONVERGED") || TMath::Abs(fitf->GetParameter(1) - (i>0)*ChargeOfPixelGroup[i-i]) > (100./i)*(i>0)+700*(i<=0))  {
         if(MimoDebug>2) {
           cout<<"BAD FIT !!! "<<i<<endl;
-        } 
+        }
         //hqcn[i]->Fit(fitOption.Data(),"MWQ"); // why trying again ??
         ChargeOfPixelGroup[i]=hToFit->GetMean();
         MPVerr[i]=hToFit->GetRMS()/sqrt(NumberOfEntries[i]);
@@ -566,10 +566,10 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
         MPVerr[i]=fitf->GetParError(1)*sqrt(Chi2[i]/Ndf[i]);
         RMSChargeOfPixelGroup[i]=hqcn[i]->GetRMS()/sqrt(NumberOfEntries[i]);
       }
-      
+
       printf(" ClusterCharge: %d pixels, <MPV %s> = %f +- %f\n", i, fitOption.Data(), ChargeOfPixelGroup[i], MPVerr[i]);
     }
-    
+
     else { // not enough data points
       hqcn[i]->Draw();
       if(i==0) { // for seed distribution, take histo mean and RMS
@@ -578,7 +578,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
         RMSChargeOfPixelGroup[i]=hqcn[i]->GetRMS();
       }
       else {  // simply use the previous value
-        ChargeOfPixelGroup[i]=ChargeOfPixelGroup[i-1]; 
+        ChargeOfPixelGroup[i]=ChargeOfPixelGroup[i-1];
         MPVerr[i]=MPVerr[i-1];
         RMSChargeOfPixelGroup[i]=RMSChargeOfPixelGroup[i-1];
 //        ChargeOfPixelGroup[i]=0.;
@@ -587,10 +587,10 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
       }
       printf(" ClusterCharge: %d pixels q distribution has %d points, which is not enough to fit -> keep previous fit value <MPV %s> = %f +- %f\n", i, (Int_t)NumberOfEntries[i], fitOption.Data(), ChargeOfPixelGroup[i], MPVerr[i]);
     }
-    
+
     cCharges->Update();
   }
-    
+
   cout << "# valid points " << NumOfPoint << endl;
   Float_t* NumOfPix = new Float_t[MaxNofPixelsInCluster];
   for(Int_t in=0; in<MaxNofPixelsInCluster; in++){
@@ -599,7 +599,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   mpad1->cd();
   mpad1->Clear();
   Float_t* ErrorX = new Float_t[MaxNofPixelsInCluster];
-  for (int i=0; i<MaxNofPixelsInCluster;i++) 
+  for (int i=0; i<MaxNofPixelsInCluster;i++)
   {ErrorX[i]=0;}
   cout << "creating ChargeSpread" << endl;
   ChargeSpread = new TGraphErrors( MaxNofPixelsInCluster/*TMath::Min(NumOfPoint+3,MaxNofPixelsInCluster)*/,NumOfPix,ChargeOfPixelGroup,ErrorX,MPVerr);
@@ -626,7 +626,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
   }
   printf(" --> ClusterCharge: highestcharge is %.0f, charge of largest subarea is %d, estimated cluster size %d.\n", double(maximumYaxischarge), int(ChargeOfPixelGroup[MaxNofPixelsInCluster-1]), int(estimatedClusterSize));
   ChargeSpread->SetMinimum(0.);
-  
+
   //--fit
   TF1* pol6 = new TF1("pol6","pol6"); // def pol6 comp
   // don't fit if first point is zero (crashes otherwise), JB 2010/0316)
@@ -634,7 +634,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
     cout << "fitting ChargeSpread" << endl;
     ChargeSpread->Fit("pol6","");
   }
-  
+
   cout << "drawing ChargeSpread" << endl;
   ChargeSpread->Draw("AP");
   ChargeSpread->SetMarkerStyle(20);
@@ -651,7 +651,7 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
 //  fitf->SetLineColor(2);
   mpad1->Update();
   cout << "END fitting ChargeSpread" << endl;
-  
+
   /*TPaveStats *stats = (TPaveStats*)ChargeSpread->FindObject("stats");
   if(stats!=0){
     stats->SetX1NDC(0.4);stats->SetX2NDC(0.95);stats->SetY1NDC(0.23);stats->SetY2NDC(0.56);
@@ -674,14 +674,14 @@ void MimosaAnalysis::MimosaClusterCharge( TString fitOption)
    gPad->Update();
    }
    */
-  
+
   // ------------------------
   // --- Save histos and canvas ---:
-  
+
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileName2[50];
   sprintf(ResultFileName2,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2)); // JB 2011/07/07
@@ -708,10 +708,10 @@ void MimosaAnalysis::CheckClusters()
   // Part of the Checkreftracks method concerning only the clusters.
   // Called by Checkreftracks when there are tracks.
   //
-  // Added: JB 2013/10/29 
+  // Added: JB 2013/10/29
   // Modified: JB 2013/11/08 new histos added (canvas 2)
   // Modified: JB 2013/05/22 new histos added (canvas 3)
-  
+
   if(!CheckIfDone("mimosall")) return;
 
   char fOutName[200];
@@ -726,62 +726,62 @@ void MimosaAnalysis::CheckClusters()
   //TString EPSNameC = EPSName + TString("]");
   //TString EPSName_test  = TString(CreateGlobalResultDir()) + TString(tmpFile) + TString("_v2.pdf");
   //TString EPSName_final = TString(CreateGlobalResultDir()) + TString(tmpFile) + TString(".pdf");
-  
+
   UsedMacro[6] = 1;
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetOptStat(1111);
   gStyle->SetPalette(1,0);
-  
+
   //--------------------------------
   //  Cluster properties 1
   //--------------------------------
-  
+
   c4 = new TCanvas("cclusterproperties","Cluster properties 1",100,10,700,900);
   c4->Draw();
   c4->Clear();
   c4->SetBorderMode(0);
-  
+
   // --- build the screen ---:
   gPad->cd();
   c4->Clear();
-  
+
   TPad* mpad2_1 = new TPad("mpad2_1","",0.01,0.01,0.32,0.30);
   mpad2_1->SetGrid(1);
   mpad2_1->Draw();
-  
+
   TPad* mpad2_2 = new TPad("mpad2_2","",0.33,0.01,0.66,0.30);
   mpad2_2->SetGrid(1);
   mpad2_2->Draw();
-  
+
   TPad* mpad2_3 = new TPad("mpad2_3","title 1",0.67,0.01,0.99,0.30);
   mpad2_3->SetGrid(1);
   mpad2_3->Draw();
-  
+
   TPad* mpad2_4 = new TPad("mpad2_4","",0.01,0.31,0.32,0.60);
   mpad2_4->SetGrid(1);
   mpad2_4->Draw();
-  
+
   TPad* mpad2_5 = new TPad("mpad2_5","",0.33,0.31,0.66,0.60);
   mpad2_5->SetGrid(1);
   mpad2_5->Draw();
-  
+
   TPad* mpad2_6 = new TPad("mpad2_6","",0.67,0.31,0.99,0.60);
   mpad2_6->SetGrid(1);
   mpad2_6->Draw();
-  
+
   TPad* mpad2_7 = new TPad("mpad2_7","",0.01,0.61,0.32,0.9);
   mpad2_7->SetGrid(1);
   mpad2_7->Draw();
-  
+
   TPad* mpad2_8 = new TPad("mpad2_8","",0.33,0.61,0.66,0.9);
   mpad2_8->SetGrid(1);
   mpad2_8->Draw();
-  
+
   TPad* mpad2_9 = new TPad("mpad2_9","",0.67,0.61,0.99,0.9);
   mpad2_9->SetGrid(1);
   mpad2_9->Draw();
-  
+
   TPad* mpad2_title = new TPad("mpad2_title","",0.10,0.91,0.85,0.99);
   mpad2_title->SetGrid(1);
   mpad2_title->SetFillColor(19);
@@ -797,7 +797,7 @@ void MimosaAnalysis::CheckClusters()
   //---ab
   sprintf(Header2,"M%d ; run %d; Pl %d; dist %.0f; eff %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,TrackToHitDistanceLimit,MimosaEfficiency,CUT_S2N_seed,CUT_S2N_neighbour);
   ttt2->DrawText( 0.05,0.6,Header2);
-  
+
   mpad2_1->SetFillColor(19);
   mpad2_2->SetFillColor(19);
   mpad2_3->SetFillColor(19);
@@ -807,7 +807,7 @@ void MimosaAnalysis::CheckClusters()
   mpad2_7->SetFillColor(19);
   mpad2_8->SetFillColor(19);
   mpad2_9->SetFillColor(19);
-  
+
   //----------- Seed S/N, ALL HITS
   mpad2_1->cd();
   mpad2_1->SetLogy(0);
@@ -852,7 +852,7 @@ void MimosaAnalysis::CheckClusters()
   TF1 *fitf2 = NULL;
   if (hsnn[0]->Integral()>100) { // if enough data
     hsnn[0]->Fit("landau");
-    fitf2 = hsnn[0]->GetFunction("landau");	  
+    fitf2 = hsnn[0]->GetFunction("landau");
     fitf2->SetLineWidth(1);
     fitf2->SetLineColor(1);
   }
@@ -871,9 +871,9 @@ void MimosaAnalysis::CheckClusters()
   //AutoZoom(hnhitievt)->Draw("colz");
   AutoZoom(etal[1],"Max")->Draw();
   mpad2_9->Update();
-  
+
   gPad->Update();
-  
+
   c4->cd();
 
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
@@ -881,7 +881,7 @@ void MimosaAnalysis::CheckClusters()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     c4->Print(EPSNameO.Data());
     c4->Print(EPSName.Data());
     c4->Print(EPSNameC.Data());
@@ -892,31 +892,31 @@ void MimosaAnalysis::CheckClusters()
     //command = TString("rm -rf ") + EPSName;
     //gSystem->Exec(command.Data());
   }
-  
+
   //--------------------------------
   //  Cluster properties 2
   //--------------------------------
-  
+
   cClusterProperties2 = new TCanvas("cclusterproperties2","Cluster properties 2",100,15,700,900);
   cClusterProperties2->Draw();
   cClusterProperties2->Clear();
   cClusterProperties2->SetBorderMode(0);
   cClusterProperties2->cd();
-  
+
   TPad* mpad3_title = new TPad("mpad3_title","",0.10,0.91,0.85,0.99);
   mpad3_title->SetGrid(1);
   mpad3_title->SetFillColor(19);
   mpad3_title->Draw();
   mpad3_title->cd();
   ttt2->DrawText( 0.05,0.6,Header2);
-  
+
   cClusterProperties2->cd();
   TPad* mpad3_histo = new TPad("mpad3_histo","",0.01,0.01,0.99,0.90);
   mpad3_histo->SetGrid(1);
   mpad3_histo->Draw();
   mpad3_histo->cd();
   mpad3_histo->Divide(3,3);
-  
+
   //-----------
   mpad3_histo->cd(1);
   AutoZoom(hnGOODhit,"Max")->Draw();
@@ -944,15 +944,15 @@ void MimosaAnalysis::CheckClusters()
   //----------- Cluster charge vs seed SNR
   mpad3_histo->cd(9);
   AutoZoom(hSNseedvsQcluster)->Draw("colz");
-  
+
   cClusterProperties2->Update();
- 
+
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
     NPages++;
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cClusterProperties2->Print(EPSNameO.Data());
     cClusterProperties2->Print(EPSName.Data());
     cClusterProperties2->Print(EPSNameC.Data());
@@ -967,27 +967,27 @@ void MimosaAnalysis::CheckClusters()
   //--------------------------------
   //  Cluster properties 3
   //--------------------------------
-  
+
   cClusterProperties3 = new TCanvas("cClusterProperties3","Cluster properties 3",100,15,700,900);
   cClusterProperties3->Draw();
   cClusterProperties3->Clear();
   cClusterProperties3->SetBorderMode(0);
   cClusterProperties3->cd();
-  
+
   TPad* mpad4_title = new TPad("mpad4_title","",0.10,0.91,0.85,0.99);
   mpad4_title->SetGrid(1);
   mpad4_title->SetFillColor(19);
   mpad4_title->Draw();
   mpad4_title->cd();
   ttt2->DrawText( 0.05,0.6,Header2);
-  
+
   cClusterProperties3->cd();
   TPad* mpad4_histo = new TPad("mpad4_histo","",0.01,0.01,0.99,0.90);
   mpad4_histo->SetGrid(1);
   mpad4_histo->Draw();
   mpad4_histo->cd();
   mpad4_histo->Divide(3,3);
-  
+
   //----------- Cluster charge vs seed charge for track-MATCHED hits
   mpad4_histo->cd(1);
   AutoZoom(hQseedvsQcluster)->Draw("colz");
@@ -1003,11 +1003,11 @@ void MimosaAnalysis::CheckClusters()
   //----------- Charge in the second crown for MATCHED
   mpad4_histo->cd(5);
   AutoZoom(hChargeInCrown2)->Draw();
-  //----------- 
+  //-----------
   mpad4_histo->cd(6);
   //AutoZoom(hSeedBetweenDist)->Draw();
   hMinDistance_vs_2ndDistance->Draw("colz");
-  //----------- 
+  //-----------
   mpad4_histo->cd(7);
   hdCGDigUV->Draw("colz");
   //-----------
@@ -1024,7 +1024,7 @@ void MimosaAnalysis::CheckClusters()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cClusterProperties3->Print(EPSNameO.Data());
     cClusterProperties3->Print(EPSName.Data());
     cClusterProperties3->Print(EPSNameC.Data());
@@ -1053,7 +1053,7 @@ void MimosaAnalysis::CheckClusters()
   mpad5_title->Draw();
   mpad5_title->cd();
   ttt2->DrawText( 0.05,0.6,Header2);
-  
+
   cClusterProperties4->cd();
   TPad* mpad5_histo = new TPad("mpad5_histo","",0.01,0.01,0.99,0.90);
   mpad5_histo->SetGrid(1);
@@ -1118,7 +1118,7 @@ void MimosaAnalysis::CheckClusters()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cClusterProperties4->Print(EPSNameO.Data());
     cClusterProperties4->Print(EPSName.Data());
     cClusterProperties4->Print(EPSNameC.Data());
@@ -1129,20 +1129,20 @@ void MimosaAnalysis::CheckClusters()
     //command = TString("rm -rf ") + EPSName;
     //gSystem->Exec(command.Data());
   }
-  
+
   //--------------------------------
   //--------------WRITE IN A ROOT FILE:
-  
+
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileName[50];
   sprintf(ResultFileName,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName,"%s", fTool.LocalizeDirName( ResultFileName)); // JB 2011/07/07
   TFile *ResultRootFile=new TFile(ResultFileName,"UPDATE");
 
-  //---histos: 
+  //---histos:
   hNorm->Write();
   h2DgoodSeedPixel->Write();
   hnhit->Write();
@@ -1165,7 +1165,7 @@ void MimosaAnalysis::CheckClusters()
   hnpix->Write();
   hnpix_c->Write();
   hnpix_nc->Write();
-  
+
   hdCGDigUV->Write();
   hTrackTo2ndclosestClusterDistance->Write();
 
@@ -1179,7 +1179,7 @@ void MimosaAnalysis::CheckClusters()
   cClusterProperties2->Write();
   cClusterProperties3->Write();
   cClusterProperties4->Write();
-  
+
   ResultRootFile->Write();
   ResultRootFile->Close();
   printf("\n All plots saved in %s\n", ResultRootFile->GetName());
@@ -1196,9 +1196,9 @@ void MimosaAnalysis::Checkreferencetracks()
   // A. Besson november 2003
   // Modified: JB 2012/08/20 histos reshuffling
   // Modified: JB 2014/04/01 histos with #hits/track added
-  
+
   if(!CheckIfDone("mimosapro")) return;
-  
+
   char fOutName[200];
   sprintf(fOutName,"run%dPl%d_ClCharge",RunNumber,ThePlaneNumber);
   sprintf(fOutName,"%s",fTool.LocalizeDirName(fOutName));
@@ -1217,59 +1217,59 @@ void MimosaAnalysis::Checkreferencetracks()
   gStyle->SetOptTitle(1);
   gStyle->SetOptStat(1111);
   gStyle->SetPalette(1,0);
-  
+
   //--------------------------------
   // ---> first canvas.
   //  correlation between tracks and hits
-  //--------------------------------  
-  
+  //--------------------------------
+
   c3 = new TCanvas("ctrackandhit","Track and hit Correlation",850,10,700,900);
   c3->Draw();
   c3->Clear();
   c3->SetBorderMode(0);
   Int_t MimosaType=RunNumber/1000;
-  
+
   // --- build the screen ---:
   gPad->cd();
   c3->Clear();
-  
+
   TPad* mpad1 = new TPad("mpad1","",0.01,0.01,0.32,0.30);
   mpad1->SetGrid(0);
   mpad1->SetLeftMargin(0.2);
   mpad1->Draw();
-  
+
   TPad* mpad2 = new TPad("mpad2","",0.33,0.01,0.66,0.30);
   mpad2->SetGrid(1);
   mpad2->Draw();
-  
+
   TPad* mpad3 = new TPad("mpad3","title 1",0.67,0.01,0.99,0.30);
   mpad3->SetGrid(1);
   mpad3->Draw();
-  
+
   TPad* mpad4 = new TPad("mpad4","",0.01,0.31,0.32,0.60);
   mpad4->SetGrid(1);
   mpad4->Draw();
-  
+
   TPad* mpad5 = new TPad("mpad5","",0.33,0.31,0.66,0.60);
   mpad5->SetGrid(1);
   mpad5->Draw();
-  
+
   TPad* mpad6 = new TPad("mpad6","",0.67,0.31,0.99,0.60);
   mpad6->SetGrid(1);
   mpad6->Draw();
-  
+
   TPad* mpad7 = new TPad("mpad7","",0.01,0.61,0.32,0.9);
   mpad7->SetGrid(1);
   mpad7->Draw();
-  
+
   TPad* mpad8 = new TPad("mpad8","",0.33,0.61,0.66,0.9);
   mpad8->SetGrid(1);
   mpad8->Draw();
-  
+
   TPad* mpad9 = new TPad("mpad9","",0.67,0.61,0.99,0.9);
   mpad9->SetGrid(1);
   mpad9->Draw();
-  
+
   TPad* mpadtitle = new TPad("mpadtitle","",0.01,0.91,0.99,0.99);
   mpadtitle->SetGrid(1);
   mpadtitle->SetFillColor(19);
@@ -1284,9 +1284,9 @@ void MimosaAnalysis::Checkreferencetracks()
   Char_t Header[100];
   //---ab
   sprintf(Header,"M%d ; run %d; Pl %d; dist %.0f; eff %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,TrackToHitDistanceLimit,MimosaEfficiency,CUT_S2N_seed,CUT_S2N_neighbour);
-  
+
   ttt->DrawText( 0.05,0.6,Header);
-  
+
   mpad1->SetFillColor(19);
   mpad2->SetFillColor(19);
   mpad3->SetFillColor(19);
@@ -1296,7 +1296,7 @@ void MimosaAnalysis::Checkreferencetracks()
   mpad7->SetFillColor(19);
   mpad8->SetFillColor(19);
   mpad9->SetFillColor(19);
-  
+
   //----------- tracks unmatched with hits
   mpad1->cd();
   //  if(MimosaType==5){
@@ -1339,12 +1339,12 @@ void MimosaAnalysis::Checkreferencetracks()
   //-----------
   mpad5->cd();
   AutoZoom(hnGOODhit,"Max")->Draw();
-  
+
   mpad5->Update();
   //-----------
   mpad6->cd();
   AutoZoom(hNGoodGeomTracksPerEvent,"Max")->Draw();
-  
+
   mpad6->Update();
   //-----------
   mpad7->cd();
@@ -1356,10 +1356,10 @@ void MimosaAnalysis::Checkreferencetracks()
   //    h2dgoodhits->SetAxisRange(-700,60,"Y");
   //  }
   AutoZoom(h2dgoodhits)->Draw("colz");
-  
+
   mpad7->Update();
 
-  
+
 
   //-----------
   mpad8->cd();
@@ -1370,7 +1370,7 @@ void MimosaAnalysis::Checkreferencetracks()
   //  }else{
   //  }
   AutoZoom(vec)->Draw("colz");
-  
+
   mpad8->Update();
   //-----------
   mpad9->cd();
@@ -1383,9 +1383,9 @@ void MimosaAnalysis::Checkreferencetracks()
   AutoZoom(DuvCG,"Max")->Draw();
   AutoZoom(hTrackToClusterMinDistance,"Max")->Draw("same"); // JB 2013/08/24
   mpad9->Update();
-  
+
   gPad->Update();
-  
+
   c3->cd();
 
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
@@ -1393,7 +1393,7 @@ void MimosaAnalysis::Checkreferencetracks()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     c3->Print(EPSNameO.Data());
     c3->Print(EPSName.Data());
     c3->Print(EPSNameC.Data());
@@ -1512,7 +1512,7 @@ void MimosaAnalysis::Checkreferencetracks()
     if(v < 0.0) continue;
     if(Max_effic < v+e) Max_effic = v+e;
     if(Min_effic > v-e) Min_effic = v-e;
-    
+
   }
   porcent_effic = 0.10;
   hEfficiencyInGeomatrixVsTrackPerEvent->SetMaximum(Max_effic + porcent_effic*(Max_effic-Min_effic));
@@ -1537,13 +1537,13 @@ void MimosaAnalysis::Checkreferencetracks()
   l_average_Effic->Draw();
   l_average_Effic_PErr->Draw();
   l_average_Effic_MErr->Draw();
-  
+
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
     NPages++;
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     c3_2->Print(EPSNameO.Data());
     c3_2->Print(EPSName.Data());
     c3_2->Print(EPSNameC.Data());
@@ -1560,53 +1560,53 @@ void MimosaAnalysis::Checkreferencetracks()
   // ---> 3rd canvas.
   //  Track properties
   //--------------------------------
-  
+
   c4_2 = new TCanvas("ctrackproperties","Track properties",100,10,700,900);
   c4_2->Draw();
   c4_2->Clear();
   c4_2->SetBorderMode(0);
-  
+
   // --- build the screen ---:
   gPad->cd();
   c4_2->Clear();
-  
-  
+
+
   TPad* mpad3_1 = new TPad("mpad3_1","",0.01,0.01,0.32,0.30);
   mpad3_1->SetGrid(1);
   mpad3_1->Draw();
-  
+
   TPad* mpad3_2 = new TPad("mpad3_2","",0.33,0.01,0.66,0.30);
   mpad3_2->SetGrid(1);
   mpad3_2->Draw();
-  
+
   TPad* mpad3_3 = new TPad("mpad3_3","title 1",0.67,0.01,0.99,0.30);
   mpad3_3->SetGrid(1);
   mpad3_3->Draw();
-  
+
   TPad* mpad3_4 = new TPad("mpad3_4","",0.01,0.31,0.32,0.60);
   mpad3_4->SetGrid(1);
   mpad3_4->Draw();
-  
+
   TPad* mpad3_5 = new TPad("mpad3_5","",0.33,0.31,0.66,0.60);
   mpad3_5->SetGrid(1);
   mpad3_5->Draw();
-  
+
   TPad* mpad3_6 = new TPad("mpad3_6","",0.67,0.31,0.99,0.60);
   mpad3_6->SetGrid(1);
   mpad3_6->Draw();
-  
+
   TPad* mpad3_7 = new TPad("mpad3_7","",0.01,0.61,0.32,0.9);
   mpad3_7->SetGrid(1);
   mpad3_7->Draw();
-  
+
   TPad* mpad3_8 = new TPad("mpad3_8","",0.33,0.61,0.66,0.9);
   mpad3_8->SetGrid(1);
   mpad3_8->Draw();
-  
+
   TPad* mpad3_9 = new TPad("mpad3_9","",0.67,0.61,0.99,0.9);
   mpad3_9->SetGrid(1);
   mpad3_9->Draw();
-  
+
   TPad* mpad3_title = new TPad("mpad3_title","",0.10,0.91,0.85,0.99);
   mpad3_title->SetGrid(1);
   mpad3_title->SetFillColor(19);
@@ -1622,7 +1622,7 @@ void MimosaAnalysis::Checkreferencetracks()
   //---ab
   sprintf(Header3,"M%d ; run %d; Pl %d; dist %.0f; eff %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,TrackToHitDistanceLimit,MimosaEfficiency,CUT_S2N_seed,CUT_S2N_neighbour);
   ttt->DrawText( 0.05,0.6,Header3);
-  
+
   mpad3_1->SetFillColor(19);
   mpad3_2->SetFillColor(19);
   mpad3_3->SetFillColor(19);
@@ -1632,8 +1632,8 @@ void MimosaAnalysis::Checkreferencetracks()
   mpad3_7->SetFillColor(19);
   mpad3_8->SetFillColor(19);
   mpad3_9->SetFillColor(19);
-  
-  
+
+
   // Formula for expected nb of tracks with a given nb of hits (x),
   // if all plane have the same det. eff.
   //  [0] = TOTAL nb of planes
@@ -1642,7 +1642,7 @@ void MimosaAnalysis::Checkreferencetracks()
   //TF1* fNhitsPerTrack = new TF1("fnhitspertrack","[2]*pow([1],x)*pow(1-[1],[0]-x)*TMath::Factorial([0])/TMath::Factorial(x)/TMath::Factorial([0]-x)",0, 11);
   //fNhitsPerTrack->SetParameters( 4, 1., hNhitsPerTrack_all->GetEntries());
 
-  
+
   //-----------
   mpad3_1->cd();
   mpad3_1->SetLogy(0);
@@ -1689,9 +1689,9 @@ void MimosaAnalysis::Checkreferencetracks()
   mpad3_9->SetLogy(0);
   AutoZoom(hGoodChi2AngleYZ)->Draw();
   mpad3_9->Update();
-  
+
   gPad->Update();
-  
+
   c4_2->cd();
 
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
@@ -1699,7 +1699,7 @@ void MimosaAnalysis::Checkreferencetracks()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     c4_2->Print(EPSNameO.Data());
     c4_2->Print(EPSName.Data());
     c4_2->Print(EPSNameC.Data());
@@ -1710,14 +1710,14 @@ void MimosaAnalysis::Checkreferencetracks()
     //command = TString("rm -rf ") + EPSName;
     //gSystem->Exec(command.Data());
   }
-  
+
   //--------------------------------
   //--------------WRITE IN A ROOT FILE:
-  
+
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileName[50];
   sprintf(ResultFileName,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName,"%s", fTool.LocalizeDirName( ResultFileName)); // JB 2011/07/07
@@ -1730,7 +1730,7 @@ void MimosaAnalysis::Checkreferencetracks()
   FalseHitMap->Write();
   hAllHitsInPixel->Write();
   hNGoodGeomTracksPerEvent->Write();
-  
+
   h2dmatchedhits->Write();
   h2DgoodSeedPixel->Write();
   vec->Write();
@@ -1746,14 +1746,14 @@ void MimosaAnalysis::Checkreferencetracks()
   hSNReal->Write();
   hSNNReal->Write();
   hSN_vs_SNNReal->Write();
-  
+
   // JB 2009/09/01
   hoptimalsize->Write();
   hnpix->Write();
   hnpix_c->Write();
   hnpix_nc->Write();
   hnWindows_c->Write();
-  
+
   hNhitsPerTrack_all->Write(); // JB 2014/04/01
   hNhitsPerTrack_good->Write();
   hNhitsPerTrack_matched->Write();
@@ -1763,20 +1763,20 @@ void MimosaAnalysis::Checkreferencetracks()
   hnTracksInGeomatrixVsTrackPerEvent->Write();
   hnGOODhitInGeomatrixVsTrackPerEvent->Write();
   hEfficiencyInGeomatrixVsTrackPerEvent->Write();
-  
+
   //canvas:
   c3->Write();
   c3_2->Write();
   c4_2->Write();
-  
+
   ResultRootFile->Write();
   ResultRootFile->Close();
   printf("\n All plots saved in %s\n", ResultRootFile->GetName());
   delete ResultRootFile;
   MHist::Dir();
-  
+
   CheckClusters(); // replace part on cluster properties, JB 2013/10/29
-  
+
 }
 
 //________________________________________________________________________________________
@@ -1787,9 +1787,9 @@ void MimosaAnalysis::InspectEfficiency()
   //
   // Modified: MG 2011/07/08 for efficiency map
   // Modified: JB 2011/11/23 add MiniVector condition
-  
+
   if(!CheckIfDone("mimosapro") && !CheckIfDone("mimosaminivectors")) return;
-  
+
   char fOutName[200];
   sprintf(fOutName,"run%dPl%d_ClCharge",RunNumber,ThePlaneNumber);
   sprintf(fOutName,"%s",fTool.LocalizeDirName(fOutName));
@@ -1812,7 +1812,7 @@ void MimosaAnalysis::InspectEfficiency()
   ceffi->cd(1);
   if(!greff->GetN()) {Warning("InspectEfficiency()","No entry in greff, did you run over enough events?"); return;}
   greff->Draw("ALP");
-  
+
   //_2
   ceffi->cd(2);
   grnum->SetLineColor(2);
@@ -1821,12 +1821,12 @@ void MimosaAnalysis::InspectEfficiency()
   grnum->Draw("ALP");
   grevt->SetLineColor(4);
   grevt->Draw("same");
-  
+
   //_3
   ceffi->cd(3);
   AutoZoom(effimap)->Draw("colz");
   effimap->SetMinimum(MimosaEfficiency-50*MimosaEfficiency_ERR); //MG 2011/07/08
-  
+
   //_4
   ceffi->cd(4);
   ceffi->cd(4)->SetTickx(1);
@@ -1861,6 +1861,12 @@ void MimosaAnalysis::InspectEfficiency()
   l_effi_vs_TrKHitDist_1->Draw();
   l_effi_vs_TrKHitDist_2->Draw();
 
+  // Second canvas for
+  ceffi2 = new TCanvas("ceffi","Inspect efficiency (2)",550,10,750,550);
+  //AutoZoom(effinpixel)->Draw("colz");
+  //effinpixel->SetMinimum(MimosaEfficiency-50*MimosaEfficiency_ERR);
+
+
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
 
@@ -1869,10 +1875,13 @@ void MimosaAnalysis::InspectEfficiency()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     ceffi->Print(EPSNameO.Data());
     ceffi->Print(EPSName.Data());
     ceffi->Print(EPSNameC.Data());
+    ceffi2->Print(EPSNameO.Data());
+    ceffi2->Print(EPSName.Data());
+    ceffi2->Print(EPSNameC.Data());
     //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
     //gSystem->Exec(command.Data());
     //command = TString("mv ") + EPSName_test + TString("  ") + EPSName_final;
@@ -1889,11 +1898,13 @@ void MimosaAnalysis::InspectEfficiency()
   grnum->Write();
   grevt->Write();
   effimap->Write();
-  goodtracks->Write();  
+  goodtracks->Write();
   ceffi->Write();
   effi_vs_TrkHitDist->Write();
   effiCorr_vs_TrkHitDist->Write();
   hNomEffic->Write();
+  ceffi2->Write();
+  effinpixel->Write();
 
   ResultRootFile->Write();
   ResultRootFile->Close();
@@ -1914,7 +1925,7 @@ void MimosaAnalysis::MimosaResolution()
   // Modified JB 2009/09/14  to show all the fits
   // Modified JB 2010/07/22  add AHT algo
   // Modified JB 2010/09/10  add 2nd digital algo and CG full-cluster
-  // Modified SS 2011/12/05 Results of the huCG and huCG5 methods are saved to the CSV file opened by MimosaPro.	
+  // Modified SS 2011/12/05 Results of the huCG and huCG5 methods are saved to the CSV file opened by MimosaPro.
 
   if(!CheckIfDone("mimosapro")) return;
 
@@ -1977,7 +1988,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2002,11 +2013,11 @@ void MimosaAnalysis::MimosaResolution()
   huCGtu2->Draw();
   if( huCGtu2->Integral()>10. ) {
     huCGtu2->Fit("gaus");
-    TF1 *fitgs2 =huCGtu2->GetFunction("gaus"); // Take parameters of the fit 
+    TF1 *fitgs2 =huCGtu2->GetFunction("gaus"); // Take parameters of the fit
     fitgs2->SetLineColor(3);
     sprintf( algorithmName[iPointNumber], "%s", huCGtu2->GetTitle());
     ResolutionPoint[iPointNumber]=fitgs2->GetParameter(2);
-    ErrorOnResolutionPoint[iPointNumber]=fitgs2->GetParError(2);    
+    ErrorOnResolutionPoint[iPointNumber]=fitgs2->GetParError(2);
   }
   else { ResolutionPoint[iPointNumber]=ErrorOnResolutionPoint[iPointNumber]=0.;}
   iPointNumber++;
@@ -2018,12 +2029,12 @@ void MimosaAnalysis::MimosaResolution()
   hvCGtv2->Draw();
   if( hvCGtv2->Integral()>10. ) {
     hvCGtv2->Fit("gaus");
-    TF1 *fitg2 =hvCGtv2->GetFunction("gaus"); // Take parameters of the fit 
+    TF1 *fitg2 =hvCGtv2->GetFunction("gaus"); // Take parameters of the fit
     fitg2->SetLineColor(3);
     sprintf( algorithmName[iPointNumber], "%s", hvCGtv2->GetTitle());
     ResolutionPoint[iPointNumber]=fitg2->GetParameter(2);
     ErrorOnResolutionPoint[iPointNumber]=fitg2->GetParError(2);
-  }    
+  }
   else { ResolutionPoint[iPointNumber]=ErrorOnResolutionPoint[iPointNumber]=0.;}
   iPointNumber++;
 
@@ -2034,7 +2045,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2070,7 +2081,7 @@ void MimosaAnalysis::MimosaResolution()
     if(!fSession->GetSetup()->GetAnalysisPar().DoTelResolutionMC) {
       huCGtu1->Fit("gaus");
     }
-    TF1 *fitgs =huCGtu1->GetFunction("gaus"); // Take parameters of the fit 
+    TF1 *fitgs =huCGtu1->GetFunction("gaus"); // Take parameters of the fit
     fitgs->SetLineColor(2);
     sprintf( algorithmName[iPointNumber], "%s", huCGtu1->GetTitle());
     ResolutionPoint[iPointNumber]=fitgs->GetParameter(2);
@@ -2096,7 +2107,7 @@ void MimosaAnalysis::MimosaResolution()
     if(!fSession->GetSetup()->GetAnalysisPar().DoTelResolutionMC) {
       hvCGtv1->Fit("gaus");
     }
-    TF1 *fitg =hvCGtv1->GetFunction("gaus"); // Take parameters of the fit 
+    TF1 *fitg =hvCGtv1->GetFunction("gaus"); // Take parameters of the fit
     fitg->SetLineColor(2);
     sprintf( algorithmName[iPointNumber], "%s", hvCGtv1->GetTitle());
     ResolutionPoint[iPointNumber]=fitg->GetParameter(2);
@@ -2110,7 +2121,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2154,7 +2165,7 @@ void MimosaAnalysis::MimosaResolution()
     huCGtu1_vs_Mult[imult]->Draw();
     if( huCGtu1_vs_Mult[imult]->Integral()>10. ) {
       huCGtu1_vs_Mult[imult]->Fit("gaus");
-      TF1 *fitg =huCGtu1_vs_Mult[imult]->GetFunction("gaus"); // Take parameters of the fit 
+      TF1 *fitg =huCGtu1_vs_Mult[imult]->GetFunction("gaus"); // Take parameters of the fit
       fitg->SetLineColor(2);
 
       huCGmean_vs_Mult->SetBinContent(imult+1,huCGtu1_vs_Mult[imult]->GetMean());
@@ -2198,7 +2209,7 @@ void MimosaAnalysis::MimosaResolution()
     hvCGtv1_vs_Mult[imult]->Draw();
     if( hvCGtv1_vs_Mult[imult]->Integral()>10. ) {
       hvCGtv1_vs_Mult[imult]->Fit("gaus");
-      TF1 *fitg =hvCGtv1_vs_Mult[imult]->GetFunction("gaus"); // Take parameters of the fit 
+      TF1 *fitg =hvCGtv1_vs_Mult[imult]->GetFunction("gaus"); // Take parameters of the fit
       fitg->SetLineColor(2);
       hvCGmean_vs_Mult->SetBinContent(imult+1,hvCGtv1_vs_Mult[imult]->GetMean());
       hvCGmean_vs_Mult->SetBinError(imult+1,  hvCGtv1_vs_Mult[imult]->GetMeanError());
@@ -2231,7 +2242,7 @@ void MimosaAnalysis::MimosaResolution()
       TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
       TString EPSNameO = EPSName + TString("[");
       TString EPSNameC = EPSName + TString("]");
-    
+
       cresfit_CG_vs_Mult[imult]->Print(EPSNameO.Data());
       cresfit_CG_vs_Mult[imult]->Print(EPSName.Data());
       cresfit_CG_vs_Mult[imult]->Print(EPSNameC.Data());
@@ -2284,7 +2295,7 @@ void MimosaAnalysis::MimosaResolution()
       if(Maximum < v+e) Maximum = v+e;
       if(Minimum > v-e) Minimum = v-e;
     }
-    
+
   }
   double porcent = 0.30;
   huCGwidth_vs_Mult->SetMaximum(Maximum + porcent*(Maximum-Minimum));
@@ -2305,7 +2316,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cresfit_CGWidth_vs_Mult->Print(EPSNameO.Data());
     cresfit_CGWidth_vs_Mult->Print(EPSName.Data());
     cresfit_CGWidth_vs_Mult->Print(EPSNameC.Data());
@@ -2351,7 +2362,7 @@ void MimosaAnalysis::MimosaResolution()
       if(Maximum < v+e) Maximum = v+e;
       if(Minimum > v-e) Minimum = v-e;
     }
-    
+
   }
   porcent = 0.30;
   huCGmean_vs_Mult->SetMaximum(Maximum + porcent*(Maximum-Minimum));
@@ -2368,7 +2379,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cresfit_CGMean_vs_Mult->Print(EPSNameO.Data());
     cresfit_CGMean_vs_Mult->Print(EPSName.Data());
     cresfit_CGMean_vs_Mult->Print(EPSNameC.Data());
@@ -2411,7 +2422,7 @@ void MimosaAnalysis::MimosaResolution()
     huCGtu1_vs_TracksPerEvent[itrks]->Draw();
     if( huCGtu1_vs_TracksPerEvent[itrks]->Integral()>100. ) {
       huCGtu1_vs_TracksPerEvent[itrks]->Fit("gaus");
-      TF1 *fitgs =huCGtu1_vs_TracksPerEvent[itrks]->GetFunction("gaus"); // Take parameters of the fit 
+      TF1 *fitgs =huCGtu1_vs_TracksPerEvent[itrks]->GetFunction("gaus"); // Take parameters of the fit
       fitgs->SetLineColor(2);
 
       hResidueUInGeomatrixVsTrackPerEvent->SetBinContent(itrks+1,fitgs->GetParameter(2));
@@ -2437,7 +2448,7 @@ void MimosaAnalysis::MimosaResolution()
     hvCGtv1_vs_TracksPerEvent[itrks]->Draw();
     if( hvCGtv1_vs_TracksPerEvent[itrks]->Integral()>100. ) {
       hvCGtv1_vs_TracksPerEvent[itrks]->Fit("gaus");
-      TF1 *fitg =hvCGtv1_vs_TracksPerEvent[itrks]->GetFunction("gaus"); // Take parameters of the fit 
+      TF1 *fitg =hvCGtv1_vs_TracksPerEvent[itrks]->GetFunction("gaus"); // Take parameters of the fit
       fitg->SetLineColor(2);
 
       hResidueVInGeomatrixVsTrackPerEvent->SetBinContent(itrks+1,fitg->GetParameter(2));
@@ -2453,7 +2464,7 @@ void MimosaAnalysis::MimosaResolution()
       TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
       TString EPSNameO = EPSName + TString("[");
       TString EPSNameC = EPSName + TString("]");
-    
+
       cresfit_CG_vs_TracksPerEvent[itrks]->Print(EPSNameO.Data());
       cresfit_CG_vs_TracksPerEvent[itrks]->Print(EPSName.Data());
       cresfit_CG_vs_TracksPerEvent[itrks]->Print(EPSNameC.Data());
@@ -2499,7 +2510,7 @@ void MimosaAnalysis::MimosaResolution()
       if(Maximum < v+e) Maximum = v+e;
       if(Minimum > v-e) Minimum = v-e;
     }
-    
+
   }
   porcent = 0.30;
   hResidueUInGeomatrixVsTrackPerEvent->SetMaximum(Maximum + porcent*(Maximum-Minimum));
@@ -2530,7 +2541,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cresfit_CGWidth_vs_TracksPerEvent->Print(EPSNameO.Data());
     cresfit_CGWidth_vs_TracksPerEvent->Print(EPSName.Data());
     cresfit_CGWidth_vs_TracksPerEvent->Print(EPSNameC.Data());
@@ -2555,7 +2566,7 @@ void MimosaAnalysis::MimosaResolution()
   hCG2x2tu1->Draw();
   if( hCG2x2tu1->Integral()>10. ) {
   hCG2x2tu1->Fit("gaus");
-  TF1 *fitgCGU2x2 =hCG2x2tu1->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgCGU2x2 =hCG2x2tu1->GetFunction("gaus"); // Take parameters of the fit
   fitgCGU2x2->SetLineColor(4);
   sprintf( algorithmName[iPointNumber], "%s", hCG2x2tu1->GetTitle());
   ResolutionPoint[iPointNumber]=fitgCGU2x2->GetParameter(2);
@@ -2571,7 +2582,7 @@ void MimosaAnalysis::MimosaResolution()
   hCG2x2tv1->Draw();
   if( hCG2x2tv1->Integral()>10. ) {
   hCG2x2tv1->Fit("gaus");
-  TF1 *fitgCGV2x2 =hCG2x2tv1->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgCGV2x2 =hCG2x2tv1->GetFunction("gaus"); // Take parameters of the fit
   fitgCGV2x2->SetLineColor(4);
   sprintf( algorithmName[iPointNumber], "%s", hCG2x2tv1->GetTitle());
   ResolutionPoint[iPointNumber]=fitgCGV2x2->GetParameter(2);
@@ -2587,7 +2598,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2611,7 +2622,7 @@ void MimosaAnalysis::MimosaResolution()
   hCG5URes->Draw();
   if( hCG5URes->Integral()>10. ) {
   hCG5URes->Fit("gaus");
-  TF1 *fitgCGU5 =hCG5URes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgCGU5 =hCG5URes->GetFunction("gaus"); // Take parameters of the fit
   fitgCGU5->SetLineColor(4);
   sprintf( algorithmName[iPointNumber], "%s", hCG5URes->GetTitle());
   ResolutionPoint[iPointNumber]=fitgCGU5->GetParameter(2);
@@ -2627,7 +2638,7 @@ void MimosaAnalysis::MimosaResolution()
   hCG5VRes->Draw();
   if( hCG5VRes->Integral()>10. ) {
   hCG5VRes->Fit("gaus");
-  TF1 *fitgCGV5 =hCG5VRes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgCGV5 =hCG5VRes->GetFunction("gaus"); // Take parameters of the fit
   fitgCGV5->SetLineColor(4);
   sprintf( algorithmName[iPointNumber], "%s", hCG5VRes->GetTitle());
   ResolutionPoint[iPointNumber]=fitgCGV5->GetParameter(2);
@@ -2643,7 +2654,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2667,7 +2678,7 @@ void MimosaAnalysis::MimosaResolution()
   hTuHuCorr->Draw();
   if( hTuHuCorr->Integral()>10. ) {
   hTuHuCorr->Fit("gaus");
-  TF1 *fitgCGUCorr =hTuHuCorr->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgCGUCorr =hTuHuCorr->GetFunction("gaus"); // Take parameters of the fit
   fitgCGUCorr->SetLineColor(4);
   sprintf( algorithmName[iPointNumber], "%s", hTuHuCorr->GetTitle());
   ResolutionPoint[iPointNumber]=fitgCGUCorr->GetParameter(2);
@@ -2683,7 +2694,7 @@ void MimosaAnalysis::MimosaResolution()
   hTvHvCorr->Draw();
   if( hTvHvCorr->Integral()>10. ) {
   hTvHvCorr->Fit("gaus");
-  TF1 *fitgCGVCorr =hTvHvCorr->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgCGVCorr =hTvHvCorr->GetFunction("gaus"); // Take parameters of the fit
   fitgCGVCorr->SetLineColor(4);
   sprintf( algorithmName[iPointNumber], "%s", hTvHvCorr->GetTitle());
   ResolutionPoint[iPointNumber]=fitgCGVCorr->GetParameter(2);
@@ -2699,7 +2710,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2728,12 +2739,12 @@ void MimosaAnalysis::MimosaResolution()
   hEtaURes->Draw();
   if( hEtaURes->Integral()>10. ) {
   hEtaURes->Fit("gaus","","", minU_my, maxU_my);
-  TF1 *fitg4 =hEtaURes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitg4 =hEtaURes->GetFunction("gaus"); // Take parameters of the fit
   fitg4->SetLineColor(8);
   sprintf( algorithmName[iPointNumber], "%s", hEtaURes->GetTitle());
   ResolutionPoint[iPointNumber]=fitg4->GetParameter(2);
   ErrorOnResolutionPoint[iPointNumber]=fitg4->GetParError(2);
-  }  
+  }
   else { ResolutionPoint[iPointNumber]=ErrorOnResolutionPoint[iPointNumber]=0.;}
   iPointNumber++;
   //
@@ -2749,7 +2760,7 @@ void MimosaAnalysis::MimosaResolution()
   hEtaVRes->Draw();
   if( hEtaVRes->Integral()>10. ) {
   hEtaVRes->Fit("gaus","","",minV_my, maxV_my);
-  TF1 *fitg5 =hEtaVRes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitg5 =hEtaVRes->GetFunction("gaus"); // Take parameters of the fit
   fitg5->SetLineColor(8);
   sprintf( algorithmName[iPointNumber], "%s", hEtaVRes->GetTitle());
   ResolutionPoint[iPointNumber]=fitg5->GetParameter(2);
@@ -2765,7 +2776,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2791,7 +2802,7 @@ void MimosaAnalysis::MimosaResolution()
   hEta2x2tu1->Draw("");
   if( hEta2x2tu1->Integral()>10. ) {
   hEta2x2tu1->Fit("gaus");
-  TF1 *fitge2 =hEta2x2tu1->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitge2 =hEta2x2tu1->GetFunction("gaus"); // Take parameters of the fit
   fitge2->SetLineColor(6);
   sprintf( algorithmName[iPointNumber], "%s", hEta2x2tu1->GetTitle());
   ResolutionPoint[iPointNumber]=fitge2->GetParameter(2);
@@ -2810,7 +2821,7 @@ void MimosaAnalysis::MimosaResolution()
   hEta2x2tv1->Draw();
   if( hEta2x2tv1->Integral()>10. ) {
   hEta2x2tv1->Fit("gaus");
-  TF1 *fitge3 =hEta2x2tv1->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitge3 =hEta2x2tv1->GetFunction("gaus"); // Take parameters of the fit
   fitge3->SetLineColor(6);
   sprintf( algorithmName[iPointNumber], "%s", hEta2x2tv1->GetTitle());
   ResolutionPoint[iPointNumber]=fitge3->GetParameter(2);
@@ -2827,7 +2838,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2848,7 +2859,7 @@ void MimosaAnalysis::MimosaResolution()
   hEtaU_2x2Res->Draw("");
   if( hEtaU_2x2Res->Integral()>10. ) {
   hEtaU_2x2Res->Fit("gaus");
-  TF1 *fitg6 =hEtaU_2x2Res->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitg6 =hEtaU_2x2Res->GetFunction("gaus"); // Take parameters of the fit
   fitg6->SetLineColor(28);
   sprintf( algorithmName[iPointNumber], "%s", hEtaU_2x2Res->GetTitle());
   ResolutionPoint[iPointNumber]=fitg6->GetParameter(2);
@@ -2861,7 +2872,7 @@ void MimosaAnalysis::MimosaResolution()
   hEtaV_2x2Res->Draw("");
   if( hEtaV_2x2Res->Integral()>10. ) {
   hEtaV_2x2Res->Fit("gaus");
-  TF1 *fitg7 =hEtaV_2x2Res->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitg7 =hEtaV_2x2Res->GetFunction("gaus"); // Take parameters of the fit
   fitg7->SetLineColor(28);
   sprintf( algorithmName[iPointNumber], "%s", hEtaV_2x2Res->GetTitle());
   ResolutionPoint[iPointNumber]=fitg7->GetParameter(2);
@@ -2877,7 +2888,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2898,7 +2909,7 @@ void MimosaAnalysis::MimosaResolution()
   hEtaU_5x5Res->Draw("");
   if( hEtaU_5x5Res->Integral()>10. ) {
   hEtaU_5x5Res->Fit("gaus");
-  TF1 *fitg8 =hEtaU_5x5Res->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitg8 =hEtaU_5x5Res->GetFunction("gaus"); // Take parameters of the fit
   fitg8->SetLineColor(38);
   sprintf( algorithmName[iPointNumber], "%s", hEtaU_5x5Res->GetTitle());
   ResolutionPoint[iPointNumber]=fitg8->GetParameter(2);
@@ -2911,7 +2922,7 @@ void MimosaAnalysis::MimosaResolution()
   hEtaV_5x5Res->Draw("");
   if( hEtaV_5x5Res->Integral()>10. ) {
   hEtaV_5x5Res->Fit("gaus");
-  TF1 *fitg9 =hEtaV_5x5Res->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitg9 =hEtaV_5x5Res->GetFunction("gaus"); // Take parameters of the fit
   fitg9->SetLineColor(38);
   sprintf( algorithmName[iPointNumber], "%s", hEtaV_5x5Res->GetTitle());
   ResolutionPoint[iPointNumber]=fitg9->GetParameter(2);
@@ -2927,7 +2938,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -2954,7 +2965,7 @@ void MimosaAnalysis::MimosaResolution()
   hEta3URes->Draw("");
   if( hEta3URes->Integral()>10. ) {
   hEta3URes->Fit("gaus");
-  TF1 *fitgUEta3 =hEta3URes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgUEta3 =hEta3URes->GetFunction("gaus"); // Take parameters of the fit
   fitgUEta3->SetLineColor(6);
   sprintf( algorithmName[iPointNumber], "%s", hEta3URes->GetTitle());
   ResolutionPoint[iPointNumber]=fitgUEta3->GetParameter(2);
@@ -2973,7 +2984,7 @@ void MimosaAnalysis::MimosaResolution()
   hEta3VRes->Draw("");
   if( hEta3VRes->Integral()>10. ) {
   hEta3VRes->Fit("gaus");
-  TF1 *fitgVEta3 =hEta3VRes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgVEta3 =hEta3VRes->GetFunction("gaus"); // Take parameters of the fit
   fitgVEta3->SetLineColor(6);
   sprintf( algorithmName[iPointNumber], "%s", hEta3VRes->GetTitle());
   ResolutionPoint[iPointNumber]=fitgVEta3->GetParameter(2);
@@ -2990,7 +3001,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     //cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     //cresfit[iPointNumber-2]->Print(EPSName.Data());
     //cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -3017,7 +3028,7 @@ void MimosaAnalysis::MimosaResolution()
   hAHTURes->Draw("");
   if( hAHTURes->Integral()>10. ) {
   hAHTURes->Fit("gaus");
-  TF1 *fitgUAHT =hAHTURes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgUAHT =hAHTURes->GetFunction("gaus"); // Take parameters of the fit
   fitgUAHT->SetLineColor(6);
   sprintf( algorithmName[iPointNumber], "%s", hAHTURes->GetTitle());
   ResolutionPoint[iPointNumber]=fitgUAHT->GetParameter(2);
@@ -3036,7 +3047,7 @@ void MimosaAnalysis::MimosaResolution()
   hAHTVRes->Draw("");
   if( hAHTVRes->Integral()>10. ) {
   hAHTVRes->Fit("gaus");
-  TF1 *fitgVAHT =hAHTVRes->GetFunction("gaus"); // Take parameters of the fit 
+  TF1 *fitgVAHT =hAHTVRes->GetFunction("gaus"); // Take parameters of the fit
   fitgVAHT->SetLineColor(6);
   sprintf( algorithmName[iPointNumber], "%s", hAHTVRes->GetTitle());
   ResolutionPoint[iPointNumber]=fitgVAHT->GetParameter(2);
@@ -3053,7 +3064,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-  
+
     cresfit[iPointNumber-2]->Print(EPSNameO.Data());
     cresfit[iPointNumber-2]->Print(EPSName.Data());
     cresfit[iPointNumber-2]->Print(EPSNameC.Data());
@@ -3138,7 +3149,7 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cres->Print(EPSNameO.Data());
     cres->Print(EPSName.Data());
     cres->Print(EPSNameC.Data());
@@ -3192,7 +3203,7 @@ void MimosaAnalysis::MimosaResolution()
   Float_t nnn5E[2]={0,0};
   Float_t nnn6E[2]={0,0};
   Float_t nnn7E[2]={0,0};
- 
+
   Reso1[0]= ResolutionPoint[0];
   Reso1[1]= ResolutionPoint[1];
   Reso2[0]= ResolutionPoint[2];
@@ -3301,7 +3312,7 @@ void MimosaAnalysis::MimosaResolution()
     cout << endl;
   }
   cout << endl;
-  
+
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
     NPages++;
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
@@ -3309,14 +3320,14 @@ void MimosaAnalysis::MimosaResolution()
     TString EPSNameC = EPSName + TString("]");
 
     TString command;
-    
+
     TCanvas c1("c1","c1",400,400);
     c1.SetFrameFillColor(10);
     c1.SetFillColor(10);
     c1.SetLeftMargin(0.05);
     c1.SetRightMargin(0.05);
     c1.Print(EPSNameO.Data());
-    
+
     double initX = 0.05;
     double initY = 0.05;
     double X = initX;
@@ -3346,11 +3357,11 @@ void MimosaAnalysis::MimosaResolution()
       sprintf(ytitle,"%.4f",ErrorOnResolutionPoint[ll]);
       command += TString(ytitle) + TString(")#mum");
       latex->DrawLatex(X,Y,command.Data());
-      
-      if(counter_methods == (iPointNumber/4) && 
+
+      if(counter_methods == (iPointNumber/4) &&
 	 ll+1 == counter_methods*2) {
 	c1.Print(EPSName.Data());
-	
+
 	c1.Clear();
 	Y = 1.0 - initY;
 	latex->SetTextAlign(12);
@@ -3414,7 +3425,7 @@ void MimosaAnalysis::MimosaResolution()
       latex->DrawLatex(X,Y,command.Data());
     }
     c1.Print(EPSName.Data());
-    
+
     c1.Print(EPSNameC.Data());
 
     //command = TString("gs -dQUIET -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=") + EPSName_test + TString(" -dBATCH ") + EPSName_final + TString("   ") + EPSName;
@@ -3552,7 +3563,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
   UsedMacro[0] = 1;
 
   gStyle->SetOptFit(1);
-  
+
   Int_t nPlanes = fSession->GetTracker()->GetPlanesN();
 
   if(hTrackChi2_MC->GetEntries()>0) {
@@ -3574,7 +3585,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
     hTrackChi2_MC->SetAxisRange(hTrackChi2_MC->GetXaxis()->GetXmin(),
 				Max,"X");
   }
-  
+
   TF1 *fitgs = NULL;
   DUT_residualU_CGDSF[0] = -1.0;
   DUT_residualU_CGDSF[1] =  1.0e-6;
@@ -3596,15 +3607,15 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       DUT_residualV_CGDSF[1] = fitgs->GetParError(2);
     }
   }
-  
-  if(DUT_residualU_CGDSF[0] > 0.0 && 
+
+  if(DUT_residualU_CGDSF[0] > 0.0 &&
      DUT_residualV_CGDSF[0] > 0.0) {
     if(UsingTrackerResolution) {
       //Estimation of U-resolution:
-      if(DUT_residualU_CGDSF[0] < h_ResidualAtDUT_Scan_U->GetBinContent(1) || 
+      if(DUT_residualU_CGDSF[0] < h_ResidualAtDUT_Scan_U->GetBinContent(1) ||
 	 DUT_residualU_CGDSF[0] > h_ResidualAtDUT_Scan_U->GetBinContent(h_ResidualAtDUT_Scan_U->GetXaxis()->GetNbins())) {
 	cout << endl;
-	cout << "MimosaGeneration:: U-residual=" << DUT_residualU_CGDSF[0] << "um is outside scanned U-Range (" << h_ResidualAtDUT_Scan_U->GetBinContent(1) << "," 
+	cout << "MimosaGeneration:: U-residual=" << DUT_residualU_CGDSF[0] << "um is outside scanned U-Range (" << h_ResidualAtDUT_Scan_U->GetBinContent(1) << ","
 	     << h_ResidualAtDUT_Scan_U->GetBinContent(h_ResidualAtDUT_Scan_U->GetXaxis()->GetNbins())
 	     << ")um. Setting U-resolution to stupid value -999.0!" << endl;
 	cout << endl;
@@ -3622,17 +3633,17 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	  double y2  = h_ResidualAtDUT_Scan_U->GetBinContent(istep+2);
 	  double y1e = h_ResidualAtDUT_Scan_U->GetBinError(istep+1);
 	  double y2e = h_ResidualAtDUT_Scan_U->GetBinError(istep+2);
-	  
-	  if((DUT_residualU_CGDSF[0] >= y1 && 
-	      DUT_residualU_CGDSF[0] <  y2) || 
-	     (DUT_residualU_CGDSF[0] >= y2 && 
+
+	  if((DUT_residualU_CGDSF[0] >= y1 &&
+	      DUT_residualU_CGDSF[0] <  y2) ||
+	     (DUT_residualU_CGDSF[0] >= y2 &&
 	      DUT_residualU_CGDSF[0] <  y1)) {
-	    
+
 	    idx = istep+1;
-	    
+
 	    double a = (y2-y1)/(x2-x1);
 	    double b = y2 - a*x2;
-	    
+
 	    if(TMath::Abs(a) > 1.0e-6) {
 	      DUT_resolutionU_CGDSF[0]  = (DUT_residualU_CGDSF[0] - b)/a;
 	      DUT_resolutionU_CGDSF[1]  = pow(DUT_residualU_CGDSF[1],2);
@@ -3645,7 +3656,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	      DUT_resolutionU_CGDSF[0] = 0.5*(x2 + x1);
 	      DUT_resolutionU_CGDSF[1] = sqrt(pow(y2e,2) + pow(DUT_residualU_CGDSF[1],2));
 	    }
-	    
+
 	    y1  = h_TelescopeResolution_Scan_U->GetBinContent(istep+1);
 	    y2  = h_TelescopeResolution_Scan_U->GetBinContent(istep+2);
 	    y1e = h_TelescopeResolution_Scan_U->GetBinError(istep+1);
@@ -3660,23 +3671,23 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	      Tel_resolutionU_CGDSF[0] = y1;
 	      Tel_resolutionU_CGDSF[1] = y1e;
 	    }
-	    
+
 	    break;
 	  }
 	}
 	cout << endl;
-	cout << "MimosaGeneration:: U-residual = (" << DUT_residualU_CGDSF[0] << " +/- " << DUT_residualU_CGDSF[1] << ")um and estimated telescope U-resolution = " 
+	cout << "MimosaGeneration:: U-residual = (" << DUT_residualU_CGDSF[0] << " +/- " << DUT_residualU_CGDSF[1] << ")um and estimated telescope U-resolution = "
 	     << h_TelescopeResolution_Scan_U->GetBinContent(idx) << " +/- " << h_TelescopeResolution_Scan_U->GetBinError(idx)
 	     << "um. U-resolution = (" << DUT_resolutionU_CGDSF[0] << " +/- " << DUT_resolutionU_CGDSF[1] << ")um." << endl;
 	cout << endl;
-	
+
       }
 
       //Estimation of V-resolution:
-      if(DUT_residualV_CGDSF[0] < h_ResidualAtDUT_Scan_V->GetBinContent(1) || 
+      if(DUT_residualV_CGDSF[0] < h_ResidualAtDUT_Scan_V->GetBinContent(1) ||
 	 DUT_residualV_CGDSF[0] > h_ResidualAtDUT_Scan_V->GetBinContent(h_ResidualAtDUT_Scan_V->GetXaxis()->GetNbins())) {
 	cout << endl;
-	cout << "MimosaGeneration:: V-residual=" << DUT_residualV_CGDSF[0] << "um is outside scanned V-Range (" << h_ResidualAtDUT_Scan_V->GetBinContent(1) << "," 
+	cout << "MimosaGeneration:: V-residual=" << DUT_residualV_CGDSF[0] << "um is outside scanned V-Range (" << h_ResidualAtDUT_Scan_V->GetBinContent(1) << ","
 	     << h_ResidualAtDUT_Scan_V->GetBinContent(h_ResidualAtDUT_Scan_V->GetXaxis()->GetNbins())
 	     << ")um. Setting U-resolution to stupid value -999.0!" << endl;
 	cout << endl;
@@ -3692,17 +3703,17 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	  double y2  = h_ResidualAtDUT_Scan_V->GetBinContent(istep+2);
 	  double y1e = h_ResidualAtDUT_Scan_V->GetBinError(istep+1);
 	  double y2e = h_ResidualAtDUT_Scan_V->GetBinError(istep+2);
-	  
-	  if((DUT_residualV_CGDSF[0] >= y1 && 
-	      DUT_residualV_CGDSF[0] <  y2) || 
-	     (DUT_residualV_CGDSF[0] >= y2 && 
+
+	  if((DUT_residualV_CGDSF[0] >= y1 &&
+	      DUT_residualV_CGDSF[0] <  y2) ||
+	     (DUT_residualV_CGDSF[0] >= y2 &&
 	      DUT_residualV_CGDSF[0] <  y1)) {
-	    
+
 	    idx = istep+1;
-	    
+
 	    double a = (y2-y1)/(x2-x1);
 	    double b = y2 - a*x2;
-	    
+
 	    if(TMath::Abs(a) > 1.0e-6) {
 	      DUT_resolutionV_CGDSF[0]  = (DUT_residualV_CGDSF[0] - b)/a;
 	      DUT_resolutionV_CGDSF[1]  = pow(DUT_residualV_CGDSF[1],2);
@@ -3715,7 +3726,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	      DUT_resolutionV_CGDSF[0] = 0.5*(x2 + x1);
 	      DUT_resolutionV_CGDSF[1] = sqrt(pow(y2e,2) + pow(DUT_residualV_CGDSF[1],2));
 	    }
-	    
+
 	    y1  = h_TelescopeResolution_Scan_V->GetBinContent(istep+1);
 	    y2  = h_TelescopeResolution_Scan_V->GetBinContent(istep+2);
 	    y1e = h_TelescopeResolution_Scan_V->GetBinError(istep+1);
@@ -3730,18 +3741,18 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	      Tel_resolutionV_CGDSF[0] = y1;
 	      Tel_resolutionV_CGDSF[1] = y1e;
 	    }
-	    
+
 	    break;
 	  }
 	}
 	cout << endl;
-	cout << "MimosaGeneration:: V-residual = (" << DUT_residualV_CGDSF[0] << " +/- " << DUT_residualV_CGDSF[1] << ")um and estimated telescope V-resolution = " 
+	cout << "MimosaGeneration:: V-residual = (" << DUT_residualV_CGDSF[0] << " +/- " << DUT_residualV_CGDSF[1] << ")um and estimated telescope V-resolution = "
 	     << h_TelescopeResolution_Scan_V->GetBinContent(idx) << " +/- " << h_TelescopeResolution_Scan_V->GetBinError(idx)
 	     << "um. U-resolution = (" << DUT_resolutionV_CGDSF[0] << " +/- " << DUT_resolutionV_CGDSF[1] << ")um." << endl;
 	cout << endl;
-	
+
       }
-      
+
     }
     else {
       //fitgs = hTrackResidualAtDUT_U[0]->GetFunction("gaus");
@@ -3762,19 +3773,19 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	DUT_resolutionU_CGDSF[1] += pow(hTrackResidualAtDUT_U[0]->GetRMS()*hTrackResidualAtDUT_U[0]->GetRMSError(),2);
 	DUT_resolutionU_CGDSF[1]  = sqrt(DUT_resolutionU_CGDSF[1])/DUT_resolutionU_CGDSF[0];
 	cout << endl;
-	cout << "MimosaGeneration:: U-residual = (" << DUT_residualU_CGDSF[0] << " +/- " << DUT_residualU_CGDSF[1] << ")um and estimated telescope U-resolution = " 
+	cout << "MimosaGeneration:: U-residual = (" << DUT_residualU_CGDSF[0] << " +/- " << DUT_residualU_CGDSF[1] << ")um and estimated telescope U-resolution = "
 	     << hTrackResidualAtDUT_U[0]->GetRMS() << " +/- " << hTrackResidualAtDUT_U[0]->GetRMSError()
 	     << "um. U-resolution = (" << DUT_resolutionU_CGDSF[0] << " +/- " << DUT_resolutionU_CGDSF[1] << ")um." << endl;
 	cout << endl;
 	Tel_resolutionU_CGDSF[0] = hTrackResidualAtDUT_U[0]->GetRMS();
 	Tel_resolutionU_CGDSF[1] = hTrackResidualAtDUT_U[0]->GetRMSError();
       }
-      
+
       //fitgs = hTrackResidualAtDUT_V[0]->GetFunction("gaus");
       //if(fitgs->GetParameter(2) > DUT_residualV_CGDSF[0]) {
       if(hTrackResidualAtDUT_V[0]->GetRMS() > DUT_residualV_CGDSF[0]) {
 	cout << endl;
-	cout << "MimosaGeneration:: V-residual=" << DUT_residualV_CGDSF[0] << "um is smaller than estimated telescope U-resolution = " << hTrackResidualAtDUT_V[0]->GetRMS() 
+	cout << "MimosaGeneration:: V-residual=" << DUT_residualV_CGDSF[0] << "um is smaller than estimated telescope U-resolution = " << hTrackResidualAtDUT_V[0]->GetRMS()
 	     << "um. Setting V-resolution to stupid value -999.0!" << endl;
 	cout << endl;
 	DUT_resolutionV_CGDSF[0] = -999.0;
@@ -3788,7 +3799,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 	DUT_resolutionV_CGDSF[1] += pow(hTrackResidualAtDUT_V[0]->GetRMS()*hTrackResidualAtDUT_V[0]->GetRMSError(),2);
 	DUT_resolutionV_CGDSF[1]  = sqrt(DUT_resolutionV_CGDSF[1])/DUT_resolutionV_CGDSF[0];
 	cout << endl;
-	cout << "MimosaGeneration:: V-residual = (" << DUT_residualV_CGDSF[0] << " +/- " << DUT_residualV_CGDSF[1] << ")um and estimated telescope U-resolution = " 
+	cout << "MimosaGeneration:: V-residual = (" << DUT_residualV_CGDSF[0] << " +/- " << DUT_residualV_CGDSF[1] << ")um and estimated telescope U-resolution = "
 	     << hTrackResidualAtDUT_V[0]->GetRMS() << " +/- " << hTrackResidualAtDUT_V[0]->GetRMSError()
 	     << "um. V-resolution = (" << DUT_resolutionV_CGDSF[0] << " +/- " << DUT_resolutionV_CGDSF[1] << ")um." << endl;
 	cout << endl;
@@ -3797,7 +3808,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       }
     }
   }
-  
+
   if(!UsingTrackerResolution) {
     TObject* g;
     // Canvases for track properties
@@ -3807,7 +3818,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
     ccumultrack3->Clear();
     ccumultrack3->UseCurrentStyle();
     ccumultrack3->Divide(3,2);
-  
+
     g = gROOT->FindObject("ccumultrack4") ;
     if(g) ccumultrack4 = (TCanvas*)g;
     else  ccumultrack4 = new TCanvas("ccumultrack4", "Cumulate tracks Residual-U", 75, 75,800,700);
@@ -3885,21 +3896,21 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       l_Chi2Cut->SetLineStyle(2);
       l_Chi2Cut->Draw();
     }
-    
-    for(Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { 
+
+    for(Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
       ccumultrack4->cd(iPlane);
       if(hResidualU_MC[iPlane-1]->GetEntries()>0) hResidualU_MC[iPlane-1]->Draw();
       ccumultrack5->cd(iPlane);
-      if(hResidualV_MC[iPlane-1]->GetEntries()>0) hResidualV_MC[iPlane-1]->Draw();    
+      if(hResidualV_MC[iPlane-1]->GetEntries()>0) hResidualV_MC[iPlane-1]->Draw();
     }
-    
+
     ccumultrack3->Update();
     if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
       NPages++;
       TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
       TString EPSNameO = EPSName + TString("[");
       TString EPSNameC = EPSName + TString("]");
-    
+
       ccumultrack3->Print(EPSNameO.Data());
       ccumultrack3->Print(EPSName.Data());
       ccumultrack3->Print(EPSNameC.Data());
@@ -3924,7 +3935,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
       TString EPSNameO = EPSName + TString("[");
       TString EPSNameC = EPSName + TString("]");
-    
+
       ccumultrack4->Print(EPSNameO.Data());
       ccumultrack4->Print(EPSName.Data());
       ccumultrack4->Print(EPSNameC.Data());
@@ -3942,7 +3953,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
       TString EPSNameO = EPSName + TString("[");
       TString EPSNameC = EPSName + TString("]");
-    
+
       ccumultrack5->Print(EPSNameO.Data());
       ccumultrack5->Print(EPSName.Data());
       ccumultrack5->Print(EPSNameC.Data());
@@ -3996,12 +4007,12 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
       TString EPSNameO = EPSName + TString("[");
       TString EPSNameC = EPSName + TString("]");
-    
+
       cresAtDUT[istep]->Print(EPSNameO.Data());
       cresAtDUT[istep]->Print(EPSName.Data());
       cresAtDUT[istep]->Print(EPSNameC.Data());
-      //if(istep == 0 && 
-	//StandAlone && 
+      //if(istep == 0 &&
+	//StandAlone &&
 	//UsingTrackerResolution
       //) {
 	//command = TString("mv ") + EPSName + TString("  ") + EPSName_final;
@@ -4015,11 +4026,11 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
         //command = TString("rm -rf ") + EPSName;
         //gSystem->Exec(command.Data());
       //}
-      
+
     }
   }
 
-  
+
   if(UsingTrackerResolution) {
     leg_TelResMC = new TLegend(0.20,0.75,0.45,0.88);
     leg_TelResMC->SetFillColor(10);
@@ -4042,7 +4053,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       e = h_TelescopeResolution_Scan_U->GetBinError(i+1);
       if(Maximum < v+e) Maximum = v+e;
       if(Minimum > v-e) Minimum = v-e;
-      
+
       v = h_ResidualAtDUT_Scan_U->GetBinContent(i+1);
       e = h_ResidualAtDUT_Scan_U->GetBinError(i+1);
       if(Maximum < v+e) Maximum = v+e;
@@ -4094,7 +4105,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       e = h_TelescopeResolution_Scan_V->GetBinError(i+1);
       if(Maximum < v+e) Maximum = v+e;
       if(Minimum > v-e) Minimum = v-e;
-      
+
       v = h_ResidualAtDUT_Scan_V->GetBinContent(i+1);
       e = h_ResidualAtDUT_Scan_V->GetBinError(i+1);
       if(Maximum < v+e) Maximum = v+e;
@@ -4133,7 +4144,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
       TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
       TString EPSNameO = EPSName + TString("[");
       TString EPSNameC = EPSName + TString("]");
-    
+
       cresAtDUT_vs_SensorSP->Print(EPSNameO.Data());
       cresAtDUT_vs_SensorSP->Print(EPSName.Data());
       cresAtDUT_vs_SensorSP->Print(EPSNameC.Data());
@@ -4151,7 +4162,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
     sprintf(fOutName,"MCStandAlone_run%dPl%d_ClCharge",RunNumber,ThePlaneNumber);
     sprintf(fOutName,"%s",fTool.LocalizeDirName(fOutName));
     TString EPSName_final = TString(CreateGlobalResultDir()) + TString(fOutName) + TString(".pdf");
- 
+
     TString command;
     TString ListOfFiles("");
     for(int i=0;i<NPages;i++) {
@@ -4188,9 +4199,9 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
     hTrackPlanesUsed_MC->Write();
     hTrackChi2_MC->Write();
 
-    for(Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { 
+    for(Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
       if(hResidualU_MC[iPlane-1]->GetEntries()>0) hResidualU_MC[iPlane-1]->Write();
-      if(hResidualV_MC[iPlane-1]->GetEntries()>0) hResidualV_MC[iPlane-1]->Write();    
+      if(hResidualV_MC[iPlane-1]->GetEntries()>0) hResidualV_MC[iPlane-1]->Write();
     }
   }
 
@@ -4220,7 +4231,7 @@ void MimosaAnalysis::CheckMCSimulation(bool StandAlone)
 //
 void MimosaAnalysis::CompareBadGoodRaw()
 {
-// compare the baseline of good events and bad events 
+// compare the baseline of good events and bad events
 //(i.e., with or without a hit where the track position is)
 
   if(!CheckIfDone("mimosall")) return;
@@ -4313,7 +4324,7 @@ MHist::Dir();
 //__________________________________________________________________________________________
 void MimosaAnalysis::CheckAsymmetry()
 {
-  //checks assysmetry 
+  //checks assysmetry
 
 if(!CheckIfDone("mimosall")) return;
 
@@ -4351,77 +4362,77 @@ MHist::Dir();
 
 //________________________________________________________________________________________
 //
-void MimosaAnalysis::MimosaSN() 
+void MimosaAnalysis::MimosaSN()
 {
 
   // plot distribution Signal over Noise in the different pixels.
   // A. Besson september 2004
   // Modified: JB 2012/08/21 histo & canvas saved in file
-  
+
   if(!CheckIfDone("mimosall")) return;
-  
+
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetTitleSize(0.06);
   gStyle->SetOptStat(1111);
   gStyle->SetPadLeftMargin(0.15);
-  
+
   gStyle->SetTitleH(.065);
   gStyle->SetTitleH(.085);
-  
+
   UsedMacro[9] = 1;
-  
+
   Int_t MimosaType=RunNumber/1000;
-  
+
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetOptStat(1111);
-  
-  
-  
+
+
+
   // ---> 1st canvas.
   // --- Make CANVAS
-  
-  Char_t nomcanvas[50]; 
-  Char_t titlecanvas[80]; 
-  Char_t nomPadsn[80]; 
-  Char_t nomPadsntitle[50]; 
+
+  Char_t nomcanvas[50];
+  Char_t titlecanvas[80];
+  Char_t nomPadsn[80];
+  Char_t nomPadsntitle[50];
   Char_t Headersn[120];
-  
+
   for (Int_t ii=0 ; ii<numcanvasSN; ii++){
-    sprintf(nomcanvas,"cSN%d",ii+1); 
+    sprintf(nomcanvas,"cSN%d",ii+1);
     sprintf(titlecanvas,"Check Signal / Noise (%d)",ii+1);
     cSN[ii] = new TCanvas(nomcanvas,titlecanvas,500,10,900,1000);
     cSN[ii]->Draw();
     cSN[ii]->Clear();
     cSN[ii]->SetBorderMode(0); //ligne de bordure sur le canvas.
   }
-  
-  // --- ALL PADS 
+
+  // --- ALL PADS
   cout<<"MimosaSN()  make all pads..."<<endl;
   const Int_t numpad1X = 3;
   const Int_t numpad1Y = 3;// = NPlane per canvas
   const Int_t numtotpad1 = numpad1X*numpad1Y*numcanvasSN;
   TPad *mpadSN[numtotpad1];
   TPad *mpadSNtitle[numcanvasSN];
-  
-  Float_t pad_Xwidth1 = 1 / float(numpad1X); 
-  Float_t pad_Ywidth1 = 0.94 / float(numpad1Y); 
-  
+
+  Float_t pad_Xwidth1 = 1 / float(numpad1X);
+  Float_t pad_Ywidth1 = 0.94 / float(numpad1Y);
+
   for (Int_t ii=0 ; ii<numcanvasSN; ii++){
     cSN[ii]->cd();
     for (Int_t iy=0 ; iy<numpad1Y; iy++){
       for (Int_t ix=0 ; ix<numpad1X; ix++){
         Int_t iloop =ix+iy*numpad1X+ii*numpad1X*numpad1Y;
-        
-        sprintf(nomPadsn,"mpadSN%d_%d_%d",ii,ix,iy); 
+
+        sprintf(nomPadsn,"mpadSN%d_%d_%d",ii,ix,iy);
         mpadSN[iloop] = new TPad(nomPadsn,"",(ix*pad_Xwidth1)+0.01,(iy*pad_Ywidth1)+0.01,(ix+1)*(pad_Xwidth1)-0.0001,(iy+1)*(pad_Ywidth1));
         mpadSN[iloop]->Draw();
       }
     }
     cSN[ii]->cd();
     //-------Draw title:
-    sprintf(nomPadsntitle,"mpadtitle%d",ii); 
+    sprintf(nomPadsntitle,"mpadtitle%d",ii);
     mpadSNtitle[ii] = new TPad(nomPadsntitle,"",0.05,0.95,0.95,0.99);
     mpadSNtitle[ii]->Draw();
     mpadSNtitle[ii]->cd();
@@ -4436,7 +4447,7 @@ void MimosaAnalysis::MimosaSN()
             ThePlaneNumber,TrackToHitDistanceLimit,MimosaEfficiency,CUT_S2N_seed,CUT_S2N_neighbour);
     ttt->DrawText( 0.05,0.6,Headersn);
   }
-  
+
 #if 0
   // --- PLOTS
   Float_t Xmin1,Xmax1;
@@ -4474,7 +4485,7 @@ void MimosaAnalysis::MimosaSN()
   }
 #endif
   Int_t drawn = 0;
-  
+
   //----------set axis range for all the 2D plots.
   Float_t Xaxismaxrange = 140.0;
   Float_t Yaxismaxrange = 140.0;
@@ -4484,7 +4495,7 @@ void MimosaAnalysis::MimosaSN()
     hsn_pix_0[ii]->SetAxisRange(0,Yaxismaxrange,"Y");
     hsn_pix_1[ii]->SetAxisRange(0,Yaxismaxrange,"Y");
   }
-  
+
   cout<<"Check Signal / Noise: plots..."<<endl;
   for (Int_t ii=0 ; ii<numcanvasSN; ii++){
     for (Int_t iy=0 ; iy<numpad1Y; iy++){
@@ -4507,7 +4518,7 @@ void MimosaAnalysis::MimosaSN()
           else if(iloop == (5 + ii*numpad1X*numpad1Y)){hsn_pix_0[5]->Draw();drawn = 1;}
           else if(iloop == (6 + ii*numpad1X*numpad1Y)){hsn_pix_0[6]->Draw();drawn = 1;}
           else if(iloop == (7 + ii*numpad1X*numpad1Y)){hsn_pix_0[7]->Draw();drawn = 1;}
-          else if(iloop == (8 + ii*numpad1X*numpad1Y)){hsnc->Draw();drawn = 1;}		
+          else if(iloop == (8 + ii*numpad1X*numpad1Y)){hsnc->Draw();drawn = 1;}
           else {hdummy->Draw();}
         }
         if(ii==2){
@@ -4569,15 +4580,15 @@ void MimosaAnalysis::MimosaSN()
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   //--------------------------------
   //--------------WRITE IN A ROOT FILE:
   // JB 2012/08/21
-  
+
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileName[50];
   sprintf(ResultFileName,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName,"%s", fTool.LocalizeDirName( ResultFileName));
@@ -4585,19 +4596,19 @@ void MimosaAnalysis::MimosaSN()
   //---histos:
   for( Int_t i=0; i<MaxNofPixelsInCluster; i++ ) {
     hindivq[i]->Write();
-    hsnn[i]->Write();    
+    hsnn[i]->Write();
   }
-  
+
   //canvas:
   for (Int_t ii=0 ; ii<numcanvasSN; ii++){
     cSN[ii]->Write();
   }
-  
+
   ResultRootFile->Write();
   ResultRootFile->Close();
   printf("\n All plots saved in %s\n", ResultRootFile->GetName());
   delete ResultRootFile;
-  
+
   MHist::Dir();
 
 }
@@ -4607,7 +4618,7 @@ void MimosaAnalysis::MimosaSN()
 
 void MimosaAnalysis::checkRefPlane()
 {
-// Macro to plot distribution about reference planes. 
+// Macro to plot distribution about reference planes.
 // A. Besson august 2004
 
 if(!CheckIfDone("mimosapro")) return;
@@ -4624,21 +4635,21 @@ gStyle->SetOptStat(1111);
 // --- Make CANVAS
 
 
-Char_t nomcanvas[50]; 
-Char_t titlecanvas[80]; 
+Char_t nomcanvas[50];
+Char_t titlecanvas[80];
 
 for (Int_t ii=0 ; ii<numcanvas; ii++){
-  sprintf(nomcanvas,"cRef%d",ii); 
+  sprintf(nomcanvas,"cRef%d",ii);
   sprintf(titlecanvas,"Check Reference Planes (%d)",ii);
   cRef[ii] = new TCanvas(nomcanvas,titlecanvas,500,10,900,1000);
   cRef[ii]->Draw();
   cRef[ii]->Clear();
   cRef[ii]->SetBorderMode(0); //ligne de bordure sur le canvas.
 }
- 
+
 
 //---------------------------
-// --- ALL PADS 
+// --- ALL PADS
 //---------------------------
 cout<<"checkeRefPlane: make all pads..."<<endl;
 const Int_t numpad1X = 4;
@@ -4647,24 +4658,24 @@ const Int_t numtotpad1 = numpad1X*numpad1Y*numcanvas;
 TPad *mpadref[numtotpad1];
 TPad *mpadreftitle[numcanvas];
 
-Float_t pad_Xwidth1 = 1 / float(numpad1X); 
-Float_t pad_Ywidth1 = 0.94 / float(numpad1Y); 
+Float_t pad_Xwidth1 = 1 / float(numpad1X);
+Float_t pad_Ywidth1 = 0.94 / float(numpad1Y);
 
 for (Int_t ii=0 ; ii<numcanvas; ii++){
   cRef[ii]->cd();
   for (Int_t iy=0 ; iy<numpad1Y; iy++){
     for (Int_t ix=0 ; ix<numpad1X; ix++){
       Int_t iloop =ix+iy*numpad1X+ii*numpad1X*numpad1Y;
-      Char_t nomPad[50]; 
-      sprintf(nomPad,"mpadref%d_%d_%d",ii,ix,iy); 
+      Char_t nomPad[50];
+      sprintf(nomPad,"mpadref%d_%d_%d",ii,ix,iy);
       mpadref[iloop] = new TPad(nomPad,"",(ix*pad_Xwidth1)+0.01,(iy*pad_Ywidth1)+0.01,(ix+1)*(pad_Xwidth1)-0.0001,(iy+1)*(pad_Ywidth1));
       mpadref[iloop]->Draw();
     }
   }
   cRef[ii]->cd();
   //-------Draw title:
-  Char_t nomPadtitle[50]; 
-  sprintf(nomPadtitle,"mpadtitle%d",ii); 
+  Char_t nomPadtitle[50];
+  sprintf(nomPadtitle,"mpadtitle%d",ii);
   mpadreftitle[ii] = new TPad(nomPadtitle,"",0.01,0.95,0.99,0.99);
   mpadreftitle[ii]->Draw();
   mpadreftitle[ii]->cd();
@@ -4748,7 +4759,7 @@ for (Int_t ii=0 ; ii<numcanvas; ii++){
 	  hRef_Tud_vs_Tu1[iy+ii*numpad1Y]->SetAxisRange(Ymin1,Ymax1,"Y");
 	  hRef_Tud_vs_Tu1[iy+ii*numpad1Y]->Draw("colz");
 	  break;
-	case 3: 
+	case 3:
 	  hRef_Tud_vs_Tk1[iy+ii*numpad1Y]->SetAxisRange(Xmin3,Xmax3,"X");
 	  hRef_Tud_vs_Tk1[iy+ii*numpad1Y]->SetAxisRange(Ymin1,Ymax1,"Y");
 	  hRef_Tud_vs_Tk1[iy+ii*numpad1Y]->Draw("colz");
@@ -4787,26 +4798,26 @@ void MimosaAnalysis::pixelcharge()
   // Modified: JB 2013/11/18 to add histos for all pixels
 
   if(!CheckIfDone("mimosall")) return;
-  
+
   UsedMacro[7] = 1;
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetOptStat(1111);
-  
+
   Int_t MimosaType=RunNumber/1000;
-    
+
   Char_t Header[100];
   sprintf(Header,"M%d ; run %d; Pl %d; dist %.0f; eff %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,TrackToHitDistanceLimit,MimosaEfficiency,CUT_S2N_seed,CUT_S2N_neighbour);
 
   //-----------------------------------
   // ---> canvas for 9 first pixels
-  
+
   c5 = new TCanvas("c5","Pixel charge studies (1)",850,10,700,900);
   c5->Draw();
   c5->Clear();
   c5->SetBorderMode(0);
   c5->Clear();
-  
+
   c5->cd();
   TPad* mpadtitle = new TPad("mpadtitle","",0.10,0.91,0.90,0.99);
   mpadtitle->SetGrid(1);
@@ -4827,7 +4838,7 @@ void MimosaAnalysis::pixelcharge()
   mpadhisto->SetLeftMargin(0.2);
   mpadhisto->Draw();
   mpadhisto->Divide(3,3);
-  
+
   for (Int_t i=0 ; i<9 && i<MaxNofPixelsInCluster; i++) {
     mpadhisto->cd(i+1);
     hindivq[i]->Draw();
@@ -4863,7 +4874,7 @@ void MimosaAnalysis::pixelcharge()
   mpadhisto2->SetLeftMargin(0.2);
   mpadhisto2->Draw();
   mpadhisto2->Divide(3,3);
-  
+
   for (Int_t i=9 ; i<25 && i<MaxNofPixelsInCluster; i++) {
     mpadhisto2->cd(i-8);
     hindivq[i]->Draw();
@@ -4881,15 +4892,15 @@ void MimosaAnalysis::pixelcharge()
   c7->SetBorderMode(0);
   c7->cd();
   c7->Clear();
-  
+
   TPad* mpad3_1 = new TPad("mpad3_1","",0.01,0.01,0.32,0.30);
   mpad3_1->SetGrid(1);
   mpad3_1->Draw();
-  
+
   TPad* mpad3_2 = new TPad("mpad3_2","",0.33,0.01,0.66,0.30);
   mpad3_2->SetGrid(1);
   mpad3_2->Draw();
-  
+
   TPad* mpad3_3 = new TPad("mpad3_3","title 1",0.67,0.01,0.99,0.30);
   mpad3_3->SetGrid(1);
   mpad3_3->Draw();
@@ -4897,27 +4908,27 @@ void MimosaAnalysis::pixelcharge()
   TPad* mpad3_4 = new TPad("mpad3_4","",0.01,0.31,0.32,0.60);
   mpad3_4->SetGrid(1);
   mpad3_4->Draw();
-  
+
   TPad* mpad3_5 = new TPad("mpad3_5","",0.33,0.31,0.66,0.60);
   mpad3_5->SetGrid(1);
   mpad3_5->Draw();
-  
+
   TPad* mpad3_6 = new TPad("mpad3_6","",0.67,0.31,0.99,0.60);
   mpad3_6->SetGrid(1);
   mpad3_6->Draw();
-  
+
   TPad* mpad3_7 = new TPad("mpad3_7","",0.01,0.61,0.32,0.9);
   mpad3_7->SetGrid(1);
   mpad3_7->Draw();
-  
+
   TPad* mpad3_8 = new TPad("mpad3_8","",0.33,0.61,0.66,0.9);
   mpad3_8->SetGrid(1);
   mpad3_8->Draw();
-  
+
   TPad* mpad3_9 = new TPad("mpad3_9","",0.67,0.61,0.99,0.9);
   mpad3_9->SetGrid(1);
   mpad3_9->Draw();
-  
+
   TPad* mpad3_title = new TPad("mpad3_title","",0.10,0.91,0.85,0.99);
   mpad3_title->SetGrid(1);
   mpad3_title->SetFillColor(19);
@@ -4930,7 +4941,7 @@ void MimosaAnalysis::pixelcharge()
   ttt->SetTextAlign(12);
   ttt->SetTextFont(22);
   ttt->DrawText( 0.05,0.6,Header);
-  
+
   mpad3_1->SetFillColor(19);
   mpad3_2->SetFillColor(19);
   mpad3_3->SetFillColor(19);
@@ -4940,7 +4951,7 @@ void MimosaAnalysis::pixelcharge()
   mpad3_7->SetFillColor(19);
   mpad3_8->SetFillColor(19);
   mpad3_9->SetFillColor(19);
-  
+
   //-----------------------------------
   mpad3_7->cd();
   mpad3_7->SetLogy(1);
@@ -5070,7 +5081,7 @@ Double_t FComputeFakeRAte(Float_t  CUT_S2N_seed, Float_t CUT_S2N_neighbour, Int_
   tempgauss->SetParameter(0,gaussNorm);
   tempgauss->SetParameter(1,gaussMu);
   tempgauss->SetParameter(2,gaussSigma);
-  
+
   Double_t proba1,proba2;
   proba1 =  tempgauss->Integral(CUT_S2N_seed,CUT_S2N_seed+50.0);
   proba2 =  tempgauss->Integral(CUT_S2N_neighbour,CUT_S2N_neighbour+50.0);
@@ -5114,7 +5125,7 @@ Int_t printrate = 100;
 //----not standalone:
 NumpixelsU = NofPixelInRaw;
 NumpixelsV = NofPixelInColumn;
-//pitch = PixelSize; // commented becasue not used, JB 2012/09/05 
+//pitch = PixelSize; // commented becasue not used, JB 2012/09/05
 
 //fake rate vs efficiency variables:
 const Int_t Num_seedscan = 9;
@@ -5142,7 +5153,7 @@ TH2F *fakerate_SN_SNN = new TH2F("fakerate_SN_SNN","Fake rate in the SN vs SNN p
 Char_t nomfake[50],titlefake[50];
 
 TH1F *fakerate_SN[Num_SNNscan];
-for (Int_t j=0 ; j<Num_SNNscan ; j++) {    
+for (Int_t j=0 ; j<Num_SNNscan ; j++) {
 sprintf(titlefake,"Fake rate vs SN with SNN=%3.1f",float(j)/2.0);// <---------------------------------------------------------
 sprintf(nomfake,"Fakerate_vs_SN_%3.1f",float(j)/2.0);  // <---------------------------------------------------------
 fakerate_SN[j] = new TH1F(nomfake,titlefake,nbinfake,0,maxfake);
@@ -5164,7 +5175,7 @@ for (Int_t nl=0 ; nl<NumLoop; nl++){
   SNN = 0.0;
   //loop over neighbours
   for (Int_t ii=0 ; ii<Nummaxpixels; ii++){
-    SN[ii+1] = Gaussrandom();        
+    SN[ii+1] = Gaussrandom();
     SNN += SN[ii+1];
   }
   SNN = SNN / sqrt(8.0);
@@ -5178,16 +5189,16 @@ for (Int_t nl=0 ; nl<NumLoop; nl++){
   if((SN[0] > CUT_S2N_seed)&&(SNN > CUT_S2N_neighbour)){
     Numfake++;
     SNseedfake->Fill(SN[0]);
-    SNNeighboursfake->Fill(SNN);    
+    SNNeighboursfake->Fill(SNN);
   }
   if(SN[0] > CUT_S2N_seed){
     SNseedSNok->Fill(SN[0]);
-    SNNeighboursSNok->Fill(SNN);    
+    SNNeighboursSNok->Fill(SNN);
   }
   if(SNN > CUT_S2N_neighbour){
     SNseedSNNok->Fill(SN[0]);
-    SNNeighboursSNNok->Fill(SNN); 
-  }   
+    SNNeighboursSNNok->Fill(SNN);
+  }
 }
  cout<<" fake / num events = rate : "<<Numfake <<" / "<<NumLoop <<" = "<<float(Numfake)/float(NumLoop)<<endl;
 //-----------------END OF MAIN LOOP
@@ -5216,7 +5227,7 @@ for (Int_t i=0 ; i<nbinfake; i++){
   for (Int_t j=0 ; j<nbinfake; j++){
 
     Double_t tempfake=0.;
- 
+
     fakerate_SN_SNN->Fill(CUT_S2N_neighbourvar*1.01,CUT_S2N_seedvar*1.01,tempfake);
     fakerate_SN_SNN_surface->Fill(CUT_S2N_neighbourvar*1.01,CUT_S2N_seedvar*1.01,tempfake*Ntotpixel/Surface);
     fakerate_SN_SNN_matrix->Fill(CUT_S2N_neighbourvar*1.01,CUT_S2N_seedvar*1.01,tempfake*Ntotpixel);
@@ -5231,7 +5242,7 @@ Int_t ii = 0;
 Bool_t minfoundSN = kFALSE ;
 Float_t BestcutSN = 0;
 while(minfoundSN == kFALSE) {
-  if(hsnc->GetBinContent(ii)>0.0){ 
+  if(hsnc->GetBinContent(ii)>0.0){
     minfoundSN = kTRUE ;
     BestcutSN = hsnc->GetBinLowEdge(ii);
   }
@@ -5246,7 +5257,7 @@ for(Int_t jj=0 ; jj<jpixmax ; jj++){
 for(Int_t jj=0 ; jj<jpixmax ; jj++){
   ii=0;
   while(minfoundSNN[jj] == kFALSE) {
-    if(hsn_pix_1[jj]->GetBinContent(ii)>0.0){ 
+    if(hsn_pix_1[jj]->GetBinContent(ii)>0.0){
       minfoundSNN[jj] = kTRUE ;
       BestcutSNN[jj] = hsn_pix_1[jj]->GetBinLowEdge(ii);
     }
@@ -5275,7 +5286,7 @@ for(Int_t jj=0 ; jj<Num_seedscan ; jj++){
   cout<<CUT_S2N_seed_var2[jj]<<" ";
   for(Int_t ii=0 ; ii< Num_SNNscan ; ii++){
     Float_t SNNthreshold = float(ii/2.0);
-    
+
 
     efficiencyarray[jj][ii] = hsn_seed_vs_pix_1[7]->Integral((int)SNNthreshold*2+1,281,(int)CUT_S2N_seed_var2[jj]*2,281);
     if(NtrkInMimo > 0){
@@ -5295,11 +5306,11 @@ for(Int_t jj=0 ; jj<Num_seedscan ; jj++){
 // ---> 1st canvas.
 // --- Make CANVAS
 
-Char_t nomcanvasopt[50]; 
-Char_t titlecanvasopt[80]; 
+Char_t nomcanvasopt[50];
+Char_t titlecanvasopt[80];
 
 for (Int_t ii=0 ; ii<numcanvasOptimize; ii++){
-  sprintf(nomcanvasopt,"cOptimize%d",ii+1); 
+  sprintf(nomcanvasopt,"cOptimize%d",ii+1);
   sprintf(titlecanvasopt,"Mimosa Optimize (%d)",ii+1);
   cOptimize[ii] = new TCanvas(nomcanvasopt,titlecanvasopt,500,10,900,1000);
   cOptimize[ii]->Draw();
@@ -5307,7 +5318,7 @@ for (Int_t ii=0 ; ii<numcanvasOptimize; ii++){
   cOptimize[ii]->SetBorderMode(0); //ligne de bordure sur le canvas.
 }
 
-// --- ALL PADS 
+// --- ALL PADS
 cout<<"MimosaSN(): make all pads..."<<endl;
 
 // FIRST CANVAS :
@@ -5336,10 +5347,10 @@ gPad->SetLogz(1);
  //cOptimize1_4
 gPad->SetLogz(1);
  fakerate_SN[0]->Draw();
- for (Int_t j=0 ; j<Num_SNNscan ; j++) {    
+ for (Int_t j=0 ; j<Num_SNNscan ; j++) {
    fakerate_SN[j]->Draw("same");
  }
- 
+
 //cd to result dir
  gSystem->cd(CreateGlobalResultDir());
  if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
@@ -5515,7 +5526,7 @@ PixHom4->Print(HeaderSave,"eps");
 
 }
 
-// save all open canvas in a root file 
+// save all open canvas in a root file
  sprintf(HeaderSave,"AllPlots_%d_%d.root",RunNumber,ThePlaneNumber);
  sprintf(HeaderSave,"%s", fTool.LocalizeDirName( HeaderSave)); // JB 2011/07/07
  TFile* AllPlots = new TFile(HeaderSave,"RECREATE");
@@ -5538,27 +5549,27 @@ void MimosaAnalysis::MimosaBinaryplots()
   //
   // A. Besson september 2005
   // Modified: JB 2011/11/13 new histo npixCumul
-  
-  
+
+
   if(!CheckIfDone("mimosall")) return;
-  
+
   UsedMacro[11] = 1;
-  
+
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetLabelSize(0.06);
   gStyle->SetTitleSize(0.06);
   gStyle->SetOptStat(1111);
-  gStyle->SetPadLeftMargin(0.15);  
+  gStyle->SetPadLeftMargin(0.15);
   gStyle->SetTitleH(.065);
   gStyle->SetTitleH(.085);
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetOptStat(1111);
- 
+
   // Generate cumulated ditribution of pixel multiplicity
   //  from histogram hnpix_c
-  
+
   for (Int_t ibin=1; ibin<=hnpix_c->GetNbinsX(); ibin++) {
     hnpixCumul_c->SetBinContent( ibin, hnpix_c->Integral( ibin, hnpix_c->GetNbinsX()));
   }
@@ -5586,46 +5597,46 @@ void MimosaAnalysis::MimosaBinaryplots()
   cM8->Clear();
   cM8->SetFillColor(0);
   cM8->SetBorderMode(0);
-  
+
   gPad->cd();
- 
+
   TPad* mpad1 = new TPad("mpad1","",0.01,0.01,0.32,0.30);
   mpad1->SetGrid(0);
   mpad1->SetLeftMargin(0.2);
   mpad1->Draw();
- 
+
   TPad* mpad2 = new TPad("mpad2","",0.33,0.01,0.66,0.30);
   mpad2->SetGrid(1);
   mpad2->Draw();
-  
+
   TPad* mpad3 = new TPad("mpad3","title 1",0.67,0.01,0.99,0.30);
   mpad3->SetGrid(1);
   mpad3->Draw();
-  
+
   TPad* mpad4 = new TPad("mpad4","",0.01,0.31,0.32,0.60);
   mpad4->SetGrid(1);
   mpad4->Draw();
-  
+
   TPad* mpad5 = new TPad("mpad5","",0.33,0.31,0.66,0.60);
   mpad5->SetGrid(1);
   mpad5->Draw();
-  
+
   TPad* mpad6 = new TPad("mpad6","",0.67,0.31,0.99,0.60);
   mpad6->SetGrid(1);
   mpad6->Draw();
-  
+
   TPad* mpad7 = new TPad("mpad7","",0.01,0.61,0.32,0.9);
   mpad7->SetGrid(1);
   mpad7->Draw();
-  
+
   TPad* mpad8 = new TPad("mpad8","",0.33,0.61,0.66,0.9);
   mpad8->SetGrid(1);
   mpad8->Draw();
-  
+
   TPad* mpad9 = new TPad("mpad9","",0.67,0.61,0.99,0.9);
   mpad9->SetGrid(1);
   mpad9->Draw();
-  
+
   TPad* mpadtitle = new TPad("mpadtitle","",0.01,0.91,0.99,0.99);
   mpadtitle->SetGrid(1);
   mpadtitle->SetFillColor(19);
@@ -5642,7 +5653,7 @@ void MimosaAnalysis::MimosaBinaryplots()
   sprintf(Header,"M%d ; run %d; Pl %d, sub %d, dist %.0f; Gain %3.2f; eff %3.3f +- %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,ThesubmatrixNumber,TrackToHitDistanceLimit,calibration,MimosaEfficiency,MimosaEfficiency_ERR,CUT_S2N_seed,CUT_S2N_neighbour);
   //sprintf(Header,"M%d ; run %d; Pl %d; dist %.0f",MimosaType,RunNumber,ThePlaneNumber,TrackToHitDistanceLimit);
   ttt->DrawText( 0.05,0.6,Header);
-  
+
   mpad1->SetFillColor(19);
   mpad2->SetFillColor(19);
   mpad3->SetFillColor(19);
@@ -5656,53 +5667,53 @@ void MimosaAnalysis::MimosaBinaryplots()
   mpad1->cd();
   AutoZoom(hBinary_NumberOf_1_submatrix,"Max")->Draw();
   mpad1->Update();
-   
+
   mpad2->cd();
   AutoZoom(hBinary_NumberOf_1_ALL,"Max")->Draw();
   mpad2->Update();
- 
+
   mpad3->cd();
   AutoZoom(hBinary_NumberOf_1_goodhit,"Max")->Draw();
   mpad3->Update();
-  
-  gStyle->SetOptStat(111111);  
-  
+
+  gStyle->SetOptStat(111111);
+
   mpad4->cd();
   if(hBinary_Nhitperpixel_submatrix->GetEntries()!=0){ mpad4->SetLogy(1);}
   AutoZoom(hBinary_Nhitperpixel_submatrix,"Max")->Draw();
   mpad4->Update();
-  
+
   mpad5->cd();
   if(hBinary_NhitRateperpixel_submatrix->GetEntries()!=0){ mpad5->SetLogy(1);}
   AutoZoom(hBinary_NhitRateperpixel_submatrix,"Max")->Draw();
   mpad5->Update();
-  
+
   mpad6->cd();
   //if(hnpix_c->GetEntries()!=0){ mpad6->SetLogy(1);}
   AutoZoom(hnpix_c,"Max")->Draw();
   mpad6->Update();
-  
+
   mpad7->cd();
   AutoZoom(hnpixCumul_c,"Max")->Draw();
   mpad7->Update();
-  
+
   mpad8->cd();
   AutoZoom(hClusterMeanForm,"Max")->Draw("colz");
   mpad8->Update();
-  
+
   mpad9->cd();
   //AutoZoom(hnWindows_c,"Max")->Draw();
   hnWindows_c->Draw();
   mpad9->Update();
 
-  gStyle->SetOptStat(1111);  
+  gStyle->SetOptStat(1111);
 
   if(fSession->GetSetup()->GetAnalysisPar().SavePlots) {
     NPages++;
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cM8->Print(EPSNameO.Data());
     cM8->Print(EPSName.Data());
     cM8->Print(EPSNameC.Data());
@@ -5715,17 +5726,17 @@ void MimosaAnalysis::MimosaBinaryplots()
   }
 
   // Save plots to ROOT file
-  
+
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileName2[150];
   sprintf(ResultFileName2,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2)); // JB 2011/07/07
   TFile *ResultRootFile=new TFile(ResultFileName2,"UPDATE");
-  
+
   cM8->Write();
-  
+
   hBinary_NumberOf_1_submatrix->Write();
   hBinary_NumberOf_1_ALL->Write();
   hBinary_NumberOf_1_goodhit->Write();
@@ -5734,8 +5745,8 @@ void MimosaAnalysis::MimosaBinaryplots()
   hnpix_c->Write();
   hnpixCumul_c->Write();
   hClusterMeanForm->Write();
-  
-  
+
+
   ResultRootFile->Write();
   ResultRootFile->Close();
   printf("\n All plots saved in %s\n", ResultRootFile->GetName());
@@ -5772,7 +5783,7 @@ void MimosaAnalysis::FakeRate()
   gStyle->SetLabelSize(0.06);
   gStyle->SetTitleSize(0.06);
   gStyle->SetOptStat(1111);
-  gStyle->SetPadLeftMargin(0.15);  
+  gStyle->SetPadLeftMargin(0.15);
   gStyle->SetTitleH(.065);
   gStyle->SetTitleH(.085);
   gStyle->SetTitleOffset(1.);
@@ -5850,7 +5861,7 @@ void MimosaAnalysis::FakeRate()
   line->SetLineColor(2);
   line->SetLineWidth(2);
 
-  gStyle->SetOptStat(111111);  
+  gStyle->SetOptStat(111111);
 
 
   //-------------- Compute fake hit rate from histograms
@@ -5936,46 +5947,46 @@ void MimosaAnalysis::FakeRate()
   if(hNhitperpixel->GetEntries()!=0){ mpad1->SetLogy(1);}
   AutoZoom(hNhitperpixel,"Max")->Draw();
   mpad1->Update();
-   
+
   mpad2->cd();
   if(hNhitRateperpixel->GetEntries()!=0){ mpad2->SetLogy(1);}
   AutoZoom(hNhitRateperpixel,"Max")->Draw();
   line->DrawLine(Fake_Rate, hNhitRateperpixel->GetMinimum(), Fake_Rate, hNhitRateperpixel->GetMaximum());
-  mpad2->Update(); 
-  
+  mpad2->Update();
+
   mpad3->cd();
   mpad3->SetLogy(1);
   AutoZoom(hnGOODhit,"Max")->Draw("colz");
-  mpad2->Update(); 
-  
+  mpad2->Update();
+
   mpad4->cd();
   AutoZoom(h2dgoodhits,"Max")->Draw("colz");
-  mpad4->Update(); 
-  
+  mpad4->Update();
+
   mpad5->cd();
   AutoZoom(h2DgoodSeedPixel,"Max")->Draw("colz");
-  mpad5->Update(); 
-  
+  mpad5->Update();
+
   mpad6->cd();
   if(hPixelsPerFakeRate->GetEntries()!=0){ mpad6->SetLogy(1);}
   AutoZoom(hPixelsPerFakeRate,"Max")->Draw();
-  mpad6->Update(); 
-  
+  mpad6->Update();
+
   mpad7->cd();
   if(hnpix->GetEntries()!=0){ mpad7->SetLogy(1);}
   AutoZoom(hnpix,"Max")->Draw();
-  mpad7->Update(); 
-  
+  mpad7->Update();
+
   mpad8->cd();
   if(hnGOODhit->GetEntries()!=0){ mpad8->SetLogy(1);}
   AutoZoom(hnGOODhit,"Max")->Draw();
-  mpad8->Update(); 
-  
+  mpad8->Update();
+
   /*
   mpad9->cd();
   if(hnGOODhit->GetEntries()!=0){ mpad9->SetLogy(1);}
   AutoZoom(hnGOODhit,"Max")->Draw();
-  mpad9->Update(); 
+  mpad9->Update();
   */
 
 
@@ -5994,7 +6005,7 @@ void MimosaAnalysis::FakeRate()
   hNhitperpixel->Write();
   hNhitRateperpixel->Write();
   hPixelsPerFakeRate->Write(); // JB 2011/07/01
-  
+
   ResultRootFile->Write();
   ResultRootFile->Close();
   printf("\n All plots saved in %s\n", ResultRootFile->GetName());
@@ -6026,7 +6037,7 @@ gStyle->SetOptTitle(1);
 gStyle->SetLabelSize(0.06);
 gStyle->SetTitleSize(0.06);
 gStyle->SetOptStat(1111);
-gStyle->SetPadLeftMargin(0.15);  
+gStyle->SetPadLeftMargin(0.15);
 gStyle->SetTitleH(.065);
 gStyle->SetTitleH(.085);
 gStyle->SetTitleOffset(1.);
@@ -6276,7 +6287,7 @@ mpad2_5->Update();
 mpad2_6->cd();
 //mpad2_5->SetLogy(1);
 AutoZoom(hHOM_modUeta3_modUCG)->Draw("colz");
-			   
+
 //ProfHOM_Charge4_diodedist->Draw();
 mpad2_6->Update();
 
@@ -6499,7 +6510,7 @@ mpad3_8->Update();
 mpad3_9->cd();
 //mpad2_1->SetLogy(1);
 
- 
+
 const Int_t nn(10);
 Double_t x[nn] = {5,15,25,35,45,55,65,75,85,95};
 Double_t ex[nn] = {5,5,5,5,5,5,5,5,5,5};
@@ -6661,54 +6672,54 @@ mpad4_9->Update();
   PixHom5->Clear();
   PixHom5->SetFillColor(0);
   PixHom5->SetBorderMode(0);
-  
+
   PixHom5->cd();
-  
+
   TPad* mpad5_title = new TPad("mpad5_title","",0.10,0.91,0.85,0.99);
   mpad5_title->SetGrid(1);
   mpad5_title->SetFillColor(19);
   mpad5_title->Draw();
   mpad5_title->cd();
-  
+
   sprintf(Header,"M%d ; run %d; Pl %d; dist %.0f; eff %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,TrackToHitDistanceLimit,MimosaEfficiency,CUT_S2N_seed,CUT_S2N_neighbour);
   ttt->DrawText( 0.05,0.6,Header);
 
   PixHom5->cd();
-  
+
   TPad* mpad5_1 = new TPad("mpad5_1","",0.01,0.01,0.99,0.90);
   mpad5_1->Draw();
   mpad5_1->Divide(3,3);
-  
+
   //-----------------------------------
   mpad5_1->cd(1);
   ProfHOM_Charge_diodedist_alg->Draw();
-  
+
   //-----------------------------------
   mpad5_1->cd(2);
   ProfHOM_Charge_diodedist_alg_u->Draw();
-  
+
   //-----------------------------------
   mpad5_1->cd(3);
   ProfHOM_Charge_diodedist_alg_v->Draw();
-  
+
   //-----------------------------------
   mpad5_1->cd(4);
   hHOM_Charge_diodedist_alg->Draw("colz");
-  
+
   //-----------------------------------
   mpad5_1->cd(5);
   hHOM_Charge_diodedist_alg_u->Draw("colz");
-  
+
   //-----------------------------------
   mpad5_1->cd(6);
   hHOM_Charge_diodedist_alg_v->Draw("colz");
-  
-  
+
+
   mpad5_1->Update();
-  
-  
-    
-  
+
+
+
+
   //-----------------------------------
   // CANVAS 6
   //-----------------------------------
@@ -6717,78 +6728,78 @@ mpad4_9->Update();
   PixHom6->Clear();
   PixHom6->SetFillColor(0);
   PixHom6->SetBorderMode(0);
-  
+
   PixHom6->cd();
-  
+
   TPad* mpad6_title = new TPad("mpad6_title","",0.10,0.91,0.85,0.99);
   mpad6_title->SetGrid(1);
   mpad6_title->SetFillColor(19);
   mpad6_title->Draw();
   mpad6_title->cd();
-  
+
   sprintf(Header,"M%d ; run %d; Pl %d; dist %.0f; eff %3.3f; Seed %3.1f; Neigh %3.1f",MimosaType,RunNumber,ThePlaneNumber,TrackToHitDistanceLimit,MimosaEfficiency,CUT_S2N_seed,CUT_S2N_neighbour);
   ttt->DrawText( 0.05,0.6,Header);
-  
+
   PixHom6->cd();
-  
+
   TPad* mpad6_1 = new TPad("mpad6_1","",0.01,0.01,0.99,0.90);
   mpad6_1->Draw();
   mpad6_1->Divide(3,4);
-  
+
   //-----------------------------------
   mpad6_1->cd(1);
   hHOM_Charge2_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(2);
   ProfHOM_Charge2_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(3);
   hHOM_Charge2_diodedist3D->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(4);
   hHOM_Charge4_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(5);
   ProfHOM_Charge4_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(6);
   hHOM_Charge4_diodedist3D->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(7);
   hHOM_Charge9_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(8);
   ProfHOM_Charge9_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(9);
   hHOM_Charge9_diodedist3D->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(10);
   hHOM_Charge25_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(11);
   ProfHOM_Charge25_diodedist->Draw();
-  
+
   //-----------------------------------
   mpad6_1->cd(12);
   hHOM_Charge25_diodedist3D->Draw();
-  
+
   mpad6_1->Update();
 
-  
-  
-  
-  
+
+
+
+
 //------------------------------------------------------------------------------
 // Print some results
 //------------------------------------------------------------------------------
@@ -6817,7 +6828,7 @@ if( polCh_diodedist->Eval(95) != 0.0){
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileName2[50];
   sprintf(ResultFileName2,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2)); // JB 2011/07/07
@@ -6837,11 +6848,11 @@ if( polCh_diodedist->Eval(95) != 0.0){
   hHOM_tu_tv_modulo->Write(); // JB 2010/03/11
   polCh_diodedist->Write();
 
-  hHOM_Charge_diodedist3D  ->Write(); //clm 2013/01/23  
-  hHOM_Charge2_diodedist3D ->Write(); //clm 2013/01/23  
-  hHOM_Charge4_diodedist3D ->Write(); //clm 2013/01/23  
-  hHOM_Charge9_diodedist3D ->Write(); //clm 2013/01/23  
-  hHOM_Charge25_diodedist3D->Write(); //clm 2013/01/23  
+  hHOM_Charge_diodedist3D  ->Write(); //clm 2013/01/23
+  hHOM_Charge2_diodedist3D ->Write(); //clm 2013/01/23
+  hHOM_Charge4_diodedist3D ->Write(); //clm 2013/01/23
+  hHOM_Charge9_diodedist3D ->Write(); //clm 2013/01/23
+  hHOM_Charge25_diodedist3D->Write(); //clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePositionSeedQLT300->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePositionSeedQGT2000->Write();//clm 2013/01/23
@@ -6850,32 +6861,32 @@ if( polCh_diodedist->Eval(95) != 0.0){
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow->Write();//clm 2013/01/23
-  
+
   ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_seed->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_seed->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_seed->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_seed->Write();//clm 2013/01/23
-  
+
   ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_1stcrown->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_1stcrown->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_1stcrown->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_1stcrown->Write();//clm 2013/01/23
-  
+
   ProfhGOODCharge_Charge_DiodePosition_evencol_evenrow_2ndcrown->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown->Write();//clm 2013/01/23
   ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown->Write();//clm 2013/01/23
-  
+
   hDistVSeedOtherOldCalc->Write();
   hDistVSeedOtherNewCalc->Write();
-  
+
   h2dCharge_Charge_DiodePosition_Track->Write();//clm 2013/01/23
   h2dCharge_Charge_DiodePosition_CluSize->Write();//clm 2013/01/23
   hNpixInClu->Write();//clm 2013/01/23
   hQpixInClu->Write();//clm 2013/01/23
   hHOM_Noise_diodedist->Write();//clm 2013/01/23
-    
-  ProfhGOODCharge_Charge_DiodePositionSimpDist->Write();//clm 2013/01/23   
+
+  ProfhGOODCharge_Charge_DiodePositionSimpDist->Write();//clm 2013/01/23
 
   ResultRootFile->Write();
   ResultRootFile->Close();
@@ -6924,7 +6935,7 @@ void MimosaAnalysis::UserAnalysis()
   gStyle->SetLabelSize(0.06);
   gStyle->SetTitleSize(0.06);
   gStyle->SetOptStat(1111);
-  gStyle->SetPadLeftMargin(0.15);  
+  gStyle->SetPadLeftMargin(0.15);
   gStyle->SetTitleH(.065);
   gStyle->SetTitleH(.085);
   gStyle->SetTitleOffset(1.);
@@ -6970,12 +6981,12 @@ void MimosaAnalysis::UserAnalysis()
 
   //mpad1->SetFillColor(19);
 
-  gStyle->SetOptStat(111111);  
+  gStyle->SetOptStat(111111);
 
-  mpad1->cd(1);  
+  mpad1->cd(1);
   AutoZoom(hUserHitCorrelationLine)->Draw();
 
-  mpad1->cd(2);  
+  mpad1->cd(2);
   AutoZoom(hUserHitCorrelationCol)->Draw();
 
   //--------------WRITE IN A ROOT FILE
@@ -6983,22 +6994,22 @@ void MimosaAnalysis::UserAnalysis()
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
 
   Char_t ResultFileName2[50];
   sprintf(ResultFileName2,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2)); // JB 2011/07/07
   TFile *ResultRootFile=new TFile(ResultFileName2,"UPDATE");
-  
+
   hUserHitCorrelationCol->Write();
   hUserHitCorrelationLine->Write();
-  
-  
+
+
   ResultRootFile->Write();
   ResultRootFile->Close();
   printf("\n All plots saved in %s\n", ResultRootFile->GetName());
   delete ResultRootFile;
-  
+
   MHist::Dir();
 
 }
@@ -7015,23 +7026,23 @@ void MimosaAnalysis::ClusterShape()
   // Modified JB 2013/09/07 save in same files _ClCharge as all histos
 
   if(!CheckIfDone("mimosall")) return;
-  
+
   UsedMacro[14] = 1;
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetOptStat(1111);
   gStyle->SetPalette(1,0);
   gStyle->SetPaintTextFormat(".1f");
-  
+
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
-  
+
   Char_t ResultFileNameAng[50];
   sprintf(ResultFileNameAng,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileNameAng,"%s", fTool.LocalizeDirName( ResultFileNameAng)); // JB 2011/07/07
   TFile *ResultRootFileAng=new TFile(ResultFileNameAng,"UPDATE");
-  
+
   /** ? **/
   ang1 = new TCanvas("ang1","Angular Study Plots (1)",50,10,1000,500);
   ang1->Draw();
@@ -7039,12 +7050,12 @@ void MimosaAnalysis::ClusterShape()
   ang1->SetBorderMode(0);
   ang1->cd();
   ang1->Divide((Int_t)ceil(nThresholds/2.),2);
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     ang1->cd(ithres+1);
     hMultVsFormFactor[ithres]->Draw("colz");
   }
-  
+
   /** 2D map of percentage of pix over SNR threshold **/
   ang2 = new TCanvas("ang2","Angular Study Plots (2)",100,10,1000,500);
   ang2->Draw();
@@ -7052,12 +7063,12 @@ void MimosaAnalysis::ClusterShape()
   ang2->SetBorderMode(0);
   ang2->cd();
   ang2->Divide((Int_t)ceil(nThresholds/2.),2);
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     ang2->cd(ithres+1);
     hPixelsOverSNR[ithres]->Draw("text,colz");
   }
-  
+
   /** 2D map of percentage of pix over Q threshold **/
   ang3 = new TCanvas("ang3","Angular Study Plots (3)",100,10,1000,500);
   ang3->Draw();
@@ -7065,12 +7076,12 @@ void MimosaAnalysis::ClusterShape()
   ang3->SetBorderMode(0);
   ang3->cd();
   ang3->Divide((Int_t)ceil(nThresholds/2.),2);
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     ang3->cd(ithres+1);
     hPixelsOverCharge[ithres]->Draw("text,colz");
   }
-  
+
   /** Pixel multiplicity over threshold **/
   ang4 = new TCanvas("ang4","Angular Study Plots (4)",100,10,1000,500);
   ang4->Draw();
@@ -7078,13 +7089,13 @@ void MimosaAnalysis::ClusterShape()
   ang4->SetBorderMode(0);
   ang4->cd();
   ang4->Divide((Int_t)ceil(nThresholds/2.),2);
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     ang4->cd(ithres+1);
     hCountPixels[ithres]->Draw();
   }
-  
-  
+
+
   /** ? **/
   ang5 = new TCanvas("ang5","Angular Study Plots (5)",100,10,1000,500);
   ang5->Draw();
@@ -7092,7 +7103,7 @@ void MimosaAnalysis::ClusterShape()
   ang5->SetBorderMode(0);
   ang5->cd();
   ang5->Divide(3,4);
-  
+
   ang5->cd(1);
   hChargeCoG_Correl->Draw();
   ang5->cd(2);
@@ -7131,48 +7142,48 @@ void MimosaAnalysis::ClusterShape()
   ang6->SetBorderMode(0);
   ang6->cd();
   ang6->Divide((Int_t)ceil(nThresholds/2.),2);
-  
-  
+
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     ang6->cd(ithres+1);
     hMultVsFormFactor1D[ithres]->Draw("be");
   }
-  
+
   /** The average cluster shape **/
   shape = new TCanvas("shape","Average Cluster Shape",100,10,700,700);
   shape->cd();
   hClusterMeanForm->Draw("text,colz");
-  
-  
+
+
   /** A few individual clusters **/
   solo = new TCanvas("clust","Individual clusters",100,10,1000,500);
   solo->Divide(2,3);
-  
+
   for(Int_t i=0; i<6; i++) {
     solo->cd(i+1);
     Cluster[i]->Draw("text,colz");
   }
-  
+
   /** Projection of a line **/
   projL = new TCanvas("projCanvas","Percentage of pixels above (charge) threshold for the central row",100,10,1000,500);
   projL->Divide((Int_t)ceil(nThresholds/2.),2);
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     projL->cd(ithres+1)->SetGrid(1,1);;
     hprojL[ithres]->Draw();
   }
-  
+
   /** Projection of a column **/
   projC = new TCanvas("projCCanvas","Percentage of pixels above (charge) threshold for the central column",100,10,1000,500);
   projC->Divide((Int_t)ceil(nThresholds/2.),2);
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     projC->cd(ithres+1)->SetGrid(1,1);;
     hprojC[ithres]->Draw();
   }
-  
+
   // Saving histos & canvas to file
-  
+
   ang1->Write();
   ang2->Write();
   ang3->Write();
@@ -7182,36 +7193,36 @@ void MimosaAnalysis::ClusterShape()
   solo->Write();
   projL->Write();
   projC->Write();
-  
+
   for( Int_t ithres=0; ithres<nThresholds; ithres++) {
     hMultVsFormFactor[ithres]->Write();
     hMultVsFormFactor1D[ithres]->Write(); //clm added back 1D clu mult. 2013.08.25
     hPixelsOverSNR[ithres]->Write();
     hPixelsOverCharge[ithres]->Write();
-    
+
     hCountPixels[ithres]->Write();
-    
+
     hprojL[ithres]->Write();
     hprojC[ithres]->Write();
   }
-  
+
   hChargeCoG_Correl->Write();
   hChargeCoG_Correl2->Write();
   h_SNRratioL->Write();
-  
+
   hClusterTest1->Write();
   hClusterTest2->Write();
-  
+
   hClusterMeanForm->Write();
   hprojLForm->Write();
   hprojCForm->Write();
-  
+
   hClusterSizeInLines->Write();
   hClusterSizeInColumns->Write();
   hClusterSize2DInLineAndColumns->Write();
   hClusterTypes->Write();
   hClusterTypesBeyond4->Write();
-  
+
   hChargeDistrIn3rdLeftNeigh->Write();
   hChargeDistrIn2ndLeftNeigh->Write();
   hChargeDistrIn1stLeftNeigh->Write();
@@ -7219,17 +7230,17 @@ void MimosaAnalysis::ClusterShape()
   hChargeDistrIn1stRightNeigh->Write();
   hChargeDistrIn2ndRightNeigh->Write();
   hChargeDistrIn3rdRightNeigh->Write();
-  
+
   for(Int_t i=0; i<6; i++) {
     Cluster[i]->Write();
   }
-  
+
   ResultRootFileAng->Write();
   ResultRootFileAng->Close();
-  
+
   printf("\n All plots saved in %s\n", ResultRootFileAng->GetName());
   delete ResultRootFileAng;
-  
+
   MHist::Dir();
 
 }
@@ -7243,11 +7254,11 @@ void MimosaAnalysis::HitMap()
   //
   // JB 2010/10/06
   // Modified: JB 2013/05/01 hit map in tracker frame added
-  
+
   if(!CheckIfDone("mimosa")) return;
-  
+
   UsedMacro[17] = 1;
-  
+
   char fOutName[200];
   sprintf(fOutName,"run%dPl%d_ClCharge",RunNumber,ThePlaneNumber);
   sprintf(fOutName,"%s",fTool.LocalizeDirName(fOutName));
@@ -7294,9 +7305,9 @@ void MimosaAnalysis::HitMap()
   mpad0->Update();
 
   mpad1->cd();
-  gStyle->SetOptStat(111111);  
+  gStyle->SetOptStat(111111);
   mpad1->Divide(3,2);
-  
+
   mpad1->cd(1);
   AutoZoom(huv)->Draw("colz");
   mpad1->cd(2);
@@ -7309,7 +7320,7 @@ void MimosaAnalysis::HitMap()
   AutoZoom(hhx)->Draw();
   mpad1->cd(6);
   AutoZoom(hhy)->Draw();
-  
+
   mpad1->Update();
   //------------
 
@@ -7318,7 +7329,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cHitMap->Print(EPSNameO.Data());
     cHitMap->Print(EPSName.Data());
     cHitMap->Print(EPSNameC.Data());
@@ -7329,7 +7340,7 @@ void MimosaAnalysis::HitMap()
     //command = TString("rm -rf ") + EPSName;
     //gSystem->Exec(command.Data());
   }
-  
+
 
   //------------
   //--- Hit map 2
@@ -7351,7 +7362,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cHitMap2->Print(EPSNameO.Data());
     cHitMap2->Print(EPSName.Data());
     cHitMap2->Print(EPSNameC.Data());
@@ -7383,7 +7394,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cPixEvent->Print(EPSNameO.Data());
     cPixEvent->Print(EPSName.Data());
     cPixEvent->Print(EPSNameC.Data());
@@ -7431,7 +7442,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cPosStudy1->Print(EPSNameO.Data());
     cPosStudy1->Print(EPSName.Data());
     cPosStudy1->Print(EPSNameC.Data());
@@ -7469,7 +7480,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cPosStudy2->Print(EPSNameO.Data());
     cPosStudy2->Print(EPSName.Data());
     cPosStudy2->Print(EPSNameC.Data());
@@ -7593,7 +7604,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cPosStudy_TrackhitPos_vs_Mult->Print(EPSNameO.Data());
     cPosStudy_TrackhitPos_vs_Mult->Print(EPSName.Data());
     cPosStudy_TrackhitPos_vs_Mult->Print(EPSNameC.Data());
@@ -7604,13 +7615,13 @@ void MimosaAnalysis::HitMap()
     //command = TString("rm -rf ") + EPSName;
     //gSystem->Exec(command.Data());
   }
-  
+
   cPosStudy_TrackhitPos_vs_Mult2 = new TCanvas("cPosStudy_TrackhitPos_vs_Mult2",
 					       "Track hit position vs diodes location 2",
 					       900,900);
   cPosStudy_TrackhitPos_vs_Mult2->Divide(NPadsX,NPadsY);
   counter_mult_canvas = 0;
-  
+
   for(int imult=0;imult<NPadsX*NPadsY;imult++) {
     if(imult+1 > 6) continue;
     counter_mult_canvas++;
@@ -7637,7 +7648,7 @@ void MimosaAnalysis::HitMap()
   cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetTicky(1);
   hDist_Trck_Diode_NoAsso->Sumw2();
   hDist_Trck_Diode_NoAsso->Draw();
-  
+
   counter_mult_canvas++;
   cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas);
   cPosStudy_TrackhitPos_vs_Mult2->cd(counter_mult_canvas)->SetFillColor(10);
@@ -7711,7 +7722,7 @@ void MimosaAnalysis::HitMap()
     TString EPSName = TString(CreateGlobalResultDir()) + TString(fOutName) + TString("_tmpFile") + long(NPages) + (".pdf");
     TString EPSNameO = EPSName + TString("[");
     TString EPSNameC = EPSName + TString("]");
-    
+
     cPosStudy_TrackhitPos_vs_Mult2->Print(EPSNameO.Data());
     cPosStudy_TrackhitPos_vs_Mult2->Print(EPSName.Data());
     cPosStudy_TrackhitPos_vs_Mult2->Print(EPSNameC.Data());
@@ -7728,7 +7739,7 @@ void MimosaAnalysis::HitMap()
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
- 
+
   Char_t ResultFileName2[50];
   sprintf(ResultFileName2,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2)); // JB 2011/07/07
@@ -7781,12 +7792,12 @@ void MimosaAnalysis::Calibration()
   // Plots all the usefull histograms for calibration
   //
   // JB 2010/07/27 based on previous MCalib class
-  
+
   if(!CheckIfDone("mimosacalibration")) return;
   if(!fIfCalibration) return; // JB 2014/01/11
-  
+
   UsedMacro[15] = 1;
-  
+
   gROOT->SetStyle("Plain");
   gStyle->SetOptFit(11111);
   gStyle->SetPalette(1,0);
@@ -7823,7 +7834,7 @@ void MimosaAnalysis::Calibration()
 
   mpad1->cd();
   //mpad1->SetFillColor(19);
-  gStyle->SetOptStat(111111);  
+  gStyle->SetOptStat(111111);
   PlotCalibration(AutoZoom(hqSeedCalibration,"calib",2), 0)->Draw();
   mpad1->Update();
 
@@ -7832,8 +7843,8 @@ void MimosaAnalysis::Calibration()
   Int_t rn = fSession->GetRunNumber();
   Char_t CalibMainPs[50];
   sprintf(CalibMainPs,"Calib_main_%d.eps",rn);
-  cCalibration->SaveAs(CalibMainPs); 
- 
+  cCalibration->SaveAs(CalibMainPs);
+
   printf("--Calib zoom drawn\n\n");
   //------------
 
@@ -7861,7 +7872,7 @@ void MimosaAnalysis::Calibration()
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
- 
+
   Char_t ResultFileName2[50];
   sprintf(ResultFileName2,"run%dPl%d_ClCharge.root",RunNumber,ThePlaneNumber);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2)); // JB 2011/07/07
@@ -7890,17 +7901,17 @@ TPad* MimosaAnalysis::PlotCalibration(TH1F* h, Int_t manualFitRange)
   // The fit function is a gaussian(signal) + exponential(tail)
   // Returns a canvas with the fit result.
   //
-  
-  TPad* Pad = (TPad*)gPad; 
+
+  TPad* Pad = (TPad*)gPad;
 
   // Fits calibration peaks
 
-  Float_t param[4][4]; // [Pad number] [parameter number]: 0=constant, 1=Mean, 2=sigma  
+  Float_t param[4][4]; // [Pad number] [parameter number]: 0=constant, 1=Mean, 2=sigma
   Float_t param2[4][4]; // Same for second peak.
 
 
   manualFitRange = 0;
-  
+
 
   /*Float_t FitIntegral[4] = {0.,0.,0.,0.};
   Float_t FitIntegralb[4]= {0.,0.,0.,0.};*/
@@ -7908,9 +7919,9 @@ TPad* MimosaAnalysis::PlotCalibration(TH1F* h, Int_t manualFitRange)
   Float_t Peak1 =1640.0;
   //Float_t Peak2 =1804.0;
 
-  
-  //TF1* Fit = new TF1("fit","gaus",h->GetMean()-2*h->GetRMS(),h->GetMean()+2*h->GetRMS());  
-  TF1* Fit = new TF1("fit","gaus(0)+expo(3)",h->GetMean()-2*h->GetRMS(),h->GetMean()+2*h->GetRMS());  
+
+  //TF1* Fit = new TF1("fit","gaus",h->GetMean()-2*h->GetRMS(),h->GetMean()+2*h->GetRMS());
+  TF1* Fit = new TF1("fit","gaus(0)+expo(3)",h->GetMean()-2*h->GetRMS(),h->GetMean()+2*h->GetRMS());
   Fit->SetParName(0,"Norm (gaus)");
   Fit->SetParName(1,"Mean");
   Fit->SetParName(2,"Sigma");
@@ -7925,51 +7936,51 @@ TPad* MimosaAnalysis::PlotCalibration(TH1F* h, Int_t manualFitRange)
 
   Fit->SetParameter(2,5); // width
   Fit->SetParameter(1, h->GetMaximumBin());   // peak
- 
-  
-  
+
+
+
    h->Fit("fit","WME");
    param[0][0]=Fit->GetParameter(0); //constant.
    param[0][1]=Fit->GetParameter(1); //Mean.
    param[0][2]=Fit->GetParameter(2); //sigma.
    param[0][3]=Peak1/(Fit->GetParameter(1));
-   
+
    TString status;
    if( gMinuit->fCstatu.Contains("SUCCESS"))
      { status = TString("GOOD");}
-   else 
+   else
      { status = TString("BAD");}
-   
+
   /*
-   TF1* Fit2 = new TF1("fit2","gaus"); 
+   TF1* Fit2 = new TF1("fit2","gaus");
    Fit2->FixParameter(2,.3); // width
    Fit2->SetParameter(1, h->GetMaximumBin()*Peak2/Peak1);   // peak
   //Fit2->SetParameter(1, GetMax(h)*Peak2/Peak1);   // peak
 
-     
+
    h->Fit("fit2","MER+");
-   
+
    param2[0][0]=Fit2->GetParameter(0); //constant.
    param2[0][1]=Fit2->GetParameter(1); //Mean.
    param2[0][2]=Fit2->GetParameter(2); //sigma.
    param2[0][3]=Peak2/(Fit2->GetParameter(1));
    */
-   
+
    int i =0;
-   
+
    cout<<"\n*****************************************"<<endl;
    cout<<"*      Fits results  "<<RunNumber<<"          *"<<endl;
    cout<<"*****************************************\n"<<endl;
-   
+
    cout<<"constant ** Mean ** sigma ** Gain (e- per ADC unit)"<<endl;
    cout<<param[i][0]<<" ** "<<param[i][1]<<" ** "<<param[i][2]<<" ** "<<param[i][3]<<endl;
    cout<<param2[i][0]<<" ** "<<param2[i][1]<<" ** "<<param2[i][2]<<" ** "<<param2[i][3]<<endl;
-  
-   
+
+
    Char_t calib_string[50];
-      
+
    sprintf(calib_string,"Gain= %3.2f e-/ADCu, fit status= %s",param[0][3],status.Data());
-   
+
    gPad->SetBottomMargin(.15);
    cout<<calib_string<<endl;
    TText* inforeso = new TText(0.02,0.02,calib_string);
@@ -7977,11 +7988,11 @@ TPad* MimosaAnalysis::PlotCalibration(TH1F* h, Int_t manualFitRange)
    inforeso->SetTextSize(0.04);
    inforeso->SetTextColor(2);
    inforeso->Draw();
-   
-   
-   
+
+
+
    cout<<"END...."<<endl;
-   
+
 
 
 return Pad;
@@ -8013,21 +8024,21 @@ void MimosaAnalysis::MiniVectors()
   gStyle->SetOptStat(1111);
   gStyle->SetOptFit(0111);
   gStyle->SetStatX(1.0);
-  gStyle->SetStatY(1.0);	
+  gStyle->SetStatY(1.0);
   gStyle->SetStatW(0.18);
   gStyle->SetStatH(0.15);
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
   gStyle->SetLabelSize(0.06);
   gStyle->SetTitleSize(0.06);
-  gStyle->SetPadLeftMargin(0.15);  
+  gStyle->SetPadLeftMargin(0.15);
   gStyle->SetTitleH(.065);
   gStyle->SetTitleH(.085);
   gStyle->SetTitleOffset(1.);
   gStyle->SetOptTitle(1);
-  gStyle->SetOptStat(111111);  
+  gStyle->SetOptStat(111111);
   gErrorIgnoreLevel=2007;
-	
+
   // ---> 1st canvas.
   // --- Make CANVAS
 
@@ -8064,11 +8075,11 @@ void MimosaAnalysis::MiniVectors()
   TF1 *mygaus_posX = new TF1("mygaus_posX","gaus",-30.,30.);
   mygaus_posX->SetLineColor(3);
   mygaus_posX->SetLineStyle(2);
-  
+
   TF1 *mygaus_posY = new TF1("mygaus_posY","gaus",-30.,30.);
   mygaus_posY->SetLineColor(3);
   mygaus_posY->SetLineStyle(2);
-  
+
   TF1 *mygaus_angleX = new TF1("mygaus_angleX","gaus",-2.,1.5);
   mygaus_angleX->SetLineColor(3);
   mygaus_angleX->SetLineStyle(2);
@@ -8078,14 +8089,14 @@ void MimosaAnalysis::MiniVectors()
   mygaus_angleY->SetLineStyle(2);
 
   //TPaveStats *st;
-  
+
   mpad1->cd(1);  //gPad->SetLogy();
   hDiffPosX->SetLineWidth(2);
   hDiffPosX->SetLineColor(2);
   hDiffPosX->Fit("mygaus_posX","");
   //AutoZoom(hUserHitCorrelationLine)->Draw();
   //AutoZoom(hDiffPosU)->Draw();
-  hxtxPL3->Fit("gaus",""); 
+  hxtxPL3->Fit("gaus","");
   Double_t resXpl3 = hxtxPL3->GetFunction("gaus")->GetParameter(2);
   hxtxPL3->GetFunction("gaus")->SetLineColor(1);
   hxtxPL3->GetFunction("gaus")->SetLineStyle(2);
@@ -8104,14 +8115,14 @@ void MimosaAnalysis::MiniVectors()
   //st->SetX1NDC(.2);
   //st->SetX2NDC(.4);
   //st->SetTextColor(1);
-  
-  mpad1->cd(2);   //gPad->SetLogy();   
+
+  mpad1->cd(2);   //gPad->SetLogy();
   hDiffPosY->SetLineColor(2);
   hDiffPosY->SetLineWidth(2);
   hDiffPosY->Fit("mygaus_posY","");
   //AutoZoom(hUserHitCorrelationCol)->Draw();
   //AutoZoom(hDiffPosV)->Draw();
-  hytyPL3->Fit("gaus",""); 
+  hytyPL3->Fit("gaus","");
   Double_t resYpl3 = hytyPL3->GetFunction("gaus")->GetParameter(2);
   hytyPL3->GetFunction("gaus")->SetLineColor(1);
   hytyPL3->GetFunction("gaus")->SetLineStyle(2);
@@ -8120,9 +8131,9 @@ void MimosaAnalysis::MiniVectors()
   hytyPL4->GetFunction("gaus")->SetLineColor(4);
   hytyPL4->GetFunction("gaus")->SetLineStyle(2);
   hDiffPosY->Draw();
-  hytyPL3->Draw("sames");  
+  hytyPL3->Draw("sames");
   hytyPL4->Draw("sames");
-  
+
   mpad1->cd(3);  //gPad->SetLogy();
   hDiffAngleX->SetLineColor(2);
   hDiffAngleX->SetLineWidth(2);
@@ -8131,7 +8142,7 @@ void MimosaAnalysis::MiniVectors()
   //AutoZoom(hDiffAngleU)->Draw();
   hDiffAngleX->Draw();
 
-  mpad1->cd(6);  //gPad->SetLogy();  
+  mpad1->cd(6);  //gPad->SetLogy();
   printf("\nY-Angle resolution:\n");
   hDiffAngleY->SetLineColor(2);
   hDiffAngleY->SetLineWidth(2);
@@ -8141,17 +8152,17 @@ void MimosaAnalysis::MiniVectors()
   //AutoZoom(hDiffAngleV)->Draw();
   hDiffAngleY->Draw();
   mpad1->Update();
-  
+
   mpad1->cd(4);
-  hutuPL3->Fit("gaus",""); 
+  hutuPL3->Fit("gaus","");
   Double_t resUpl3 = hutuPL3->GetFunction("gaus")->GetParameter(2);
   hutuPL4->Fit("gaus","");
   Double_t resUpl4 = hutuPL4->GetFunction("gaus")->GetParameter(2);
   hutuPL3->Draw();
   hutuPL4->Draw("sames");
-  
+
   mpad1->cd(5);
-  hvtvPL3->Fit("gaus",""); 
+  hvtvPL3->Fit("gaus","");
   Double_t resVpl3 = hvtvPL3->GetFunction("gaus")->GetParameter(2);
   hvtvPL4->Fit("gaus","");
   Double_t resVpl4 = hvtvPL4->GetFunction("gaus")->GetParameter(2);
@@ -8159,12 +8170,12 @@ void MimosaAnalysis::MiniVectors()
   hvtvPL4->Draw("sames");
 
   // ---> 2nd canvas.
-  
+
   cMiniVec1 = new TCanvas("cMiniVec1","MiniVectors analysis - 2",560,20,750,850);
   cMiniVec1->Draw();
   cMiniVec1->Clear();
   cMiniVec1->SetFillColor(0);
-  cMiniVec1->SetBorderMode(0);  
+  cMiniVec1->SetBorderMode(0);
 
   cMiniVec1->cd();
   mpad0 = new TPad("mpad10","title 1",0.01,0.95,0.99,0.99);
@@ -8173,7 +8184,7 @@ void MimosaAnalysis::MiniVectors()
   mpad0->cd();
   ttt->DrawText( 0.05,0.6,Header);
   mpad0->Update();
-  
+
   cMiniVec1->cd();
   mpad1 = new TPad("mpad11","",0.01,0.01,0.99,0.94);
   mpad1->SetGrid(1);
@@ -8193,7 +8204,7 @@ void MimosaAnalysis::MiniVectors()
   hDiffAngleX12->Draw();
   mpad1->cd(6);
   hDiffAngleY12->Draw();
-  
+
   mpad1->cd(7);
   hdiffydiffx21->Draw("colz");
   mpad1->cd(8);
@@ -8215,29 +8226,29 @@ void MimosaAnalysis::MiniVectors()
   mpad1->cd(15);
   hDiffAngleYg1g1->Draw();
 
-  
+
   //--------------PRINTOUT
-  
+
   printf("Mini-vector results with planes %d and %d\n\n", ThePlaneNumber, ThePlaneNumber2);
-	 
+
   printf("X-Position resolution:\n");
   printf( "  mini-vector: %.1f um\n", mygaus_posX->GetParameter(2));
   printf( "  first  point: %.1f um\n", resXpl3);
   printf( "  second point: %.1f um\n", resXpl4);
-  
+
   printf("Y-Position resolution:\n");
   printf( "  mini-vector: %.1f um\n", mygaus_posY->GetParameter(2));
   printf( "  first  point: %.1f um\n", resYpl3);
   printf( "  second point: %.1f um\n", resYpl4);
-  
+
   printf("U-Position resolution in each plane:\n");
   printf( "  first  point: %.1f um\n", resUpl3);
   printf( "  second point: %.1f um\n", resUpl4);
-  
+
   printf("V-Position resolution in each plane:\n");
   printf( "  first  point: %.1f um\n", resVpl3);
   printf( "  second point: %.1f um\n", resVpl4);
-  
+
   printf("\nX-Angle resolution:\n");
   printf( "  mini-vector: %.1f degrees\n", mygaus_angleX->GetParameter(2));
 
@@ -8249,7 +8260,7 @@ void MimosaAnalysis::MiniVectors()
   //cd to result dir
   gSystem->cd(CreateGlobalResultDir());
   if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
- 
+
   Char_t ResultFileName2[50];
   sprintf(ResultFileName2,"run%dPl%d-%d_MiniVectors.root",RunNumber,ThePlaneNumber,ThePlaneNumber2);
   sprintf(ResultFileName2,"%s", fTool.LocalizeDirName( ResultFileName2)); // JB 2011/07/07
@@ -8260,8 +8271,8 @@ void MimosaAnalysis::MiniVectors()
   hDiffPosX->Write();
   hDiffPosY->Write();
   hDiffAngleX->Write();
-  hDiffAngleY->Write();  
-  
+  hDiffAngleY->Write();
+
   hxtxPL3->Write();
   hytyPL3->Write();
   hxtxPL4->Write();
@@ -8288,7 +8299,7 @@ void MimosaAnalysis::MiniVectors()
   hdiffydiffxg1g1->Write();
   hDiffAngleXg1g1->Write();
   hDiffAngleYg1g1->Write();
-  
+
   //tree_plume->Write();
   cMiniVec->Write();
   cMiniVec1->Write();
@@ -8298,11 +8309,11 @@ void MimosaAnalysis::MiniVectors()
   hGoodChi2Ty->Write();
   hGoodChi2AngleXZ->Write();
   hGoodChi2AngleYZ->Write();
-  
+
   ResultRootFile->Write();
   ResultRootFile->Close();
   printf("\n All plots saved in %s\n", ResultRootFile->GetName());
-  
+
   //delete ResultRootFile;
 
   MHist::Dir();
@@ -8324,7 +8335,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   //    - h1RmsOnTheta:        1D histogram displaying the RMS vs theta
   //    - h1ProjectionOnY:     1D histogram displaying the hit projection on the y-axis of the frame parallel to the bands
   //    - h1ProjectionOnX:     1D histogram displaying the hit projection on the x-axis of the frame parallel to the bands
-  //    - h1ProjectionOnYMult: same histogram as h1ProjectionOnY but depending on the clusters multiplicity  
+  //    - h1ProjectionOnYMult: same histogram as h1ProjectionOnY but depending on the clusters multiplicity
   //    - h1ProjectionOnXMult: same histogram as h1ProjectionOnX but depending on the clusters multiplicity
   //
   // h1ProjectionOnX and h1ProjectionOnXMult are fitted to evaluate the spatial resolution (parameter sigma).
@@ -8335,7 +8346,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   // JH 2014/06/16
 
 #ifdef UseROOFIT
-  
+
   double TickLength         = 0.05;
   double TitleOffSet        = 0.50;
   double TheSize            = 0.07;
@@ -8343,18 +8354,18 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   double TheSize3           = 0.20;
   double TheBottomMargin_Dn = 0.35;
   double Fraction_Pad       = 0.30;
-  
+
   hClusterSizeInLines->SetDirectory(0);
   hClusterSizeInColumns->SetDirectory(0);
   hClusterSize2DInLineAndColumns->SetDirectory(0);
-  
+
   h2dgoodhits->SetDirectory(0);
   h1RmsOnTheta->SetDirectory(0);
   h2RmsOnThetaScanVsThetaCut->SetDirectory(0);
   h2DXprimeVsYprime->SetDirectory(0);
   h1ProjectionOnY->SetDirectory(0);
   h1ProjectionOnX->SetDirectory(0);
-  for(Int_t i=0; i<4; i++) {  
+  for(Int_t i=0; i<4; i++) {
     h1ProjectionOnYMult[i]->SetDirectory(0);
     h1ProjectionOnXMult[i]->SetDirectory(0);
   }
@@ -8381,12 +8392,12 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   gStyle->SetOptTitle(1);
   gStyle->SetOptStat(1111);
   gStyle->SetPalette(1,0);
-  
+
 
   //---------------------------------------------------------------
   // Evaluate the axis range of 2D histograms (depending on the bands angle)
   Double_t Xrange[2], Yrange[2];
-  if(theta_init >=0) { 
+  if(theta_init >=0) {
     Xrange[0] = geomUmin*TMath::Cos(theta_init*TMath::Pi()/180.0) - geomVmax*TMath::Sin(theta_init*TMath::Pi()/180.0);
     Xrange[1] = geomUmax*TMath::Cos(theta_init*TMath::Pi()/180.0) - geomVmin*TMath::Sin(theta_init*TMath::Pi()/180.0);
     Yrange[0] = geomUmin*TMath::Sin(theta_init*TMath::Pi()/180.0) + geomVmin*TMath::Cos(theta_init*TMath::Pi()/180.0);
@@ -8400,20 +8411,20 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   }
 
   if ( Xrange[1]-Xrange[0] > Yrange[1]-Yrange[0] ) {
-    
+
     Double_t RangeDifference = (Xrange[1]-Xrange[0]) - (Yrange[1]-Yrange[0]);
     Yrange[0] -= 0.5 * RangeDifference;
     Yrange[1] += 0.5 * RangeDifference;
-    
+
   }
   else {
-    
+
     Double_t RangeDifference = (Yrange[1]-Yrange[0]) - (Xrange[1]-Xrange[0]);
     Xrange[0] -= 0.5 * RangeDifference;
-    Xrange[1] += 0.5 * RangeDifference;  
-    
+    Xrange[1] += 0.5 * RangeDifference;
+
   }
-  
+
   double delta = Xrange[1] - Xrange[0];
   Xrange[0] -= 0.1*delta;
   Xrange[1] += 0.1*delta;
@@ -8421,8 +8432,8 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   delta = Yrange[1] - Yrange[0];
   Yrange[0] -= 0.1*delta;
   Yrange[1] += 0.1*delta;
-  
-  
+
+
   //---------------------------------------------------------------
   // Then plot
   TCanvas *cImaging1 = new TCanvas("cImaging1","Features on matrix",1000,1000);
@@ -8430,7 +8441,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   cImaging1->Clear();
   cImaging1->SetBorderMode(0);
   cImaging1->SetTickx(1);
-  cImaging1->SetTicky(1);    
+  cImaging1->SetTicky(1);
   h2dgoodhits->SetAxisRange(Xrange[0], Xrange[1],"X");
   h2dgoodhits->SetAxisRange(Yrange[0], Yrange[1],"Y");
   h2dgoodhits->SetStats(false);
@@ -8475,16 +8486,16 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   TheZone[3]->Draw();
 
   TCanvas *cImaging2 = NULL;
-  
+
   if ( FirstLoop ) { // if the angle theta has been evaluated
 
     Double_t RMSmin = 1.0e+20;
     Double_t ThetaScanMin = -999;
     Double_t ThetaCutMin = -999;
-    
+
     for (Int_t i_thetaCut=0; i_thetaCut<h2RmsOnThetaScanVsThetaCut->GetYaxis()->GetNbins(); i_thetaCut++) {
       for (Int_t i_thetaScan=0; i_thetaScan<h2RmsOnThetaScanVsThetaCut->GetXaxis()->GetNbins(); i_thetaScan++) {
-        
+
         if (h2RmsOnThetaScanVsThetaCut->GetBinContent(i_thetaScan+1, i_thetaCut+1) < RMSmin ) {
           RMSmin = h2RmsOnThetaScanVsThetaCut->GetBinContent(i_thetaScan+1, i_thetaCut+1);
           ThetaScanMin = h2RmsOnThetaScanVsThetaCut->GetXaxis()->GetBinCenter(i_thetaScan+1);
@@ -8492,20 +8503,20 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
         }
       }
     }
-    
+
     TLine* l_ThetaMin_V = new TLine(ThetaScanMin, h2RmsOnThetaScanVsThetaCut->GetYaxis()->GetXmin(),
                                     ThetaScanMin, h2RmsOnThetaScanVsThetaCut->GetYaxis()->GetXmax());
     l_ThetaMin_V->SetLineColor(1);
     l_ThetaMin_V->SetLineWidth(2);
     l_ThetaMin_V->SetLineStyle(2);
-  
+
     TLine* l_ThetaMin_H = new TLine(h2RmsOnThetaScanVsThetaCut->GetXaxis()->GetXmin(), ThetaCutMin,
                                     h2RmsOnThetaScanVsThetaCut->GetXaxis()->GetXmax(), ThetaCutMin);
     l_ThetaMin_H->SetLineColor(1);
     l_ThetaMin_H->SetLineWidth(2);
     l_ThetaMin_H->SetLineStyle(2);
-  
-    
+
+
     cImaging2 = new TCanvas("cImaging2","RMS vs Theta",1);
     cImaging2->Draw();
     cImaging2->Clear();
@@ -8520,43 +8531,43 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
     h2RmsOnThetaScanVsThetaCut->Draw("CONT1Z");
     l_ThetaMin_H->Draw();
     l_ThetaMin_V->Draw();
-    
+
   } // end if FirstLoop
- 
+
   // **********************************************************************************
   // ******************************** PLOTS AND FITS **********************************
   //
   // Fit of the data projection on x, depending on different multiplicities:
   // h1ProjectionOnX, h1ProjectionOnXMult
   // **********************************************************************************
-  
+
   // **************************************************************
   // PREPARATION OF THE FIT
-  
+
   //---------------------------------------------------------------
   // Search for the position of the first peak center: x0
   Bool_t condition = kTRUE;
   Double_t binmax = 0;
   Double_t bini;
   Int_t i_max, i_rangemax;
-  
+
   Int_t i = 1;
 
   do {
-    
+
     bini = h1ProjectionOnX->GetBinContent(i);
-    
+
     if (bini < binmax-0.8*binmax && bini > 0) {
         condition=kFALSE;
         i_rangemax=i;
     }
-    
+
     if (bini > binmax) {
       binmax = bini;
       i_max = i;
     }
-    i++;  
-    
+    i++;
+
   }
   while (condition);
 
@@ -8568,26 +8579,26 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   Double_t rangex0[2];
   rangex0[0] = 1.0e20;
   rangex0[1] = -1.0e20;
-  
+
   for (Int_t i=0; i<=i_rangemax; i++) {
-  
+
     bini = h1ProjectionOnX->GetBinContent(i);
-    
-    if (TMath::Abs(bini- binmax) < 0.5*binmax) { 
+
+    if (TMath::Abs(bini- binmax) < 0.5*binmax) {
       Double_t center = h1ProjectionOnX->GetBinCenter(i+1);
       Double_t width = 0.5*h1ProjectionOnX->GetBinWidth(i+1);
-      
+
       if (rangex0[0] > center-width) rangex0[0] = center-width;
       if (rangex0[1] < center+width) rangex0[1] = center+width;
     }
   }
-  
+
   cout << "\n*------------------------------------*" << endl;
   cout << "Expected position of the 1st peak:  x0 = " << x0 << "   N0 = " << h1ProjectionOnX->GetBinContent(i_max) <<endl;
   cout << "Expected range of the 1st peak: xRange = (" << rangex0[0] << ", " << rangex0[1] << ")" << endl;
   cout << "Expected W = " << (rangex0[1] - rangex0[0]) << endl;
-  cout << "*------------------------------------*\n" << endl;  
-  
+  cout << "*------------------------------------*\n" << endl;
+
 
   //---------------------------------------------------------------
   // Fit function
@@ -8604,13 +8615,13 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   //
   // Two types of fit are possible:
   // - chooseFit=true: where the parameters S and W are the same for all bands
-  //    [0] = x0        [1] = S         [2] = W         [3] = sigma     [i] (i>4) = N_i  
+  //    [0] = x0        [1] = S         [2] = W         [3] = sigma     [i] (i>4) = N_i
   // - chooseFit=false: where the parameters S and W depend on bands.
   //    [0] = x0        [1] = sigma     [2] = N_1       [3] = W_1       [4+(i-1)*3] = W_i       [5+(i-1)*3] = N_{i+1}       [6+(i-1)*3] = W_{i+1}
 
   //Declaration of the variables to be included in the dataset
   //- X' and the cluster multiplicity
-  
+
 
   double DeltaX0 = rangex0[1]-rangex0[0];
 
@@ -8652,13 +8663,13 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
     cout << endl;
     assert(false);
   }
-  
-  if(chooseFit) { // if chooseFit (S and W unchanging)    
+
+  if(chooseFit) { // if chooseFit (S and W unchanging)
     cout << "\nFit function with S and W the same for all bands" << endl;
-    
+
     // *********************************
     // FIT OF THE GLOBAL HISTOGRAM
-    
+
     W1->SetName("W");
     W1->SetTitle("W");
 
@@ -8666,7 +8677,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
     S2->SetTitle("S");
 
     if(Npeak == 1) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8684,7 +8695,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 2) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8702,7 +8713,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 3) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8720,7 +8731,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 4) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8738,7 +8749,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 5) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8760,7 +8771,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
     cout << "\nFit function with S and W different for all bands" << endl;
 
     if(Npeak == 1) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8778,7 +8789,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 2) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8796,7 +8807,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 3) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8814,7 +8825,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 4) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8832,7 +8843,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
 				    RooRealConstant::value(0.0));
     }
     else if(Npeak == 5) {
-      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf", 
+      TheSignalPdf = new DXRay2DPdf("TheSignalPdf","Signal Pdf",
 				    *Xprime,*Yprime,
 				    *X0,
 				    *sigma,
@@ -8852,7 +8863,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   } // end if chooseFit=false
 
   //---------------------------------------------------------------
-  // Save the different values of sigma before plot them    
+  // Save the different values of sigma before plot them
   //   h1Sigma->SetBinContent(1, fitFunc->GetParameter(1));
   //   h1Sigma->SetBinError(1, fitFunc->GetParError(1));
   //   for (Int_t i_mult=0; i_mult<4; i_mult++) h1Sigma->SetBinContent(i_mult+2, fitFuncMult[i_mult]->GetParameter(1));
@@ -8904,7 +8915,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
                                      h1ProjectionOnX->GetXaxis()->GetXmax(),-2.0);
   l_Xprime_pull_2->SetLineColor(2);
   l_Xprime_pull_2->SetLineWidth(2);
-  l_Xprime_pull_2->SetLineStyle(2);  
+  l_Xprime_pull_2->SetLineStyle(2);
 
   TH1F* h1ProjectionOnY_clone = new TH1F(*h1ProjectionOnY);
   h1ProjectionOnY_clone->SetYTitle("Pulls");
@@ -8933,7 +8944,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
                                      h1ProjectionOnY->GetXaxis()->GetXmax(),-2.0);
   l_Yprime_pull_2->SetLineColor(2);
   l_Yprime_pull_2->SetLineWidth(2);
-  l_Yprime_pull_2->SetLineStyle(2);  
+  l_Yprime_pull_2->SetLineStyle(2);
 
 
   RooDataSet* TheDataSet = RooDataSet::read(TheOutFileName.Data(),RooArgList(*Xprime,*Yprime,*Multiplicity),"Q");  //AP 2014/07/24
@@ -8959,7 +8970,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   resFit_all->Print("v");
 
   // END OF PREPARATION OF THE FIT
-  // **************************************************************  
+  // **************************************************************
 
 
   // **********************************************************************************
@@ -8999,7 +9010,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   Pull2DXprimeVsYprime->SetTitle("Pull vs X' and Y' for all multiplicities");
   Pull2DXprimeVsYprime->SetZTitle("Pull");
   Pull2DXprimeVsYprime->SetDirectory(0);
-  
+
   for(int ixprime=0;ixprime<h2DXprimeVsYprime->GetXaxis()->GetNbins();ixprime++) {
     double cx = h2DXprimeVsYprime->GetXaxis()->GetBinCenter(ixprime+1);
     double wx = h2DXprimeVsYprime->GetXaxis()->GetBinWidth(ixprime+1)*0.5;
@@ -9017,7 +9028,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
       Yprime->setVal(cy);
 
       if(h2DXprimeVsYprime->GetBinContent(ixprime+1,iyprime+1) == 0) continue;
-      
+
       double val = TheSignalPdf->getVal(RooArgSet(*Xprime,*Yprime))*Nsig.getVal();
       val += TheNoisePdf.getVal(RooArgSet(*Xprime,*Yprime))*Nnoise.getVal();
       val *= (Xrange_tmp[1]-Xrange_tmp[0])*(Yrange_tmp[1]-Yrange_tmp[0]);
@@ -9251,7 +9262,7 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
     cImaging2->Write();
     ResultRootFile2->Close();
   }
-  
+
   cout << "\n All plots saved in " << ResultRootFile->GetName() << endl;
   delete ResultRootFile;
   //MHist::Dir();
@@ -9259,7 +9270,6 @@ void MimosaAnalysis::CheckImaging(Double_t theta_init, Int_t Npeak, Double_t S, 
   TString command = TString("rm -f ") + TheOutFileName;
   gSystem->Exec(command.Data());
 
-#endif  
-  
-}
+#endif
 
+}

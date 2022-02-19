@@ -3,18 +3,18 @@
 
 //
 // The functions below identify bad pixels.
-// The functions return  1 if the pixel is bad, 
-//                       0 if it can be used for further analysis. 
-//  
+// The functions return  1 if the pixel is bad,
+//                       0 if it can be used for further analysis.
+//
 // The GlobalTool class has a function vetoPixel which points to the desired
-//  following function according to the value of the field "NoiseRun" in the 
+//  following function according to the value of the field "NoiseRun" in the
 //  config file. The matching between the run number and the function is done
 //  with the SetVetoFunction method.
 //
 // The user can define its own function below and shall also set the proper
 //  matchin in the SetVetoFunction method.
 //  BEWARE chipNb IS THE INPUT NOT THE PLANE INDEX!
-//  
+//
 //
 // Mechanism setup on 2012/03/11
 
@@ -26,9 +26,9 @@ bool vetoPixel_IPNLtelescopeV01( int chipNb, int row, int col) //26166
   // IPNL telescope configuration,
   // DESY, march 2011
   // GANIL, July 2011
-  
+
   // GANIL 07.2012, RSB 8, 0.1% over 10.000 evnts (run26166 )
-  
+
   // Plane: 1 2 3 4 5 6 7 8
   // Input: 5 3 1 7 6 4 2 8 = chipNb+1
 
@@ -67,7 +67,7 @@ bool vetoPixel_IPNLtelescopeV02 ( int chipNb, int row, int col) //26167
   // If using CumulatedRawData2D to determine noisy pixels, use bottom left coordinates of pixels
 
   // HIT 12.2012, RSB 8, 0.1% over 10.000 evnts (run1)
-  
+
  return
  // Plane 1
       (chipNb==6 && row==512 && col==119)
@@ -127,7 +127,7 @@ bool vetoPixel_IPNLtelescopeV03 ( int chipNb, int row, int col) //26168
   // If using CumulatedRawData2D to determine noisy pixels, use bottom left coordinates of pixels
 
   // GSI 08.2012, RSB 8, 0.1% over 10.000 evnts (run21+51)
-  
+
  return
       0
 
@@ -269,7 +269,7 @@ bool vetoPixel_IPNLtelescopeV03 ( int chipNb, int row, int col) //26168
 // RUN21 : 100kEv, 0.5%= occur min = 500
    || (chipNb==1 && row==535 && col==485)
 // HIT1 run56
-   || (chipNb==1 && row==512 && col==899) 
+   || (chipNb==1 && row==512 && col==899)
    || (chipNb==1 && row==156 && col==1111)
 
 ////////////////////////
@@ -322,7 +322,7 @@ bool vetoPixel_IPNLtelescopeV04 ( int chipNb, int row, int col) //26169
 // * Relative threshold: 1.000e-04 for all except 1L + 1R
 // * Relative threshold: 1.000e-02 for 1L + 1R
 ///////////////////////////////////////////////////
-  
+
         return
                 0
 //////////////////////////////////////////
@@ -535,7 +535,7 @@ bool vetoPixel_IPNLtelescopeV04 ( int chipNb, int row, int col) //26169
                         || (row==156  && col==881)
                         || (row==271  && col==969)
                         || (row==295  && col==949)
-                        
+
                         ))
 
 //////////////////////////////////////////
@@ -2471,7 +2471,7 @@ bool vetoPixel_IPNLtelescopeV06 ( int chipNb, int row, int col) //26171
 // * Relative threshold: 1.000e-04 for all except 1L + 1R
 // * Relative threshold: 1.000e-02 for 1L + 1R
 ///////////////////////////////////////////////////
- 
+
         return
                 0
 //////////////////////////////////////////
@@ -2681,7 +2681,7 @@ bool vetoPixel_IPNLtelescopeV06 ( int chipNb, int row, int col) //26171
                         || (row==461  && col==390)
                         || (row==467  && col==649)
                         || (row==473  && col==272)
-                        || (row==479  && col==87)                        
+                        || (row==479  && col==87)
                         ))
 
 //////////////////////////////////////////
@@ -2750,7 +2750,7 @@ bool vetoPixel_IPNLtelescopeV06 ( int chipNb, int row, int col) //26171
                         //RUN55 HIT2
                         || (row==338  && col==163)
                         || (row==338  && col==164)
-                        || (row==338  && col==165)                        
+                        || (row==338  && col==165)
                         ))
 
 //////////////////////////////////////////
@@ -2942,10 +2942,10 @@ bool vetoPixel_IPNLtelescopeV10 ( int chipNb, int row, int col) //26180
 // * Absolute threshold: 18
 // * Relative threshold: 1.000e-04
 ///////////////////////////////////////////////////
-  
+
 
         return
-        
+
         0
 //////////////////////////////////////////
 //  Plane 1 ; name = 1Left ; InputNumber = 4 ; ChipNumber = 3
@@ -2983,7 +2983,7 @@ bool vetoPixel_IPNLtelescopeV10 ( int chipNb, int row, int col) //26180
                         || (row==556 && col>=105 && col<=160)
                         || (row==556 && 185<=col && col<=210)
                         || (row==560  && col==1059)
-                        
+
                         ))
 //////////////////////////////////////////
 
@@ -3255,14 +3255,14 @@ bool vetoPixel_IPNLtelescopeV10 ( int chipNb, int row, int col) //26180
 // -----------------------------------------------------------------------------
 
 bool vetoPixel_Mi26telescope( int chipNb, int row, int col) {
-  
+
   // 4 Mimosa 26 telescope configuration,
-  // 
-  // 
+  //
+  //
   // Plane: 1 2 5 6 (plane 3 & 4 are DUT)
   // Input: 1 2 5 6 = chipNb+1
-  
-  return 
+
+  return
   (chipNb==4 && row==43 &&  col==200)
   || (chipNb==2 && row==338 && 176<col && col<215)
   || (chipNb==2 && 447<row && row<464 && col==233)
@@ -3284,14 +3284,14 @@ bool vetoPixel_Mi26telescope( int chipNb, int row, int col) {
 // -----------------------------------------------------------------------------
 
 bool vetoPixel_Mi28telescope( int chipNb, int row, int col) {
-  
+
   // 4 Mimosa 28 telescope configuration,
-  // 
-  // 
+  //
+  //
   // Plane: 1 2 5 6 (plane 3 & 4 are DUT)
   // Input: 1 2 5 6 = chipNb+1
-  
-  return 
+
+  return
   (chipNb==4 && row==43 &&  col==200)
   || (chipNb==2 && row==338 && 176<col && col<215)
   || (chipNb==2 && 447<row && row<464 && col==233)
@@ -3313,14 +3313,14 @@ bool vetoPixel_Mi28telescope( int chipNb, int row, int col) {
 // -----------------------------------------------------------------------------
 
 bool vetoPixel_Mi28telescopeGSI( int chipNb, int row, int col) {
-  
+
   // 6 Mimosa 28 telescope configuration,
-  // 
-  // 
+  //
+  //
   // Plane: 1 2 3 4 5 6 (plane 3 & 4 are DUT)
   // Input: 3 4 1 2 6 5 = chipNb+1
-  
-  return 
+
+  return
   (chipNb==3 && row==32 &&  col==279)
   || (chipNb==3 && row==16 &&  col==278)
   || (chipNb==0 && row==76 && col==32)
@@ -3338,14 +3338,14 @@ bool vetoPixel_Mi28telescopeGSI( int chipNb, int row, int col) {
 // -----------------------------------------------------------------------------
 
 bool vetoPixel_Mi26Aarhus( int chipNb, int row, int col) {
-  
+
   // 4 Mimosa 26 unknown geometry,
-  // 
-  // 
+  //
+  //
   // Plane: 1 2 3 4
   // Input: 1 2 3 4 = chipNb+1
-  
-  return 
+
+  return
   (chipNb==0 && row==451 &&  col==46)
   || (chipNb==0 && row==431 &&  col==1118)
   || (chipNb==2 && row==96 && col==10)
@@ -3364,14 +3364,14 @@ bool vetoPixel_Mi26Aarhus( int chipNb, int row, int col) {
 // -----------------------------------------------------------------------------
 
 bool vetoPixel_Mi26SOLEIL( int chipNb, int row, int col) {
-  
+
   // 2 Mimosa 26
-  // 
-  // 
+  //
+  //
   // Plane: 1 2
   // Input: 1 2 = chipNb+1
-  
-  return 
+
+  return
   (chipNb==0 && row==88 &&  col<=400)
   || (chipNb==0 && row==87 &&  215<=col && col<=330)
   || (chipNb==0 && row==137 && col==833)
@@ -3389,6 +3389,40 @@ bool vetoPixel_Mi26SOLEIL( int chipNb, int row, int col) {
   || (chipNb==1 && row==551 && col==1066)
   || (chipNb==1 && row==369 && col==1114)
   || (chipNb==1 && row==192 && col==1121)
+  ;
+}
+
+bool vetoPixel_SITRINEO_IPHC( int chipNb, int row, int col) //28010
+{
+  // Noisy pixels filtering, called with NoiseRun = 28010
+  // SITRINEO - IPHC telescope configuration,
+  //
+  //
+
+
+  // Plane: 1 2 3 4
+  // Input: 1 2 3 4 = chipNb+1
+
+  // List updated by  on Feb 07 2020
+
+ return
+        (chipNb==4 && row==43 &&  col==200)
+     || (chipNb==2 && row==338 && 162<col && col<215)
+     || (chipNb==2 && 447<row && row<464 && col==233)
+     || (chipNb==0 && row==419 && 823<col && col<828)
+     || (chipNb==0 && 420<row && row<428 && col==835)
+     || (chipNb==0 && row==420 && col>837 && col<843)
+     || (chipNb==0 && row==535 && col==485)
+     || (chipNb==6 && row==512 && col==119)
+     || (chipNb==5 && row==253 && 99<col && col<329)
+     || (chipNb==3 && row==314 && col==808)
+     || (chipNb==3 && row==314 && col==811)
+     || (chipNb==3 && row==314 && col==815)
+     || (chipNb==3 && row==319 && 817<col && col<825)
+     || (chipNb==7 && row==422 && -1<col && col<150)
+     || (chipNb==7 && row==423 && -1<col && col<150)
+     || (chipNb==7 && row==61 && col==652)
+
   ;
 }
 

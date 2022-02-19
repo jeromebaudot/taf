@@ -46,6 +46,7 @@
 // Last Modified: JB, 2016/10/17 DPlane::DPlane
 // Last Modified: JB, 2018/05/04 DPlane::Update
 // Last Modified: JB, 2018/07/04 Dplane, Update, SetPixelGainFromHisto for pixel gain map usage
+// Last Modified: JB, 2010/11/25 Update
 
 /////////////////////////////////////////////////////////////
 // Class Description of DPlane                             //
@@ -79,7 +80,6 @@
 #include "DGlobalTools.h"
 #include <stdlib.h>
 #include "TMimosa24_25Map.h" //RDM120509
-#include "TSpectrum2.h"
 
 #include <assert.h>
 
@@ -94,9 +94,6 @@ DPlane::DPlane()
   fDebugPlane=0;
 
   rand = new TRandom(182984);
-
-  spectrum = NULL;
-  //if(fHitFinder == 1 && GetAnalysisMode() == 2) spectrum = new TSpectrum2();
 
 }
 
@@ -146,8 +143,6 @@ DPlane::DPlane(DTracker& aTracker, const Int_t aPlaneNumber, const Int_t aLadder
   fPlanePurpose        = fc->GetPlanePar(fPlaneNumber).Purpose;   //YV 08/02/2010
   fHitFinder           = fc->GetPlanePar(fPlaneNumber).HitFinder; // JB 2013/07/17
 
-  spectrum = NULL;
-  if(fHitFinder == 1 && GetAnalysisMode() == 2) spectrum = new TSpectrum2();
 
   rand                 = new TRandom(fc->GetAnalysisPar().MCSeed + 3*fPlaneNumber);
 
@@ -681,8 +676,6 @@ DPlane::~DPlane(){
   delete fEtaIntU2;
   delete fEtaIntV2;
   delete fNoiseFile;  //YV 27/11/09
-
-  delete spectrum;
 
 }
 
@@ -1366,6 +1359,7 @@ Bool_t DPlane::Update(){
   // Last Modified, JB 2016/08/17 signed value in multiframe mode
   // Last Modified, JB 2016/08/19 allow NoieRun option for readmode 232
   // Last Modified, JB 2018/05/04 new readout==3 mode for polarity inversion
+  // Last Modified, JB 2010/11/25 implemented mimosatype=61 (MonolithicImager)
 
   Bool_t goForAnalysis = kTRUE ;
   Bool_t planeReady = kTRUE ; // JB 2010/09/20
@@ -1442,8 +1436,21 @@ Bool_t DPlane::Update(){
     for (Int_t tci = 0; tci < fPixelsN; tci++) { // loop over hit pixels
       aPixel = fListOfPixels->at(tci);
       st = aPixel->GetPixelIndex();
-      linPhys = st / fStripsNu;
-      colPhys = st % fStripsNu;
+      if( fMimosaType==61 ) {
+        int input = st/32768; // input nb
+        int stinput = st%32768; // index in input
+        int pseudocol = stinput%128;
+        int adc = 3-(pseudocol%4);
+        int group = pseudocol/4;
+        linPhys = stinput / 128;
+        colPhys = input*128 + group + adc*32;
+        // printf( "    st=%6d, inp=%d, pseudoc=%3d, a=%d, g=%d\n", st, input, pseudocol, adc, group);
+      }
+      else {
+        linPhys = st / fStripsNu;
+        colPhys = st % fStripsNu;
+      }
+
       stPhys = colPhys + linPhys*fStripsNu;
       if( fDebugPlane>2 && stPhys>fStripsN-1) printf(" Pb1 with st %d, (line,col)=(%d,%d), physIndex %d, value %f\n", st, linPhys, colPhys, stPhys, aPixel->GetPulseHeight());
       ComputeStripPosition( colPhys, linPhys, u, v, w);
@@ -3713,7 +3720,7 @@ void DPlane::find_hits(){
           // All pusleheight is 1 so all pixels are seed candidates
           // JB 2009/08/21
           else if ( fAnalysisMode==3 ){
-            if( fDebugPlane>3) printf("DPlane: finding hits try pixel %d with Pulseheight %f\n", tci, fListOfPixels->at(tci)->GetPulseHeight());
+            if( fDebugPlane>3) printf("DPlane(%d): finding hits (current index %d) try pixel %d with Pulseheight %f\n", fPlaneNumber, fHitsN, tci, fListOfPixels->at(tci)->GetPulseHeight());
 
             seed = tci;
             break;
@@ -3735,7 +3742,7 @@ void DPlane::find_hits(){
     if( seed > -1 ) { // if a seed is defined
 
 
-      if( fDebugPlane>1 ) printf("DPlane: finding hits found potential seed pixel %d with pulse %.3f and SN %.3f (<?> %f)\n", seed, fListOfPixels->at(seed)->GetPulseHeight(), fListOfPixels->at(seed)->GetPulseHeightToNoise(), fCut->GetSeedPulseHeightToNoise());
+      if( fDebugPlane>1 ) printf("DPlane(%d): finding hits (current index %d) found potential seed pixel %d with pulse %.3f and SN %.3f (<?> %f), already found=%d\n", fPlaneNumber, fHitsN, seed, fListOfPixels->at(seed)->GetPulseHeight(), fListOfPixels->at(seed)->GetPulseHeightToNoise(), fCut->GetSeedPulseHeightToNoise(), tested[seed]);
 
       fListOfPixels->at(seed)->SetFound(kTRUE); // mark the strip as found
       tested[seed] = kTRUE; // mark the strip as already tested for seed
@@ -3756,7 +3763,7 @@ void DPlane::find_hits(){
             bool IsBigCluster = false;
             int MaxClusterSize = fc->GetPlanePar(fPlaneNumber).MaxNStrips;
             hitOK = fHit[fHitsN]->Analyse_Iterative( GetStrip( stPhys),IsBigCluster,MaxClusterSize);
-            if(IsBigCluster) cout << "  DHit: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
+            if(IsBigCluster) cout << "  DPlane::find_hits: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
           }
           else {
             //Reseach region clustering algorith as default:
@@ -3768,14 +3775,14 @@ void DPlane::find_hits(){
         else {
           if(fHitFinder == 0) {
             //Reseach region clustering algorith
-            hitOK = fHit[fHitsN]->Analyse( seed, fListOfPixels);
+           hitOK = fHit[fHitsN]->Analyse( seed, fListOfPixels);
           }
           else if(fHitFinder == 1) {
             //Iterative clustering algorithm
             bool IsBigCluster = false;
             int MaxClusterSize = fc->GetPlanePar(fPlaneNumber).MaxNStrips;
             hitOK = fHit[fHitsN]->Analyse_Iterative( seed, fListOfPixels,IsBigCluster,MaxClusterSize);
-            if(IsBigCluster) cout << "  DHit: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
+            if(IsBigCluster) cout << "  DPlane::find_hits:: Found the big cluster at Evt " << fSession->GetCurrentEventNumber()-1 << endl << endl;
           }
           else if(fHitFinder == 2){
             // Compare the distance from real center of gravity to the pixel position with a search radius to associate this pixel
@@ -3839,7 +3846,7 @@ void DPlane::find_hits(){
 
   delete[] tested; // reduce memory leakage, BH 2013/08/21
 
-  if( fDebugPlane>1 ) printf("         %d hits found\n", fHitsN);
+  if( fDebugPlane>1 ) printf("  ==>  DPlane(%d)::find_hits %d hits found\n", fPlaneNumber, fHitsN);
 
   return;
 

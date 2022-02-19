@@ -8,7 +8,7 @@
   //                                                         //
   //  Describes all Raw data analysis methods                //
   //                                                         //
-  ////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////
 
 #include "TObject.h"
 #include "DTracker.h"
@@ -101,12 +101,50 @@ class MRaw : public TObject {
  Int_t   GetFileNumber();
 
  // Sitrineo
- struct trackpair_t {
+ struct sitrihitpair_t {
+   int plane1;
+   int hitid1;
+   double x1;
+   double y1;
+   double z1;
+   int plane2;
+   int hitid2;
+   double x2;
+   double y2;
+   double z2;
+   double deltaX;
+   double deltaY;
+   double deltaZ;
+   double slopeX;
+   double slopeY;
+ };
+ struct sitritrack_t {
+     int id;
      int firstTrackID;
      int secondTrackID;
-     double slope1;
-     double slope2;
-     double momentumXY;
+     int plane[4];
+     int hit[4];
+     double secondtrack_DX ;
+     double secondtrack_DY ;
+     double secondtrack_DZ ;
+     double secondtrack_slopeX;
+     double secondtrack_slopeY;
+     double firsttrack_DX ;
+     double firsttrack_DY ;
+     double firsttrack_DZ ;
+     double firsttrack_slopeX;
+     double firsttrack_slopeY;
+     double Dslope_X;
+     double Dslope_Y;
+     double momentum_X;
+     double momentum_Y;
+     double fit_origin_X;
+     double fit_origin_Y;
+     double fit_slope_X;
+     double fit_slope_Y;
+     double fit_momentum;
+     double fit_chi2X;
+     double fit_chi2Y;
  };
 
 
@@ -235,8 +273,6 @@ void BeastCheckPosition();
 
   void CumulateTxtFrames( Int_t nEvents=1000, Int_t nCumulFrames=100);
 
-//#define USETMVA
-#ifdef USETMVA
   void FillnTupleForTMVA(int    nEvents       = 100,
 			 double my_theta_mean = 0.0,
 			 double my_phi_mean   = 0.0);
@@ -247,12 +283,12 @@ void BeastCheckPosition();
 		 TString OutputFile   = "TMVAReg.root",
 		 int Nevts_training   = 10000,
 		 int Nevts_testing    = 10000);
-#endif
 
-  void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2);
-  void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2);
-  void SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList);
-  void SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Int_t &nPairs, trackpair_t* pairList);
+  void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
+  void SitrineoContinuous( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
+  void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
+  void SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist);
+  int SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist, Double_t minX1=-10000, Double_t maxX1=10000, Double_t minY1=-10000, Double_t maxY1=10000, Double_t maxSlope1=30.);
 
 
  using TObject::Clear;
@@ -272,7 +308,6 @@ void BeastCheckPosition();
 ClassDef(MRaw,1) //Mimosa Raw studies
 
 };
-
 
 
 #endif

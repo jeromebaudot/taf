@@ -1,5 +1,5 @@
 // @(#)maf/maf:$Name:  $:$Id: MPrep.cxx v.1 2005/10/02 18:03:46 sha Exp $
-// Author: A. Shabetai 
+// Author: A. Shabetai
 // Last modified: JB 2009/05/12
 // Last modified: RDM 2009/08/26 removed request that there is only one track AND loop over all hits
 // Last modified: JB 2009/09/14 InitCorPar
@@ -20,13 +20,13 @@
   //                                                         //
   //  Contains all methods to prepare an analysis with MAF   //
   //                                                         //
-  //                                                         //   
+  //                                                         //
   ////////////////////////////////////////////////////////////
 
 
 #include "MAnalysis.h"
 
-ClassImp(MimosaAnalysis) 
+ClassImp(MimosaAnalysis)
 
 //______________________________________________________________________________
 //
@@ -48,11 +48,11 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
 }
 
 //_____________________________________________________________________________
-  void MimosaAnalysis::InitSession(const Int_t TheRun,const unsigned int  ThePlane/*=0*/, Int_t EventBuildingMode, TString ConfigFile/*=""*/, TString ConfigDir/*=""*/) 
+  void MimosaAnalysis::InitSession(const Int_t TheRun,const unsigned int  ThePlane/*=0*/, Int_t EventBuildingMode, TString ConfigFile/*=""*/, TString ConfigDir/*=""*/, TString DataDir/*=""*/, TString DataFile/*=""*/)
 {
 
   // initialization of TAF
-  // fSession is a global & static object, see DSession.h   
+  // fSession is a global & static object, see DSession.h
   //
   // Last modified JB 2009/05/12
   // Last modified JB 2011/04/12
@@ -62,9 +62,11 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   // Last modified JB 2013/08/22 added ROOT display options
   // Last modified VR 2014/06/30 rewrite the files and directories management, especialy fot the config dir/file
   // Last modified JB 2016/08/17 added config directory option
-  
+  // Last modified JB 2021/05/01 added data directory option
+  // Last modified JB 2021/11/15 added data filename option
+
   fSession = new DSession("options");
-  
+
   //*******************************
   // Files and directories
   //*******************************
@@ -76,19 +78,19 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   DTDIR = gSystem->Getenv("DTDIR"); // The TAF installation directory, set via environment variable
   DTDIR += "/";
   fTool.LocalizeDirName(&DTDIR);
-  
+
   //TAF launched dir.
   fLaunchedDirectory = gSystem->WorkingDirectory();// The dir. where has been launched
   fLaunchedDirectory += "/";
   fTool.LocalizeDirName(&fLaunchedDirectory);
-  
-  // TAF Working Directory  
-  fWorkingDirectory = fLaunchedDirectory;  
-  //fWorkingDirectory = DTDIR;
-  
-  cout << " * TAF is working in: " << fWorkingDirectory << endl; 
 
-    //--------------
+  // TAF Working Directory
+  fWorkingDirectory = fLaunchedDirectory;
+  //fWorkingDirectory = DTDIR;
+
+  cout << " * TAF is working in: " << fWorkingDirectory << endl;
+
+  //--------------
   // Config directory
   //--------------
   if (ConfigDir.IsNull())// No ConfigDir specified, set the default one
@@ -114,12 +116,12 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
       fSession->SetConfigPath(aPath);
     }
   }
-  
+
   //--------------
   // Config File
   //--------------
   if (ConfigFile.IsNull())// No ConfigFile specified, set the default one
-  {    
+  {
     aPath = "run";
     aPath += TheRun;
     aPath +=".cfg";
@@ -157,7 +159,7 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
       TString TempConfigPath = fLaunchedDirectory;
       TempConfigPath += "../";
       ConfigFile.Remove(0,3);
-      
+
       while (ConfigFile.First("/")>0)
       {
         TempConfigPath += ConfigFile(0,ConfigFile.First("/")+1);
@@ -169,7 +171,34 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   }
   cout << " * config file is: " << fSession->GetConfigFileName() << endl;
   cout << "               in: " << fSession->GetConfigPath()<< endl;
-  
+
+
+  //--------------
+  // Data directory
+  //--------------
+  if (DataDir.IsNull())
+  {
+    cout << " * data path will be taken from configuration file." << endl;
+  }
+  else
+  {
+    fSession->SetRawSourcePath(DataDir);
+    cout << " * data path is: " << fSession->GetRawSourcePath() << endl;
+  }
+
+  //--------------
+  // Data filename
+  //--------------
+  if (DataFile.IsNull())
+  {
+    cout << " * data filename(s) will be taken from configuration file." << endl;
+  }
+  else
+  {
+    fSession->SetRawSourceFilename(DataFile);
+    cout << " * data filename is: " << fSession->GetRawSourceFilename() << endl;
+  }
+
   //--------------
   // Outputs Files and Dir.
   //--------------
@@ -177,7 +206,7 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   aPath += "datDSF/";
   fTool.LocalizeDirName(&aPath);
   fSession->SetSummaryFilePath(aPath);
-  
+
   aPath = fWorkingDirectory;
   aPath += "Results/";
   fSession->SetResultsDirParent(aPath);
@@ -185,7 +214,7 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   aPath += "/";
   fTool.LocalizeDirName(&aPath);
   fSession->SetResultsDir(aPath); // JB 2011/04/12
-  
+
   //TString WeightFile = fSession->GetResultDirName();
   //WeightFile += "eta";
   //WeightFile += TheRun;
@@ -193,21 +222,21 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
   //fTool.LocalizeDirName( &WeightFile); // JB 2011/07/07
   //fSession->SetWeightFile( WeightFile); // JB 2011/04/12
 
-  
+
   fSession->SetRunNumber(TheRun);
-  
-  fSession->SetPlaneNumber(ThePlane);  
-  
-  fSession->SetEventBuildingMode( EventBuildingMode); //SS 2011.11.14 
-  
+
+  fSession->SetPlaneNumber(ThePlane);
+
+  fSession->SetEventBuildingMode( EventBuildingMode); //SS 2011.11.14
+
   fSession->SetDebug(MimoDebug); // needed before init, JB 2012/04/25
-  
+
   fSession->InitSession(); // call the initialization
 
   //gSystem->ChangeDirectory(fWorkingDirectory); // chdir to the correct dir to run
- 
+
   InitRunNumber();
-  InitPlaneNumber(); 
+  InitPlaneNumber();
   InitMimosaType();
   CorStatus = 0; // JB, 2009/05/19
 
@@ -218,7 +247,7 @@ void  MimosaAnalysis::SetDebug(Int_t aDebug)
 
   cout<<"Run Number is "<<fSession->GetRunNumber()<<endl;
   cout<<"Plane number to study is "<<fSession->GetPlaneNumber()<<endl;
-  
+
   fInitDone = kTRUE;
 
 }
@@ -230,7 +259,7 @@ void MimosaAnalysis::InitCorPar(Int_t aRun, Int_t aPlane, const char* objType)
   // Initialize the CorPar file (precision alignment and eta functions for the Mimosa plane)
   // Variable CorStatus is also set:
   // 0->existing file is used, 1->template file is used, 2->new file is used
-  // 
+  //
   // The path including the directory eta was suppressed (JB 2009/05/19)
   //  due to unexplained crash (?!?)
   // CorPar file goes now into the "global result" directory, JB 2009/09/14
@@ -239,11 +268,11 @@ void MimosaAnalysis::InitCorPar(Int_t aRun, Int_t aPlane, const char* objType)
   // Modified: JB 2014/01/10 deal with objType option
 
   if(!CheckIfDone("init")) return; // return 0
-   
+
   if (MimoDebug) {
     Info( "InitCorPar", "Openint CorPar file for option %s (if empty=plane)\n", objType);
   }
-  
+
   Char_t CorFileName[200];
   if( strstr( objType, "ladder" ) ) { // JB 2014/01/10
     sprintf(CorFileName,"%s/CorPar%d_Lader%d.root",CreateGlobalResultDir(),aRun,aPlane);
@@ -252,19 +281,19 @@ void MimosaAnalysis::InitCorPar(Int_t aRun, Int_t aPlane, const char* objType)
     sprintf(CorFileName,"%s/CorPar%d_%d.root",CreateGlobalResultDir(),aRun,aPlane); // JB 2011/04/12
   }
     sprintf(CorFileName,"%s", fTool.LocalizeDirName( CorFileName)); // JB 2011/07/07
-  
-  // take a file with ETA distribution   
-  if (!gSystem->AccessPathName(CorFileName)) 
+
+  // take a file with ETA distribution
+  if (!gSystem->AccessPathName(CorFileName))
     {
       theCorFile= new TFile(CorFileName, "UPDATE");
       cout << "== Old  CorParFile found! Let's use it : "<< CorFileName << endl;
       CorStatus = 0;
     }
-  else if (!gSystem->AccessPathName("config/CorParDef.root"))  
+  else if (!gSystem->AccessPathName("config/CorParDef.root"))
     {
       cout << "==No  dedicated CorParFile but CorParDef.root is used to create a new one." << endl;
       cout << "Its name will be : " << CorFileName  <<endl;
-      gSystem->CopyFile("config/CorParDef.root", CorFileName); 
+      gSystem->CopyFile("config/CorParDef.root", CorFileName);
       theCorFile= new TFile(CorFileName, "UPDATE");
       CorStatus = 1;
     }
@@ -280,14 +309,14 @@ void MimosaAnalysis::InitCorPar(Int_t aRun, Int_t aPlane, const char* objType)
     theCorFile->Close();
     Fatal("InitCorPar","BadCorPar File!!");
   }
-  
+
   // added JB 2011/04/12
   if(MimoDebug) cout << "Testing if some keys are there:" << theCorFile->GetNkeys() << " ...";
   if (theCorFile->GetNkeys() == 0) { // if no keys, set as new file
     cout << "There is nothing in the existing CorPar file, treated as new." << endl;
-    CorStatus =2; 
+    CorStatus =2;
   }
-  
+
   if(MimoDebug) cout << "done, CorStatus = " << CorStatus << endl;
   //return theCorFile; // JB 2009/05/18
 }
@@ -296,7 +325,7 @@ void MimosaAnalysis::InitCorPar(Int_t aRun, Int_t aPlane, const char* objType)
 //______________________________________________________________________________
 void MimosaAnalysis::MakeEta(int NEvt)
 {
-  // creates new eta-functions for the all planes 
+  // creates new eta-functions for the all planes
   // requires init Session calls in order to run!
   //
   // modified by JB to have 2 kinds of eta correction, November 2007
@@ -307,7 +336,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
 
   DTracker *tTracker  =  fSession->GetTracker();
   Int_t nTotalPlanes  = tTracker->GetPlanesN();
-  
+
   // Allow a variable number of planes, JB 2007 June
   // maximum #planes adjusted to tracker size, JB 2012/08/28
   Int_t* planeNo = new Int_t[nTotalPlanes];//[8]={0,0,0,0,0,0,0,0};
@@ -353,13 +382,13 @@ void MimosaAnalysis::MakeEta(int NEvt)
       hPid  = TString("HEtaDenPk") + long(iPl+1);
       hName = TString("Eta Integrated Pl ") + long(iPl+1);
       hEtaInt[iPl]= new TH1F(hPid.Data(),hName.Data(),700,-0.2,1.2);
-            
+
       padNo[iPl] = padCount;
       padCount += 1; // only one pad needed
     }
     else { // PIXELS
       Int_t nBins = 100;
-      
+
       pitchU[iPl] = RSplane[iPl]->GetStripPitch()(0);
       // 3x3
       hPid  = TString("HEtaDenU") + long(planeNo[iPl]);
@@ -409,14 +438,14 @@ void MimosaAnalysis::MakeEta(int NEvt)
   Dest += "/inf" + Orig(10,Orig.Length());
   fTool.LocalizeDirName( &Dest);
 
-  // take a file with ETA distribution   
-  if (!gSystem->AccessPathName(EtaFileName)) 
+  // take a file with ETA distribution
+  if (!gSystem->AccessPathName(EtaFileName))
     {
       cout << "== Old file found! : "<< EtaFileName<<endl;
       TFile TMP(EtaFileName);
       if (TMP.GetNkeys() && !TMP.IsZombie()) {
 	cout<<"Creating a backup "<< endl;
-	gSystem->CopyFile(EtaFileName ,TString(TString(EtaFileName) + ".back").Data(),1);     
+	gSystem->CopyFile(EtaFileName ,TString(TString(EtaFileName) + ".back").Data(),1);
       }
       TMP.Close();
     }
@@ -427,23 +456,23 @@ void MimosaAnalysis::MakeEta(int NEvt)
 
 
  Char_t tWeightFileName[200];
- sprintf(tWeightFileName,"%s/inf%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber()); 
+ sprintf(tWeightFileName,"%s/inf%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
  sprintf(tWeightFileName,"%s", fTool.LocalizeDirName( tWeightFileName)); // JB 2011/07/07
- cout<<"Backing-up : " << tWeightFileName <<endl; 
- gSystem->Rename(tWeightFileName ,TString(TString(tWeightFileName) + ".back").Data());   
+ cout<<"Backing-up : " << tWeightFileName <<endl;
+ gSystem->Rename(tWeightFileName ,TString(TString(tWeightFileName) + ".back").Data());
 
  TFile f(EtaFileName,"RECREATE");
 
  //tTracker->SetAlignmentStatus(2); // NOT needed here, we don't care yet about track, JB Sept 2008
   // 1 = four reference planes, 2 = all reference planes
 
- 
-  fSession->SetEvents(NEvt); 
+
+  fSession->SetEvents(NEvt);
 
   TCanvas *EtaFunction = new TCanvas("Eta","Eta functions",0,0,600,600);
   EtaFunction->cd();
   // -- start read events:
-  while(fSession->NextRawEvent() == kTRUE) {    
+  while(fSession->NextRawEvent() == kTRUE) {
 
     // select events with 1 track found, take principal hits in each plane, build eta distributions for clusters
     tTracker->Update();
@@ -457,25 +486,25 @@ void MimosaAnalysis::MakeEta(int NEvt)
       DHit *ahit=0;
       Float_t leftSignal,rightSignal,chargeFraction;
       leftSignal=rightSignal=chargeFraction=0.;
-      
+
       for(Int_t iPl=0; iPl<nTotalPlanes; iPl++){ // loop on planes
 	//RSplane[iPl]= tTracker->GetPlane(iPl+1); // moved above, JB, Sept 2008
         Int_t nHits=RSplane[iPl]->GetHitsN();
-        
+
 	//cout << "nHits for Plane " << iPl+1 << " is " << nHits << endl;
-	
+
 	if(nHits>0 && RSplane[iPl]->GetAnalysisMode()!=3 ){ //ensure there is a hit and no binary output (JB 2013/08/19)
-	  
-	  for(Int_t iHit=1; iHit<=nHits; iHit++){ //RDM260809	    
+
+	  for(Int_t iHit=1; iHit<=nHits; iHit++){ //RDM260809
 	    ahit=RSplane[iPl]->GetHit(iHit);   //RDM260809 from GetPrincipalHit to GetHit
-	    
+
 	    //==============================
 	    if( RSplane[iPl]->GetAnalysisMode()==1 ) { // STRIPS
 	      leftSignal=ahit->GetPulseHeightLeft();
 	      rightSignal=ahit->GetPulseHeightRight();
 	      if(leftSignal+rightSignal!=0){
 		chargeFraction=leftSignal/(leftSignal+rightSignal);
-		
+
 		hEtaDen[iPl]->Fill(chargeFraction,1.);
 	      }
 	    }
@@ -515,7 +544,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
       hEtaDenU2[iPl]->Write();
       hEtaDenV2[iPl]->Write();
     }
-  } 
+  }
   EtaFunction->Update();
   TCanvas *EtaFunction2 = new TCanvas("Eta2","Integrated Eta functions",0,0,600,600);
   EtaFunction2->Divide((Int_t)ceil((Float_t)padCount/4),4);
@@ -532,7 +561,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
 	for(Int_t i=0; i<700; i++){
 	  content=hEtaDen[iPl]->Integral(0,i);
 	  hEtaInt[iPl]->SetBinContent(i,content/total);
-	}    
+	}
       }else{
 	Info("MakeEta()","WARNING.... hEtaDen %d is empty",iPl);
       }
@@ -551,7 +580,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
 	for(Int_t i=1; i<hEtaDenU[iPl]->GetNbinsX(); i++){
 	  content=hEtaDenU[iPl]->Integral(1,i);
 	  hEtaIntU[iPl]->SetBinContent(i,content/total*pitchU[iPl]-pitchU[iPl]/2.);
-	}    
+	}
       }else{
 	Info("MakeEta()","WARNING.... hEtaDenU %d is empty",iPl);
       }
@@ -560,7 +589,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
 	for(Int_t i=1; i<hEtaDenV[iPl]->GetNbinsX(); i++){
 	  content=hEtaDenV[iPl]->Integral(1,i);
 	  hEtaIntV[iPl]->SetBinContent(i,content/total*pitchV[iPl]-pitchV[iPl]/2.);
-	}    
+	}
       }else{
 	Info("MakeEta()","WARNING.... hEtaDenV %d is empty",iPl);
       }
@@ -580,7 +609,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
 	for(Int_t i=1; i<hEtaDenU2[iPl]->GetNbinsX(); i++){
 	  content2=hEtaDenU2[iPl]->Integral(1,i);
 	  hEtaIntU2[iPl]->SetBinContent(i,content2/total2*pitchU[iPl]-pitchU[iPl]/2.);
-	}    
+	}
       }else{
 	Info("MakeEta()","WARNING.... hEtaDenU2 %d is empty",iPl);
       }
@@ -590,7 +619,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
 	for(Int_t i=1; i<hEtaDenV2[iPl]->GetNbinsX(); i++){
 	  content2=hEtaDenV2[iPl]->Integral(1,i);
 	  hEtaIntV2[iPl]->SetBinContent(i,content2/total2*pitchV[iPl]-pitchV[iPl]/2.);
-	}    
+	}
       }else{
 	Info("MakeEta()","WARNING.... hEtaDenV2 %d is empty",iPl);
       }
@@ -605,12 +634,12 @@ void MimosaAnalysis::MakeEta(int NEvt)
   cout<<"make eta fonction done"<<endl;
 
   cout<<"Copying "<< EtaFileName  <<" to "<< Dest.Data() <<endl;
-  gSystem->CopyFile(Orig.Data() ,Dest.Data(),1); 
-  
+  gSystem->CopyFile(Orig.Data() ,Dest.Data(),1);
+
 // save all open canvas in a root file
 //cd to result dir (JB 2011/07/08)
  gSystem->cd(fSession->GetResultDirName().Data());
- if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl; 
+ if(MimoDebug) cout<<"Curent Dir : "<<gSystem->pwd()<<endl;
  Char_t Header[100];
  sprintf(Header,"EtaRS_%d.root",fSession->GetRunNumber());
  sprintf(Header,"%s", fTool.LocalizeDirName( Header)); // JB 2011/07/07
@@ -619,7 +648,7 @@ void MimosaAnalysis::MakeEta(int NEvt)
  gROOT->GetListOfCanvases()->Write();
  AllRSPlots->Close(); delete AllRSPlots;
  gSystem->cd(fWorkingDirectory);// VR 2014/06/30 replace DTIR by fWorkingDirectory
-  
+
   if (gROOT->IsBatch())
     {
       for(Int_t iPl=0; iPl<nTotalPlanes; iPl++){
@@ -637,28 +666,28 @@ void MimosaAnalysis::MakeEta(int NEvt)
 	  delete hEtaDenV2[iPl];
 	  delete hEtaIntV2[iPl];
 	}
-      } 
-      
+      }
+
       EtaFunction->Close();
       delete EtaFunction;
       EtaFunction2->Close();
       delete EtaFunction2;
     }
  fInitDone = kFALSE;
- 
+
  return;
- 
+
 }
 
 
 //______________________________________________________________________________
 //
-void MimosaAnalysis::AlignTracker(const Double_t tiniBoundU /*= 480.*/, 
-				  const Double_t tiniBoundV /*= 480.*/, 
-				  Int_t nAlignEvents /*= 4000 */, 
+void MimosaAnalysis::AlignTracker(const Double_t tiniBoundU /*= 480.*/,
+				  const Double_t tiniBoundV /*= 480.*/,
+				  Int_t nAlignEvents /*= 4000 */,
 				  Int_t nAdditionalEvents /* = 2000 */,
-				  bool UseAllHits /*false*/)  
-{  
+				  bool UseAllHits /*false*/)
+{
   // Aligns the planes according to their status.
   // Wrapper to the the MimosaAlignAnalysis::AlignTracker method
   //
@@ -666,7 +695,7 @@ void MimosaAnalysis::AlignTracker(const Double_t tiniBoundU /*= 480.*/,
   // Last Modified: AP 2015/06/10, added bool parameter (UseAllHits) to decide if doing alignment with all hits (UseAllHits = true) or with the closest one to the track (UseAllHits = false).
 
   if(!CheckIfDone("init")) {return;}
-  else 
+  else
     {
       gSystem->cd(CreateGlobalResultDir());
       //MimosaAlignAnalysis::Instance( fSession)->AlignTracker(tiniBoundU, tiniBoundV, nAlignEvents, nAdditionalEvents);
@@ -677,12 +706,12 @@ void MimosaAnalysis::AlignTracker(const Double_t tiniBoundU /*= 480.*/,
 
 //______________________________________________________________________________
 //
-void MimosaAnalysis::AlignTrackerMinuit(Bool_t modeAuto /*=1*/, const Double_t tiniBound /*= 480.*/, Int_t nAlignEvents /*= 5000 */, Int_t nAlignHitsInPlane /*=4000*/, Int_t nAdditionalEvents /* = 2000 */, Double_t chi2Limit /*=0*/, bool UseAllHits /*=true*/)  
-{  
+void MimosaAnalysis::AlignTrackerMinuit(Bool_t modeAuto /*=1*/, const Double_t tiniBound /*= 480.*/, Int_t nAlignEvents /*= 5000 */, Int_t nAlignHitsInPlane /*=4000*/, Int_t nAdditionalEvents /* = 2000 */, Double_t chi2Limit /*=0*/, bool UseAllHits /*=true*/)
+{
   // LC 2012/09/06 : Aligns the ref planes system with Minuit method.
 
   if(!CheckIfDone("init")) {return;}
-  else 
+  else
     {
       gSystem->cd(CreateGlobalResultDir());
       //MimosaAlignAnalysis::Instance( fSession)->AlignTrackerMinuit(modeAuto, tiniBound, nAlignEvents, nAlignHitsInPlane, nAdditionalEvents, chi2Limit);
@@ -696,12 +725,12 @@ void MimosaAnalysis::AlignTrackerMinuitLadder(Bool_t modeAuto /*=1*/, const Doub
    // LC 2013/01/16 : Aligns the ladders with Minuit method.
 
   if(!CheckIfDone("init")) {return;}
-  else 
+  else
     {
       gSystem->cd(CreateGlobalResultDir());
       MimosaAlignAnalysis::Instance( fSession)->AlignTrackerMinuitLadder(modeAuto, tiniBound, nAlignEvents, nAlignHitsInPlane, nAdditionalEvents, chi2Limit);
     }
-  
+
 }
 /*
 void MimosaAnalysis::AlignLadder(Bool_t modeAuto, const Double_t tiniBound, Int_t nAlignEvents, Int_t nAlignHitsInPlane, Int_t nAdditionalEvents, Int_t ladderFace, Double_t chi2Limit)
@@ -719,20 +748,20 @@ void MimosaAnalysis::AlignLadder(Bool_t modeAuto, const Double_t tiniBound, Int_
 void MimosaAnalysis::AlignLadderMV(Bool_t modeAuto/*=1*/, const Double_t tiniBound/*=480.*/, const Double_t boundSlopes/*=100.*/, Int_t nAlignEvents/*=5000*/, Int_t nGoodTracks/*=1000*/, Int_t nAdditionalEvents/*=2000*/, Int_t chi2Limit/*=0.*/, Int_t mode/*=0*/) // LC 2013/11/10.
 {
   if(!CheckIfDone("init")) {return;}
-  else 
+  else
     {
       gSystem->cd(CreateGlobalResultDir());
       MimosaAlignAnalysis::Instance( fSession)->AlignLadderMV(modeAuto, tiniBound, boundSlopes, nAlignEvents, nGoodTracks, nAdditionalEvents, chi2Limit, mode);
-    }  
+    }
 }
 
 //______________________________________________________________________________
 //
-void MimosaAnalysis::AlignTrackerMillepede(Int_t nAlignEvents /*=4000*/)  
-{  
+void MimosaAnalysis::AlignTrackerMillepede(Int_t nAlignEvents /*=4000*/)
+{
   // LC end of 2012
   if(!CheckIfDone("init")) {return;}
-  else 
+  else
     {
       gSystem->cd(CreateGlobalResultDir());
       MimosaAlignAnalysis::Instance( fSession)->AlignTrackerMillepede(nAlignEvents);
@@ -742,12 +771,12 @@ void MimosaAnalysis::AlignTrackerMillepede(Int_t nAlignEvents /*=4000*/)
 //______________________________________________________________________________
 //
 void MimosaAnalysis::AlignTrackerGlobal(const Int_t refPlane, const Int_t nEvents, const Int_t nIterations, const Bool_t alignConstrainsts, const Bool_t trackConstrainsts, const Bool_t multipleScatteringFit)
- 
-{  
+
+{
   // LC && LiuQ 2015/02/06 : Global Alignment Method
 
   if(!CheckIfDone("init")) {return;}
-  else 
+  else
     {
       gSystem->cd(CreateGlobalResultDir());
       MimosaAlignAnalysis::Instance( fSession)->AlignTrackerGlobal(refPlane, nEvents, nIterations, alignConstrainsts, trackConstrainsts, multipleScatteringFit);
@@ -768,8 +797,8 @@ void MimosaAnalysis::DSFProduction(Int_t NEvt, Int_t fillLevel)
   // Modified: JB 2011/07/21 for level of storage
 
   if(!CheckIfDone("init")) return;
- 
-  fSession->MakeTree(); 
+
+  fSession->MakeTree();
   fSession->SetEvents(NEvt); // to be modified
   fSession->SetFillLevel( fillLevel); // JB 2011/07/21
   //fSession->GetTracker()->SetAlignmentStatus(2);  // 2 = all planes in telescope used for tracking, for NOW JB
@@ -820,7 +849,7 @@ void MimosaAnalysis::DSFProduction(Int_t NEvt, Int_t fillLevel)
   cout<<"gTAF->"<<endl;
   void InitScan(Int_t Events2Scan = 1600 , Int_t Events4Ped = 200 ,Float_t SignalOverNoiseCut = 5);  // Accumulate certain amount of events for scanning
   void RSDisplay(); //Display Ref.system events
-  void MimosaDisplay(Int_t NEVENT = 1); //MIMOSA event display. 
+  void MimosaDisplay(Int_t NEVENT = 1); //MIMOSA event display.
   //RUN IT AFTER Inialisation + Init Scan");
   void InspectScan(); // INSPECT events // RUN IT AFTER MIMOSA event display
   void Inspectfake(); //INSPECT FAKES //"RUN IT AFTER MIMOSA event display
@@ -912,7 +941,7 @@ void MimosaAnalysis::CreateConfig(int RunNumberBigin, int NumberOfFilesPerRun, i
 
 if(!CheckIfDone("init")) {return;}
  if(RunNumberBigin==fSession->GetRunNumber()) Fatal("CreateConfig()","You can`t load the config you want to modify!");
-  
+
 if(RunNumberEnd==0) RunNumberEnd=RunNumberBigin;
 if(NumberOfFilesPerRun==0) NumberOfFilesPerRun=(*fSession->GetSetup()).GetRunPar().EndIndex-1;
 
@@ -973,27 +1002,27 @@ void MimosaAnalysis::PrepareRun(int RunNumberBigin,Option_t* aType, int NumberOf
 
  TString opt = aType;
  opt.ToLower();
- 
+
 if(!CheckIfDone("init")) return ;
 if(RunNumberEnd==0) RunNumberEnd=RunNumberBigin;
 
 
  if (opt.Contains("all")) opt = TString("create,get,link");
- 
+
  if (opt.Contains("create")) CreateConfig(RunNumberBigin, NumberOfFilesPerRun,  RunNumberEnd,RunNumberStep );
 
   if (opt.Contains("get"))
     {
       for (int i_run=RunNumberBigin;i_run<=RunNumberEnd;i_run+=RunNumberStep)
 	{
-	  
+
 	  //gSystem->cd(""); //back to fWorkingDirectory
 	  Char_t copy_string[200];
-	  
+
 	  sprintf(copy_string,"%s/%d %s/",gSystem->Getenv("MAF_DATA_URL"),i_run ,gSystem->Getenv("RZDIR"));
-	  
+
 	  cout<<copy_string<<endl;
-	  
+
 	  gSystem->Exec(copy_string);
 	}
     }
@@ -1013,7 +1042,7 @@ void MimosaAnalysis::StudyDeformation(const Float_t tiniBound /*= 480.*/, Int_t 
   // BB 2014/05/20
 
   if(!CheckIfDone("init")) {return;}
-  else 
+  else
     {
       gSystem->cd(CreateGlobalResultDir());
       MimosaAlignAnalysis::Instance( fSession)->StudyDeformation(tiniBound, nEvents, fitAuto);

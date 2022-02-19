@@ -50,6 +50,8 @@
 // Last Modified: LC, 2015/10/14 GlobalAlignment Parameter Reading : Now optional
 // Last Modified: JB 2017/11/20 ReadDAQBoardParameters for zero suppression option
 // Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
+// Last Modified: JB 2021/05/01 Handle source path as datapath
+// Last Modified: JB 2021/11/15 Introduce data filename as default filename (if not in config)
 
 ///////////////////////////////////////////////////////////////
 // Class Description of DSetup                               //
@@ -357,22 +359,27 @@
 //                      0 -> ignore trigger info
 //                      1 -> each new trigger generates an event
 //                      2 -> trigger info is used to start or stop event reading
-//			3 -> ignore trigger info but all events are 2 frames long
+//			                3 -> ignore trigger info but all events are 2 frames long
 // EventBuildingMode  = [obsolote] (int) {0} replaced by EventBuildingBoardMode
 // BinaryCoding       = [optional] (int) {0} 0 for one Endian, 1 for the other
 // FileHeaderSize     = [obsolete] (int) {0} size of additional header file
 // EventBufferSize    = [optional depends on DAQboard type, see below] (int) event size in Bytes
 // FileHeaderLine     = [optional] (int) {0} event header size in Bytes
+//    => renamed (2021/05/02) EventHeaderSize, but the old name still works
 // EventTrailerSize   = [optional] (int) {4} event trailer size in Bytes
 // TimeRefFile        = [optional] (char) name of the file where to get external time reference
+//
+// => Read the section devoted to the module type used below,
+//      to decide which of the previous parameters are mandatory or not
 
 // #############################################################################
 //                    Parameters for each Acquisition module type
 // #############################################################################
 // "Name" has to be the first field
 // Name                  = [MANDATORY] (char) generic name of such modules
-//                        known types: "IMG", "TNT", "PXI", "PXIe", "GIG", "VME"
-//                                     "DecoderM18", "ALI22", "DecoderGeant", "IHEP", "MC"
+//                        known names: "IMG", "TNT", "PXI", "PXIe", "GIG", "VME",
+//                                     "DecoderM18", "ALI22", "DecoderGeant",
+//                                     "IHEP", "MC", "MSIS"
 // Type                  = [MANDATORY] (int) unique identifier for the module type
 // Devices               = [MANDATORY] (int) # module instances of this type,
 //                        typically, one instance decode one file
@@ -396,7 +403,8 @@
 //
 // --- Name: "IMG"
 //  Type = 10 for pixels / 11 for strips / 12 for pixels with multi-frame
-//         13 for pixels with
+//         13 for pixels with specifi arrangement of frame-ref & frame-signal
+//         14 for 16 parallel outputs
 //  Inputs             = [MANDATORY] (int) # identical data block (one per sensor typically)
 //  EventsInFile       = [MANDATORY] (int) expected # events in a file
 //  StartIndex         = [MANDATORY] (int) index of first data file
@@ -501,6 +509,40 @@
 //  FirstTriggerChannel, LastTriggerChannelNbOfFramesPerChannel -> unused
 //
 
+// --- Name: "IHEP"
+//  Type = 120
+//  Inputs            = [MANDATORY] (int) # identical data block (# sensors typically)
+//  Devices           = [MANDATORY] (int) # module instances of this type,
+//  EventBuildingBoardMode = [MANDATORY] (int) {0} drive how events are reconstructed
+//  DataFile          = [MANDATORY] (char) the basename of rawdata file, typically "RUN264_2018-11-07-12-07-54_FullEvent"
+//  ==> Parameters needed from section: Run Parameters
+//  StartIndex        = [MANDATORY] (int) index of first data file
+//  EndIndex          = [MANDATORY] (int) index of last data file
+//  Extension         = [MANDATORY] (char) {"??"} extension of data file
+//  NoiseRun          = [MANDATORY] (int) {0} defines method to remove noisy pixels (see DGlobalTools::VetoPixels)
+//  ==> Parameters needed from section: Data Acquisition
+// TriggerMode        = [MANDATORY] (int) 1
+//
+
+// --- Name: "MSIS"
+// This section is still preliminary (JB, 2021/05/02)
+//  Type = 130
+//  Devices           = [MANDATORY] (int) # module instances of this type,
+//  Inputs            = [MANDATORY] (int) # identical data block (# sensors typically)
+//  EventBuildingBoardMode = [MANDATORY] (int) {0} drive how events are reconstructed
+//  DataFile          = [MANDATORY] (char) the basename of rawdata file, typically "RUN_"
+//  ==> Parameters needed from section: Run Parameters
+//  StartIndex        = [MANDATORY] (int) index of first data file
+//  EndIndex          = [MANDATORY] (int) index of last data file
+//  Extension         = [MANDATORY] (char) {"??"} extension of data file
+//  NoiseRun          = [MANDATORY] (int) {0} defines method to remove noisy pixels (see DGlobalTools::VetoPixels)
+//  ==> Parameters needed from section: Data Acquisition
+// BinaryCoding       = [MANDATORY] (int) {0} 0 for one Endian, 1 for the other
+// EventHeaderSize    = [MANDATORY] (int) {0} event header size in Bytes
+// EventTrailerSize   = [MANDATORY] (int) {4} event trailer size in Bytes
+// TriggerMode        = [MANDATORY] (int) method to deal with trigger info
+//
+//
 
 // #############################################################################
 //                      Parameter for Final Analysis
@@ -608,6 +650,24 @@ void DSetup::SetConfigFileName(TString aCFN)
 }
 //______________________________________________________________________________
 //
+void  DSetup::SetSourcePath(TString aSP)
+{
+
+  fSourcePath = aSP;
+  if(DSetupDebug) cout << "DSetup::SetSourcePath "<< aSP << endl;
+
+}
+//______________________________________________________________________________
+//
+void  DSetup::SetSourceFilename(TString aSF)
+{
+
+  fSourceFilename = aSF;
+  if(DSetupDebug) cout << "DSetup::SetSourceFilenale "<< aSF << endl;
+
+}
+//______________________________________________________________________________
+//
 void DSetup::ReadRunParameters()
 {
 
@@ -641,6 +701,11 @@ void DSetup::ReadRunParameters()
   RunParameter.NoiseRun = 0;
   RunParameter.PixelGainRun = 0;
 
+  if( !fSourcePath.IsNull() ) { // Read the path only if not set already
+    sprintf( RunParameter.DataPath, "%s", fSourcePath.Data());
+    DGlobalTools aTool;
+    sprintf( RunParameter.DataPath, "%s", aTool.LocalizeDirName( RunParameter.DataPath)); // JB 2011/07/07
+  }
 
   do {
 
@@ -659,7 +724,11 @@ void DSetup::ReadRunParameters()
       read_strings( RunParameter.Confidence, RunParameter.tpsz);
     }
     else if( ! strcmp( fFieldName, "DataPath" ) ) {
-      read_strings( RunParameter.DataPath, RunParameter.tpsz);
+      if( fSourcePath.IsNull() ) { // Read the path only if not set already
+        read_strings( RunParameter.DataPath, RunParameter.tpsz);
+      } else {
+        sprintf( RunParameter.DataPath, "%s", fSourcePath.Data());
+      }
       DGlobalTools aTool; // JB 2011/07/18
       sprintf( RunParameter.DataPath, "%s", aTool.LocalizeDirName( RunParameter.DataPath)); // JB 2011/07/07
     }
@@ -2219,8 +2288,10 @@ void DSetup::ReadDAQParameters()
     else if( ! strcmp( fFieldName, "EventBufferSize" ) ) {
       read_item(AcqParameter.EventBufferSize);
     }
-    else if( ! strcmp( fFieldName, "FileHeaderLine" ) || ! strcmp( fFieldName, "FileHeaderLine[d]" )) {
+    else if( ! strcmp( fFieldName, "FileHeaderLine" ) || ! strcmp( fFieldName, "FileHeaderLine[d]" )
+             || ! strcmp( fFieldName, "EventHeaderSize" )) {
       read_item(AcqParameter.FileHeaderLine);
+      AcqParameter.EventHeaderSize = AcqParameter.FileHeaderLine;
     }
     else if( ! strcmp( fFieldName, "EventTrailerSize" ) || ! strcmp( fFieldName, "eventtrailersize" )) {
       read_item(AcqParameter.EventTrailerSize);
@@ -2257,7 +2328,7 @@ void DSetup::ReadDAQParameters()
   if( DSetupDebug) {
     cout << "   header file size " << AcqParameter.FileHeaderSize << endl;
     cout << "   event buffer size " << AcqParameter.EventBufferSize << endl;
-    cout << "   event header size " << AcqParameter.FileHeaderLine << endl;
+    cout << "   event header size " << AcqParameter.EventHeaderSize << endl;
     cout << "   event trailer size " << AcqParameter.EventTrailerSize << endl;
     cout << "   nb of mod types " << AcqParameter.ModuleTypes << endl;
     cout << "   endian coding " << AcqParameter.BinaryCoding << endl;
@@ -2411,14 +2482,18 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
     else if( ! strcmp( fFieldName, "DataFile" ) || ! strcmp( fFieldName, "DataFile1" )) {
       // reading data file name for each device of this type, JB 2009/05/25
       for( Int_t iMod=0; iMod<pAcqModuleParameter[aBoardNumber].Devices; iMod++) {
-        pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod] = new Char_t[pAcqModuleParameter[aBoardNumber].tpsz];
-        pAcqModuleParameter[aBoardNumber].PixelShiftMod[iMod] = 3; // default value
-        if( iMod>0 ) nextField();
-        if( strstr( fFieldName, "DataFile" ) ) {
-          read_strings( pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod], pAcqModuleParameter[aBoardNumber].tpsz);
-        }
-        else {
-          printf( "WARNING in ReadDAQBoardParameters: field %s found while 'DataFile%d' expected!\n    -> Board %d of type %d lacks rawdata connection.", fFieldName, iMod+1, iMod+1, aBoardNumber);
+        if( fSourceFilename.IsNull() ) { // Read the filename only if not set already
+          pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod] = new Char_t[pAcqModuleParameter[aBoardNumber].tpsz];
+          pAcqModuleParameter[aBoardNumber].PixelShiftMod[iMod] = 3; // default value
+          if( iMod>0 ) nextField();
+          if( strstr( fFieldName, "DataFile" ) ) {
+            read_strings( pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod], pAcqModuleParameter[aBoardNumber].tpsz);
+          }
+          else {
+            printf( "WARNING in ReadDAQBoardParameters: field %s found while 'DataFile%d' expected!\n    -> Board %d of type %d lacks rawdata connection.", fFieldName, iMod+1, iMod+1, aBoardNumber);
+          }
+        } else {
+          sprintf( pAcqModuleParameter[aBoardNumber].DeviceDataFile[iMod], "%s", fSourceFilename.Data());
         }
       }
     }
@@ -2465,7 +2540,7 @@ void DSetup::ReadDAQBoardParameters( Int_t aBoardNumber)
   // This mechanism allows to declare N inputs while providing info just for one.
   // JB 2013/08/16
   for (Int_t aInp=inputCounter+1; aInp<pAcqModuleParameter[aBoardNumber].Inputs; aInp++) {
-    printf(" updating input %d with input %d\n", aInp, inputCounter);
+    printf(" updating input %d with information from input %d\n", aInp, inputCounter);
     pAcqModuleParameter[aBoardNumber].Channels[aInp]             = pAcqModuleParameter[aBoardNumber].Channels[inputCounter];
     pAcqModuleParameter[aBoardNumber].Bits[aInp]                 = pAcqModuleParameter[aBoardNumber].Bits[inputCounter];
     pAcqModuleParameter[aBoardNumber].SigBits[aInp]              = pAcqModuleParameter[aBoardNumber].SigBits[inputCounter];

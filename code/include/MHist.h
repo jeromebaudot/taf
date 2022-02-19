@@ -1,5 +1,5 @@
 // @(#)maf/maf:$Name:  $:$Id: MHist.h,v.1 2005/10/02 18:03:46 sha Exp $
-// Author: A. Shabetai 
+// Author: A. Shabetai
 
 #ifndef _MHist_included_
 #define _MHist_included_
@@ -9,7 +9,7 @@
   //                                                         //
   //  Contains all analysis  histograms and canvas           //
   //  (those which are filled by MimosaPro())                //
-  //                                                         //   
+  //                                                         //
   ////////////////////////////////////////////////////////////
 
 
@@ -49,13 +49,13 @@ class DSession;         // forwards
 //---ADC
 //---ADC
 
-class MHist : public TObject { 
+class MHist : public TObject {
 
   public:
-  
+
   MHist();
   virtual ~MHist();
-  
+
   TObject**  Zero(TObject** ptr,int  size=0) {for(int ind=0;ind<size;ind++){ if(!ptr[ind]) ptr[ind]=0;}; ptr=0;return ptr;};
   TCanvas**  Zero(TCanvas** ptr,int  size=0) {for(int ind=0;ind<size;ind++){ if(!ptr[ind]) ptr[ind]=0;}; ptr=0;return ptr;}; //
   TProfile**  Zero(TProfile** ptr,int  size=0) {for(int ind=0;ind<size;ind++){ if(!ptr[ind]) ptr[ind]=0;}; ptr=0;return ptr;};
@@ -66,9 +66,9 @@ class MHist : public TObject {
 
   TObject*  Zero(TObject* ptr)  { dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr; };
   TCanvas*  Zero(TCanvas* ptr) { dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr; };
-  TProfile*  Zero(TProfile* ptr){ dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr; }; 
-  TProfile2D*  Zero(TProfile2D* ptr){ dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr; }; 
-  TH1F*  Zero(TH1F* ptr) { dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr;};      
+  TProfile*  Zero(TProfile* ptr){ dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr; };
+  TProfile2D*  Zero(TProfile2D* ptr){ dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr; };
+  TH1F*  Zero(TH1F* ptr) { dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr;};
   TH2F*  Zero(TH2F* ptr)  { dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr;};
   TH3F*  Zero(TH3F* ptr)  { dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr;};
   TGraphErrors*  Zero(TGraphErrors* ptr) { dir->cd(); if(ptr) {delete ptr;ptr=0;}return ptr; };
@@ -79,22 +79,22 @@ class MHist : public TObject {
   void Clear(Option_t* /*option*/ = "");
   void BookingHistograms(Int_t RunNumber, Float_t PixelSizeU, Float_t PixelSizeV, Int_t NofPixelInRaw, Int_t NofPixelInColumn, Float_t TrackToHitDistanceLimit, DSetup *aSetup, Bool_t ifReferenceTrack=kFALSE,
 			 Bool_t ifCalibration=kFALSE, Bool_t ifLaserSpot=kFALSE, Bool_t ifMiniVector=kFALSE, Bool_t ifVertex=kFALSE, Bool_t ifFake=kFALSE, Bool_t ifImaging=kTRUE);
-  MHist* theHist;  
+  MHist* theHist;
 
  protected:
-  TDirectory *saved; 
-  TDirectory *dir;  
-  
-  Char_t titre[150]; 
-  Char_t nom[50]; 
+  TDirectory *saved;
+  TDirectory *dir;
 
-  Int_t   MaxNofPixelsInCluster; 
+  Char_t titre[150];
+  Char_t nom[50];
+
+  Int_t   MaxNofPixelsInCluster;
   Int_t   MinNofPixelsInCluster; // JB 2013/09/12
-  static const int MaxNofPixelsInClusterMax=361; // a nodif 
+  static const int MaxNofPixelsInClusterMax=361; // a nodif
 
   TH1F *hdummy ;
-  
-  
+
+
   //------------------------------------------------------------------------------
   //----- general control
   //------------------------------------------------------------------------------
@@ -107,13 +107,13 @@ class MHist : public TObject {
   Float_t geomUmin, geomUmax;
   Float_t geomVmin, geomVmax;
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // Charges, noise, S/N, pixel multiplicity plots for SELECTED clusters
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
 
   // seed
   TH1F *hChargeInSeed ;
-  TH1F *hRealTrackNoise; 
+  TH1F *hRealTrackNoise;
   TH1F *hsn  ;
   TH1F *hSNReal;
 
@@ -123,12 +123,12 @@ class MHist : public TObject {
   TH1F *hind ;
 
   // all pixels
-  TH1F *hChargeInCluster; 
-  TH1F* hqcn[MaxNofPixelsInClusterMax] ; 
-  TH1F* hqcngeom[MaxNofPixelsInClusterMax] ; 
-  TH1F* hindivq[MaxNofPixelsInClusterMax] ; 
+  TH1F *hChargeInCluster;
+  TH1F* hqcn[MaxNofPixelsInClusterMax] ;
+  TH1F* hqcngeom[MaxNofPixelsInClusterMax] ;
+  TH1F* hindivq[MaxNofPixelsInClusterMax] ;
   TH1F* hsnn[MaxNofPixelsInClusterMax] ;
-  
+
   TH1F *hChargeOrder1 ;
   TH1F *hChargeOrder2 ;
   TH1F *hChargeOrder3 ;
@@ -139,7 +139,7 @@ class MHist : public TObject {
   TH1F *hChargeOrder8 ;
   TH1F *hChargeOrder9;
 
-  TH2F *hChargeCor_1_2; 
+  TH2F *hChargeCor_1_2;
   TH2F *hChargeCor_1_3 ;
   TH2F *hChargeCor_1_4 ;
   TH2F *hChargeCor_2_3 ;
@@ -157,7 +157,7 @@ class MHist : public TObject {
   TH1F *hQ3x345r;
   TH1F *hQ3x327r ;
 
-  // cluster wise 
+  // cluster wise
   TH1F *hsnc;
   TH1F *hChargeSum_4 ;
   TH1F *hqc_c   ;
@@ -184,7 +184,7 @@ class MHist : public TObject {
   TH2F* hDuplicate_2DMult;                  //AP 2015/06/09, 2D Histogram with the cluster multiplicity of the earliest vs the latest hit of a duplicated hit
   TH1F* hDuplicate_DeltaTS;                 //AP 2015/06/09, Histogram with the Delta-Time-Stamp between the earliest and the latest hit  of a duplicated hit
   TH1F* hDuplicate_npixc;                   //AP 2015/06/09, Histogram with the prob of having a duplicated hit vs the earliest hit pixel multiplicity
-  TH2F* hDuplicate_npixc_vs_TrkDistToDiode; //AP 2015/06/09, 2D Histogram with the prob of having a duplicated hit vs the eatliest hit pixel multiplicity and 
+  TH2F* hDuplicate_npixc_vs_TrkDistToDiode; //AP 2015/06/09, 2D Histogram with the prob of having a duplicated hit vs the eatliest hit pixel multiplicity and
                                             //               the distance of the associated track to the closest diode
 
   static const Int_t jpixmax=8;
@@ -246,13 +246,16 @@ class MHist : public TObject {
   //--- efficiency
   // MG 2010/06/04
   //------------------------------------------------------------------------------
-  
+
   TH2F *effimap;
   TH1F *effi_vs_TrkHitDist; //AP, 13/01/2015
   TH1F *effiCorr_vs_TrkHitDist; //AP, 13/01/2015
   TH2F *goodtracks;
   TH2F *TrkInMimo;
-  
+  TH2F *effinpixel;
+  TH2F *HitInPixel;
+  TH2F *TrkInPixel;
+
   //------------------------------------------------------------------------------
   //--- hit position
   //------------------------------------------------------------------------------
@@ -310,7 +313,7 @@ class MHist : public TObject {
     TH2F *hVcorTvInPix ;
     TH2F *huCGtuInPix4;
     TH2F *huCG2x2tuInPix ;
-    TH2F *hvCG2x2tvInPix; 
+    TH2F *hvCG2x2tvInPix;
     TH1F *hEta2x2tu1L ;
     TH1F *hEta2x2tv1L ;
     TH2F *hEta2x2tu2L ;
@@ -353,11 +356,11 @@ class MHist : public TObject {
     TH2F *h2dgoodhits   ;
     TH2F *h2dmatchedhits   ;
     TH2F *h2DpictureMatched   ; // JB 2014/01/10
-    TH2F *hEta2x2vsInd ;  
-    TH2F *hChargeVsPosition; 
-    TH1F *hChargeVsDistance; // clm 2013/07/16 
+    TH2F *hEta2x2vsInd ;
+    TH2F *hChargeVsPosition;
+    TH1F *hChargeVsDistance; // clm 2013/07/16
     TH2F *hNorm ;
-    TH2F *hAllHitsInPixel; 
+    TH2F *hAllHitsInPixel;
     TH1F *h1RmsOnTheta; // JH 2014/06/16
     TH2F *h2RmsOnThetaScanVsThetaCut; // JH 2014/07/30
     TH1F *h1ProjectionOnX; // JH 2014/06/17
@@ -382,15 +385,15 @@ class MHist : public TObject {
     TH2F *tuv    ;
     TH2F *tuv1  ;
 
-    TH1F *hhu ;   
+    TH1F *hhu ;
     TH1F *hhv ;
-    TH1F *hhx ;   
+    TH1F *hhx ;
     TH1F *hhy ;
     TH1F *hhuS  ;
-    TH1F *hhvS ;  
-    TH1F *htu;    
+    TH1F *hhvS ;
+    TH1F *htu;
     TH1F *htv  ;
-    //---ab 
+    //---ab
     TH2F *htuhtv  ;
     TH1F *hGOODqcel ;
 
@@ -404,7 +407,7 @@ class MHist : public TObject {
     TH1F *hnpix  ;
     TH1F *hnpix_nc;
 
-    TH2F *FalseHitMap; 
+    TH2F *FalseHitMap;
     TH1F *hClusterChargeProfile;
     TH1F *hClusterChargeNorm ;
     TH1F *etal[2] ;
@@ -416,13 +419,13 @@ class MHist : public TObject {
     TH1F *duvall ;
 
     TH1F *hCDSvar ;
-    TH2F *CDSVarvsTime; 
+    TH2F *CDSVarvsTime;
     TH1F *dtime ;
 
   //------------------------------------------------------------------------------
   //----- Spatial Resolution
   //------------------------------------------------------------------------------
-    TH1F *hAllHuvsAllTu1;  
+    TH1F *hAllHuvsAllTu1;
     TH1F *hAllHvvsAllTv1 ;
     TH1F *huCGtu1;
     TH1F *hvCGtv1;
@@ -435,7 +438,7 @@ class MHist : public TObject {
     TH1F *hEffic_vs_Dist_Trck_Diode; //AP, 2015/04/22, detection efficiency vs distance of tracks to closest diode
     TH1F **hDist_Trck_Diode_Asso_vs_Mult; //AP, 2015/06/11, distribution of the distance of the associated tracks to closest diode vs associated cluster multiplicity
     TH2F* hnpixc_vs_TrkDistToDiode;       //AP 2015/06/09, 2D distribution of associated cluster multiplicity vs the associated track distance to closest diode
-    
+
     TH2F **huvCGtuv_vs_Mult; //AP, 2014/10/23, position of associated tracks wrt sensing diodes vs multiplicity
     TH1F *huCGwidth_vs_Mult; //AP, 2014/10/23, u CG residual distribution width vs multiplicity
     TH1F *hvCGwidth_vs_Mult; //AP, 2014/10/23, u CG residual distribution width vs multiplicity
@@ -475,41 +478,41 @@ class MHist : public TObject {
     TCanvas *cresfit_CGWidth_vs_TracksPerEvent; //AP, 2014/10/31
 
 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     // Fake rate study
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     TH1F *hNhitperpixel;
     TH1F *hNhitRateperpixel;
     TH1F *hPixelsPerFakeRate;
 
     TCanvas *cfake;
 
-    //------------------------------------------------------------------------------ 
-    // tracks properties and chi2  
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
+    // tracks properties and chi2
+    //------------------------------------------------------------------------------
 
     TH1F *hNTracksPerEvent;
     TH1F *hNTracksPerEventievt;
     TH1F *hNGoodGeomTracksPerEvent;
-  
+
     TH2F *hAllTvTu;
     TH1F *hAllTu ;
     TH1F *hAllTv    ;
     TH2F *hGoodChi2TvTu;
-    TH1F *hGoodChi2Tu  ; 
+    TH1F *hGoodChi2Tu  ;
     TH1F *hGoodChi2Tv   ;
     TH1F *hGoodChi2Tx    ;
     TH1F *hGoodChi2Ty    ;
     TH1F *hGoodChi2AngleXZ;
     TH1F *hGoodChi2AngleYZ;
 
-    TH1F *hchi2_c;  
+    TH1F *hchi2_c;
     TH1F *hchi2_nc ;
     TH1F *hchi2 ;
 
-    TH1F *hTrackToClusterMinDistance ; 
-    TH1F *hTrackTo2ndclosestClusterDistance ; 
-    TH1F *hWrongAssociationProba ; 
+    TH1F *hTrackToClusterMinDistance ;
+    TH1F *hTrackTo2ndclosestClusterDistance ;
+    TH1F *hWrongAssociationProba ;
     TH2F *hMinDistance_vs_2ndDistance;
 
     TH1F *hNhitsPerTrack_all;
@@ -525,12 +528,12 @@ class MHist : public TObject {
     TH2F *hRef_Tud_vs_Tu1[NRefPlane];
     TH2F *hRef_Tud_vs_Tk1[NRefPlane];
 
-    Char_t titreref[100] ; 
-    Char_t nomRef[50]; 
+    Char_t titreref[100] ;
+    Char_t nomRef[50];
 
-    //------------------------------------------------------------------------------ 
-    // Good/All hits. 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
+    // Good/All hits.
+    //------------------------------------------------------------------------------
     TH1F *hnhitievt ;
     TH2F *hnahitievt;
     TH1F *hnGOODhit ;
@@ -542,14 +545,14 @@ class MHist : public TObject {
     TH1F *hEfficiencyInGeomatrixVsTrackPerEvent;  //AP, 2014/10/29, Efficiency   vs tracks per event in sensor
     TH1F *hResidueUInGeomatrixVsTrackPerEvent;    //AP, 2014/10/29, Residue in U vs tracks per event in sensor
     TH1F *hResidueVInGeomatrixVsTrackPerEvent;    //AP, 2014/10/29, Residue in V vs tracks per event in sensor
-    TLegend* leg_TracksinSensorPerEvent;          //AP, 2014/10/29, Legend for efficiency vs tracks per event in sensor 
+    TLegend* leg_TracksinSensorPerEvent;          //AP, 2014/10/29, Legend for efficiency vs tracks per event in sensor
     TLine* l_average_Effic;                       //AP, 2014/10/29, Line with average efficiency
     TLine* l_average_Effic_PErr;                  //AP, 2014/10/29, Line with average efficiency + Error
     TLine* l_average_Effic_MErr;                  //AP, 2014/10/29, Line with average efficiency - Error
 
     TH1F *hAllS2N ;
     TH1F *hallhitSN ;
-    TH1F *hallSNneighbour; 
+    TH1F *hallSNneighbour;
     TH1F *hgoodSNneighbour;
     TH2F *hgoodSN_vs_SNN ;
     TH2F *hallSN_vs_SNN;
@@ -563,9 +566,9 @@ class MHist : public TObject {
 
     TH2F *hSN_vs_SNNReal;
 
-    //------------------------------------------------------------------------------ 
-    // Charge by ordered pixels Histos. 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
+    // Charge by ordered pixels Histos.
+    //------------------------------------------------------------------------------
     //-------------
     TH1F *hGOODChargeOrder1 ;
     TH1F *hGOODChargeOrder2 ;
@@ -581,29 +584,29 @@ class MHist : public TObject {
     TH2F *hGOODChargeCor_1_4;
     TH2F *hGOODChargeCor_2_3 ;
     TH1F *hGOODChargeSum_4 ;
-    TH1F *hGOODChargeRap_1_over_2; 
+    TH1F *hGOODChargeRap_1_over_2;
     TH1F *hGOODChargeRap_1_over_3 ;
     TH1F *hGOODChargeRap_1_over_4;
     TH1F *hGOODChargeRap_2_over_3;
-   
+
   //------------------------------------------------------------------------------
   //----- ?
   //------------------------------------------------------------------------------
 
-  // histograms needed for charge distribution function: 
-  TH2F *hS2N2All; 
+  // histograms needed for charge distribution function:
+  TH2F *hS2N2All;
   TH1F *hS2N2nd ;
   TH2F *hS2N2RH ;
-  //Int_t nb=25; Int_t SpreadRange=100; 
+  //Int_t nb=25; Int_t SpreadRange=100;
   TH1F *hPedestal;
 
-    //----ALL HITS: Signal / noise seed vs Signal / noise in the pixel range [i-j]  
+    //----ALL HITS: Signal / noise seed vs Signal / noise in the pixel range [i-j]
     TH2F *hsnALL_seed_vs_pix_0[jpixmax];
     TH2F *hsnALL_seed_vs_pix_1[jpixmax];
 
     TH2F *hChargeIntegral1;
     TH2F *hChargeNorm1;
-    TH2F *hChargeIntegral2; 
+    TH2F *hChargeIntegral2;
     TH2F *hChargeNorm2 ;
     TH2F *hChargeIntegral3 ;
     TH2F *hChargeNorm3 ;
@@ -621,18 +624,18 @@ class MHist : public TObject {
     TProfile *ProfHOM_ResU_tu;
     TProfile *ProfHOM_ResV_tv;
 
-    TH2F *hHOM_modUCG_modtu;	    
-    TH2F *hHOM_modVCG_modtv; 	    
+    TH2F *hHOM_modUCG_modtu;
+    TH2F *hHOM_modVCG_modtv;
     TH2F *hHOM_modUeta3_modtu;
     TH2F *hHOM_modVeta3_modtv;
-    TH2F *hHOM_modUeta3_realtu;	    
-    TH2F *hHOM_modVeta3_realtv; 	    
-    TH2F *hHOM_modUCG_realtu;	    
-    TH2F *hHOM_modVCG_realtv;	    
-    TH2F *hHOM_modUeta3_Eta3U;	    
-    TH2F *hHOM_modVeta3_Eta3V;	    
-    TH2F *hHOM_modUeta3_modVeta3;  
-    TH2F *hHOM_modUCG_modVCG;         
+    TH2F *hHOM_modUeta3_realtu;
+    TH2F *hHOM_modVeta3_realtv;
+    TH2F *hHOM_modUCG_realtu;
+    TH2F *hHOM_modVCG_realtv;
+    TH2F *hHOM_modUeta3_Eta3U;
+    TH2F *hHOM_modVeta3_Eta3V;
+    TH2F *hHOM_modUeta3_modVeta3;
+    TH2F *hHOM_modUCG_modVCG;
     TH2F *hHOM_modUeta3_modUCG;
     TH2F *hHOM_modVeta3_modVCG;
 
@@ -670,25 +673,25 @@ class MHist : public TObject {
   TProfile2D *ProfhGOODCharge_Charge_DiodePosition_evencol_oddrow_2ndcrown;
   TProfile2D *ProfhGOODCharge_Charge_DiodePosition_oddcol_evenrow_2ndcrown;
   TProfile2D *ProfhGOODCharge_Charge_DiodePosition_oddcol_oddrow_2ndcrown;
-    
+
   TH2F*  hDistVSeedOtherOldCalc;
-  TH2F*  hDistVSeedOtherNewCalc;  
-  
+  TH2F*  hDistVSeedOtherNewCalc;
+
   TH2F*     h2dCharge_Charge_DiodePosition_Track;
   TH2F*     h2dCharge_Charge_DiodePosition_CluSize;
-  
+
   TH1F*     hNpixInClu;
   TH1F*     hQpixInClu;
-  
+
   TProfile2D *ProfhGOODCharge_Charge_DiodePositionSimpDist;
-  
+
   TH3F *hHOM_Charge_diodedist3D;
   TH3F *hHOM_Charge2_diodedist3D;
   TH3F *hHOM_Charge4_diodedist3D;
   TH3F *hHOM_Charge9_diodedist3D;
-  TH3F *hHOM_Charge25_diodedist3D;  
+  TH3F *hHOM_Charge25_diodedist3D;
     // end CLM 2013/01/23
-  
+
     TProfile *ProfHOM_Charge_diodedist_alg;  // JB 2010/03/11
     TProfile *ProfHOM_Charge_diodedist_alg_v;  //clm 2013/01/23
     TProfile *ProfHOM_Charge_diodedist_alg_u;  //clm 2013/01/23
@@ -716,10 +719,10 @@ class MHist : public TObject {
     TH2F *hHOM_DV_Nevent;
     TH2F *hHOM_modtu_Nevent;
     TH2F *hHOM_modtv_Nevent;
-    
+
     TH2F *hHOM_modUCG_Nevent;
     TH2F *hHOM_modVCG_Nevent;
- 
+
     TH1F *hHOM_ResEta25_U;
     TH1F *hHOM_ResEta25_V;
 
@@ -777,9 +780,9 @@ class MHist : public TObject {
     TCanvas *projC;
 
 
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     // Binary output histos.
-    //------------------------------------------------------------------------------ 
+    //------------------------------------------------------------------------------
     TH1F *hBinary_test;
     TH1F *hBinary_NumberOf_1_ALL;
     TH1F *hBinary_NumberOf_1_goodhit;
@@ -788,9 +791,9 @@ class MHist : public TObject {
     TH1F *hBinary_NhitRateperpixel_submatrix;
 
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MiniVectors Histograms ; NCS , 2010/01/21
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   TH1F* hDiffPosX; // NCS 210110
   TH1F* hDiffPosY;// NCS 210110
   TH1F* hDiffAngleX; // NCS 210110
@@ -806,13 +809,13 @@ class MHist : public TObject {
   TH1F* hDiffAngleXg1g1; // JB 2011/11/01
   TH1F* hDiffAngleYg1g1;
   TH1F* hxtxPL3 ; // NCS 260110 not CG position only Hu Hv
-  TH1F* hytyPL3 ; // NCS 260110 
-  TH1F* hxtxPL4 ; // NCS 260110 
-  TH1F* hytyPL4 ; // NCS 260110 
+  TH1F* hytyPL3 ; // NCS 260110
+  TH1F* hxtxPL4 ; // NCS 260110
+  TH1F* hytyPL4 ; // NCS 260110
   TH1F* hutuPL3 ; // NCS 260110 not CG position only Hu Hv
-  TH1F* hvtvPL3 ; // NCS 260110 
-  TH1F* hutuPL4 ; // NCS 260110 
-  TH1F* hvtvPL4 ; // NCS 260110 
+  TH1F* hvtvPL3 ; // NCS 260110
+  TH1F* hutuPL4 ; // NCS 260110
+  TH1F* hvtvPL4 ; // NCS 260110
   TH2F* hdiffydiffx; // JB 2011/11/01
   TH2F* hdiffydiffx11; // JB 2011/11/01
   TH2F* hdiffydiffx12; // JB 2011/11/01
@@ -820,9 +823,9 @@ class MHist : public TObject {
   TH2F* hdiffydiffx22; // JB 2011/11/01
   TH2F* hdiffydiffxg1g1; // JB 2011/11/01
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MimosaVertexFinder Histograms ; LC , 2012/09/06
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
 
   TH1F* hVertexPosX;
   TH1F* hVertexPosY;
@@ -836,12 +839,13 @@ class MHist : public TObject {
   TCanvas *cMiniVec;
   TCanvas *cMiniVec1;
 
-  //------------------------------------------------------------------------------ 
-  // canvas 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
+  // canvas
+  //------------------------------------------------------------------------------
   TCanvas *c2;
   TCanvas *casym;
   TCanvas *ceffi;
+  TCanvas *ceffi2;
   TCanvas *ccomp;
   TCanvas *ccomp2;
   TCanvas *ccomp3;
@@ -860,9 +864,9 @@ class MHist : public TObject {
   static const Int_t numcanvasSN=6;
   static const Int_t numcanvasOptimize=1;
   TCanvas *cSN[numcanvasSN]; //!
-  TCanvas *cRef[numcanvas];   //!   
+  TCanvas *cRef[numcanvas];   //!
   TCanvas *cOptimize[numcanvasOptimize]; //!
- 
+
   TCanvas *cM8;
 
 
@@ -879,11 +883,11 @@ class MHist : public TObject {
   TGraphErrors* grevt ;
   TGraphErrors* ChargeSpread;
 
-  TControlBar*  bar2; 
+  TControlBar*  bar2;
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // MC Geneation for telescope resolution evaluation
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   TH1F *hTrackChi2_MC;
   TH1F *hTrackSlopeX_MC;
   TH1F *hTrackSlopeY_MC;
@@ -917,7 +921,7 @@ class MHist : public TObject {
   TCanvas *ccumultrack5;
   TCanvas *cresAtDUT[MyBins_GlobalResolution];
   TCanvas *cresAtDUT_vs_SensorSP;
-  
+
   static const Int_t MyMaxEventDisplay   = 30;
   static const Int_t MyMaxNumberOfTracks = 100;
   TLine* RectracksXZ[MyMaxEventDisplay][MyMaxNumberOfTracks];
@@ -928,18 +932,18 @@ class MHist : public TObject {
   TPolyLine3D*   gtracksXYZ[MyMaxEventDisplay][MyMaxNumberOfTracks];
   TPolyMarker3D* gtracksXYZ_mark[MyMaxEventDisplay][MyMaxNumberOfTracks];
   TPolyLine3D*   RectracksXYZ[MyMaxEventDisplay][MyMaxNumberOfTracks];
-  
+
   TLine **lineXZ;
   TLine **lineYZ;
   TText*  number;
   TLatex* latex;
-  
+
   TH2F* hXZ_MC;
   TH2F* hYZ_MC;
 
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   // User histograms
-  //------------------------------------------------------------------------------ 
+  //------------------------------------------------------------------------------
   TCanvas *cUser;
   TH1F* hUserHitCorrelationLine;
   TH1F* hUserHitCorrelationCol;

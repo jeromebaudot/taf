@@ -4,6 +4,8 @@
 // Last Modified: VR 2014/06/29 add the args corresponding to MRaw and MRax GUIs to launch them
 // Last Modified: VR 2014/06/30 support of config file parameter
 // Last Modified: JB 2016/08/17 support of config directory parameter
+// Last Modified: JB 2020/05/01 support of data directory parameter
+// Last Modified: JB 2021/11/15 support of data file parameter
 
   /////////////////////////////////////////////////////////////
   //                                                         //
@@ -103,9 +105,13 @@ Int_t main(Int_t argc, Char_t **argv)
   TString sessinit_mainResDirPath_arg = "";
   TString sessinit_mainResDirPath_def = "";
   // data path :
-  TString sessinit_dataDirPath_cmd = "-data";
+  TString sessinit_dataDirPath_cmd = "-datapath";
   TString sessinit_dataDirPath_arg = "";
   TString sessinit_dataDirPath_def = "";
+  // data file :
+  TString sessinit_dataFile_cmd = "-datafile";
+  TString sessinit_dataFile_arg = "";
+  TString sessinit_dataFile_def = "";
   // output files prefix :
   TString sessinit_outFilesPref_cmd = "-prefix";
   TString sessinit_outFilesPref_arg = "";
@@ -121,6 +127,9 @@ Int_t main(Int_t argc, Char_t **argv)
   //**********************************
   // TAF analysis GUIs
   //**********************************
+  // Launch default GUI
+  TString tafgui_cmd  = "-gui";
+  Bool_t  tafgui_bool = kFALSE; // not made by default
   // Launch the MRaw GUI
   TString tafgui_mraw_cmd  = "-guiw";
   Bool_t  tafgui_mraw_bool = kFALSE; // not made by default
@@ -166,10 +175,12 @@ Int_t main(Int_t argc, Char_t **argv)
         cout << "     ["<< sessinit_cfgDir_cmd <<"] specific config directory (ex.: mydir /another/mydir ../anotherdir/mydir/ ...)"<< endl;
         cout << "     ["<< sessinit_outFilesPref_cmd <<"] output files prefix for MRax (ex.: config_yy), default is "<<  sessinit_outFilesPref_def << endl;
         cout << "     ["<< sessinit_outFilesSuff_cmd <<"] output files suffix for MRax (ex.: RUNxx), default is "<<  sessinit_outFilesSuff_def << "#" << endl;
-      //      cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
-//      cout << "     ["<< sessinit_dataDirPath_cmd <<"] path of run binary data in folders named 'RUNxxxxx'"<< endl;
+        // cout << "     ["<< sessinit_mainResDirPath_cmd <<"] path (directory created if not exists) where results dir/files will be created"<< endl;
+        cout << "     ["<< sessinit_dataDirPath_cmd <<"] path to data, superseeds config file input"<< endl;
+        cout << "     ["<< sessinit_dataFile_cmd <<"] data file name, superseeds config file input"<< endl;
 
       cout << "  * TAF GUIs :" << endl;
+      cout << "     ["<<tafgui_cmd<<"] : launch the default (MRaw) GUI" << endl;
       cout << "     ["<<tafgui_mraw_cmd<<"] : launch the MRaw GUI" << endl;
       cout << "     ["<<tafgui_mrax_cmd<<"] : launch the MRax GUI" << endl;
 
@@ -272,37 +283,49 @@ Int_t main(Int_t argc, Char_t **argv)
 	    if(verbose) cout << "  * InitSession: a results path is given: "<< sessinit_mainResDirPath_arg << endl;
 	    i++;
 	  }
-	  // data path
+    // data path
 	  else if (!arg.CompareTo(sessinit_dataDirPath_cmd) && ((i+1)<argc)) // if this arg is followed by another
 	  {
 	    sessinit_dataDirPath_arg = argv[i+1];
 	    if(verbose) cout << "  * InitSession: a data path is given: "<< sessinit_dataDirPath_arg << endl;
 	    i++;
 	  }
-          // output files suffix
-          else if (!arg.CompareTo(sessinit_outFilesSuff_cmd) && ((i+1)<argc)) // if this arg is followed by another
-          {
-            sessinit_outFilesSuff_arg = argv[i+1];
-            if(verbose) cout << "  * InitSession: an output file suffix is given: "<< sessinit_outFilesSuff_arg << endl;
-            i++;
-          }
-          // output files prefix
-          else if (!arg.CompareTo(sessinit_outFilesPref_cmd) && ((i+1)<argc)) // if this arg is followed by another
-          {
-            sessinit_outFilesPref_arg = argv[i+1];
-            if(verbose) cout << "  * InitSession: an output file prefix is given: "<< sessinit_outFilesPref_arg << endl;
-            i++;
-          }
+    // data file
+	  else if (!arg.CompareTo(sessinit_dataFile_cmd) && ((i+1)<argc)) // if this arg is followed by another
+	  {
+	    sessinit_dataFile_arg = argv[i+1];
+	    if(verbose) cout << "  * InitSession: a data filename is given: "<< sessinit_dataFile_arg << endl;
+	    i++;
+	  }
+    // output files suffix
+    else if (!arg.CompareTo(sessinit_outFilesSuff_cmd) && ((i+1)<argc)) // if this arg is followed by another
+    {
+      sessinit_outFilesSuff_arg = argv[i+1];
+      if(verbose) cout << "  * InitSession: an output file suffix is given: "<< sessinit_outFilesSuff_arg << endl;
+      i++;
+    }
+    // output files prefix
+    else if (!arg.CompareTo(sessinit_outFilesPref_cmd) && ((i+1)<argc)) // if this arg is followed by another
+    {
+      sessinit_outFilesPref_arg = argv[i+1];
+      if(verbose) cout << "  * InitSession: an output file prefix is given: "<< sessinit_outFilesPref_arg << endl;
+      i++;
+    }
     // debug level
-          else if (!arg.CompareTo(sessinit_debugLevel_cmd) && ((i+1)<argc)) // if this arg is followed by another
-          {
-            sessinit_debugLevel_arg = atoi(argv[i+1]);
-            if(verbose) cout << "  * InitSession: a debug level is given: "<< sessinit_debugLevel_arg << endl;
-            i++;
-          }
+    else if (!arg.CompareTo(sessinit_debugLevel_cmd) && ((i+1)<argc)) // if this arg is followed by another
+    {
+      sessinit_debugLevel_arg = atoi(argv[i+1]);
+      if(verbose) cout << "  * InitSession: a debug level is given: "<< sessinit_debugLevel_arg << endl;
+      i++;
+    }
 	  //**********************************
 	  // taf analysis GUIs
 	  //**********************************
+    else if (!arg.CompareTo(tafgui_cmd))
+	  {
+	    tafgui_bool = kTRUE;
+	    if(verbose) cout << "  * TAF GUIs : launching default gui (MRaw) is asked" << endl;
+	  }
 	  else if (!arg.CompareTo(tafgui_mraw_cmd))
 	  {
 	    tafgui_mraw_bool = kTRUE;
@@ -535,24 +558,29 @@ Int_t main(Int_t argc, Char_t **argv)
     }
     */
     //------------------------------
-    // Data Path //TODO
+    // Data Path
     //------------------------------
-    /*
     if (! sessinit_dataDirPath_arg.IsNull()) // if "data path" arg is given
     {
       if(verbose) cout << "  * data path     <given>:   " << sessinit_dataDirPath_arg << endl;
     }
     else // if "data path" arg is NOT given
     {
-      sessinit_dataDirPath_arg = sessinit_dataDirPath_def; // then use default one (defined before)
-      if(verbose)
-      {
-	cout << "  * data path     <default>: ";
-	if (sessinit_dataDirPath_arg.IsNull()) cout << "InitSession() default value" << endl; // if this default value is "", use InitSession() default value
-	else                               cout << sessinit_dataDirPath_arg << endl; // if this default value is NOT "", use it
-      }
+      // sessinit_dataDirPath_arg = sessinit_dataDirPath_def; // then use default one (defined before)
+      if(verbose) cout << "  * data path taken from config file." << endl;
     }
-   */
+    //------------------------------
+    // Data Filename
+    //------------------------------
+    if (! sessinit_dataFile_arg.IsNull()) // if "data file" arg is given
+    {
+      if(verbose) cout << "  * data filename     <given>:   " << sessinit_dataFile_arg << endl;
+    }
+    else // if "data file" arg is NOT given
+    {
+      // sessinit_dataFile_arg = sessinit_dataFile_def; // then use default one (defined before)
+      if(verbose) cout << "  * data path taken from config file." << endl;
+    }
     //------------------------------
     // InitSession
     //------------------------------
@@ -568,12 +596,14 @@ Int_t main(Int_t argc, Char_t **argv)
     cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
 
-    sprintf(tafcommand, "gTAF->InitSession(%s,%s,%s,\"%s\",\"%s\")",\
+    sprintf(tafcommand, "gTAF->InitSession(%s,%s,%s,\"%s\",\"%s\",\"%s\")",\
 	  sessinit_runnb_arg          .Data(),\
 	  sessinit_plane_arg          .Data(),\
 	  sessinit_ebm_arg            .Data(),\
 	  sessinit_cfgFilePath_arg    .Data(),\
-	  sessinit_cfgDir_arg         .Data());
+	  sessinit_cfgDir_arg         .Data(),\
+    sessinit_dataDirPath_arg    .Data()\
+    );
     cout << " * Process command: "<< tafcommand << endl << endl;
     rvalue = gROOT->ProcessLineSync(tafcommand);
     //cout << "  return " << rvalue << endl;
@@ -591,7 +621,7 @@ Int_t main(Int_t argc, Char_t **argv)
     //------------------------------
     // launch GUIs
     //------------------------------
-    if (tafgui_mraw_bool)
+    if (tafgui_bool || tafgui_mraw_bool)
     {
       if(verbose) cout << endl << " ***<Launching MRaw GUI>*** "<<endl;
       sprintf(tafcommand, "gTAF->GetRaw()");
@@ -673,12 +703,13 @@ void PrintAlineWithStars(const TString &str, const Int_t & maxLength, const Bool
 
 //______________________________________________________________________________
 //
+
 void TRint::PrintLogo(Bool_t lite)
 {
 
   if(lite) return;
 
-// Print the TAF logo on standard output.
+ // Print the TAF logo on standard output.
   ///////////////////////////////////////////////////////////
   // Configuration
   ///////////////////////////////////////////////////////////
@@ -694,8 +725,8 @@ void TRint::PrintLogo(Bool_t lite)
   //    svn revision infos :
   // If SVN_REVISION definition is made in the Makefile, choose Option 1;
   // If this definition is disabled in Makefile, choose Option 2;
-  svnrev += SVN_REVISION; // Option 1
-  //svnrev += "??";       // Option 2
+  //svnrev += SVN_REVISION; // Option 1
+  svnrev += "using GIT now ;)";       // Option 2
   //---------------------------------
 
   //  Authors by alphabetic order
@@ -707,6 +738,7 @@ void TRint::PrintLogo(Bool_t lite)
   authors.push_back("L.Cousin(1)");
   authors.push_back("R.De Masi(1)");
   authors.push_back("C.Dritsa(1)");
+  authors.push_back("Z.El Bitar(1)");
   authors.push_back("M.Gelin(1)");
   authors.push_back("Y.Gornoushkin(1)");
   authors.push_back("D.Grandjean(1)");
@@ -775,12 +807,15 @@ void TRint::PrintLogo(Bool_t lite)
   TString rootver = " ROOT ver: ";rootver += gROOT->GetVersion();
   PrintAlineWithStars(rootver,maxLength,kFALSE);
 
+  /*
+  // Doesn't seem to work with Ubuntu 20
   #ifdef R__UNIX
-  if (!strcmp(gVirtualX->GetName(), "X11TTF"))
+  if (!strcmp(gVirtualPS->GetName(), "X11TTF"))
   {
     PrintAlineWithStars(" FreeType Engine v1.x used to render TrueType fonts",maxLength,kFALSE);
   }
   #endif
+  */
   #ifdef _REENTRANT
   PrintAlineWithStars(" Compiled with thread support",maxLength,kFALSE);
   #endif

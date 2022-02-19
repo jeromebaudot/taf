@@ -311,6 +311,9 @@ MimosaAnalysis::MimosaAnalysis()
   effiCorr_vs_TrkHitDist = NULL;
   goodtracks = NULL;
   TrkInMimo = NULL;
+  effinpixel = NULL;
+  HitInPixel = NULL;
+  TrkInPixel = NULL;
 
   //------------------------------------------------------------------------------
   //--- hit position
@@ -4841,6 +4844,8 @@ void MimosaAnalysis::Efficiency_end( Int_t eventsRead)
   effimap->Add( goodtracks); // MG 2011/07/08
   effimap->Divide( TrkInMimo);
 
+  effinpixel->Add( HitInPixel); // JB 2021/06/11
+  effinpixel->Add( TrkInPixel);
 }
 
 //_____________________________________________________________________________

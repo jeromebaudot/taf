@@ -152,6 +152,18 @@ void VMEBoardReader::Close()
 	  fRawFileAscii[i].close();
 }
 
+// --------------------------------------------------------------------------------------
+
+void VMEBoardReader::SetVetoPixel( int noiseRun) {
+
+  // Select the required function to veto the pixel depending on the run number.
+  // JB 2020/02/07
+
+  if( fDebugLevel) printf( "  VMEBoardReader board %d::SetVetoPixel with noise run number %d\n", fBoardNumber, noiseRun);
+  fTool.SetVetoPixel( noiseRun);
+
+}
+
 //------------------------------------------+-----------------------------------
 bool VMEBoardReader::HasData()
 {
@@ -422,9 +434,19 @@ void VMEBoardReader::AddPixel( Int_t iSensor, Int_t value, Int_t aLine, Int_t aC
    //
    // Upgraded, JB 2019/07/13
 
-   if (fDebugLevel>2) printf("VMEBoardReader::Addpixel adding pixel for sensor %d with value %d line %d row %d\n", iSensor, value, aLine, aColumn);
+   if (fDebugLevel>2) {
+     printf("VMEBoardReader::Addpixel adding pixel for sensor %d with value %d line %d row %d", iSensor, value, aLine, aColumn);
+     if (fTool.VetoPixel==NULL) {
+       printf(" with veto OFF\n");
+     }
+     else {
+       printf(" with veto ON and veto=%d\n", fTool.VetoPixel( iSensor, aLine, aColumn));
+     }
+   }
 
-   ListOfPixels.push_back( BoardReaderPixel( iSensor+1, value, aLine, aColumn, 0) );
+   if ( fTool.VetoPixel==NULL || !fTool.VetoPixel( iSensor, aLine, aColumn) ) {
+    ListOfPixels.push_back( BoardReaderPixel( iSensor+1, value, aLine, aColumn, 0) );
+   }
 
  #ifdef withROOT
    // if (ValidHistogram()) {

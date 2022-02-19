@@ -22,9 +22,10 @@
 // Last Modified: VR 2014/07/13 Rename fEventCount by fCurrentEventNumber and add the GoToEvent and GoToNextEvent methods
 // Last Modified: JB 2014/08/29 FillTree
 // Last Modified: BB 2015/11/18 Modification of FillTree to avoid a Break segmentation
+// Last Modified: JB 2021/05/01 Propagate potential sourcePath set via command line
 
   ////////////////////////////////////////////////////////////
-  // Class Description of DSession                          // 
+  // Class Description of DSession                          //
   //                                                        //
   // + frame for analysis of raw event data                 //
   // + dumps data on standard output                        //
@@ -52,7 +53,7 @@ ClassImp(DSession) // DSession
 DSession *DSession::fgInstance = 0; // returns pointer to global object
 
 //_____________________________________________________________________________
-//  
+//
 DSession::DSession(Option_t*)
 {
    if (fgInstance) Warning("DSession", "object already instantiated");
@@ -65,9 +66,9 @@ DSession::DSession(Option_t*)
 }
 
 //_____________________________________________________________________________
-//  
+//
 DSession::DSession()
-{ 
+{
 
   fc       = nullptr;
   fAcq     = nullptr;
@@ -78,7 +79,7 @@ DSession::DSession()
   fc->SetDebug( fDebugSession); // JB, 2008/10/13
   cout << " - Reading configuration " << endl;
   //-----------------------
-  fc->ReadConfiguration();                 
+  fc->ReadConfiguration();
   //-----------------------
   fAcq          = new DAcq(*fc);             // construct "DataAcquisition" object.
   fTracker      = new DTracker(*fc, *fAcq);  // construct the DTracker
@@ -92,7 +93,7 @@ DSession::DSession()
   fTrackLimitsForAlignY[0] = 0.;
   fTrackLimitsForAlignY[1] = 0.;
   fTrackChi2LimitForAlign = 0; // 2013/07/14
-  
+
   cout << endl << " - Session now started " << endl;
   if (fgInstance) Warning("DSession", "object already instantiated");
   else            fgInstance = this;
@@ -101,7 +102,7 @@ DSession::DSession()
 }
 
 //______________________________________________________________________________
-//  
+//
 DSession::DSession(const Int_t aRunNumber)
 {
   cout << endl << " -*-*- DSession Constructor -*-*- " << endl;
@@ -115,7 +116,7 @@ DSession::DSession(const Int_t aRunNumber)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::InitSession()
 {
   // Initialize any session
@@ -132,7 +133,7 @@ void DSession::InitSession()
   //
 
   // Get basic information
-  Char_t textRunNumber[250];  
+  Char_t textRunNumber[250];
   sprintf(textRunNumber,"%d",fRunNumber);
   cout << endl << " - Run Number : " << fRunNumber << endl;
 
@@ -146,6 +147,8 @@ void DSession::InitSession()
   }
   fc->SetConfigPath(fConfigPath);
   fc->SetConfigFileName(fConfigFileName);
+  fc->SetSourcePath(fRawSourcePath);
+  fc->SetSourceFilename(fRawSourceFilename);
 
   // Read the .cfg file
   cout << " - Reading configuration " << endl;
@@ -157,12 +160,12 @@ void DSession::InitSession()
     fc->GetAcqPar().EventBuildingMode=fEventBuildingMode;
     for (int imod = 1; imod<=fc->GetAcqPar().ModuleTypes; imod++) { // correcting bug: adding initialisation BH 2013/08/20
       fc->GetModulePar(imod).EventBuildingBoardMode = fEventBuildingMode;
-    } 
+    }
   }
 
   // Not needed with new reading, JB 2008/10/13
-  //fReader       = new DReader(*fc);          // construct a Run environment 
-  //fReader->SetRawSourcePath(fRawSourcePath); // 
+  //fReader       = new DReader(*fc);          // construct a Run environment
+  //fReader->SetRawSourcePath(fRawSourcePath); //
   // Read info from header file if any
   //cout << "Read header file " << endl;
   //fReader->ReadHeaderFile(*fc);
@@ -197,7 +200,8 @@ void DSession::InitSession()
   fSummaryFileTitle = TString("TAF TTree ") + textRunNumber; // JB 2015/03/24
 
   printf(" DSession, Paths and Files :\n");
-  printf("  Raw Data Source  Path is  %s\n", fc->GetRunPar().DataPath ); // fRawSourcePath.Data() ); JB 2009/05/12
+  printf("  Raw Data Source Path is  %s\n", fc->GetRunPar().DataPath ); // fRawSourcePath.Data() ); JB 2009/05/12
+  if( !(fRawSourceFilename.IsNull()) ) printf("  Raw Data Source Filename is  %s\n", fRawSourceFilename.Data() ); // JB 2021/11/15
 //   printf("  Data Summary File Path (temporary OUTPUT)  %s\n", fSummaryFilePath.Data() );
 //   printf("  Data Summary File Name %s\n",                   fSummaryFileName.Data() );
   printf("  Data Summary File Name is %s\n",         fSummaryFilePathAndName.Data() );
@@ -213,7 +217,7 @@ void DSession::InitSession()
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::SetDebug(Int_t aDebug)
 {
   // Initialize or update the debugging level
@@ -235,76 +239,76 @@ void DSession::SetDebug(Int_t aDebug)
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::SetTrackGeoLimitsForAlign(Double_t xmin, Double_t xmax, Double_t ymin, Double_t ymax) {
 
   // Define geometrical limits of tracks to be considered for alignment.
   // Those limits are given in the tracker frame AND FOR Z=0.
   //
   // JB 2013/06/10
-  
+
   fTrackLimitsForAlignX[0] = xmin;
   fTrackLimitsForAlignX[1] = xmax;
   fTrackLimitsForAlignY[0] = ymin;
   fTrackLimitsForAlignY[1] = ymax;
-  
+
   printf("--> Align procedure is restricted to tracks with (at Z=0):");
   printf("  %.2f < X < %.2f   and   %.2f < Y < %.2f\n\n", fTrackLimitsForAlignX[0], fTrackLimitsForAlignX[1], fTrackLimitsForAlignY[0], fTrackLimitsForAlignY[1]);
-    
+
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::SetTrackChi2LimitForAlign(Double_t aLimit) {
-  
+
   // Define upper chi2 limit of tracks to be considered for alignment.
   //
   // JB 2013/07/14
-  
+
   fTrackChi2LimitForAlign = aLimit;
-  
+
   printf("--> Align procedure is restricted to tracks with chi2<=%f.\n", fTrackChi2LimitForAlign);
-  
+
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::GetTrackGeoLimitsForAlign(Double_t &xmin, Double_t &xmax, Double_t &ymin, Double_t &ymax) {
-  
+
   // Store the geometrical limits of tracks to be considered for alignment,
   // in the variable references provided.
   // Those limits are given in the tracker frame AND FOR Z=0.
   //
   // JB 2013/06/11
-  
+
   xmin = fTrackLimitsForAlignX[0];
   xmax = fTrackLimitsForAlignX[1];
   ymin = fTrackLimitsForAlignY[0];
   ymax = fTrackLimitsForAlignY[1];
-    
+
 }
 
 //______________________________________________________________________________
-//  
+//
 //void DSession::SetWeightFile( TString aFileName) {
 //
 //  // Open the file containing the paramettrization for the eta function
 //  //
 //  // JB 2011/04/12
 //  // Modified JB 2011/07/07 to localize path name
-//  
+//
 //  fWeightFileName = aFileName;
 //  fTool.LocalizeDirName( &fWeightFileName); // JB 2011/07/07
 //  if( gSystem->AccessPathName(fWeightFileName.Data())) Info("SetWeightFile","%s  doesn't exist, it is created.",fWeightFileName.Data());
 //  fWeightFile = new TFile(fWeightFileName.Data(), "UPDATE"); // READ->UPDATE, JB 2011/04/12
-//  if(fWeightFile->IsZombie()||fWeightFile->GetNkeys()==0){ // QL 2015/11/04, recreate the file if it is a zombie or empty to avoid TAF crash. 
+//  if(fWeightFile->IsZombie()||fWeightFile->GetNkeys()==0){ // QL 2015/11/04, recreate the file if it is a zombie or empty to avoid TAF crash.
 //       fWeightFile->Close();
 //       fWeightFile = new TFile(fWeightFileName.Data(), "RECREATE");
 //  }
 //
 //}
 //______________________________________________________________________________
-//  
+//
 
 Bool_t DSession::NextRawEvent( Int_t aTrigger)
 {
@@ -319,7 +323,7 @@ Bool_t DSession::NextRawEvent( Int_t aTrigger)
   // Modified: JB 2011/03/14, to start event number at 0
   // Modified: JB 2012/07/10, request a specific trigger to DAQ
   // Modified: SS 2012/08/10, management of DAcq multi-bits output
-  
+
   TBits* DAcqResult=new TBits(2);
 
   if (fCurrentEventNumber++ <= fEventsToDo) {
@@ -331,11 +335,11 @@ Bool_t DSession::NextRawEvent( Int_t aTrigger)
 
   } else {
     cout << "WARNING: DSession, enough events " << fCurrentEventNumber << " / " << fEventsToDo << "!"<<endl; // improved comment, JB
-  }                   
+  }
 
   if (GetStatus()==0 && fTracker->GetPlanesStatus() ){ // Moved from Loop(), JB 2009/05/26
     SetStatus(fTracker->GetPlanesStatus()) ;
-  }   
+  }
 
   // display current event number with variable frequency
   Int_t frequency = 1; // added by JB, April 2008
@@ -347,14 +351,14 @@ Bool_t DSession::NextRawEvent( Int_t aTrigger)
   if( fCurrentEventNumber/frequency*frequency == fCurrentEventNumber) {
     cout << "Event " << fCurrentEventNumber << " over " << fEventsToDo << " ";
     fWatch.Print();  // JB, 2008 September, to monitor CPU time
-    fWatch.Continue();    
+    fWatch.Continue();
   }
 
   return DAcqResult->TestBitNumber(0); // stop only when no more event readable
 }
 
 //______________________________________________________________________________
-//  
+//
 Int_t DSession::GoToEvent(Int_t anEvent)
 {
   // Specific method to ask the DAQ for a given event
@@ -365,13 +369,13 @@ Int_t DSession::GoToEvent(Int_t anEvent)
     cout << "ERROR: DSession::GoToEvent : give a positive event nb value!" << endl;
     return -1;
   }
-  
+
   if (fDaqAbleToGoToAspecificEvent)
   {
     TBits* DAcqResult=new TBits(2);
-    
+
     DAcqResult = fAcq->NextEvent(anEvent, anEvent);
-    if( !DAcqResult->TestBitNumber(0)) 
+    if( !DAcqResult->TestBitNumber(0))
     {
       cout << "WARNING: DSession::GoToEvent : event " << anEvent << " can't be retrieve!" << endl;
       return -1;
@@ -381,14 +385,14 @@ Int_t DSession::GoToEvent(Int_t anEvent)
       cout << "WARNING: DSession::GoToEvent : event " << anEvent << " is missing from the list!" << endl;
       return -1;
     }
-    
+
     fCurrentEventNumber = anEvent;
-    
+
     if (GetStatus()==0 && fTracker->GetPlanesStatus() )
     {
       SetStatus(fTracker->GetPlanesStatus()) ;
     }
-  
+
     return fCurrentEventNumber;
   }
   else
@@ -399,19 +403,19 @@ Int_t DSession::GoToEvent(Int_t anEvent)
 }
 
 //______________________________________________________________________________
-//  
+//
 Int_t DSession::GoToNextEvent(void)
 {
   // Specific method to ask the DAQ for a given event
   //
   // Created : VR 2014/07/13, from NextRawEvent( Int_t aTrigger)
-  
+
   if (fDaqAbleToGoToAspecificEvent)
   {
     TBits* DAcqResult=new TBits(2);
-    
+
     DAcqResult = fAcq->NextEvent(fCurrentEventNumber+1,fCurrentEventNumber+1);
-    if( !DAcqResult->TestBitNumber(0)) 
+    if( !DAcqResult->TestBitNumber(0))
     {
       cout << "WARNING: DSession::GoToEvent : event " << fCurrentEventNumber+1<< " can't be retrieve!" << endl;
       return -1;
@@ -421,14 +425,14 @@ Int_t DSession::GoToNextEvent(void)
       cout << "WARNING: DSession::GoToEvent : event " << fCurrentEventNumber+1 << " is missing from the list!" << endl;
       return -1;
     }
-    
+
     fCurrentEventNumber ++;
-    
+
     if (GetStatus()==0 && fTracker->GetPlanesStatus() )
     {
       SetStatus(fTracker->GetPlanesStatus()) ;
     }
-    
+
     // display current event number with variable frequency
     Int_t frequency = 1;
     if( fDebugSession) { cout << endl << endl; }
@@ -440,42 +444,42 @@ Int_t DSession::GoToNextEvent(void)
     {
       cout << "Real Event Nb " << fCurrentEventNumber << " ";
       fWatch.Print();
-      fWatch.Continue();    
+      fWatch.Continue();
     }
-      
+
     return fCurrentEventNumber;
   }
   else
   {
-    if (!NextRawEvent(-1)) return -1; 
+    if (!NextRawEvent(-1)) return -1;
     return fCurrentEventNumber;
   }
 }
 
 //______________________________________________________________________________
-//  
+//
 
 void DSession::MakeTree()
 {
   // Create a new ROOT file with Tree.
 
   // Not needed with new reading, JB 2008/10/13
-  //fReader->Reset();                
-  //fCurrentEventNumber   = 0;                    
-  fStatus       = 0;  
-  Int_t   tCompressionLevel = 2; 
+  //fReader->Reset();
+  //fCurrentEventNumber   = 0;
+  fStatus       = 0;
+  Int_t   tCompressionLevel = 2;
 
-  // If level = 1, only branches containing integers will be compressed. 
-  // If level >= 2, all branches will be compressed with compression level-1. 
+  // If level = 1, only branches containing integers will be compressed.
+  // If level >= 2, all branches will be compressed with compression level-1.
 
   fSummaryFile = new TFile(fSummaryFilePathAndName, "RECREATE", fSummaryFileTitle);
   fSummaryFile->SetCompressionLevel(tCompressionLevel);
-  fEvent = new DEvent(*fc);   
+  fEvent = new DEvent(*fc);
 
   // Create a ROOT Tree and one branch
 
   //TTree::SetMaxTreeSize(1000*Long64_t(2000000000));
-  fEventTree = new TTree("T", fSummaryFileTitle); 
+  fEventTree = new TTree("T", fSummaryFileTitle);
   fEventTree->SetAutoSave(100000000);  // autosave when 1 Mbyte written
   fEventTree->Print();
   TBranch *b = fEventTree->Branch("fEvent","DEvent",&fEvent,64000,99);
@@ -487,7 +491,7 @@ void DSession::MakeTree()
 }
 
 //_____________________________________________________________________________
-//  
+//
 void DSession::Loop()
 {
   cout << endl << endl << "Session: " << fEventsToDo << " events will be read" << endl << endl ;
@@ -496,7 +500,7 @@ void DSession::Loop()
 
   while(NextRawEvent() == kTRUE) { // event loop
     //==============
-    Int_t Updt = fTracker->Update(); 
+    Int_t Updt = fTracker->Update();
 //cout << __FILE__ << __LINE__ << endl;
     //==============
     if( fDebugSession) printf("\n\nDSession::Loop Event=%d, Updt=%d, f(Session)Status=%d, fPlanesStatus=%d\n", GetCurrentEventNumber(), Updt, GetStatus(), fTracker->GetPlanesStatus());
@@ -510,11 +514,11 @@ void DSession::Loop()
 //cout << __FILE__ << __LINE__ << endl;
     //==============
     }
-    else { 
+    else {
 //cout << __FILE__ << __LINE__ << endl;
       if( fDebugSession) cout << "DSession::Loop Something's wrong in Tracker update for event " << GetCurrentEventNumber() << ", No Tree filled" << endl;
 //cout << __FILE__ << __LINE__ << endl;
-    }   
+    }
 //cout << __FILE__ << __LINE__ << endl;
 
   } // end event loop
@@ -523,12 +527,12 @@ void DSession::Loop()
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::Scan()
 {
 
   DPlane *thePl = GetTracker()->GetPlane(fPlaneToScan) ;
-  
+
   Int_t nu =thePl->GetStripsNu() ;
   Int_t nv =thePl->GetStripsNv() ;
 
@@ -539,7 +543,7 @@ void DSession::Scan()
     if (GetStatus() >=1) {
       Int_t ist = 1 ;
       for (Int_t iu=1 ; iu<nu ; iu++){
-	for (Int_t iv=1 ; iv<nv ; iv++){      
+	for (Int_t iv=1 ; iv<nv ; iv++){
 	  cout << thePl->GetRawValue(ist) << " " ;
 	  ist++ ;
 	}
@@ -555,7 +559,7 @@ void DSession::Scan()
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::Finish()
 {
   // Modified JB 2009/09/08 to print statistics of tracking
@@ -578,7 +582,7 @@ void DSession::Finish()
   printf("************************************\n");
   printf("Entries in TTree: %ld\n.", (long int)fEventTree->GetEntries()); // JB 2009/10/02, could be Long64_t
   printf("************************************\n");
-  
+
   cout << endl << "TAF ends at ";
   aTime.Print();
 
@@ -590,14 +594,14 @@ void DSession::Finish()
 }
 
 //______________________________________________________________________________
-//  
+//
 void DSession::FillTree()
 {
 
   // Fill the tree with the followinf information:
   // statistics (ped, noise, # hits, ...) of each plane
   // each hit info of each plane, note that each hit is associated to the nearest existing track
-  // each track info crossing each plane 
+  // each track info crossing each plane
   //  (note hit nb is negative for hits used in the track fit).
   //
   // Some plane may be skipped (use SetFillLevel(aLevel) to set):
@@ -619,35 +623,35 @@ void DSession::FillTree()
   DHit          *tHit=nullptr;
   Int_t         tracksN(0), hitsN(0), pl(0);
   Bool_t        hitAssociated(false);
-  
-  // Event number is the counter of DSession, 
+
+  // Event number is the counter of DSession,
   // while the "real" event number from DAQ is stored as the frame number
   // JB 2009/09/09
-  fEvent->SetHeader( GetCurrentEventNumber(), fAcq->GetRunNumber(), 0, 0, 0, 
+  fEvent->SetHeader( GetCurrentEventNumber(), fAcq->GetRunNumber(), 0, 0, 0,
                     fAcq->GetTriggers(), fAcq->GetFrames(), fAcq->GetTimestamps());
   fEvent->SetFrame( fAcq->GetRealEventNumber(), 0 );
-  
+
   tracksN = fTracker->GetTracksN(); // Number of tracks for this event
   if (fDebugSession) printf("DSession::FillTree, Event Trig %d, current Event %d: %d track\n", fAcq->GetRealEventNumber(), GetCurrentEventNumber(), tracksN);
-  
+
   // Loop on planes
   //Int_t Npl(0);
   //Npl=fTracker->GetPlanesN();
   for (pl = 1; pl <= fTracker->GetPlanesN(); pl++) { // Loop on planes
-    
+
     tPlane  = fTracker->GetPlane(pl);
     if( fDebugSession) printf("DSession::FillTree got plane %d with status %d\n", pl, tPlane->GetStatus());
-    
+
     // for all planes which have been analyzed
     // condition on Readout added by JB, 2007 June
     // condition on Status removed by JB, 2011/03/14
     if ( GetCurrentEventNumber()>1 && tPlane->GetReadout()!=0 ) { // condition for storing info, modified JB 2014/08/29
-     
+
       if( fDebugSession) printf("DSession::FillTree adding authenticPlane %d\n", pl);
       fEvent->AddAuthenticPlane(*tPlane, fAcq->GetRealEventNumber()); // basic info on planes
-      
+
       // store hits, test condition on status and FillLevel added JB 2014/08/29
-      if ( !fFillLevel || (tPlane->GetStatus() == 3)) { // 
+      if ( !fFillLevel || (tPlane->GetStatus() == 3)) { //
         hitsN = tPlane->GetHitsN();
         if( fDebugSession) printf("DSession::FillTree adding %d authenticHit for plane %d\n", hitsN, pl);
 
@@ -687,16 +691,15 @@ void DSession::FillTree()
     if( fDebugSession > 2 ) fEventTree->Print(); // JB 2011/06/30
   }
   fEventTree->Fill();
-  
+
   fEvent->Clear();
 
 }
 
 void DSession::ResetDaq()
-{ 
+{
   fEventsToDo = 0;
   fCurrentEventNumber = 0;
 
-  fAcq->Reset();   
+  fAcq->Reset();
 }
-

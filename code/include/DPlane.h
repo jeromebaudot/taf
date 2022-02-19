@@ -28,7 +28,6 @@
 #include "TH2.h"
 #include "TObjArray.h"
 #include "TMath.h"
-#include "TSpectrum2.h"
 
 #include "DSession.h"
 #include "DPixel.h"
@@ -147,7 +146,7 @@ class DPlane : public TObject {
   Int_t        fPixelGainRun;             // Id of pixel gain file
   TFile       *fGainFile;                 // File containing histos with gains
 
-  
+
   DR3         *fSize;                     // rectangular extensions
   DR3         *fTilt;                     // tilting angles [radian], three Euler angles, comes later
   DAcq        *fAcq;                      // pointer to Data Acquisition
@@ -170,8 +169,6 @@ class DPlane : public TObject {
   Int_t        fInitialCounter;           // counter for intialization of pedestal
   Int_t        fInitialPedestal;          // number of events  for intialization of pedestal
   Int_t        fInitialNoise;             // number of events  for intialization of noise
-
-  TSpectrum2*  spectrum;
 
   TRandom*     rand;
 
