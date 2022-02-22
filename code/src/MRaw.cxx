@@ -17605,7 +17605,8 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
 	  //cout << "ftrackmodelX->Eval(0) = " << ftrackmodelX->Eval(0) << endl;
 	  // Algorithm to remove tracks with hits in common
 	  // cout << "A track has passed the cutoffs. Track id = " << atrack.id << endl; 
-#if 1
+
+#if 1 // set to 1 to switch ON algo for selecting best track, otherwise set to 0 to kkep all tracks
 	  // Compare current track "atrack" with previous tracks in the tracklist
 	  for (int i=0; i<tracklist->size();i++) {
 	    if (atrack.hit[0]==(*tracklist)[i].hit[0] || atrack.hit[1]==(*tracklist)[i].hit[1] || atrack.hit[2]==(*tracklist)[i].hit[2] || atrack.hit[3]==(*tracklist)[i].hit[3]) {
@@ -17639,8 +17640,9 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitr
 	    NbRmTracks_tot++;
 	    // cout << "New track omitted. Did not add track to tracklist. NbRmTracks = " << NbRmTracks << endl;
 	  }
+#elif
+	  tracklist->push_back(atrack);
 #endif
-	  //tracklist->push_back(atrack);
 	}
 
       } // end loop on vectors 1-2
