@@ -174,6 +174,23 @@ bool BoardReaderTREE::DecodeNextEvent() {
   int index;
 
   switch ( fEventBuildingMode ) {
+  
+      case 2: // Reconstruc only last frame
+      
+      for(int xPix = 0 ; xPix < fNcolumns ; xPix++) {
+        for(int yPix = 0 ; yPix < fNrows ; yPix++) {
+          index = yPix*fNcolumns + xPix;
+          value = fRawFrame->at(fRawFrame->size()-1).raw_amp[xPix][yPix]-fRawFrame->at(fRawFrame->size()-2).raw_amp[xPix][yPix];
+          if(fDebugLevel>2) cout << "    Filling frame: " << fRawFrame->size()-1 << " x: " << xPix << " y: " << yPix << " index: " << index << " value = " << fRawFrame->at(fRawFrame->size()-1).raw_amp[xPix][yPix] << " - " << fRawFrame->at(fRawFrame->size()-2).raw_amp[xPix][yPix] << " = " << value << endl;
+          fListOfPixels.push_back( BoardReaderPixel( 0, value, index, fRawFrame->size()-1) );
+      }
+      }
+      fListOfFrames.push_back( fRawFrame->size()-1);
+      fFrameCount++;
+  	
+    break;
+    
+    
 
     case 1: // REconstruct each frame
     for(unsigned int iFrame=1; iFrame < fRawFrame->size(); iFrame++) {
