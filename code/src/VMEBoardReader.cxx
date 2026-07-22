@@ -291,9 +291,9 @@ Bool_t VMEBoardReader::GetSensorEvent(Int_t iSensor)
 //      if (IsPartEqual(data, GetKeyHeader(iSensor)))
 //        printf("toto\n");
 
-      if (line.Contains(tail)) {
-         printf("  tito %d %08x\n", iSensor, dataPrev);
-      }
+//      if (line.Contains(tail)) {
+//        printf("  tito %d %08x\n", iSensor, dataPrev);
+//      }
 
       dataPrev = data;
 
@@ -573,9 +573,9 @@ Bool_t VMEBoardReader::DecodeFrame(Int_t iSensor, MI26_FrameRaw *frame)
       index += 2;
 
       if( lineStatus->F.Ovf > 0 ) { // Stop when overflow
-         if(fEventsOverflow%1000==0 && fReadingEvent)
-            printf("WARNING : overflow while reading %d at frame %d and sensor %d, total overflow number is %d\n",
-                   fReadingEvent, frame->FrameCnt, iSensor, fEventsOverflow);
+         //if(fEventsOverflow%1000==0 && fReadingEvent)
+         //   printf("WARNING : overflow while reading %d at frame %d and sensor %d, total overflow number is %d\n",
+         //          fReadingEvent, frame->FrameCnt, iSensor, fEventsOverflow);
          fOverflow = true;
       }
 

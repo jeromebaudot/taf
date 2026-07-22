@@ -34,6 +34,8 @@
 #include "DGlobalTools.h" // to have fTool has a data member
 #include "tiffio.h"
 
+#define MaximumNbOfTracks 100
+
 class MRaw : public TObject {
 
  private:
@@ -151,6 +153,7 @@ class MRaw : public TObject {
      double fit_chi2Y;
  };
 
+ struct sitritrack_t sitrilistoftracks[MaximumNbOfTracks];
 
  public:
  MRaw( DSession *aSession);
@@ -229,7 +232,8 @@ void BeastCheckPosition();
   void SetMultiFrame( Int_t aPlane, Int_t nFrames ); // JB 2013/07/18
   void SetNbinsReductionFactor( Float_t aFactor); // JB 2014/12/08
   void DisplayHistory( Int_t nEvents=50000, Int_t nCumul=500);  // JB 2014/05/27
-  void SetDebugLevel( Int_t aLevel) { fDebugRaw = aLevel; }; // JB 2014/05/29
+  void SetDebugLevel( Int_t aLevel) { fDebugRaw = aLevel; cout << endl << "--> Raw analysis debud level: " << fDebugRaw << endl; }; // JB 2014/05/29
+  void ToggleDebug() { SetDebugLevel( (++fDebugRaw)%4 ); } // JB 2025/02/06
   void DisplayImage( Int_t nEvents=1, Int_t planeToPlot=4, TString data=TString("raw"), TString format=TString("gif"), Bool_t displayImage=1, Bool_t saveImage=1, Float_t minValue=-65536, Float_t NBins=1., Bool_t greyScale=kTRUE, TString flip=TString("Y"));
   void StudyTrackMultiplicity( TH1F *hNTracksPerPlanes, TH1F *hNHitsPerTrack, Int_t nEvents);
   void StudyTrackingEfficiency(Int_t nEvents,
@@ -291,9 +295,9 @@ void BeastCheckPosition();
   void SitrineoByEvent( Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
   void SitrineoCumul( Int_t nEvents=1000, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
   void SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist);
-  int SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist, Double_t minX1=-10000, Double_t maxX1=10000, Double_t minY1=-10000, Double_t maxY1=10000, Double_t maxSlope1=30.);
-  void SitrineoContinuous( Int_t nEvents=20, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
-  void SitrineoAlign( Int_t nEvents=200000, Bool_t order=kTRUE);
+  int SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Double_t minX1=-10000, Double_t maxX1=10000, Double_t minY1=-10000, Double_t maxY1=10000, Double_t maxSlope1=30.);
+  void SitrineoContinuous( Int_t nEvents=2000, Int_t lastPlaneOfFirstTracker=2, Double_t maxX1=20000, Double_t maxY1=20000, Double_t maxSlopeX1=3.2, Double_t maxSlopeY1=3.2, Double_t maxDX2=20000, Double_t maxDY2=20000, Double_t maxSlopeX2=3.2, Double_t maxSlopeY2=3.2);
+  void SitrineoAlign( Int_t nEvents=200000, Bool_t order=kTRUE, Bool_t automatic=kTRUE);
 
  using TObject::Clear;
 

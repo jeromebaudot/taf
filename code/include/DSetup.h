@@ -150,6 +150,8 @@ class DSetup : public TObject {
     Int_t   MaxNbOfHits;
     Int_t   MinNbOfHits;
     Float_t TrackChi2Limit;
+    Float_t MomentumMaxCut;
+    bool    SelectBestTrack;
     Int_t   MinHitsPerTrack; // JB 2013/06/22
     Int_t   MaxTracksExGeom; // JB 2013/06/21
     Int_t   ExGeomatrix; // JB 2013/06/21
@@ -181,6 +183,7 @@ class DSetup : public TObject {
     Float_t Umax[fMaxSubmatrices][fMaxGeomatrices];
     Float_t Vmin[fMaxSubmatrices][fMaxGeomatrices];
     Float_t Vmax[fMaxSubmatrices][fMaxGeomatrices];
+    Float_t MaxInitialSlope;
     Int_t   UserFlag; // JB 2013/07/17
   };
 
@@ -202,6 +205,8 @@ class DSetup : public TObject {
     Float_t    Resolution;             // estimated spatial resolution of ref planes
     TString    BeamType;               // nature of the particles making the beam
     Float_t    BeamMomentum;           // momentum of the beam particles (in GeV/c)
+    Float_t    BeamExtension[2];       // half-extension of beam profile in X and Y (mmm)
+    float_t    SourcePosition[3];      // source position (mm)
     TString    MediumMaterial;         // Material of the medium containing the sensors. E.g. DryAir of Vacuum
     Int_t      VertexMaximum;          // maximum number of tracks to be allowed
     Int_t      VertexConstraint;       // use a vertex constraint to start track
@@ -212,6 +217,10 @@ class DSetup : public TObject {
     Int_t      HitMonteCarlo;          // Enable/Disable Hit Monte Carlo (Default = 0)
     Int_t      KeepUnTrackedHitsBetw2evts; // explicit // VR 2014.08.28
     Int_t      DPrecAlignMethod;        // Default : (0) Old method | (1) New method
+    Float_t    BFieldMagnitude;         // explicit
+    Float_t    BFieldDimensionsX[2];    // explicit
+    Float_t    BFieldDimensionsY[2];    // explicit
+    Float_t    BFieldDimensionsZ[2];    // explicit
     // For TracksFinder=2 :
     Int_t      TrackingPass;            // nb of pass in the tracking loop
     Int_t*     PreTrackHitsNbMinimum;   // explicit

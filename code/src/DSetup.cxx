@@ -52,6 +52,7 @@
 // Last Modified: JB 2018/07/04 ReadRunParameters, added PixelGainRun parameter
 // Last Modified: JB 2021/05/01 Handle source path as datapath
 // Last Modified: JB 2021/11/15 Introduce data filename as default filename (if not in config)
+// Last Modified: Maushart, Rabour 2024/02 add to tracker parameters block : BFieldMagnitude
 
 ///////////////////////////////////////////////////////////////
 // Class Description of DSetup                               //
@@ -103,6 +104,10 @@
 // Resolution              = [optional]  (float,um) {-1.} the knonw spatial resolution in um of the reference planes, use 4.00 for MIMOSA 26 and 1.00 for MIMOSA 18
 // BeamType                = [optional]  (TString)  {"pion"} type of the beam particles
 // BeamMomentum            = [optional]  (float,GeV/c) {120.0GeV/c} momentum of the beam particles
+// BeamExtensionX,Y        = [optional]  (float,mm) half-extension of ellipse defining beam profile
+// SourcePositionX,Y,Z     = [optional]  (float,mm) position of the source
+// BFieldMagnitude         = [optional]  (float,T)  {0.0 T} Magnitude of the magnetic field
+// BFieldDimensionsX, Y, Z = [optional]  (float,mm)  min and max in each coordinate for the extension of the magnetic field 
 // MediumMaterial          = [optional]  (TString) {"vacuum"} material of the medium containing the sensors: e.g. DryAir or Vacuum
 //
 // ----------------------------------
@@ -555,7 +560,9 @@
 // CmsNoiseCut      = [optional] (float) {3} upper SNR cut to use a pixel value in the CMS computation
 // MaxNbOfHits      = [MANDATORY] (int) max # hits allowed to consider events for analysis
 // MinNbOfHits      = [MANDATORY] (int) min # hits allowed to consider events for analysis
-// TrackChi2Limit   = [MANDATORY] (float) upper chi2 cut to consider a track for analysis
+// TrackChi2Limit   = [optional] (float) upper chi2 cut to consider a track for analysis
+// MomentumMaxCut   = [optional] (float) upper momemtum (fit result) cut to consider a valid track
+// SelectBestTrack  = [optional] (bool) select a single track per event (with the best chi2)
 // MinHitsPerTrack  = [optional] (int) minimum #hits per track (default is set with PlanesForTrackMinimum)
 // MaxTracksExGeom  = [optional] (int) {-1} inclusive max # tracks allowed in the ExGeomatrix below, set to -1 cancel this cut
 // ExGeomatrix      = [optional] (int) {0} geomatrix (of submatrix 0) to be used in the previous cut
@@ -813,9 +820,17 @@ void DSetup::ReadTrackerParameters()
   TrackerParameter.Resolution   = -1.;
   TrackerParameter.BeamType     = TString("");
   TrackerParameter.BeamMomentum = 0.0;
+  TrackerParameter.BeamExtension[0] = 1.0;
+  TrackerParameter.BeamExtension[1] = 1.0;
+  TrackerParameter.SourcePosition[0] = 0.0;
+  TrackerParameter.SourcePosition[1] = 0.0;
+  TrackerParameter.SourcePosition[2] = -1.e5;
   TrackerParameter.MediumMaterial = TString("");
   TrackerParameter.HitsInPlaneMaximum = -1 ;//[MANDATORY]
-
+  TrackerParameter.BFieldMagnitude = -1.;
+  TrackerParameter.BFieldDimensionsX[0] = -5.; TrackerParameter.BFieldDimensionsX[1] = +5.; 
+  TrackerParameter.BFieldDimensionsY[0] = -5.; TrackerParameter.BFieldDimensionsY[1] = +5.; 
+  TrackerParameter.BFieldDimensionsZ[0] = -5.; TrackerParameter.BFieldDimensionsZ[1] = +5.; 
   TrackerParameter.TracksMaximum = 0;
   TrackerParameter.TracksFinder = 0;
   TrackerParameter.TrackFittingAlg = 0; // QL 2016/05/26
@@ -879,13 +894,45 @@ void DSetup::ReadTrackerParameters()
     else if( ! strcmp( fFieldName, "BeamMomentum" ) ) {
       read_item(TrackerParameter.BeamMomentum); // 2015/03/10, AP Beam momentum in GeV/c
     }
+    else if( ! strcmp( fFieldName, "BeamExtensionX" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.BeamExtension[0]);
+    }
+    else if( ! strcmp( fFieldName, "BeamExtensionY" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.BeamExtension[1]);
+    }
+    else if( ! strcmp( fFieldName, "SourcePositionX" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.SourcePosition[0]);
+    }
+    else if( ! strcmp( fFieldName, "SourcePositionY" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.SourcePosition[1]);
+    }
+    else if( ! strcmp( fFieldName, "SourcePositionZ" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.SourcePosition[2]);
+    }
     else if( ! strcmp( fFieldName, "BeamType" ) ) {  // 2015/03/10, AP Beam type: e.g. e+/-, pi+/-, ...
       read_TStrings( TrackerParameter.BeamType, 350);
     }
     else if( ! strcmp( fFieldName, "MediumMaterial" ) ) {  // 2015/06/01, AP Material of the medium containing the sensors: e.g. Dry air, or Vacuum
       read_TStrings( TrackerParameter.MediumMaterial, 350);
     }
-
+    else if( ! strcmp( fFieldName, "BFieldMagnitude" ) ) {  // 2024/02/05, Rabour & Maushart, Magnetic field in Tesla
+      read_item( TrackerParameter.BFieldMagnitude);
+    }
+    else if( ! strcmp( fFieldName, "BFieldDimensionsX" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.BFieldDimensionsX[0]);
+      nextItem(':');
+      read_item( TrackerParameter.BFieldDimensionsX[1]);
+    }
+    else if( ! strcmp( fFieldName, "BFieldDimensionsY" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.BFieldDimensionsY[0]);
+      nextItem(':');
+      read_item( TrackerParameter.BFieldDimensionsY[1]);
+    }
+    else if( ! strcmp( fFieldName, "BFieldDimensionsZ" ) ) {  // 2025/07/25
+      read_item( TrackerParameter.BFieldDimensionsZ[0]);
+      nextItem(':');
+      read_item( TrackerParameter.BFieldDimensionsZ[1]);
+    }
     // ----------------------------------
     //     Clustering in planes
     // ----------------------------------
@@ -1206,6 +1253,20 @@ void DSetup::ReadTrackerParameters()
   }
   else {
     cout << "    BeamMomentum    parameter set to user value: " << TrackerParameter.BeamMomentum << " GeV/c" << endl;
+  }
+  if(abs(TrackerParameter.BeamExtension[0])>0.001) {
+    cout << "    BeamExtension X" << TrackerParameter.BeamExtension[0] << ", Y " << TrackerParameter.BeamExtension[1] << " mm" << endl;
+    cout << "    SourcePosition X" << TrackerParameter.SourcePosition[0] << ", Y " << TrackerParameter.SourcePosition[1]<< ", Z " << TrackerParameter.SourcePosition[2] << " mm" << endl;
+  }
+  if(TrackerParameter.BFieldMagnitude == -1.) {
+    TrackerParameter.BFieldMagnitude = 0.0;
+    cout << "    BFieldMagnitude    parameter not specified. Setting it to defaul value: " << TrackerParameter.BFieldMagnitude << " T" << endl;
+  }
+  else {
+    cout << "    BFieldMagnitude    parameter set to user value: " << TrackerParameter.BFieldMagnitude << " T" << endl;
+    cout << "    BFieldDimensions X[" << TrackerParameter.BFieldDimensionsX[0] << ", " << TrackerParameter.BFieldDimensionsX[1] 
+    << "]  Y[ "<< TrackerParameter.BFieldDimensionsY[0] << ", " << TrackerParameter.BFieldDimensionsY[1] 
+    << "]  Z[ "<< TrackerParameter.BFieldDimensionsZ[0] << ", " << TrackerParameter.BFieldDimensionsZ[1] << "]" << endl;
   }
 
   if(TrackerParameter.MediumMaterial == TString("")) {
@@ -2604,6 +2665,8 @@ void DSetup::ReadAnalysisParameters()
   AnalysisParameter.MaxNbOfHits    = 1000;
   AnalysisParameter.MinNbOfHits    = 0;
   AnalysisParameter.TrackChi2Limit = 1000.0;
+  AnalysisParameter.MomentumMaxCut = 1000.0;
+  AnalysisParameter.SelectBestTrack = false;
   AnalysisParameter.MinHitsPerTrack = TrackerParameter.PlanesForTrackMinimum;
   AnalysisParameter.MaxTracksExGeom = -1;
   AnalysisParameter.ExGeomatrix     = 0;
@@ -2639,6 +2702,7 @@ void DSetup::ReadAnalysisParameters()
       AnalysisParameter.Vmin[i][j] = -1.0e+20;
       AnalysisParameter.Vmax[i][j] = +1.0e+20;
     }
+    AnalysisParameter.MaxInitialSlope = 90.;
   }
 
   AnalysisParameter.UserFlag = 0;
@@ -2662,6 +2726,15 @@ void DSetup::ReadAnalysisParameters()
     }
     else if( ! strcmp( fFieldName, "TrackChi2Limit" ) ) {
       read_item(AnalysisParameter.TrackChi2Limit);
+    }
+    else if( ! strcmp( fFieldName, "MomentumMaxCut" ) ) {
+      read_item(AnalysisParameter.MomentumMaxCut);
+    }
+    else if( ! strcmp( fFieldName, "SelectBestTrack" ) ) {
+      int temp;
+      read_item(temp);
+      if(temp == 1) AnalysisParameter.SelectBestTrack = true;
+      else          AnalysisParameter.SelectBestTrack = false;
     }
     else if( ! strcmp( fFieldName, "SavePlots" ) ) {
       int temp;
@@ -2741,6 +2814,9 @@ void DSetup::ReadAnalysisParameters()
         AnalysisParameter.Submatrices = fMaxSubmatrices;
       }
     }
+    else if( ! strcmp( fFieldName, "MaxInitialSlope") || ! strcmp( fFieldName, "Maxinitialslope") || ! strcmp( fFieldName, "MaxInitialslope") ) { // JB 2025/01/31
+      read_item(AnalysisParameter.MaxInitialSlope);
+    }
     else
     {
       if (  strcmp( fFieldName, "PixelSizeU" ) && !fConfigFileStream.eof() )
@@ -2760,6 +2836,8 @@ void DSetup::ReadAnalysisParameters()
     cout << "  # hits max " << AnalysisParameter.MaxNbOfHits << endl;
     cout << "  # hits min " << AnalysisParameter.MinNbOfHits << endl;
     cout << "  Chi2 max " << AnalysisParameter.TrackChi2Limit << endl;
+    cout << "  select best track? " << AnalysisParameter.SelectBestTrack << endl;
+    cout << "  Max initial slope " << AnalysisParameter.MaxInitialSlope << " degrees" << endl;
     if ( AnalysisParameter.MaxTracksExGeom > -1 ) cout << "  Max #tracks allowed in geomatrix " << AnalysisParameter.ExGeomatrix << " is " << AnalysisParameter.MaxTracksExGeom << endl;
     cout << "  # Submatrices " << AnalysisParameter.Submatrices << endl;
     cout << endl;
