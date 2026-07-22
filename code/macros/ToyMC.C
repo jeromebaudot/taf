@@ -77,6 +77,7 @@ Double_t fermiFunction( Double_t *x, Double_t *par ) {
 Double_t randomFermi( double Q, int Z, double cut_off) {
   // Draw an energy randomly distributed between 0 and Q
   //  according to the Fermi function with Z=atomic number.
+  //  energies below cut-off are not generated (they don't go through SITRINEO)
 
   double par[4];
   par[0] = Q;
@@ -154,8 +155,8 @@ void ToyMC( Double_t Z = 39., Double_t Q = 2280, Int_t Nevts=1000 ){
 
 
 
-  double Cutoff_initial = 100 ;
-  double Cutoff_final = 1800 ;
+  double Cutoff_initial = 100 ; // cutoff is the minimal energy to go through SITRINEO (keV)
+  double Cutoff_final = 1800 ; // originally 1800
   int NCuts = 40 ;
 
   double sigma_initial = 0.1 ;
@@ -319,12 +320,13 @@ void ToyMC( Double_t Z = 39., Double_t Q = 2280, Int_t Nevts=1000 ){
 
 
   //Generates the spectrum, resulting from the convolution of the fermi function and a gaussian, for a given sigma and cutoff
-  double cut_off = 1300;
-  double sigma = 0.2 ;
+  //double cut_off = 1100;
+  double cut_off =1100;
+  double sigma = 0.3 ;  //0.3
    for ( int i=0; i<Nevts; i++) {
     double_t x=randomFermi(Q,(int)Z, cut_off);
     double_t y=gRandom->Gaus(0.,sigma*x);
-    double_t z = EtoP(x)+y ;
+    double_t z = EtoP(x+y);
     hspectrum_F->Fill(x);
     hspectrum_G->Fill(y);
     hspectrum_FG->Fill(z);
@@ -341,7 +343,8 @@ void ToyMC( Double_t Z = 39., Double_t Q = 2280, Int_t Nevts=1000 ){
   std::cout << "Sigma fit relative = " << sigma_fit << std::endl ;
   std::cout << "Sigma fit = " << fit->GetParameter(2) << std::endl ;
   std::cout << "Mean value = " << hspectrum_FG->GetMean() << " ==> Cut off = "  << std::endl ;
-
+  std::cout << "Mean value Fermi = " << hspectrum_F->GetMean() << std::endl ;
+  std::cout << "Std. deviation value Gauss = " << hspectrum_G->GetRMS() << std::endl ;
 
   //plotting
   //canvas with all the spectrums
@@ -385,7 +388,7 @@ void ToyMC( Double_t Z = 39., Double_t Q = 2280, Int_t Nevts=1000 ){
   hKURT->Draw("surf1");
 
   //canvas with all observables
-  TCanvas *c2 = new TCanvas("Experimental spectrum", text, 0,0, 800, 800);
+  TCanvas *c2 = new TCanvas("ExperimentalSpectrum", text, 0,0, 800, 800);
   hspectrum_FG->Draw("");
   double xmin = hspectrum_FG->GetXaxis()->GetXmin();
   double xmax = hspectrum_FG->GetXaxis()->GetXmax();

@@ -1,0 +1,42 @@
+ ***<Reading arguments>*** 
+  * ROOT arg: a macro to execute is given: sitrineocumul.c(12,10000)
+ ***</Reading arguments>*** 
+
+ **********************************************************
+ *                W E L C O M E  to  T A F                *
+ *                TAPI Analysis Framework                 *
+ *                                                        *
+ * Build info:                                            *
+ *  Version : DEV on trunk                                *
+ *  SVN url : http://sbgtrac.in2p3.fr/svn/CMOS/taf/trunk/ *
+ *  SVN rev : using GIT now ;)                            *
+ *  ROOT ver: 6.10/04                                     *
+ *  Compiled with thread support                          *
+ *                                                        *
+ * Authors:                                               *
+ *  J.Baudot(1), A.Besson(1), B.Boitrelle(3)              *
+ *  N.Chon-Sen(1), L.Cousin(1), R.De Masi(1)              *
+ *  C.Dritsa(1), Z.El Bitar(1), M.Gelin(1)                *
+ *  Y.Gornoushkin(1), D.Grandjean(1), L.Molnar(1)         *
+ *  G.Orazi(1), V.Reithinger(2), S.Senyukov(1)            *
+ *  S.Shabetai(1), Y.Voutsinas(1), A. Perez Perez(1)      *
+ * Institutions:                                          *
+ *  (1) IPHC - Strasbourg                                 *
+ *  (2) IPNL - Lyon                                       *
+ *  (3) DESY - Hamburg                                    *
+ *                                                        *
+ * Help/Tips:                                             *
+ *  run '$TAF --help'                                     *
+ *                                                        *
+ **********************************************************
+
+ ***<TAF initialisation>*** 
+ * Process command: MimosaAnalysis *gTAF = new MimosaAnalysis()input_line_8:2:29: error: unknown type name 'MimosaAnalysis'
+ MimosaAnalysis *gTAF = new MimosaAnalysis()
+                            ^
+ ***</TAF initialisation>*** 
+
+ ***<Macro execution>*** 
+ * Macro: sitrineocumul.c(12,10000)
+Error in <TROOT::Macro>: macro sitrineocumul.c not found in path .:/home/dphe1/physics/root/macros
+aborting

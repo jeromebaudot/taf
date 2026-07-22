@@ -3472,4 +3472,52 @@ bool vetoPixel_Mi28SitrineoIPHC( int chipNb, int row, int col) {
 }
 
 
+// -----------------------------------------------------------------------------
+
+bool vetoPixel_Mi28SitrineoIPHC6748( int chipNb, int row, int col) {
+  
+  // Noisy pixels filtering, called with NoiseRun = 28661
+  // 4 Mimosa 28 SITRINEO geometry at IPHC setup,
+  // 
+  // 
+  // Plane: 	   1 2 3 4
+  // Input: 	   1 2 3 4 = chipNb+1
+  // sitrineo PCB: 6 7 4 8
+  //
+  // defined 2026/03/24
+
+  return 
+  (chipNb==0 && row==609 && col==121)
+  || (chipNb==0 && row==98 && col==592)
+  || (chipNb==0 && row==99 && col==593)
+  
+  || (chipNb==1 && row==184 &&  col==131)
+  || (chipNb==1 && row==185 &&  col==132)
+  || (chipNb==1 && row==249 && col==132)
+  || (chipNb==1 && row==184 && col==133)
+  || (chipNb==1 && row==634 && col==617)
+  || (chipNb==1 && row==228 && col==740)
+  || (chipNb==1 && row==413 && col==831)
+  || (chipNb==1 && row==773 && col==909)
+  || (chipNb==1 && row==874 && col==936)
+
+  || (chipNb==2 && row==20 && col==66)
+  || (chipNb==2 && row==830 && col==289)
+  || (chipNb==2 && row==568 && col==298)
+  || (chipNb==2 && row==359 && col==479)
+  || (chipNb==2 && row==227 && col==757)
+  || (chipNb==2 && row==272 && col==770)
+  || (chipNb==2 && row==698 && col==837)
+  || (chipNb==2 && row==705 && col==862)
+  || (chipNb==2 && row==385 && col==938)
+  
+  || (chipNb==3 && row==137 && col==301)
+  || (chipNb==3 && row==284 && col==459)
+  || (chipNb==3 && row==860 && col==827)
+  || (chipNb==3 && row==859 && col==828)
+  || (chipNb==3 && row==860 && col==829)
+  ;
+}
+
+
 # endif
