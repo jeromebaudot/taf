@@ -2702,9 +2702,6 @@ void DSetup::ReadAnalysisParameters()
       AnalysisParameter.Vmin[i][j] = -1.0e+20;
       AnalysisParameter.Vmax[i][j] = +1.0e+20;
     }
-    AnalysisParameter.MaxInitialSlope = 90.;
-    AnalysisParameter.MinFinalSlope = 0.;
-    AnalysisParameter.MaxNonBendingSlope = 90.;
   }
 
   AnalysisParameter.UserFlag = 0;
@@ -2825,6 +2822,9 @@ void DSetup::ReadAnalysisParameters()
         AnalysisParameter.Submatrices = fMaxSubmatrices;
       }
     }
+    else if( ! strcmp( fFieldName, "MaxInitialSlope") || ! strcmp( fFieldName, "Maxinitialslope") || ! strcmp( fFieldName, "MaxInitialslope") ) { // JB 2025/01/31
+      read_item(AnalysisParameter.MaxInitialSlope);
+    }
     else
     {
       if (  strcmp( fFieldName, "PixelSizeU" ) && !fConfigFileStream.eof() )
@@ -2844,10 +2844,6 @@ void DSetup::ReadAnalysisParameters()
     cout << "  # hits max " << AnalysisParameter.MaxNbOfHits << endl;
     cout << "  # hits min " << AnalysisParameter.MinNbOfHits << endl;
     cout << "  Chi2 max " << AnalysisParameter.TrackChi2Limit << endl;
-    cout << "  select best track? " << AnalysisParameter.SelectBestTrack << endl;
-    cout << "  Max abs(initial slope) " << AnalysisParameter.MaxInitialSlope << " degrees" << endl;
-    cout << "  Min final slope " << AnalysisParameter.MinFinalSlope << " degrees" << endl;
-    cout << "  Max abs(final slope) " << AnalysisParameter.MaxNonBendingSlope << " degrees" << endl;
     if ( AnalysisParameter.MaxTracksExGeom > -1 ) cout << "  Max #tracks allowed in geomatrix " << AnalysisParameter.ExGeomatrix << " is " << AnalysisParameter.MaxTracksExGeom << endl;
     cout << "  # Submatrices " << AnalysisParameter.Submatrices << endl;
     cout << endl;

@@ -43,9 +43,7 @@
 // Last Modified: AP, 2017/05/09 Added FillnTupleForTMVA function fill tree for TMVA analysis
 // Last Modified: JB, 2019/03/10 Sitrineo analysis
 // Last Modified: Jourd'huy,Stavroulakis , 2022/01&02 Sitrineo analysis and alignment
-// Last Modified: Maushart,Rabour, 2024/01-02 DisplayCumulatedHits2D, SitrineoAlign
-// Last Modified: JB, 2025/07/24 SitrineoAnalysisFromHits and container for strineo tracks
-// 
+
 /////////////////////////////////////////////////////////////
 //                                                         //
 //  Describes all Raw data analysis methods                //
@@ -16082,23 +16080,13 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
   double Bfield_rangeY[2] = {1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsY[0], 1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsY[1]};
   double Bfield_rangeZ[2] = {1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsZ[0], 1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsZ[1]};
 
-  // Define geometrical cuts on first sensor, in magnet and on last sensor
-  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][1], fSession->GetSetup()->GetAnalysisPar().Umax[0][1]};
-  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][1], fSession->GetSetup()->GetAnalysisPar().Vmax[0][1]};
-  double cutXrangeBField[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0], fSession->GetSetup()->GetAnalysisPar().Umax[0][0]};
-  double cutYrangeBField[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0], fSession->GetSetup()->GetAnalysisPar().Vmax[0][0]};
-  double cutXrangeLastPlane[2] ={ fSession->GetSetup()->GetAnalysisPar().Umin[0][2], fSession->GetSetup()->GetAnalysisPar().Umax[0][2]};
-  double cutYrangeLastPlane[2] ={ fSession->GetSetup()->GetAnalysisPar().Vmin[0][2], fSession->GetSetup()->GetAnalysisPar().Vmax[0][2]};
-  double cutInitialSlope = fSession->GetSetup()->GetAnalysisPar().MaxInitialSlope;
-  double cutFinalSlope = fSession->GetSetup()->GetAnalysisPar().MinFinalSlope;
-  double cutNonBendingSlope = fSession->GetSetup()->GetAnalysisPar().MaxNonBendingSlope;
+  // Define geometrical cuts
+  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0] + 1000, fSession->GetSetup()->GetAnalysisPar().Umax[0][0] + 1000};
+  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0] + 3000, fSession->GetSetup()->GetAnalysisPar().Vmax[0][0] + 3000};
 
-  if(fDebugRaw) {
-    cout << "Sitrineo by event with following cuts: " << endl;
-    cout << "  first plane range = X [ " << cutX[0] << ", " << cutX[1] << "];  Y [" << cutY[0] << ", " << cutY[1] << "]" << endl; 
-    cout << "  magnet range = X [ " << cutXrangeBField[0] << ", " << cutXrangeBField[1] << "]; Y [ " << cutYrangeBField[0] << ", " << cutYrangeBField[1] << "]" << endl;
-    cout << "  last plane range = X [ " << cutXrangeLastPlane[0] << ", " << cutXrangeLastPlane[1] << "]; Y [ " << cutYrangeLastPlane[0] << ", " << cutYrangeLastPlane[1] << "]" << endl;
-  }
+  //cout << "cutX[2] = { " << cutX[0] << ", " << cutX[1] << "}" << endl;
+  //cout << "cutY[2] = { " << cutY[0] << ", " << cutY[1] << "}" << endl;
+
 
 // ==================================
 // == Plane, hit and track info
@@ -16517,12 +16505,9 @@ void MRaw::SitrineoByEvent( Int_t lastPlaneOfFirstTracker, Double_t maxX1, Doubl
     fSession->SetEvents(2);
     fSession->NextRawEvent();
     tTracker->Update();
-// ********************************
-    noftracksinevent = SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, cutX[0], cutX[1], cutY[0], cutY[1], cutInitialSlope, cutFinalSlope, cutNonBendingSlope);
-// ********************************
-    if(fDebugRaw) cout << endl << "   analysis over, now: " << noftracksinevent << " tracks." << endl;
+    SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, tracklist, cutX[0], cutX[1], cutY[0], cutY[1], 30.);
+    if(fVerbose) cout << endl << "Sitrineo: event " << fSession->GetCurrentEventNumber()-1 << ", found " << tracklist->size() << " tracks." << endl;
   }
-  if(fVerbose) cout << endl << "Sitrineo: event " << fSession->GetCurrentEventNumber()-1 << ", found " << noftracksinevent << " tracks." << endl;
 
   sprintf(canvasTitle, "Run %d Event %d", fSession->GetRunNumber(), fSession->GetCurrentEventNumber()-1);
   cdisplayraw->cd();
@@ -16878,22 +16863,8 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   double Bfield_rangeZ[2] = {1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsZ[0], 1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsZ[1]};
 
   // Define geometrical cuts
-  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][1], fSession->GetSetup()->GetAnalysisPar().Umax[0][1]};
-  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][1], fSession->GetSetup()->GetAnalysisPar().Vmax[0][1]};
-  double cutXrangeBField[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0], fSession->GetSetup()->GetAnalysisPar().Umax[0][0]};
-  double cutYrangeBField[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0], fSession->GetSetup()->GetAnalysisPar().Vmax[0][0]};
-  double cutXrangeLastPlane[2] ={ fSession->GetSetup()->GetAnalysisPar().Umin[0][2], fSession->GetSetup()->GetAnalysisPar().Umax[0][2]};
-  double cutYrangeLastPlane[2] ={ fSession->GetSetup()->GetAnalysisPar().Vmin[0][2], fSession->GetSetup()->GetAnalysisPar().Vmax[0][2]};
-  double cutInitialSlope = fSession->GetSetup()->GetAnalysisPar().MaxInitialSlope;
-  double cutFinalSlope = fSession->GetSetup()->GetAnalysisPar().MinFinalSlope;
-  double cutNonBendingSlope = fSession->GetSetup()->GetAnalysisPar().MaxNonBendingSlope;
-
-  if(fDebugRaw) {
-    cout << "Sitrineo by event with following cuts: " << endl;
-    cout << "  first plane range = X [ " << cutX[0] << ", " << cutX[1] << "];  Y [" << cutY[0] << ", " << cutY[1] << "]" << endl;
-    cout << "  magnet range = X [ " << cutXrangeBField[0] << ", " << cutXrangeBField[1] << "]; Y [ " << cutYrangeBField[0] << ", " << cutYrangeBField[1] << "]" << endl;
-    cout << "  last plane range = X [ " << cutXrangeLastPlane[0] << ", " << cutXrangeLastPlane[1] << "]; Y [ " << cutYrangeLastPlane[0] << ", " << cutYrangeLastPlane[1] << "]" << endl;
-  }
+  double cutX[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0] + 1000, fSession->GetSetup()->GetAnalysisPar().Umax[0][0] + 1000};
+  double cutY[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0] + 3000, fSession->GetSetup()->GetAnalysisPar().Vmax[0][0] + 3000};
 
 
   fSession->SetEvents(nEvents);
@@ -16971,30 +16942,6 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   // Enlarge a bit the z-range
   zmin -= 5000;
   zmax += 5000;
-
-  // Define ellipse object that will be used to determine the opening of the source due to multiple scattering and diffusion
-  TEllipse **PlaneEllipse = new TEllipse*[nPlanes];
-  Double_t theta_ms; // Devation due to multiple scattering in rad
-  Double_t overall_dev_um[nPlanes]; // Deviation due to multiple scattering in um
-  Double_t z_dist_um[nPlanes] /*= {0, 19000, 25000, 20000}*/; // Distance between planes
-  Double_t Ellipse_pos_x[nPlanes];
-  Double_t Ellipse_pos_y[nPlanes];
-  Double_t Ellipse_sigma_x[nPlanes];
-  Double_t Ellipse_sigma_y[nPlanes];
-
-  // Geometrical cut representation
-  // First sensor
-  TBox *cutBox = new TBox(cutX[0],cutY[0],cutX[1],cutY[1]);
-  cutBox->SetLineColor(3);
-  cutBox->SetFillStyle(0);
-  // Magnet
-  TBox *cutMagnetBox = new TBox(cutXrangeBField[0],cutYrangeBField[0],cutXrangeBField[1],cutYrangeBField[1]);
-  cutMagnetBox->SetLineColor(2);
-  cutMagnetBox->SetFillStyle(0);
-  // Last sensor
-  TBox *cutLastBox = new TBox(cutXrangeLastPlane[0],cutYrangeLastPlane[0],cutXrangeLastPlane[1],cutYrangeLastPlane[1]);
-  cutLastBox->SetLineColor(6);
-  cutLastBox->SetFillStyle(0);
 
   TH2F **hHitMap = new TH2F*[nPlanes];
   TH1F **hHitPixMult = new TH1F*[nPlanes];
@@ -17088,29 +17035,18 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
   TH1F *hTrackPairMomentumX = new TH1F( "hTrackPairMomentumX", "Track momentumX; p_X [MeV/c]", 100, 0, 10);
   TH1F *hTrackPairDSlopeY = new TH1F( "hTrackPairDSlopeY", "Track tilt_Y; #delta Slope_Y [rad]", 128, -3.2, 3.2);
   TH1F *hTrackPairMomentumY = new TH1F( "hTrackPairMomentumY", "Track momentumY; p_Y [MeV/c]", 100, 0, 10);
-  TH1F *hTrackPairChi2X = new TH1F( "hTrackPairChi2X", "Track #chi2 from X-fit; #chi2", 100, 0, 6);
-  TH1F *hTrackPairChi2Y = new TH1F( "hTrackPairChi2Y", "Track #chi2 from Y-fit; #chi2", 100, 0, 12);
+  TH1F *hTrackPairChi2X = new TH1F( "hTrackPairChi2X", "Track #chi2 from X-fit; #chi2", 500, 0, 500);
+  TH1F *hTrackPairChi2Y = new TH1F( "hTrackPairChi2Y", "Track #chi2 from Y-fit; #chi2", 500, 0, 500);
   TH1F *hTrackPairMomentum = new TH1F( "hTrackPairMomentum", "Track momentum from fit; p [MeV/c]", 100, 0, 10);
   TH1F *hTrackPairFitSlopeX = new TH1F( "hTrackPairFitSlopeX", "Track fit_slope_X; Slope_X [rad]", 128, -3.2, 3.2);
   TH1F *hTrackPairFitSlopeY = new TH1F( "hTrackPairFitSlopeY", "Track fit_slope_Y; Slope_Y [rad]", 128, -3.2, 3.2);
   TH1F *hTrackPairFitXA = new TH1F( "hTrackPairFitXA", "Track X position at Bfield start; X [um]", 200, -10000, 10000);
   TH1F *hTrackPairFitYA = new TH1F( "hTrackPairFitYA", "Track Y position at Bfield start; X [um]", 200, -10000, 10000);
-  TH2F *hTrackPairSourceXY = new TH2F( "hTrackPairSourceXY", "Track X-Y position at source; X [um]; Y [um]", 100, xmin, xmax, 100, ymin, ymax);
-  TH2F *hTrackPairFitXY = new TH2F( "hTrackPairFitXY", "Track X-Y position at Bfield start; X [um]; Y[um]", 200, -5000, 5000, 200, -6000, 6000);
-
-
-  TF1 *fchi2X = new TF1("fchi2X", chi2, 0, 100, 1);
-  TF1 *fchi2Y = new TF1("fchi2Y", chi2, 0, 500, 1);
-  fchi2X->SetParameter(0, 3);
-  fchi2Y->SetParameter(0, 3);
-
 
   TH2F *hChi2XvsP = new TH2F( "hChi2XvsP", "Fit Chi2X vs. Fit Momentum; Momentum [MeV/c]; Chi2X", 100, 0, 10, 500, 0, 500);
   TH2F *hChi2YvsP = new TH2F( "hChi2YvsP", "Fit Chi2Y vs. Fit Momentum; Momentum [MeV/c]; Chi2Y", 100, 0, 10, 500, 0, 500);
-  TH2F *hChi2XvsSlope = new TH2F( "hChi2XvsSlope", "Fit Chi2X vs. Fit Vector 34 Slope X; Slope X; Chi2X", 128, -3.2, 3.2, 50, 0, 50); // Added Chi2 vs. Vector 34 Slope 31.03.26
-  TH2F *hChi2YvsSlope = new TH2F( "hChi2YvsSlope", "Fit Chi2Y vs. Fit Vector 34 Slope Y; Slope Y; Chi2Y", 128, -3.2, 3.2, 50, 0, 50); // Added Chi2 vs. Vector 34 Slope 31.03.26
-  TH2F *hSlopeXvsP = new TH2F( "hSlopeXvsP", "Fit Slope X vs. Fit Momentum; Momentum [MeV/c]; Slope X", 100, 0, 10, 128, -3.2, 3.2); // hChi2vsP replaced by hSlopevsP in def (typo?) (Rabour, Maushart 2024/02/14)
-  TH2F *hSlopeYvsP = new TH2F( "hSlopeYvsP", "Fit Slope Y vs. Fit Momentum; Momentum [MeV/c]; Slope Y", 100, 0, 10, 128, -3.2, 3.2);
+  TH2F *hSlopeXvsP = new TH2F( "hChi2XvsP", "Fit Slope X vs. Fit Momentum; Momentum [MeV/c]; Slope X", 100, 0, 10, 128, -3.2, 3.2);
+  TH2F *hSlopeYvsP = new TH2F( "hChi2XvsP", "Fit Slope Y vs. Fit Momentum; Momentum [MeV/c]; Slope Y", 100, 0, 10, 128, -3.2, 3.2);
   TH2F *hXAvsP = new TH2F( "hXAvsP", "X0 vs. Fit Momentum; Momentum [MeV/c]; XA", 100, 0, 10, 200, -10000, 10000);
   TH2F *hYAvsP = new TH2F( "hYAvsP", "Y0 vs. Fit Momentum; Momentum [MeV/c]; YA", 100, 0, 10, 200, -10000, 10000);
 
@@ -17134,17 +17070,13 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     if( fDebugRaw ) cout << endl << "--------------------------" << endl << "SitrineoCumul: starting event " << iEvt << " with " << noftracksinevent << " tracks." << endl;
     if( !(fSession->NextRawEvent()) ) break; // JB 2009/06/26
     tTracker->Update();
-// ********************************
-    noftracksinevent = SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, cutX[0], cutX[1], cutY[0], cutY[1], cutInitialSlope, cutFinalSlope, cutNonBendingSlope);
-// ********************************
-    if(fVerbose && noftracksinevent!=0) cout << "  Sitrineo: found " << noftracksinevent << " tracks." << endl;
+    SitrineoAnalysisFromHits( lastPlaneOfFirstTracker, tracklist, cutX[0], cutX[1], cutY[0], cutY[1], 30.);
+    if(fVerbose && (int)tracklist->size()!=0) cout << "  Sitrineo: found " << tracklist->size() << " tracks." << endl;
 
-    nTracksReconstructed += noftracksinevent;
-    for( Int_t iTrack=0; iTrack < noftracksinevent; iTrack++ ) { // loop on tracks
-      aTrack = sitrilistoftracks[iTrack];
-      if(fVerbose) printf("MRaw::SitrineoCumul track %d: slope1_X=%.2f, slope2_X=%.2f, Dslope_X=%.2f,  p_X=%.2f, slope1_Y=%.2f, slope2_Y=%.2f, Dslope_Y=%.2f, p_Y=%.2f\n", aTrack.id, aTrack.firsttrack_slopeX, aTrack.secondtrack_slopeX, aTrack.Dslope_X, aTrack.momentum_X, aTrack.firsttrack_slopeY, aTrack.secondtrack_slopeY, aTrack.Dslope_Y, aTrack.momentum_Y);
-      if(fVerbose) printf(" track[%d] (%d %d %d %d) slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", aTrack.id, aTrack.hit[0], aTrack.hit[1], aTrack.hit[2], aTrack.hit[3], aTrack.fit_slope_X, aTrack.fit_origin_X, aTrack.fit_slope_Y, aTrack.fit_origin_Y, aTrack.fit_momentum, aTrack.fit_chi2X, aTrack.fit_chi2Y);
-
+    nTracksReconstructed += tracklist->size();
+    for( std::vector<sitritrack_t>::iterator atrack = tracklist->begin(); atrack !=tracklist->end(); ++atrack ) { // loop on tracks
+      //if(fVerbose) printf("MRaw::SitrineoCumul track %d: slope1_X=%.2f, slope2_X=%.2f, Dslope_X=%.2f,  p_X=%.2f, slope1_Y=%.2f, slope2_Y=%.2f, Dslope_Y=%.2f, p_Y=%.2f\n", (*atrack).id, (*atrack).firsttrack_slopeX, (*atrack).secondtrack_slopeX, (*atrack).Dslope_X, (*atrack).momentum_X, (*atrack).firsttrack_slopeY, (*atrack).secondtrack_slopeY, (*atrack).Dslope_X, (*atrack).momentum_X);
+      //if(fVerbose) printf(" track[%d] (%d %d %d %d) slopeX=%.2f, origX=%.0f / slopeY=%.2f, origY=%.0f / p=%.1f => chi2 for X-fit %.2e, for Y-fit %.2e\n", (*atrack).id, (*atrack).hit[0], (*atrack).hit[1], (*atrack).hit[2], (*atrack).hit[3], (*atrack).fit_slope_X, (*atrack).fit_origin_X, (*atrack).fit_slope_Y, (*atrack).fit_origin_Y, (*atrack).fit_momentum, (*atrack).fit_chi2X, (*atrack).fit_chi2Y);
       // hit properties
       for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) { // loop on planes
         tPlane = (DPlane*)tTracker->GetPlane(iPlane);
@@ -17160,42 +17092,35 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
       } // end loop on planes
 
       // vector properties
-      hTrackPairDX12->Fill(aTrack.firsttrack_DX);
-      hTrackPairDY12->Fill(aTrack.firsttrack_DY);
-      hTrackPairDX34->Fill(aTrack.secondtrack_DX);
-      hTrackPairDY34->Fill(aTrack.secondtrack_DY);
-      hTrackPairSlope12X->Fill( aTrack.firsttrack_slopeX );
-      hTrackPairSlope34X->Fill( aTrack.secondtrack_slopeX );
-      hTrackPairSlopesX->Fill( aTrack.firsttrack_slopeX, aTrack.secondtrack_slopeX);
-      hTrackPairSlope12Y->Fill( aTrack.firsttrack_slopeY );
-      hTrackPairSlope34Y->Fill( aTrack.secondtrack_slopeY );
-      hTrackPairSlopesY->Fill( aTrack.firsttrack_slopeY, aTrack.secondtrack_slopeY);
-
+      hTrackPairDX12->Fill((*atrack).firsttrack_DX);
+      hTrackPairDY12->Fill((*atrack).firsttrack_DY);
+      hTrackPairDX34->Fill((*atrack).secondtrack_DX);
+      hTrackPairDY34->Fill((*atrack).secondtrack_DY);
+      hTrackPairSlope12X->Fill( (*atrack).firsttrack_slopeX );
+      hTrackPairSlope34X->Fill( (*atrack).secondtrack_slopeX );
+      hTrackPairSlopesX->Fill( (*atrack).firsttrack_slopeX, (*atrack).secondtrack_slopeX);
+      hTrackPairSlope12Y->Fill( (*atrack).firsttrack_slopeY );
+      hTrackPairSlope34Y->Fill( (*atrack).secondtrack_slopeY );
+      hTrackPairSlopesY->Fill( (*atrack).firsttrack_slopeY, (*atrack).secondtrack_slopeY);
       // track properties
-      hTrackPairDSlopeX->Fill( aTrack.Dslope_X);
-      hTrackPairMomentumX->Fill( aTrack.momentum_X);
-      hTrackPairDSlopeY->Fill( aTrack.Dslope_Y);
-      hTrackPairMomentumY->Fill( aTrack.momentum_Y);
-      hTrackPairChi2X->Fill(aTrack.fit_chi2X);
-      hTrackPairChi2Y->Fill(aTrack.fit_chi2Y);
-      hTrackPairMomentum->Fill( aTrack.fit_momentum);
-      hTrackPairFitSlopeX->Fill( aTrack.fit_slope_X);
-      hTrackPairFitSlopeY->Fill( aTrack.fit_slope_Y);
-      hTrackPairFitXA->Fill( aTrack.fit_origin_X);
-      hTrackPairFitYA->Fill( aTrack.fit_origin_Y);
-
+      hTrackPairDSlopeX->Fill( (*atrack).Dslope_X);
+      hTrackPairMomentumX->Fill( (*atrack).momentum_X);
+      hTrackPairDSlopeY->Fill( (*atrack).Dslope_Y);
+      hTrackPairMomentumY->Fill( (*atrack).momentum_Y);
+      hTrackPairChi2X->Fill((*atrack).fit_chi2X);
+      hTrackPairChi2Y->Fill((*atrack).fit_chi2Y);
+      hTrackPairMomentum->Fill( (*atrack).fit_momentum);
+      hTrackPairFitSlopeX->Fill( (*atrack).fit_slope_X);
+      hTrackPairFitSlopeY->Fill( (*atrack).fit_slope_Y);
+      hTrackPairFitXA->Fill( (*atrack).fit_origin_X);
+      hTrackPairFitYA->Fill( (*atrack).fit_origin_Y);
       // fit variables vs. fit momentum
-      hChi2XvsP->Fill( aTrack.fit_momentum, aTrack.fit_chi2X);
-      hChi2YvsP->Fill( aTrack.fit_momentum, aTrack.fit_chi2Y);
-      hChi2XvsSlope->Fill(aTrack.secondtrack_slopeX, aTrack.fit_chi2X); // Added Chi2 vs. Vector 34 Slope 31.03.26
-      hChi2YvsSlope->Fill(aTrack.secondtrack_slopeY, aTrack.fit_chi2Y); // Added Chi2 vs. Vector 34 Slope 31.03.26
-      hSlopeXvsP->Fill( aTrack.fit_momentum, aTrack.fit_slope_X);
-      hSlopeYvsP->Fill( aTrack.fit_momentum, aTrack.fit_slope_Y);
-      hXAvsP->Fill( aTrack.fit_momentum, aTrack.fit_origin_X);
-      hYAvsP->Fill( aTrack.fit_momentum, aTrack.fit_origin_Y);
-
-      // Position properties
-      hTrackPairFitXY->Fill(aTrack.fit_origin_X, aTrack.fit_origin_Y); // Added X-Y position at B Field plane 07.04.26
+      hChi2XvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_chi2X);
+      hChi2YvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_chi2Y);
+      hSlopeXvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_slope_X);
+      hSlopeYvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_slope_Y);
+      hXAvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_origin_X);
+      hYAvsP->Fill( (*atrack).fit_momentum, (*atrack).fit_origin_Y);
 
       // Lines for 3D Hit Map
       ftrackmodelX_3DMap->SetParameters(aTrack.fit_slope_X, aTrack.fit_origin_X, aTrack.fit_slope_Y, aTrack.fit_origin_Y, aTrack.fit_momentum, Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
@@ -17210,11 +17135,6 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
         alineXYZ->SetPoint( ipoint, z, x, y);
       }
       linesXYZ.push_back( alineXYZ);
-      // position at source
-      z = sourcePosition[2];      // Takes the z position of the source in the config file 07.04.26
-      x = ftrackmodelX_3DMap->Eval(z);
-      y = ftrackmodelY_3DMap->Eval(z);
-      hTrackPairSourceXY->Fill( x, y);
 
     } // end loop of track-pairs
 
@@ -17233,101 +17153,9 @@ void MRaw::SitrineoCumul( Int_t nEvents, Int_t lastPlaneOfFirstTracker, Double_t
     pad->cd(iPlane)->SetTicky(1);
     hHitMap[iPlane-1]->SetMaximum(10);
     hHitMap[iPlane-1]->DrawCopy("colz");
-
-    if (iPlane==1){cutBox->Draw("l");}
-    else if (iPlane==4){cutLastBox->Draw("l");} // A optimiser 
-    
-   
-    //if( iPlane<=lastPlaneOfFirstTracker ) {
-      //cutBox->Draw("l");
-    //} else {
-      //cutLastBox->Draw("l");
-    //}
-
     cout << "Plane "<<iPlane<<" has seen "<<hHitMap[iPlane-1]->GetEntries()<<" tracks."<< endl;
   }
   ccumulhit->Update();
-
-
-  // Save canvas and histos
-  // cd to result dir
-  Char_t rootFile[300];
-  sprintf(rootFile,"%ssitrineo_run%d.root",fSession->GetResultDirName().Data(),fSession->GetRunNumber());
-  sprintf(rootFile,"%s", fTool.LocalizeDirName( rootFile)); // JB 2011/07/07
-  cout << "\n-- Saving histos and canvas into " << rootFile << endl;
-  TFile fRoot(rootFile,"RECREATE");
-  ccumulhit->Write();
-  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
-    tPlane = tTracker->GetPlane(iPlane);
-    if( 0 < tPlane->GetAnalysisMode()  ) {
-      hHitMap[iPlane-1]->Write();
-      hHitPixMult[iPlane-1]->Write();
-      hHitTimeStamp[iPlane-1]->Write();
-      hNHitsVSEventN[iPlane-1]->Write();
-      hNHitsPerEvent[iPlane-1]->Write();
-    }
-  }
-
-  hTrackPairDX12->Write();
-  hTrackPairDY12->Write();
-  hTrackPairSlope12X->Write();
-  hTrackPairSlope12Y->Write();
-  hTrackPairDX34->Write();
-  hTrackPairDY34->Write();
-  hTrackPairSlope34X->Write();
-  hTrackPairSlope34Y->Write();
-  hTrackPairSlopesX->Write();
-  hTrackPairDSlopeX->Write();
-  hTrackPairMomentumX->Write();
-  hTrackPairSlopesY->Write();
-  hTrackPairDSlopeY->Write();
-  hTrackPairMomentumY->Write();
-  hTrackPairChi2X->Write();
-  hTrackPairChi2Y->Write();
-  hTrackPairMomentum->Write();
-  hTrackPairFitSlopeX->Write();
-  hTrackPairFitSlopeY->Write();
-  hTrackPairFitXA->Write();
-  hTrackPairFitYA->Write();
-  hTrackPairFitXY->Write(); // Added X-Y position at B Field plane 07.04.26
-  hChi2XvsP->Write();
-  hChi2YvsP->Write();
-  hChi2XvsSlope->Write();  // Added Chi2 vs. Vector 34 Slope 31.03.26
-  hChi2YvsSlope->Write();  // Added Chi2 vs. Vector 34 Slope 31.03.26
-  hSlopeXvsP->Write();
-  hSlopeYvsP->Write();
-  hXAvsP->Write();
-  hYAvsP->Write();
-  hHitMapXYZ->Write();
-  hTrackPairSourceXY->Write();
-
-  fRoot.Close();
-
-  // Track specific positions 
-  TCanvas *ccumultrackpos;
-  g = gROOT->FindObject("ccumultrackpos") ;
-  if (g) {
-    ccumultrackpos = (TCanvas*)g;
-  }
-  else {
-    ccumultrackpos = new TCanvas("ccumultrackpos", "Track specific position", 500, 100, 1100, 700);
-  }
-  ccumultrackpos->Clear();
-  ccumultrackpos->UseCurrentStyle();
-  label->DrawPaveLabel(0.3,0.97,0.7,0.9999,canvasTitle);
-  
-  TPad *pad7 = new TPad("pad7","",0.,0.,1.,0.965);
-  pad7->Draw();
-  pad7->Divide( 2, 1);
-  pad7->cd(1);
-  hTrackPairFitXY->Draw();            // Added X-Y position at B Field plane 07.04.26
-  hTrackPairFitXY->DrawCopy("colz");
-  cutMagnetBox->Draw();
-  pad7->cd(2);
-  hTrackPairSourceXY->Draw();         // Added X-Y position at the source plane 07.04.26
-  hTrackPairSourceXY->DrawCopy("colz");
-  ccumultrackpos->Update();
-
 
   // this canvas is intended mainly for binary outputs
   TCanvas *ccumulhit2;
@@ -17737,397 +17565,7 @@ void MRaw::SitrineoAnalysis( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t>
 }
 //
 //______________________________________________________________________________
-Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Double_t minX1, Double_t maxX1, Double_t minY1, Double_t maxY1, Double_t maxSlopeX1, Double_t minSlopeX3, Double_t maxSlopeY)
-{
-  //Analyse tracks in Sitrineo tracker to evaluate momentum
-  //
-  // Assumed geometry
-  //
-  // Argument lastPlaneOfFirsttracker means: <== NOT USED CURRENTLY !!!
-  //  all planes with ID <= lastPlaneOfFirsttracker are included in first tracker
-  //  all planes with ID > lastPlaneOfFirsttracker are included in second tracker
-  //
-  // Cuts allows to limit the position differences and angles
-  //   maxX1 & maxY1 (in um) limit the initial impact zone (on first and second planes)
-  //   maxSlopeX1 & minSlopeX3 (in radians) constraints the slopes of both incoming and outgoing vectors in the XZ (bending) plane
-  //   maxSlopeY (in radians) constraints the track slope in the YZ (non-bending) plane
-  //
-  //  2019/03/10, Adele Perus, Romain Schotter
-  //  2020/01/15, JB: new variables added
-  //  2020/03/26, JB: fit to track model (through TH1F) added
-  //  2022/02/18, E.Jourd'Huy & P.Stavroulakis: new sorting algorithm
-  //  2025/07/24, JB: various improvements, cuts from config files, best candidate selection
-  //  2026/03/31, JB: fix on cuts (wrongly associated to incoming/outgoing vectors) and new slope cut
-
-  if(fDebugRaw) cout << "SitrineoAnalysisFromHits: starting" << endl;
-
-  double Bfield = fSession->GetSetup()->GetTrackerPar().BFieldMagnitude; // Tesla
-  double Bfield_rangeX[2] = {1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsX[0], 1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsX[1]};
-  double Bfield_rangeY[2] = {1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsY[0], 1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsY[1]};
-  double Bfield_rangeZ[2] = {1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsZ[0], 1000*fSession->GetSetup()->GetTrackerPar().BFieldDimensionsZ[1]};
-  double zBfield = (Bfield_rangeZ[1]-Bfield_rangeZ[0])/2;
-  double res = 500.;
-  //double res = 500; // microns
-
-  //multiple scattering angle computed for each plane (added by Maushart, Rabour 2024/02/19)
-  // the momentum is computed with a python macro taking into account the energy loss after each plane. If we have time, could be done in a C macro that taf could call.
-  double theta_ms_1 = fTool.scatteringAngle("electron", 1e-3, "silicon", 50, 0);
-  double theta_ms_2 = fTool.scatteringAngle("electron", 1e-3, "silicon", 50, 0);
-  double theta_ms_3 = fTool.scatteringAngle("electron", 1e-3, "silicon", 50, 0);
-  double theta_ms_4 = fTool.scatteringAngle("electron", 1e-3, "silicon", 50, 0);
-
-  double zmin =  1e6;
-  double zmax = -1e6;
-  // Use of geometry parameters defined in config, added by Maushart, Rabour 2024/02/09
-  double zpos1 = fSession->GetSetup()->GetPlanePar(0).Position(2); // z position of plane 1
-  double zpos4 = fSession->GetSetup()->GetPlanePar(3).Position(2); // z position of plane 4
-
-  maxSlopeX1 *= TMath::DegToRad();
-  minSlopeX3 *= TMath::DegToRad();
-  maxSlopeY  *= TMath::DegToRad();
-
-  double GeoCut0 = fSession->GetSetup()->GetAnalysisPar().Umin[0][0];
-  double cutXrangeBField[2] = { fSession->GetSetup()->GetAnalysisPar().Umin[0][0], fSession->GetSetup()->GetAnalysisPar().Umax[0][0]};
-  double cutYrangeBField[2] = { fSession->GetSetup()->GetAnalysisPar().Vmin[0][0], fSession->GetSetup()->GetAnalysisPar().Vmax[0][0]};
-  double cutXrangeLastPlane[2] ={ fSession->GetSetup()->GetAnalysisPar().Umin[0][2], fSession->GetSetup()->GetAnalysisPar().Umax[0][2]};
-  double cutYrangeLastPlane[2] ={ fSession->GetSetup()->GetAnalysisPar().Vmin[0][2], fSession->GetSetup()->GetAnalysisPar().Vmax[0][2]};
-  double cutMomentum = fSession->GetSetup()->GetAnalysisPar().MomentumMaxCut; // MeV/c
-  double cutChi2FitY = 10.; // this is the non-bending plane
-  double cutChi2FitX = fSession->GetSetup()->GetAnalysisPar().TrackChi2Limit; // this is the bending plane
-
-  Int_t noftracks = 0; // nb of track found yet
-  Int_t noftestedtracks = 0; // nb of pairs of vectors, potential tracks, to be tested
-  NbRmTracks= 0; // Reinitialize no. of tracks removed from the tracklist
-
-  if(fDebugRaw) cout << "SitrineoAnalysisFromHits: starting again" << endl;
-
-  //vector<sitritrack_t> tracklist = new vector<sitritrack_t>;
-  //tracklist.clear(); // Reinitialize tracklist
-
-  if(fDebugRaw) printf( "SitrineoAnalysisFromHits: starting lastPlane1stTracker %d, Bfield = %.2f, with cuts (X-range=%.0f to %.0f um, Y-range=%.0f to %.0f um\n    incoming X max slope=%.1f degrees, incoming XZ max slope=%.1f degrees, outgoing XZ min slope=%.1f degrees, track YZ max slope=%.1f degrees\n", lastPlaneOfFirstTracker, Bfield, minX1, maxX1, minY1, maxY1, maxSlopeX1*TMath::RadToDeg(), minSlopeX3*TMath::RadToDeg(), maxSlopeY*TMath::RadToDeg());
-
-  DTracker *tTracker  =  fSession->GetTracker();
-  DPlane *Plane1, *Plane2, *Plane3, *Plane4, *tPlane ;
-  DHit *Hit1, *Hit2, *Hit3, *Hit4;
-  //DTrack *track1, *track2;
-  //DR3 slope1, slope2;
-  //vector< sitrihitpair_t > firstTrackerPairs;
-  //vector< sitrihitpair_t > secondTrackerPairs;
-  sitrihitpair_t apair, bpair;
-  sitritrack_t atrack;
-
-  Int_t nPlanes = tTracker->GetPlanesN();
-  // Loop on planes to determine extreme plane positions in z axis
-  for( Int_t iPlane=1; iPlane<=nPlanes; iPlane++) {
-    tPlane = (DPlane*)tTracker->GetPlane(iPlane);
-    if ( tPlane->GetPosition()(2)<zmin) zmin = tPlane->GetPosition()(2);
-    if ( tPlane->GetPosition()(2)>zmax) zmax = tPlane->GetPosition()(2);
-  }
-  zmin -= 5000;
-  zmax += 5000;
-
-  TH1F *htracky = new TH1F("htracky","Track y=f(z); z [cm]; y[cm]", 1000,zmin,zmax);
-  TH1F *htrackx = new TH1F("htrackx","Track x=f(z); z [cm]; x[cm]", 1000,zmin,zmax);
-  TF1 *ftrackmodelX = new TF1("ftrackmodelX", sitritrajectoryBortho, zmin, zmax, 9);
-  TF1 *ftrackmodelY = new TF1("ftrackmodelY", sitritrajectoryBparallel, zmin, zmax, 9);
-
-  Plane4 = (DPlane*)tTracker->GetPlane(4);
-  Plane3 = (DPlane*)tTracker->GetPlane(3);
-  Plane2 = (DPlane*)tTracker->GetPlane(2);
-  Plane1 = (DPlane*)tTracker->GetPlane(1);
-  if(fDebugRaw) printf( " Loop on 2nd tracker with (pl3) %d and (pl4) %d hits / 1st tracker with (pl1) %d and (pl2) %d hits\n", Plane4->GetHitsN(), Plane3->GetHitsN(), Plane1->GetHitsN(), Plane2->GetHitsN());
-  //loop on sensors of 2nd tracker
-  for( int i4 = 1 ; i4 <= Plane4->GetHitsN() ; i4++){ // Loop on hits from plane 4
-    Hit4=(DHit*)Plane4->GetHit(i4);
-    apair.plane2 = Plane4->GetPlaneNumber();
-    apair.hitid2 = i4;
-    apair.x2 = Plane4->PlaneToTracker(*(Hit4->GetPosition()))(0);
-    apair.y2 = Plane4->PlaneToTracker(*(Hit4->GetPosition()))(1);
-    apair.z2 = Plane4->PlaneToTracker(*(Hit4->GetPosition()))(2);
-
-    for( int i3 = 1 ; i3 <= Plane3->GetHitsN() ; i3++){ // Loop on hits from plane 3
-      Hit3=(DHit*)Plane3->GetHit(i3);
-      apair.plane1 = Plane3->GetPlaneNumber();
-      apair.hitid1 = i3;
-      apair.x1 = Plane3->PlaneToTracker(*(Hit3->GetPosition()))(0);
-      apair.y1 = Plane3->PlaneToTracker(*(Hit3->GetPosition()))(1);
-      apair.z1 = Plane3->PlaneToTracker(*(Hit3->GetPosition()))(2);
-      apair.deltaX = apair.x2 - apair.x1;
-      apair.deltaY = apair.y2 - apair.y1 ;
-      apair.deltaZ = apair.z2 - apair.z1 ;
-      apair.slopeX = atan(apair.deltaX/apair.deltaZ) ;
-      apair.slopeY = atan(apair.deltaY/apair.deltaZ) ;
-
-      if(fDebugRaw>1) {
-      	printf( "  testing vector from 2nd tracker\n");
-      	printf( "    plane %d - hit %d - pos( %.0f, %.0f, %.0f)\n", apair.plane1, apair.hitid1, apair.x1, apair.y1, apair.z1);
-      	printf( "    plane %d - hit %d - pos( %.0f, %.0f, %.0f)\n", apair.plane2, apair.hitid2, apair.x2, apair.y2, apair.z2);
-        printf( "    DeltaPos( %.0f, %.0f, %.0f) -> slopeX=%.2f, slopeY=%.2f\n", apair.deltaX, apair.deltaY, apair.deltaZ, apair.slopeX, apair.slopeY);
-      }
-
-      for( int i2 = 1 ; i2 <= Plane2->GetHitsN() ; i2++){ // Loop on hits from plane 2
-        Hit2=(DHit*)Plane2->GetHit(i2);
-        bpair.plane2 = Plane2->GetPlaneNumber();
-        bpair.hitid2 = i2;
-        bpair.x2 = Plane2->PlaneToTracker(*(Hit2->GetPosition()))(0);
-        bpair.y2 = Plane2->PlaneToTracker(*(Hit2->GetPosition()))(1);
-        bpair.z2 = Plane2->PlaneToTracker(*(Hit2->GetPosition()))(2);
-
-        for( int i1 = 1 ; i1 <= Plane1->GetHitsN() ; i1++){ // Loop on hits from plane 1
-          Hit1=(DHit*)Plane1->GetHit(i1);
-          bpair.plane1 = Plane1->GetPlaneNumber();
-          bpair.hitid1 = i1;
-          bpair.x1 = Plane1->PlaneToTracker(*(Hit1->GetPosition()))(0);
-          bpair.y1 = Plane1->PlaneToTracker(*(Hit1->GetPosition()))(1);
-          bpair.z1 = Plane1->PlaneToTracker(*(Hit1->GetPosition()))(2);
-          bpair.deltaX = bpair.x2 - bpair.x1;
-          bpair.deltaY = bpair.y2 - bpair.y1 ;
-          bpair.deltaZ = bpair.z2 - bpair.z1 ;
-          bpair.slopeX = atan(bpair.deltaX/bpair.deltaZ) ;
-          bpair.slopeY = atan(bpair.deltaY/bpair.deltaZ) ;
-          if(fDebugRaw>1) {
-            printf( "  testing vector from 1st tracker\n");
-            printf( "    plane %d - hit %d - pos( %.0f, %.0f, %.0f)\n", bpair.plane1, bpair.hitid1, bpair.x1, bpair.y1, bpair.z1);
-            printf( "    plane %d - hit %d - pos( %.0f, %.0f, %.0f)\n", bpair.plane2, bpair.hitid2, bpair.x2, bpair.y2, bpair.z2);
-            printf( "    DeltaPos( %.0f, %.0f, %.0f) -> slopeX=%.2f, slopeX=%.2f\n", bpair.deltaX, bpair.deltaY, bpair.deltaZ, bpair.slopeX, bpair.slopeY);
-          }
-
-          // Cut on the entrance position (first hit), exit position (last hit) and slopes of incoming and outgoing vectors
-          if( 
-            minX1<bpair.x1 && bpair.x1<maxX1 && minY1<bpair.y1 && bpair.y1<maxY1 
-            && cutXrangeLastPlane[0]<apair.x2 && apair.x2<cutXrangeLastPlane[1] && cutYrangeLastPlane[0]<apair.y2 && apair.y2<cutYrangeLastPlane[1]
-            && abs(bpair.slopeX)<maxSlopeX1 
-            && minSlopeX3<abs(apair.slopeX)
-            ) {
-            noftestedtracks++;
-            if(fDebugRaw) printf(" SITRINEO analysis found potential track %d\n", noftestedtracks);
-
-            //pairing of vectors to get full track
-            // mark all hits as found
-            Hit4->SetFound();
-            Hit3->SetFound();
-            Hit2->SetFound();
-            Hit1->SetFound();
-          	//Calculating scalar product, norm of the positions vectors, at the entrance AND the exit, in the Y-Z plan.
-            // this is a crude estimation of the momentum
-            double ps = (bpair.deltaY)*(apair.deltaY) + (bpair.deltaZ)*(apair.deltaZ);
-            double norm_vec34 = sqrt( pow(apair.deltaY,2) + pow(apair.deltaZ,2) ) ;
-            double norm_vec12 = sqrt( pow(bpair.deltaY,2) + pow(bpair.deltaZ,2) ) ;
-            double angle = acos( ps/(norm_vec34*norm_vec12) ) ; // alternative angle computation
-            if( ps<0 && angle>0 ) angle *= -1;
-            double Dslope_Y = (apair.slopeY)-(bpair.slopeY);
-            double Dslope_X = (apair.slopeX)-(bpair.slopeX);
-            double momentum_Y = 0.3*Bfield*20/(Dslope_Y) ;
-            double momentum_X = 0.3*Bfield*20/(Dslope_X) ;
-
-            if(fDebugRaw) {
-            	cout << "  --> track " << noftestedtracks <<" hit list (" << bpair.hitid1 << ", " << bpair.hitid2 << ", " << apair.hitid1 << ", " << apair.hitid2 << ")" << endl ;
-              cout << "   Delta_anlgeY [rad] : " << angle << " should also be Delta_slopeY = " << Dslope_Y << "; Delta_slopeX = " << Dslope_X << endl ;
-          	  cout << "   momentum_X [MeV/c] : " << momentum_X << "   momentum_Y [MeV/c] : " << momentum_Y << endl ;
-            }
-
-            // Fit in (y,z) and (x,z)
-            htracky->Reset();
-            htrackx->Reset();
-            int ibin = htracky->FindBin( bpair.z1);
-            htracky->SetBinContent( ibin, bpair.y1);
-            htracky->SetBinError( ibin, res);
-            htrackx->SetBinContent( ibin, bpair.x1);
-            htrackx->SetBinError( ibin, res);
-            if(fDebugRaw>3) printf( "   Bin %d for z=%.0f -> y=%.0f, x=%.0f\n", ibin, htracky->GetBinCenter(ibin), htracky->GetBinContent(ibin), htrackx->GetBinContent(ibin));
-            ibin = htracky->FindBin( bpair.z2);
-            htracky->SetBinContent( ibin, bpair.y2);
-            htracky->SetBinError( ibin, res);
-            htrackx->SetBinContent( ibin, bpair.x2);
-            htrackx->SetBinError( ibin, res);
-            if(fDebugRaw>3) printf( "   Bin %d for z=%.0f -> y=%.0f, x=%.0f\n", ibin, htracky->GetBinCenter(ibin), htracky->GetBinContent(ibin), htrackx->GetBinContent(ibin));
-            ibin = htracky->FindBin( apair.z1);
-            htracky->SetBinContent( ibin, apair.y1);
-            htracky->SetBinError( ibin, res);
-            htrackx->SetBinContent( ibin, apair.x1);
-            htrackx->SetBinError( ibin, res);
-            if(fDebugRaw>3) printf( "   Bin %d for z=%.0f -> y=%.0f, x=%.0f\n", ibin, htracky->GetBinCenter(ibin), htracky->GetBinContent(ibin), htrackx->GetBinContent(ibin));
-            ibin = htracky->FindBin( apair.z2 );
-            htracky->SetBinContent( ibin, apair.y2);
-            htracky->SetBinError( ibin, res);
-            htrackx->SetBinContent( ibin, apair.x2);
-            htrackx->SetBinError( ibin, res);
-            if(fDebugRaw>3) printf( "   Bin %d for z=%.0f -> y=%.0f, x=%.0f\n", ibin, htracky->GetBinCenter(ibin), htracky->GetBinContent(ibin), htrackx->GetBinContent(ibin));
-
-            // Fit the trajectory with a detailed track model
-            // reminder on track model parameters
-            //Par[0] = thetaX
-            //Par[1] = XA at z=zA
-            //Par[2] = thetaY
-            //Par[3] = YA at z=zA
-            //Par[4] = p, momentum
-            //Par[5] = zA, start of Bfield
-            //Par[6] = zB, end of Bfield
-            //Par[7] = q, charge = +/- 1
-            //Par[8] = B, magnetic field in T
-            ftrackmodelX->SetParameters(0., 0., 0., 0., 1., Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield); // initial parameters
-            ftrackmodelX->SetParLimits(0, -1.5, 1.5);
-            ftrackmodelX->SetParLimits(1, -10000, 10000);
-            ftrackmodelX->FixParameter(2, 0.);
-            ftrackmodelX->FixParameter(3, 0.);
-            ftrackmodelX->SetParLimits(4, 0., 1000.);
-            //ftrackmodelX->FixParameter(4, 1.);
-            ftrackmodelX->FixParameter(5, Bfield_rangeZ[0]);
-            ftrackmodelX->FixParameter(6, Bfield_rangeZ[1]);
-            ftrackmodelX->FixParameter(7, -1);
-            ftrackmodelX->FixParameter(8, Bfield);
-            htrackx->Fit(ftrackmodelX,"NQ");
-            // Par[0] = slope, Par[1] = x at z=0
-            ftrackmodelY->SetParameters(0., 0., 0., 0., 1., Bfield_rangeZ[0], Bfield_rangeZ[1], -1, Bfield);
-            ftrackmodelY->FixParameter(0, ftrackmodelX->GetParameter(0));
-            ftrackmodelY->FixParameter(1, ftrackmodelX->GetParameter(1));
-            ftrackmodelY->SetParLimits(2, -1.5, 1.5);
-            ftrackmodelY->SetParLimits(3, -10000, 10000);
-            ftrackmodelY->FixParameter(4, ftrackmodelX->GetParameter(4));
-            ftrackmodelY->FixParameter(5, Bfield_rangeZ[0]);
-            ftrackmodelY->FixParameter(6, Bfield_rangeZ[1]);
-            ftrackmodelY->FixParameter(7, -1);
-            ftrackmodelY->FixParameter(8, Bfield);
-        	// ***************************************
-            htracky->Fit(ftrackmodelY,"NQ");
-        	// ***************************************
-
-            if(fDebugRaw) {
-              printf( "   FitX => chi2 = %.2e, thetaX=%.2f, x0=%.0f, momentum=%.1f\n", ftrackmodelX->GetChisquare(), ftrackmodelX->GetParameter(0), ftrackmodelX->GetParameter(1), ftrackmodelX->GetParameter(4));
-              printf( "   FitY => chi2 = %.2e, thetaY=%.2f, y0=%.0f\n", ftrackmodelY->GetChisquare(), ftrackmodelY->GetParameter(2), ftrackmodelY->GetParameter(3));
-            }
-
-            atrack.id = noftracks+1+NbRmTracks;
-            atrack.hit[0] = bpair.hitid1;
-            atrack.hit[1] = bpair.hitid2;
-            atrack.hit[2] = apair.hitid1;
-            atrack.hit[3] = apair.hitid2;
-            atrack.firsttrack_DX = bpair.deltaX;
-            atrack.firsttrack_DY = bpair.deltaY;
-            atrack.firsttrack_DZ = bpair.deltaZ;
-            atrack.firsttrack_slopeX = bpair.slopeX;
-            atrack.firsttrack_slopeY = bpair.slopeY;
-            atrack.secondtrack_DX = apair.deltaX;
-            atrack.secondtrack_DY = apair.deltaY;
-            atrack.secondtrack_DZ = apair.deltaZ;
-            atrack.secondtrack_slopeX = apair.slopeX;
-            atrack.secondtrack_slopeY = apair.slopeY;
-            atrack.Dslope_X = Dslope_X;
-            atrack.Dslope_Y = Dslope_Y;
-            atrack.momentum_X = momentum_X;
-            atrack.momentum_Y = momentum_Y;
-            atrack.fit_origin_X = ftrackmodelX->GetParameter(1);
-            atrack.fit_origin_Y = ftrackmodelY->GetParameter(3);
-            atrack.fit_slope_X = ftrackmodelX->GetParameter(0);
-            atrack.fit_slope_Y = ftrackmodelY->GetParameter(2);
-            atrack.fit_momentum = ftrackmodelX->GetParameter(4);
-            atrack.fit_chi2X = ftrackmodelX->GetChisquare();
-            atrack.fit_chi2Y = ftrackmodelY->GetChisquare();
-
-            // cuts modified by Rabour, Maushart 2024/02/21
-            if(fDebugRaw) {
-              printf( "  X fit_momentum => p = %.2f, ftrackmodelX(0)=%.2f, ftrackmodelX(z1)=%.2f, ftrackmodelX(z4)=%.2f\n",atrack.fit_momentum,ftrackmodelX->Eval(0),ftrackmodelX->Eval(zpos1),ftrackmodelX->Eval(zpos4) );
-              printf( "  Y fit_momentum => p = %.2f, ftrackmodelY(0)=%.2f, ftrackmodelY(z1)=%.2f, ftrackmodelY(z4)=%.2f\n",atrack.fit_momentum,ftrackmodelY->Eval(0),ftrackmodelY->Eval(zpos1),ftrackmodelY->Eval(zpos4));
-              printf( "  Track selection cut: momentum < %.1f, chi2_X < %.0f, chi2_Y < %.0f", cutMomentum, cutChi2FitX, cutChi2FitY );
-              printf( "  Track position on first plane [%.0f, %0.f] compared to limits [%.0f to %0.f, %.0f to %0.f]\n", ftrackmodelX->Eval(zpos1), ftrackmodelY->Eval(zpos1), minX1, maxX1, minY1, maxY1);
-              printf( "  Track position in magnet [%.0f, %0.f] compared to limits [%.0f to %0.f, %.0f to %0.f]\n", ftrackmodelX->Eval(zBfield), ftrackmodelY->Eval(zBfield), cutXrangeBField[0], cutXrangeBField[1], cutYrangeBField[0], cutYrangeBField[1]);
-              printf( "  Track position on last plane [%.0f, %0.f] compared to limits [%.0f to %0.f, %.0f to %0.f]\n", ftrackmodelX->Eval(zpos4), ftrackmodelY->Eval(zpos4), cutXrangeLastPlane[0], cutXrangeLastPlane[1], cutYrangeLastPlane[0], cutYrangeLastPlane[1]);
-            }
-
-            if (
-              atrack.fit_momentum < cutMomentum //cut on momentum
-              && atrack.fit_chi2X < cutChi2FitX // cut on Chi2 from fit in X-Z plane
-              && atrack.fit_chi2Y < cutChi2FitY // cut on Chi2 from fit in Y-Z plane
-
-	            && abs(atrack.fit_slope_X) < maxSlopeX1 // cut on entrance angle in X-Z plane
-              
-              && minSlopeX3 < abs(atrack.secondtrack_slopeX) // cut on exit angle in X-Z plane
-
-              && abs(atrack.fit_slope_Y) < maxSlopeY // cut on track angle in Y-Z plane
-
-            // geometrical cut on the size of the beam based on the CumulateHits plot
-              //&& (pow(ftrackmodelX->Eval(zpos1)-0,2) + pow(ftrackmodelY->Eval(zpos1)-1500,2)) <= pow(GeoCut0,2) //4000
-              //&& (pow(ftrackmodelX->Eval(0),2) + pow(ftrackmodelY->Eval(0)-1500,2)) <= pow(4000,2) //4000
-              //&& (pow(ftrackmodelX->Eval(zpos4)-7200,2) + pow(ftrackmodelY->Eval(zpos4)-1500,2)) <= pow(13700,2) //13700
-
-	          // cut on track position at z of first sensor
-              && ftrackmodelX->Eval(zpos1)<maxX1 && ftrackmodelX->Eval(zpos1)>minX1
-              && ftrackmodelY->Eval(zpos1)<maxY1 && ftrackmodelY->Eval(zpos1)>minY1
-
-	          // cut on track position at magnetic field z position
-	            && ftrackmodelX->Eval(zBfield)<cutXrangeBField[1] && ftrackmodelX->Eval(zBfield)>cutXrangeBField[0]
-              && ftrackmodelY->Eval(zBfield)<cutYrangeBField[1] && ftrackmodelY->Eval(zBfield)>cutYrangeBField[0]
-  
-	          // cut on track position at final sensor
-              //&& ftrackmodelX->Eval(zpos4)<cutXrangeLastPlane[1] && ftrackmodelX->Eval(zpos4)>cutXrangeLastPlane[0]
-              //&& ftrackmodelY->Eval(zpos4)<cutYrangeLastPlane[1] && ftrackmodelY->Eval(zpos4)>cutYrangeLastPlane[0]
-            ) { // cut on track selection
-
-              sitrilistoftracks[noftracks] = atrack;
-              noftracks++;
-
-            } // end if cut on track selection
-
-          } // end if Cut on the entrance position
-
-        } // End loop on hits from plane 1
-      } // End loop on hits from plane 2
-    } // End loop on hits from plane 3
-  } // End loop on hits from plane 4
-
-  //If requested, select the best track based on chi2
-  // if( fSession->GetSetup()->GetAnalysisPar().SelectBestTrack == true ) {
-  //   Int_t besttrackid = 0;
-  //   for( int trackid = 1 ; trackid < noftracks; trackid++) { 
-  //     if( sitrilistoftracks[trackid].fit_chi2X < sitrilistoftracks[besttrackid].fit_chi2X ) {
-	//       besttrackid = trackid;
-  //     }
-  //   }
-  //   noftracks = 1;
-  //   sitrilistoftracks[0].id = sitrilistoftracks[besttrackid].id;
-  //   sitrilistoftracks[0].hit[0] = sitrilistoftracks[besttrackid].hit[0];
-  //   sitrilistoftracks[0].hit[1] = sitrilistoftracks[besttrackid].hit[1];
-  //   sitrilistoftracks[0].hit[2] = sitrilistoftracks[besttrackid].hit[2];
-  //   sitrilistoftracks[0].hit[3] = sitrilistoftracks[besttrackid].hit[3];
-  //   sitrilistoftracks[0].firsttrack_DX = sitrilistoftracks[besttrackid].firsttrack_DX;
-  //   sitrilistoftracks[0].firsttrack_DY = sitrilistoftracks[besttrackid].firsttrack_DY;
-  //   sitrilistoftracks[0].firsttrack_DZ = sitrilistoftracks[besttrackid].firsttrack_DZ;
-  //   sitrilistoftracks[0].firsttrack_slopeX = sitrilistoftracks[besttrackid].firsttrack_slopeX;
-  //   sitrilistoftracks[0].firsttrack_slopeY = sitrilistoftracks[besttrackid].firsttrack_slopeY;
-  //   sitrilistoftracks[0].secondtrack_DX = sitrilistoftracks[besttrackid].secondtrack_DX;
-  //   sitrilistoftracks[0].secondtrack_DY = sitrilistoftracks[besttrackid].secondtrack_DY;
-  //   sitrilistoftracks[0].secondtrack_DZ = sitrilistoftracks[besttrackid].secondtrack_DZ;
-  //   sitrilistoftracks[0].secondtrack_DX = sitrilistoftracks[besttrackid].secondtrack_slopeX;
-  //   sitrilistoftracks[0].secondtrack_DY = sitrilistoftracks[besttrackid].secondtrack_slopeY;
-  //   sitrilistoftracks[0].Dslope_X = sitrilistoftracks[besttrackid].Dslope_X;
-  //   sitrilistoftracks[0].Dslope_Y = sitrilistoftracks[besttrackid].Dslope_Y;
-  //   sitrilistoftracks[0].momentum_X = sitrilistoftracks[besttrackid].momentum_X;
-  //   sitrilistoftracks[0].momentum_Y = sitrilistoftracks[besttrackid].momentum_Y;
-  //   sitrilistoftracks[0].fit_origin_X = sitrilistoftracks[besttrackid].fit_origin_X;
-  //   sitrilistoftracks[0].fit_origin_Y = sitrilistoftracks[besttrackid].fit_origin_Y;
-  //   sitrilistoftracks[0].fit_slope_X = sitrilistoftracks[besttrackid].fit_slope_X;
-  //   sitrilistoftracks[0].fit_slope_Y = sitrilistoftracks[besttrackid].fit_slope_Y;
-  //   sitrilistoftracks[0].fit_momentum = sitrilistoftracks[besttrackid].fit_momentum;
-  //   sitrilistoftracks[0].fit_chi2X = sitrilistoftracks[besttrackid].fit_chi2X;
-  //   sitrilistoftracks[0].fit_chi2Y = sitrilistoftracks[besttrackid].fit_chi2Y;
-  //   if( fVerbose ) {
-  //     printf("Best track candidate over %d tracks is trackID=%d with chi2-X=%.1f\n", noftracks, besttrackid, sitrilistoftracks[0].fit_chi2X); 
-  //   }
-  // }
-
-  delete htrackx;
-  delete htracky;
-  delete ftrackmodelX;
-  delete ftrackmodelY;
-
-  if(fDebugRaw) printf( "SitrineoAnalysisFromHits: ending lastPlane1stTracker %d, with %d tracks tested and %d tracks kept\n", lastPlaneOfFirstTracker, noftestedtracks, noftracks);
-
-  return noftracks;
-
-}
-
-/* OLD FUNCTION CRASHING
-Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Double_t minX1, Double_t maxX1, Double_t minY1, Double_t maxY1, Double_t maxSlope1)
+Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, vector<sitritrack_t> *tracklist, Double_t minX1, Double_t maxX1, Double_t minY1, Double_t maxY1, Double_t maxSlope1)
 {
   //Analyse tracks in Sitrineo tracker to evaluate momentum
   //
@@ -18149,7 +17587,7 @@ Int_t MRaw::SitrineoAnalysisFromHits( Int_t lastPlaneOfFirstTracker, Double_t mi
   //  2020/03/26, JB: fit to track model (through TH1F) added
   //  2022/02/18, E.Jourd'Huy & P.Stavroulakis: new sorting algorithm
 
-  double Bfield = fSession->GetSetup()->GetTrackerPar().BFieldMagnitude; // Tesla
+  double Bfield = 0.2; // Tesla
   double Bfield_rangeZ[2] = {-5000, 5000};
   double zBfield = (Bfield_rangeZ[1]-Bfield_rangeZ[0])/2;
   double res =500.;

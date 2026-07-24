@@ -150,8 +150,6 @@ class DSetup : public TObject {
     Int_t   MaxNbOfHits;
     Int_t   MinNbOfHits;
     Float_t TrackChi2Limit;
-    Float_t MomentumMaxCut;
-    bool    SelectBestTrack;
     Int_t   MinHitsPerTrack; // JB 2013/06/22
     Int_t   MaxTracksExGeom; // JB 2013/06/21
     Int_t   ExGeomatrix; // JB 2013/06/21
@@ -183,9 +181,6 @@ class DSetup : public TObject {
     Float_t Umax[fMaxSubmatrices][fMaxGeomatrices];
     Float_t Vmin[fMaxSubmatrices][fMaxGeomatrices];
     Float_t Vmax[fMaxSubmatrices][fMaxGeomatrices];
-    Float_t MaxInitialSlope;
-    Float_t MaxNonBendingSlope;
-    Float_t MinFinalSlope;
     Int_t   UserFlag; // JB 2013/07/17
   };
 
