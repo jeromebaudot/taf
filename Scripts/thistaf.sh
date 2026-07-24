@@ -211,6 +211,7 @@ if [ -n "${PrintInfos}" ] ; then
 	echo "<INFO> Documentation files (index.hmtl, taf_shortDoc.pdf and maf_doc.pdf) sit in DTDIR/doc"
 	echo "<INFO> To compile : run 'maketaf'"
 	echo "<INFO> To lauch TAF, run 'TAF' or 'taf'"
+	echo "<INFO> To lauch TAF with usual options, run 'taf -guiw -run [run nb] -cfg ./config/sitrineo1.cfg'"
 	echo ""
 fi
 

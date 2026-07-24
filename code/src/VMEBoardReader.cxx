@@ -129,23 +129,33 @@ int VMEBoardReader::Open()
     inputFileName = Form("%s/%s%d%s", fPathName.Data(), fPrefixName.Data(), i, fSuffixName.Data());
     fRawFileAscii[i].open(inputFileName.Data());
     if( fRawFileAscii[i].fail() ) { // end the reading if file opening failed
+       cout << endl << "VMEBoardReader::Open(), first trial with " << inputFileName << " failed!" << endl;
 
      // try again by including the run number in the directory path assuming format runXXXX where XXXX=run number
-     if( fRunNumber<100 ) { inputFileName = Form("%s/run00%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); }
-     else if( fRunNumber<1000 ) {  inputFileName = Form("%s/run0%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); } 
-     else  { inputFileName = Form("%s/run%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); }
+     inputFileName = Form("%s/run%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data());
      fRawFileAscii[i].open(inputFileName.Data());
      if( fRawFileAscii[i].fail() ) { // end the reading if file opening failed
+       cout << "VMEBoardReader::Open(), second trial with " << inputFileName << " failed!" << endl;
  
-     // try again by including the run number in the directory path assuming
-      inputFileName = Form("%s/%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data());
+      // try again by including the run number with completing 0 in the directory path assuming format runXXXX where XXXX=run number
+      if( fRunNumber<10 ) { inputFileName = Form("%s/run000%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); }
+      else if( fRunNumber<100 ) { inputFileName = Form("%s/run00%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); }
+      else if( fRunNumber<1000 ) {  inputFileName = Form("%s/run0%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); } 
+      else  { inputFileName = Form("%s/run%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data()); }
       fRawFileAscii[i].open(inputFileName.Data());
       if( fRawFileAscii[i].fail() ) { // end the reading if file opening failed
-       cout << endl << "VMEBoardReader::Open(), cannot open file " << inputFileName << endl;
-       isOk = false;
-      }
-     }
-    }
+         cout << "VMEBoardReader::Open(), third trial with " << inputFileName << " failed!" << endl;
+ 
+         // try again by including the run number in the directory path assuming
+         inputFileName = Form("%s/%d/%s%d%s", fPathName.Data(), fRunNumber, fPrefixName.Data(), i, fSuffixName.Data());
+         fRawFileAscii[i].open(inputFileName.Data());
+         if( fRawFileAscii[i].fail() ) { // end the reading if file opening failed
+         cout << "VMEBoardReader::Open(), cannot open file " << inputFileName << endl;
+         isOk = false;
+         } // last trial
+      } // third trial
+     } // second trial 
+    } // first trial
 
     cout << endl << "VMEBoardReader::Open(), file " << inputFileName << " opened" << endl;
     isOk = true;
